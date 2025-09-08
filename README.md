@@ -1,3 +1,1 @@
-my portfolio 
-olascopy 
-launching soon
+index.html
