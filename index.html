@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes"> 
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!------- google font inter ------->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<!--------header css link ----->
+<link rel="stylesheet" href="header.css">
+<!----- general css link ------>
+<link rel="stylesheet" href="general.css">
+<!----- sidebar css link ------>
+<link rel="stylesheet" href="sidebar.css">
+<!----- main css link ------>
+
+<link rel="stylesheet" href="main.css">
+<!----- main media css link ------>
+<link rel="stylesheet" href="main-media.css">
+<!----- header media css link ------>
+<link rel="stylesheet" href="header-media.css">
+<!----- sidebar media css link ------>
+<link rel="stylesheet" href="side-bar-media.css">
+<!----- sidebar media css link ------>
+<link rel="stylesheet" href="general-media.css">
+<!----- desktop media scroll  link ------>
+<link rel="stylesheet" href="desktop-media.css">
+<link rel="stylesheet" href="extra.css">
+<link rel="stylesheet" href="call.css">
+    <title>KONNEKT</title>
+</head>
+<body>
+
+
+
+
+<!--------- side bar---------->
+<header class="sidebar-section">
+  <div class="nav-active-pill"></div>
+    <section class="sidebar-section-1">
+  
+<div class="icon-sidebar-btn">
+
+  <i data-lucide="compass" class="home-icon active"></i>
+ 
+  <span class="nav-label active-none"> Discover</span>
+    <span class="tooltip">Discover</span>
+</div>
+  <div class="icon-sidebar-btn">
+  <i data-lucide="messages-square" class="home-icon"></i>
+    <span class="nav-label active-none"> Chats</span>
+    <span class="tooltip">Chats</span>
+</div>
+<div class="icon-sidebar-btn">
+  <i data-lucide="users" class="home-icon"></i>
+    <span class="nav-label active-none"> People</span>
+    <span class="tooltip">people</span>
+</div>
+<div class="icon-sidebar-btn">
+  <i data-lucide="map-pin" class="home-icon"></i>
+    <span class="nav-label active-none"> Location</span>
+    <span class="tooltip">Location</span>
+</div>
+
+<div class="icon-sidebar-btn active-none">
+  <i data-lucide="cog" class="home-icon"></i>
+    <span class="nav-label active-none"> Settings</span>
+    
+</div>
+    </section>
+
+    <section class="sidebar-section-2">
+  <div class="icon-sidebar-btn">
+  <i data-lucide="plus-circle" class="home-icon"></i>
+    <span class="tooltip">Create</span>
+</div>
+<div class="icon-sidebar-btn">
+  <i data-lucide="cog" class="home-icon"></i>
+    <span class="tooltip">settings</span>
+</div>
+<div class="icon-sidebar-btn">
+  <i data-lucide="circle-user" class="home-icon"></i>
+    <span class="tooltip">profile</span>
+</div>
+    </section>
+    
+</header>
+<main>
+  <div class="chat-load-list" id="chatLoadList">
+    <div class="start-up" id="mobileTopBar">
+      <p class="app-name">KONNEKT</p>
+      <p class="app-chats-mid" id="midChatsText">Chats</p>
+      <button class="start-chat-btn">
+        <i data-lucide="plus" class="start-chat-icon"></i>
+        <div class="new-chat-text"><p>New Chat</p></div>
+      </button>
+    </div>
+
+    
+    
+    <div class="search-wrap">
+      <input type="text" placeholder=" search @username or start new chat" class="search-chat" id="searchChatInput">
+      <i data-lucide="search" class="search-chat-icon"></i>
+    </div>
+
+ <div class="konnekt-incoming-tile" id="incomingTileList">
+    <img class="konnekt-incoming-ava" id="incomingAvaList" src="https://i.pravatar.cc/300?img=12" />
+    <div class="konnekt-incoming-info">
+      <p class="konnekt-incoming-name" id="incomingNameList">Joshua dayo</p>
+      <p class="konnekt-incoming-sub">Incoming voice call...</p>
+    </div>
+    <div class="konnekt-incoming-actions">
+      <button class="konnekt-call-mini accept" id="acceptCallList"><i data-lucide="phone"></i></button>
+      <button class="konnekt-call-mini decline" id="declineCallList"><i data-lucide="phone"></i></button>
+    </div>
+  </div>
+
+    <div class="chat-tabs">
+      <button class="tab-btn active" data-tab="all">All</button>
+      <button class="tab-btn" data-tab="chats">Chats</button>
+      <button class="tab-btn" data-tab="groups">Groups</button>
+      <button class="tab-btn" data-tab="random">Random</button>
+    </div>
+
+    <p class="chat-list" id="chatListTitle">All Chats</p>
+
+    <div class="chat-items-list" id="chatContainer">
+      <div class="chat-item" data-type="chat" data-user-id="1" data-username="johndoe">
+        <div class="chat-avatar" data-name="John Doe"></div>
+        <div class="chat-info">
+          <div class="chat-top-row"><p class="chat-name">Joshua dayo</p><span class="chat-date">10:42 AM</span></div>
+          <div class="chat-bottom-row"><p class="chat-last-message">Hey, are you free today? Let's link</p><span class="chat-unread">3</span></div>
+        </div>
+      </div>
+      <!-- duplicate chat-items here... -->
+       
+ 
+     <!-- NORMAL CHATS -->
+      <div class="chat-item" data-type="chat" data-user-id="1" data-username="johndoe">
+        <div class="chat-avatar" data-name="John Doe"></div>
+        <div class="chat-info">
+          <div class="chat-top-row">
+            <p class="chat-name">Joshua dayo</p>
+            <span class="chat-date">10:42 AM</span>
+          </div>
+          <div class="chat-bottom-row">
+            <p class="chat-last-message">Hey, are you free today? Let's link</p>
+            <span class="chat-unread">3</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-item unread" data-type="chat" data-user-id="3" data-username="alex">
+        <div class="chat-avatar" data-name="Alex"></div>
+        <div class="chat-info">
+          <div class="chat-top-row">
+            <p class="chat-name">Alex</p>
+            <span class="chat-date">Mon</span>
+          </div>
+          <div class="chat-bottom-row">
+            <p class="chat-last-message">Hdhdhdhdjjdjdjdjdjdjdjdjdjdjdjdjd</p>
+            <span class="chat-unread">3</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- GROUPS -->
+      <div class="chat-item group unread" data-type="group" data-group-id="g1">
+        <div class="chat-avatar group-avatar" data-name="Design Team"></div>
+        <div class="chat-info">
+          <div class="chat-top-row">
+            <p class="chat-name">Design Team</p>
+            <span class="chat-date">9:15 AM</span>
+          </div>
+          <div class="chat-bottom-row">
+            <p class="chat-last-message">Alex: Hdhdhdhdjjdjdjdjdjdjdjdjdjdjdjdjdjdjdjdjd</p>
+            <span class="chat-unread">24</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-item group" data-type="group" data-group-id="g2">
+        <div class="chat-avatar group-avatar" data-name="Dev Squad"></div>
+        <div class="chat-info">
+          <div class="chat-top-row">
+            <p class="chat-name">Dev Squad</p>
+            <span class="chat-date">Yesterday</span>
+          </div>
+          <div class="chat-bottom-row">
+            <p class="chat-last-message">You: I pushed the update to github...</p>
+          </div>
+        </div>
+      </div>
+
+       <div class="chat-item group" data-type="group" data-group-id="g2">
+        <div class="chat-avatar group-avatar" data-name="Dev Squad"></div>
+        <div class="chat-info">
+          <div class="chat-top-row">
+            <p class="chat-name">Dev Squad</p>
+            <span class="chat-date">Yesterday</span>
+          </div>
+          <div class="chat-bottom-row">
+            <p class="chat-last-message">You: I pushed the update to github...</p>
+          </div>
+        </div>
+      </div>
+
+       <div class="chat-item group" data-type="group" data-group-id="g2">
+        <div class="chat-avatar group-avatar" data-name="Dev Squad"></div>
+        <div class="chat-info">
+          <div class="chat-top-row">
+            <p class="chat-name">Dev Squad</p>
+            <span class="chat-date">Yesterday</span>
+          </div>
+          <div class="chat-bottom-row">
+            <p class="chat-last-message">You: I pushed the update to github...</p>
+          </div>
+        </div>
+      </div>
+
+       <div class="chat-item group" data-type="group" data-group-id="g2">
+        <div class="chat-avatar group-avatar" data-name="Dev Squad"></div>
+        <div class="chat-info">
+          <div class="chat-top-row">
+            <p class="chat-name">Dev Squad</p>
+            <span class="chat-date">Yesterday</span>
+          </div>
+          <div class="chat-bottom-row">
+            <p class="chat-last-message">You: I pushed the update to github...</p>
+          </div>
+        </div>
+      </div>
+
+       <div class="chat-item group" data-type="group" data-group-id="g2">
+        <div class="chat-avatar group-avatar" data-name="Dev Squad"></div>
+        <div class="chat-info">
+          <div class="chat-top-row">
+            <p class="chat-name">Dev Squad</p>
+            <span class="chat-date">Yesterday</span>
+          </div>
+          <div class="chat-bottom-row">
+            <p class="chat-last-message">You: I pushed the update to github...</p>
+          </div>
+        </div>
+      </div>
+
+       <div class="chat-item group" data-type="group" data-group-id="g2">
+        <div class="chat-avatar group-avatar" data-name="Dev Squad"></div>
+        <div class="chat-info">
+          <div class="chat-top-row">
+            <p class="chat-name">Dev Squad</p>
+            <span class="chat-date">Yesterday</span>
+          </div>
+          <div class="chat-bottom-row">
+            <p class="chat-last-message">You: I pushed the update to github...</p>
+          </div>
+        </div>
+      </div>
+
+       <div class="chat-item group" data-type="group" data-group-id="g2">
+        <div class="chat-avatar group-avatar" data-name="Dev Squad"></div>
+        <div class="chat-info">
+          <div class="chat-top-row">
+            <p class="chat-name">Dev Squad</p>
+            <span class="chat-date">Yesterday</span>
+          </div>
+          <div class="chat-bottom-row">
+            <p class="chat-last-message">You: I pushed the update to github...</p>
+          </div>
+        </div>
+      </div>
+
+        <div class="chat-item group" data-type="group" data-group-id="g2">
+        <div class="chat-avatar group-avatar" data-name="Dev Squad"></div>
+        <div class="chat-info">
+          <div class="chat-top-row">
+            <p class="chat-name">Dev Squad</p>
+            <span class="chat-date">Yesterday</span>
+          </div>
+          <div class="chat-bottom-row">
+            <p class="chat-last-message">You: I pushed the update to github...</p>
+          </div>
+        </div>
+      </div>
+
+        <div class="chat-item group" data-type="group" data-group-id="g2">
+        <div class="chat-avatar group-avatar" data-name="Dev Squad"></div>
+        <div class="chat-info">
+          <div class="chat-top-row">
+            <p class="chat-name">Dev Squad</p>
+            <span class="chat-date">Yesterday</span>
+          </div>
+          <div class="chat-bottom-row">
+            <p class="chat-last-message">You: I pushed the update to github...</p>
+          </div>
+        </div>
+      </div>
+      <!-- ANONYMOUS - goes to All and Chats too if you want -->
+      <div class="chat-item anon" data-type="chat" data-anonymous="true" data-user-id="anon_1">
+        <div class="chat-avatar anon-avatar" data-anonymous="true">
+          <i data-lucide="ghost" class="anon-ghost-icon"></i>
+        </div>
+        <div class="chat-info">
+          <div class="chat-top-row">
+            <p class="chat-name">Anonymous</p>
+            <span class="chat-date">11:20 PM</span>
+          </div>
+          <div class="chat-bottom-row">
+            <p class="chat-last-message">Anonymous conversation started</p>
+            <span class="chat-unread">1</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+
+    
+
+    
+    <div class="random-tab-content" id="randomTab" style="display:none;">
+      <div class="random-empty-state" id="randomIdle">
+        <div class="random-ghost-circle"><i data-lucide="ghost" class="random-ghost-big"></i></div>
+        <h3>Talk to Strangers</h3>
+        <p>Meet random people anonymously. No ID needed. Just chat.</p>
+        <button class="random-start-btn" id="startRandomBtn"><i data-lucide="shuffle"></i> Start Random Chat</button>
+        <p class="random-online"><span class="dot"></span> 342 online now</p>
+      </div>
+      <div class="random-searching-state" id="randomSearching" style="display:none;">
+        <div class="searching-animation"><div class="pulse"></div><i data-lucide="ghost" class="random-ghost-big"></i></div>
+        <h3>Finding a stranger...</h3>
+        <p>We are pairing you with someone random</p>
+        <button class="random-cancel-btn" id="cancelRandomBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAT BACKGROUND WITH MOOD PILL -->
+<div class="chat-background" id="chatBackground">
+  <!-- ================= HEADER SECTION ================= -->
+  <!-- Contains profile, mood pill, and call/select controls -->
+   <!-- INCOMING CALL TILE - FOR CHAT BACKGROUND (top) -->
+
+  
+  <!-- ✅ INCOMING FOR CHAT - VERY TOP -->
+
+
+
+  <!-- OUTGOING + CONNECTED OVERLAY - OLED BLACK, NO BORDER -->
+ 
+
+  <div class="profile-headerchatBackground">
+    <div class="profile-extraBorder">
+      <div class="arrow-icon" onclick="closeChat()"><i data-lucide="chevron-left" class="arrow-left-chatBackground"></i></div>
+      <div class="profile-with-mood">
+        <div class="profile-border"><p class="profile-text">JD</p></div>
+        
+        <!-- MOOD PILL - FIXED HEIGHT 28px - 3 STATES AUTO-CYCLE FOR MVP -->
+        <!-- State 1: Playing now + wave | State 2: Was feeling + time | State 3: moon icon + typed text -->
+        <!-- Later backend will replace timer with real Spotify event -->
+        <!-- Tap only, NOT swipeable -->
+        <div class="mood-float" id="moodFloat">
+          <!-- Fixed height wrapper so chat no go shift -->
+          <div class="mood-pill-wrapper" id="moodPillWrapper">
+            <!-- State 1: Playing now - tap shows artist card -->
+            <div class="mood-pill-mini active" data-state="playing" data-has-card="true">
+              <span>Playing now</span>
+              <div class="mood-wave"><span></span><span></span><span></span><span></span></div>
+            </div>
+            <!-- State 2: Recently - tap shows played time card -->
+            <div class="mood-pill-mini" data-state="recent" data-has-card="true">
+              <span>Was feeling Chilling • 2m ago</span>
+            </div>
+            <!-- State 3: Typed mood - moon icon - tap does NOTHING -->
+            <div class="mood-pill-mini" data-state="typed" data-has-card="false">
+              <i data-lucide="moon" class="mood-icon"></i>
+              <span>Late night vibe</span>
+            </div>
+          </div>
+          <!-- Mood card popup for State 1 and 2 only -->
+          <div class="mood-card" id="moodCard">
+            <p class="mood-card-title" id="moodCardTitle">Asiwaju</p>
+            <p class="mood-card-artist" id="moodCardArtist">Ruger</p>
+            <div class="mood-wave big"><span></span><span></span><span></span><span></span></div>
+          </div>
+        </div>
+      </div>
+      <p class="chat-name">Joshua dayo</p>
+    </div>
+
+    <!-- Header right controls - calls and select mode -->
+    <div class="calls" id="callsIcons">
+<button class="phone-call-btn" id="startOutgoingCallBtn" style="background:none;border:none;cursor:pointer;">
+  <i data-lucide="phone" class="phone-call"></i>
+</button>
+      <i data-lucide="video" class="video-call"></i>
+      <!-- SELECT MODE PILL - X icon + count together in one pill, responsive -->
+      <!-- Delete icon removed as requested -->
+      <div class="selected-pill" id="selectedPill">
+        <button class="header-cancel-btn" id="headerCancelBtn"><i data-lucide="x"></i></button>
+        <span class="selected-count" id="selectedCount">0</span>
+      </div>
+    </div>
+  </div>
+ 
+   <div class="konnekt-incoming-tile inside-chat" id="incomingTileChat">
+    <img class="konnekt-incoming-ava" id="incomingAvaChat" src="https://i.pravatar.cc/300?img=12" />
+    <div class="konnekt-incoming-info">
+      <p class="konnekt-incoming-name" id="incomingNameChat">Joshua dayo</p>
+      <p class="konnekt-incoming-sub">Incoming voice call...</p>
+    </div>
+    <div class="konnekt-incoming-actions">
+      <button class="konnekt-call-mini accept" id="acceptCallChat"><i data-lucide="phone"></i></button>
+      <button class="konnekt-call-mini decline" id="declineCallChat"><i data-lucide="phone"></i></button>
+    </div>
+  </div>
+
+<!-- iPhone 18 Notification - VISIBLE PREVIEW -->
+<div class="ios-notify" id="iosNotifyPreview">
+  <div class="ios-notify-avatar">JD</div>
+  <div class="ios-notify-content">
+    <span class="ios-notify-name">Joshua dayo</span>
+    <span class="ios-notify-msg">Bro how far, you don see my code? </span>
+  </div>
+  <span class="ios-notify-time">now</span>
+</div>
+  <div id="floatingDate" class="floating-date">Today</div>
+
+  <!-- ================= CHAT MESSAGES AREA ================= -->
+  <div class="chat-messages" id="chatMessages">
+    <div class="encryption-notice"><i data-lucide="lock" class="enc-lock"></i><p>Messages and calls are end-to-end encrypted. No one outside of this chat, not even Konnekt, can read or listen to them. Tap to learn more.</p></div>
+    <div class="date-sep" data-date="Today"><span>Today</span></div>
+<div class="unread-sep"><span>3 unread messages</span></div>
+    <!-- Message rows with swipe-reply icon and select circle -->
+    <div class="msg-row receiver" data-message-id="msg1"><div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble receiver-bubble"><p>Bro how far, you don see my code?</p><span class="msg-meta right-meta"><span class="msg-time">9:41 AM</span></span><span class="msg-reaction-badge" id="reaction-msg1"></span></div></div>
+    <div class="msg-row sender" data-message-id="msg2"><div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble sender-bubble sending"><p>Yes I don see am</p><span class="msg-meta right-meta"><span class="msg-time">9:42 AM</span><i data-lucide="clock-3" class="tick-icon clock"></i></span></div></div>
+
+    <!-- Call logs - no actions -->
+    <div class="msg-row no-actions call-row" data-message-id="call1">
+      <div class="bubble call-bubble missed">
+        <i data-lucide="phone-missed" class="call-icon missed"></i>
+        <div class="call-info"><span>Missed voice call</span><span class="call-time">Tap to call back</span></div>
+      </div>
+    </div>
+    <div class="msg-row no-actions call-row" data-message-id="call2">
+      <div class="bubble call-bubble ended">
+        <i data-lucide="video" class="call-icon"></i>
+        <div class="call-info"><span>Video call - 2:30</span><span class="call-time">Today, 9:42 AM</span></div>
+      </div>
+    </div>
+    <div class="msg-row no-actions call-row" data-message-id="call3">
+      <div class="bubble call-bubble answered">
+        <i data-lucide="phone" class="call-icon answered"></i>
+        <div class="call-info"><span>Voice call answered - 1:15</span><span class="call-time">Today, 9:43 AM</span></div>
+      </div>
+    </div>
+
+    <div class="msg-row sender" data-message-id="msg4"><div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble sender-bubble"><p>Check your chat now</p><span class="msg-meta right-meta"><span class="msg-time">9:43 AM</span><i data-lucide="check" class="tick-icon single"></i></span></div></div>
+
+    <!-- Image bubble -->
+    <div class="msg-row sender" data-message-id="msg6">
+      <div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div>
+      <div class="bubble image-bubble with-caption"><div class="img-wrap"><img src="knnockt.jfif"><span class="msg-meta over-image right-meta"><span class="msg-time">9:45 AM</span><i data-lucide="check-check" class="tick-icon blue"></i></span></div><div class="img-caption-wrap"><p class="img-caption-text">This is caption under image</p></div></div>
+    </div>
+    <!-- Video bubble -->
+    <div class="msg-row sender" data-message-id="msg6-video">
+      <div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div>
+      <div class="bubble video-bubble with-caption"><div class="video-wrap"><video src="" poster="knnockt.jfif"></video><button class="video-play-center"><i data-lucide="play"></i></button><span class="video-duration">00:12</span><span class="msg-meta over-image right-meta"><span class="msg-time">9:45 AM</span><i data-lucide="check-check" class="tick-icon blue"></i></span></div><div class="img-caption-wrap"><p class="img-caption-text">Video caption example</p></div></div>
+    </div>
+    <!-- Sticker bubble -->
+    <div class="msg-row sender" data-message-id="msg7"><div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble sticker-bubble"><img src="knnockt.jfif" alt="sticker"><span class="msg-meta sticker-meta right-meta"><span class="msg-time">9:46 AM</span><i data-lucide="check-check" class="tick-icon blue"></i></span></div></div>
+
+    <!-- Typing indicators -->
+    <div class="msg-row receiver typing-row no-actions show always-show" id="typingIndicator"><div class="bubble typing-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div></div>
+    <div class="msg-row receiver typing-row no-actions group-typing-row" id="groupTypingIndicator" style="display:none">
+      <div class="group-typing-avatars"><div class="gt-avatar">JD</div><div class="gt-avatar">AK</div></div>
+      <div class="bubble typing-bubble group"><div class="typing-dots"><span></span><span></span><span></span></div></div>
+    </div>
+  </div>
+
+  <div class="message-focus-overlay" id="messageFocusOverlay"></div>
+
+  <!-- ================= HOLD MESSAGE PILL POPUP ================= -->
+  <!-- Long press shows this - Reply button must trigger SAME function as swipe-to-reply -->
+  <div class="popped-message-container always-middle" id="poppedMessageContainer">
+    <div class="emoji-react-bar" id="emojiReactBar"><button data-emoji="❤️">❤️</button><button data-emoji="😂">😂</button><button data-emoji="😮">😮</button><button data-emoji="😢">😢</button><button data-emoji="🙏">🙏</button><button class="emoji-plus-btn" id="emojiPlusBtn"><i data-lucide="plus"></i></button></div>
+    <div class="popped-clone" id="poppedClone"></div>
+    <div class="message-action-pill" id="messageActionPill">
+      <button data-action="reply"><i data-lucide="reply"></i><span>Reply</span></button>
+      <button data-action="react"><i data-lucide="smile-plus"></i><span>React</span></button>
+      <button data-action="select"><i data-lucide="check-square"></i><span>Select messages</span></button>
+      <button data-action="favorite" id="favActionBtn"><i data-lucide="star" id="favIcon"></i><span id="favText">Add to favorites</span></button>
+      <button data-action="delete"><i data-lucide="trash-2"></i><span>Delete</span></button>
+    </div>
+  </div>
+
+  <button class="scroll-down-btn" id="scrollDownBtn"><i data-lucide="chevron-down"></i><span class="scroll-new-count" id="scrollNewCount">0</span></button>
+  
+  <!-- Reply preview shown when swipe or hold->reply -->
+  <div class="reply-preview" id="replyPreview"><div class="reply-preview-line"></div><img id="replyPreviewThumb" class="reply-thumb" style="display:none"><div class="reply-preview-content"><span class="reply-preview-name" id="replyPreviewName">You</span><span class="reply-preview-text" id="replyPreviewText"></span></div><button class="reply-preview-close" id="replyPreviewClose"><i data-lucide="x"></i></button></div>
+  
+  <!-- Plus pill menu - DO NOT TOUCH - working as per request -->
+  <div class="plus-pill-menu" id="plusPillMenu"><button class="pill-btn" data-action="send-file"><i data-lucide="file-image"></i><span>Send file</span></button><button class="pill-btn" data-action="create-sticker"><i data-lucide="sticker"></i><span>Create sticker</span></button><button class="pill-btn" data-action="camera"><i data-lucide="camera"></i><span>Camera</span></button></div>
+
+  <!-- ================= STICKER PANEL ================= -->
+  <!-- Video stickers must autoplay muted loop inside panel -->
+  <div class="sticker-border-panel" id="stickerBorderPanel"><div class="sticker-panel-header"><div class="panel-drag"></div><span class="sticker-panel-title">Stickers</span><button class="sticker-panel-close" id="stickerPanelClose"><i data-lucide="x"></i></button></div><div class="sticker-grid" id="stickerGrid"><button class="sticker-add-box" id="stickerAddBox"><div class="dashed-plus"><i data-lucide="plus"></i></div><span>Add sticker</span></button></div></div>
+
+  <!-- ================= INPUT BAR - GROWS WITH TEXT LIKE WHATSAPP ================= -->
+  <!-- Whole bar with plus/send/mic must increase height when textarea grows -->
+  <div class="chat-input-bar" id="chatInputBar">
+    <button class="input-plus-btn" id="inputPlusBtn"><i data-lucide="plus"></i></button>
+    <div class="input-pill" id="inputPill">
+      <button class="emoji-sticker-btn" id="emojiStickerBtn"><i data-lucide="smile"></i></button>
+      <textarea id="msgInput" placeholder="Message" rows="1"></textarea>
+    </div>
+    <button class="mic-send-btn" id="micSendBtn"><i data-lucide="mic" class="icon-mic"></i><i data-lucide="arrow-up" class="icon-send"></i></button>
+  </div>
+
+  <div class="delete-action-bar" id="deleteActionBar"><button class="delete-opt" data-delete="me"><i data-lucide="trash"></i><span>Delete for me</span></button><button class="delete-opt" data-delete="everyone"><i data-lucide="trash-2"></i><span>Delete for everyone</span></button></div>
+
+  <!-- ================= ADD STICKER MODE - SELECT FROM CHAT ================= -->
+  <!-- X icon beside Add sticker button to cancel -->
+  <div class="chat-sticker-select-mode" id="chatStickerSelectMode">
+    <div class="sticker-select-header"><h4>Select from chat</h4><button id="stickerSelectClose"><i data-lucide="x"></i></button></div>
+    <div class="sticker-select-center-wrap">
+      <div class="sticker-select-grid" id="stickerSelectGrid"></div>
+      <!-- Wrap with X cancel button beside border -->
+      <div class="add-sticker-action-row">
+        <button class="add-sticker-confirm-btn" id="addStickerConfirmBtn">Add sticker</button>
+        <button class="add-sticker-cancel-x" id="addStickerCancelX"><i data-lucide="x"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Image preview -->
+   <div class="image-preview-overlay" id="imagePreviewOverlay">
+    <div class="preview-blur-bg"></div>
+    <div class="preview-header">
+      <button class="preview-close" id="previewClose" title="Back"><i data-lucide="arrow-left"></i></button>
+      <span class="preview-title">Preview</span>
+    </div>
+    <div class="preview-content">
+      <img id="previewImage" style="display:none">
+      <video id="previewVideo" controls style="display:none"></video>
+      <div class="preview-caption-bar">
+        <button class="preview-cancel-beside-input" id="previewCancelText" title="Cancel"><i data-lucide="x"></i></button>
+        <input type="text" id="captionInput" placeholder="Add a caption...">
+        <button class="preview-send-btn" id="previewSendBtn"><i data-lucide="send"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= VIDEO FULL OVERLAY WITH X ICON TO CLOSE ================= -->
+  <div class="video-full-overlay" id="videoFullOverlay">
+    <div class="preview-blur-bg"></div>
+    <div class="preview-header">
+      <button class="preview-close" id="videoFullClose"><i data-lucide="x"></i></button>
+    </div>
+    <div class="preview-content">
+      <video id="videoFullPlayer" controls autoplay></video>
+      <p class="video-full-caption" id="videoFullCaption"></p>
+    </div>
+  </div>
+
+  <!-- ================= CREATE STICKER PAGE ================= -->
+  <!-- Text, Zoom, Crop must reflect on final sticker -->
+  <!-- Crop = WhatsApp iPhone 17 style direct pinch/drag on image -->
+  <!-- Video must trim to 3s max -->
+  <div class="create-sticker-page" id="createStickerPage">
+    <!-- FFMPEG 2MB LOADER + CUTTING LOADER -->
+<div id="ffmpegLoader">
+  <div class="ffmpeg-dot"></div>
+  <span>Preparing editor...</span>
+</div>
+
+<div id="cuttingLoader">
+  <div class="cut-box">
+    <div class="cut-spinner"></div>
+    <span class="cut-text">Cutting video to 3s...</span>
+    <div class="cut-bar"><div class="cut-progress"></div></div>
+  </div>
+</div>
+    <div class="create-sticker-header">
+      <button id="createStickerBack" class="icon-btn"><i data-lucide="arrow-left"></i></button>
+      <h3>Create sticker</h3>
+      <button id="createStickerClose" class="icon-btn close-x" title="Cancel"><i data-lucide="x"></i></button>
+    </div>
+    <div class="create-sticker-body">
+      <div class="create-canvas-wrap">
+        <!-- iPhone style crop/zoom container -->
+        <div class="create-canvas iphone-crop-container" id="createCanvas">
+          <img id="createStickerImage" style="display:none">
+          <video id="createStickerVideo" loop muted playsinline style="display:none"></video>
+          <canvas id="stickerCanvas" style="display:none"></canvas>
+          <div class="create-placeholder" id="createPlaceholder"><i data-lucide="image"></i><span>Select image or video</span><input type="file" id="stickerFileInput" accept="image/*,video/*" hidden></div>
+          <!-- Text overlay that reflects on final export -->
+          <div class="text-overlay-wrapper" id="textOverlayWrapper" style="display:none"><div class="text-overlay" id="textOverlay" contenteditable="true" data-placeholder="Add text..."></div><span class="resize-handle"></span></div>
+        </div>
+        <!-- Trim bar - max 3s for sticker -->
+        <div class="video-trim-bar" id="videoTrimBar" style="display:none">
+          <div class="trim-track"><div class="trim-progress" id="trimProgress"></div></div>
+          <div class="trim-inputs"><input type="range" id="trimStart" min="0" max="10" value="0" step="0.1"><input type="range" id="trimEnd" min="0" max="10" value="3" step="0.1"></div>
+          <span id="trimLabel">0.0s - 3.0s (max 3s)</span>
+        </div>
+        <!-- Toolbar - Aa Bold Zoom Crop -->
+        <div class="create-toolbar">
+          <button id="addTextBtn"><i data-lucide="type"></i><span>Aa</span></button>
+          <button id="boldTextBtn"><i data-lucide="bold"></i><span>Bold</span></button>
+          <button id="zoomTextBtn"><i data-lucide="zoom-in"></i><span>Zoom</span></button>
+          <button id="cropBtn"><i data-lucide="crop"></i><span>Crop</span></button>
+        </div>
+        <div class="create-actions"><button class="create-add-btn secondary" id="createCancelBtn"><i data-lucide="x"></i> Cancel</button><button class="create-add-btn primary" id="createAddBtn">Add to pack</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="voice-recording-overlay" id="voiceRecordingOverlay"><div class="voice-rec-content"><button class="voice-cancel" id="voiceCancelBtn"><i data-lucide="x"></i></button><div class="voice-wave-big" id="voiceWaveBig"><span></span><span></span><span></span></div><span class="voice-timer" id="voiceTimer">0:00</span><div class="voice-controls"><button class="voice-stop" id="voiceStopBtn"><i data-lucide="trash-2"></i></button><button class="voice-send" id="voiceSendBtn"><i data-lucide="arrow-up"></i></button></div></div></div>
+  <div class="toast" id="toast"><i data-lucide="star"></i><span>Added to favorites</span></div>
+  <input type="file" id="galleryInput" accept="image/*,video/*" hidden><input type="file" id="cameraInput" accept="image/*,video/*" capture="environment" hidden>
+</div>
+
+ <!-- end chat-background -->
+
+<!-- ===== CALL UI - GLOBAL, OUTSIDE CHAT BACKGROUNDS ===== -->
+<!-- INCOMING FOR LIST already dey inside chatLoadList - keep am there -->
+
+  <!-- ===== CALL UI - GLOBAL ===== -->
+  <div class="konnekt-call-overlay" id="callOverlay">
+    <div class="konnekt-call-top">
+      <div style="width:68px"></div>
+      <div class="konnekt-call-center">
+        <p class="konnekt-call-name" id="callName">Joshua dayo</p>
+        <p class="konnekt-call-status" id="callStatus">00:00</p>
+      </div>
+      <div class="konnekt-call-top-right">
+        <button class="konnekt-top-icon" id="callGoChat"><i data-lucide="message-circle"></i></button>
+        <button class="konnekt-top-icon" id="callGoList"><i data-lucide="arrow-left-right"></i></button>
+      </div>
+    </div>
+    <div class="konnekt-call-middle">
+      <img class="konnekt-call-big-ava" id="callBigAva" src="https://i.pravatar.cc/300?img=12" />
+      <div class="konnekt-glass-tile">
+        <button class="konnekt-glass-btn" id="callVideoBtn"><i data-lucide="video"></i></button>
+        <button class="konnekt-glass-btn" id="callMuteBtn"><i data-lucide="mic"></i></button>
+        <button class="konnekt-glass-btn" id="callSpeakerBtn"><i data-lucide="volume-2"></i></button>
+      </div>
+    </div>
+    <div class="konnekt-call-bottom">
+      <button class="konnekt-end-btn" id="callEndBtn"><i data-lucide="phone"></i></button>
+      <span class="konnekt-end-label">end</span>
+    </div>
+  </div>
+
+  <div class="konnekt-dynamic-pill hidden" id="dynamicPill">
+    <div class="konnekt-dot"></div>
+    <img class="konnekt-pill-ava" id="pillAva" src="https://i.pravatar.cc/300?img=12" />
+    <span class="konnekt-pill-name" id="pillName">Joshua dayo</span>
+    <span class="konnekt-pill-time" id="pillTime">00:00</span>
+  </div>
+
+  <div class="konnekt-expanded-pill hidden" id="expandedPill">
+    <div class="konnekt-expanded-left" id="expandBackToCall">
+      <img class="konnekt-expanded-ava" id="expandedAva" src="https://i.pravatar.cc/300?img=12" />
+      <div><b id="expandedName">Joshua dayo</b><span id="expandedTime">00:00 • tap</span></div>
+    </div>
+    <div class="konnekt-expanded-actions">
+      <button class="konnekt-exp-btn mute" id="pillMuteBtn"><i data-lucide="mic-off"></i></button>
+      <button class="konnekt-exp-btn speaker" id="pillSpeakerBtn"><i data-lucide="volume-2"></i></button>
+      <button class="konnekt-exp-btn end" id="pillEndBtn"><i data-lucide="phone"></i></button>
+    </div>
+  </div>
+
+  <audio id="ringtoneAudio" loop preload="auto">
+    <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_5a4fb2a7d0.mp3" type="audio/mpeg">
+  </audio>
+
+
+
+</main>
+
+
+
+
+
+
+
+
+
+
+</body>
+
+
+<!------ lucide icon link ------->
+<script src="https://unpkg.com/lucide@latest">
+    
+</script>
+<script src="main.js"></script>
+<script src="sidebar.js"></script>
+<script src="header.js"></script>
+<script src="swipetoreply.js"></script>
+<script src="reaction.js"></script>
+<script src="call.js"></script>
+</html>
+
+
+
