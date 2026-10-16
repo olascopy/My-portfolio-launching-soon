@@ -32,6 +32,7 @@
 <link rel="stylesheet" href="extra.css">
 <link rel="stylesheet" href="call.css">
 <link rel="stylesheet" href="video.css">
+<link rel="stylesheet" href="new-chat.css">
     <title>KONNEKT</title>
 </head>
 <body>
@@ -138,7 +139,324 @@
         </div>
       </div>
       <!-- duplicate chat-items here... -->
-       
+  <!-- ================================================================ -->
+<!-- NK NEW CHAT SYSTEM - HTML V3 - FULL SCREEN COVER + POPUP NOT ALERT -->
+<!-- All overlays cover EVERYTHING - calling, nav, chat-load-list, incoming -->
+<!-- Validation na popup not alert -->
+<!-- All lucide only, OLED solid black -->
+<!-- ================================================================ -->
+
+<!-- ================= CUSTOM POPUP - FOR VALIDATION - NOT ALERT ================= -->
+<!-- This is for "Enter 6 digit ID" etc - iPhone style popup center -->
+<div class="nk-popup-overlay hidden" id="nkPopupOverlay">
+  <div class="nk-popup-box">
+    <div class="nk-popup-icon-wrap">
+      <i data-lucide="info" class="nk-popup-icon"></i>
+    </div>
+    <p class="nk-popup-title" id="nkPopupTitle">Enter 6 digit ID</p>
+    <p class="nk-popup-desc" id="nkPopupDesc">ID must be 6 numbers only</p>
+    <button class="nk-popup-btn" id="nkPopupBtn">OK</button>
+  </div>
+</div>
+
+<!-- ================= STEP 1: PLUS SCREEN - FIRST OVERLAY ================= -->
+<!-- Opens when user clicks plus icon (start-chat-btn) -->
+<!-- Covers EVERYTHING - fixed full screen with z-index 99999 -->
+<!-- UP: New ID + New Group borders -->
+<!-- DOWN: List of people you have chatted with -->
+<div class="nk-newchat-overlay" id="nkNewChatOverlay">
+  <div class="nk-newchat-sheet">
+    
+    <!-- Header for plus screen - covers full screen, X close with wiggle -->
+    <div class="nk-newchat-header">
+      <!-- Back for desktop -->
+      <button class="nk-back-btn nk-desktop-only" id="nkNewChatBackDesktop" aria-label="Back">
+        <i data-lucide="chevron-left"></i>
+      </button>
+      <p class="nk-newchat-title">New Chat</p>
+      <!-- X close - wiggle pop iPhone 17 -->
+      <button class="nk-close-btn" id="nkNewChatClose" aria-label="Close">
+        <i data-lucide="x" class="nk-x-icon"></i>
+      </button>
+    </div>
+
+    <!-- UP SECTION: New ID and New Group for up -->
+    <!-- Round border with icon + plus -->
+    <div class="nk-up-section">
+      <!-- New ID: one person icon + plus -->
+      <button class="nk-newchat-row nk-round-border" id="nkNewIdRow">
+        <div class="nk-row-icon nk-round-icon">
+          <div class="nk-icon-stack">
+            <i data-lucide="user" class="nk-main-icon"></i>
+            <i data-lucide="plus" class="nk-plus-small"></i>
+          </div>
+        </div>
+        <div class="nk-row-info">
+          <p class="nk-row-title">New ID</p>
+          <p class="nk-row-sub">Start chat with 6 digit ID</p>
+        </div>
+        <i data-lucide="chevron-right" class="nk-chevron"></i>
+      </button>
+
+      <!-- New Group: two person icon + plus -->
+      <button class="nk-newchat-row nk-round-border" id="nkNewGroupRow">
+        <div class="nk-row-icon nk-round-icon">
+          <div class="nk-icon-stack">
+            <i data-lucide="users" class="nk-main-icon"></i>
+            <i data-lucide="plus" class="nk-plus-small"></i>
+          </div>
+        </div>
+        <div class="nk-row-info">
+          <p class="nk-row-title">New Group</p>
+          <p class="nk-row-sub">Create group and add members</p>
+        </div>
+        <i data-lucide="chevron-right" class="nk-chevron"></i>
+      </button>
+    </div>
+
+    <!-- Straight line divider between UP and DOWN -->
+    <div class="nk-straight-line"></div>
+
+    <!-- DOWN SECTION: List of people you have chatted with -->
+    <div class="nk-down-section">
+      <p class="nk-section-label">People you have chatted with</p>
+      <!-- JS fills this - from real chats + fake chats -->
+      <div class="nk-results" id="nkChattedPeopleList"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= STEP 2: NEW ID SCREEN - SECOND OVERLAY ================= -->
+<!-- Covers EVERYTHING - fixed full screen -->
+<!-- First name, Last name, ID with big gaps, straight line under -->
+<!-- Mark icon top right triggers Konnekting with 10 tiny leaves rotating circle -->
+<div class="nk-newchat-overlay nk-second" id="nkNewIdOverlay">
+  <div class="nk-newchat-sheet">
+    
+    <div class="nk-newchat-header">
+      <button class="nk-back-btn" id="nkNewIdBack" aria-label="Close">
+        <i data-lucide="x"></i>
+      </button>
+      <p class="nk-newchat-title">New ID</p>
+      <!-- Mark icon to confirm -->
+      <button class="nk-mark-btn" id="nkNewIdMark" aria-label="Confirm">
+        <i data-lucide="check"></i>
+      </button>
+    </div>
+
+    <!-- Form with big gaps -->
+    <div class="nk-form-wrap">
+      
+      <!-- First name - line under only -->
+      <div class="nk-input-group">
+        <label class="nk-input-label">First name</label>
+        <div class="nk-input-line-box">
+          <input type="text" id="nkFirstName" placeholder="Enter first name" autocomplete="off" />
+        </div>
+      </div>
+
+      <!-- Last name - big gap, line under -->
+      <div class="nk-input-group">
+        <label class="nk-input-label">Last name</label>
+        <div class="nk-input-line-box">
+          <input type="text" id="nkLastName" placeholder="Enter last name" autocomplete="off" />
+        </div>
+      </div>
+
+      <!-- ID - 6 digits, line under -->
+      <div class="nk-input-group">
+        <label class="nk-input-label">ID</label>
+        <div class="nk-input-line-box nk-id-box">
+          <span class="nk-id-prefix">ID :</span>
+          <input type="text" id="nkIdInput" inputmode="numeric" maxlength="6" placeholder="Enter 6 digit ID" autocomplete="off" />
+        </div>
+      </div>
+
+      <!-- Konnekting with 10 small small leaves rotating circle close to each other -->
+      <div class="nk-konnekting-wrap hidden" id="nkKonnektingWrap">
+        <div class="nk-leaves-circle">
+          <!-- 10 tiny leaves close to each other in circle form -->
+          <i data-lucide="leaf" class="nk-leaf-tiny"></i>
+          <i data-lucide="leaf" class="nk-leaf-tiny"></i>
+          <i data-lucide="leaf" class="nk-leaf-tiny"></i>
+          <i data-lucide="leaf" class="nk-leaf-tiny"></i>
+          <i data-lucide="leaf" class="nk-leaf-tiny"></i>
+          <i data-lucide="leaf" class="nk-leaf-tiny"></i>
+          <i data-lucide="leaf" class="nk-leaf-tiny"></i>
+          <i data-lucide="leaf" class="nk-leaf-tiny"></i>
+          <i data-lucide="leaf" class="nk-leaf-tiny"></i>
+          <i data-lucide="leaf" class="nk-leaf-tiny"></i>
+        </div>
+        <p class="nk-konnekting-text">Konnekting...</p>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= STEP 3A: NEW GROUP - SEARCH PEOPLE ================= -->
+<!-- Covers EVERYTHING -->
+<!-- Top search placeholder "Search name, username or ID" line under only -->
+<!-- Down list of chatted people, Downmost Next border button (not mark icon) -->
+<div class="nk-newchat-overlay nk-second" id="nkNewGroupOverlay">
+  <div class="nk-newchat-sheet">
+    
+    <div class="nk-newchat-header">
+      <button class="nk-back-btn" id="nkNewGroupBack" aria-label="Close">
+        <i data-lucide="x"></i>
+      </button>
+      <p class="nk-newchat-title">New Group</p>
+    </div>
+
+    <!-- Search bar line under only -->
+    <div class="nk-search-wrap">
+      <div class="nk-search-box nk-line-only">
+        <i data-lucide="search" class="nk-search-icon"></i>
+        <input type="text" id="nkGroupSearchInput" placeholder="Search name, username or ID" autocomplete="off" />
+      </div>
+    </div>
+
+    <!-- List of people to select -->
+    <div class="nk-newchat-list" id="nkGroupChattedList">
+      <p class="nk-section-label">Select members</p>
+      <div class="nk-results" id="nkGroupPeopleResults"></div>
+    </div>
+
+    <!-- Next border for down - WhatsApp iPhone style big rounded -->
+    <div class="nk-bottom-next-wrap">
+      <button class="nk-next-border" id="nkGroupNextBtn">
+        <span>Next</span>
+        <i data-lucide="arrow-right"></i>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= STEP 3B: NEW GROUP - GROUP IMAGE + NAME ================= -->
+<!-- Covers EVERYTHING -->
+<!-- Big circle for group image + group name input line under + permission border -->
+<div class="nk-newchat-overlay nk-third" id="nkGroupCreateOverlay">
+  <div class="nk-newchat-sheet">
+    
+    <div class="nk-newchat-header">
+      <button class="nk-back-btn" id="nkGroupCreateBack" aria-label="Back">
+        <i data-lucide="chevron-left"></i>
+      </button>
+      <p class="nk-newchat-title">New Group</p>
+      <button class="nk-mark-btn" id="nkGroupCreateMark" aria-label="Create">
+        <i data-lucide="check"></i>
+      </button>
+    </div>
+
+    <!-- Big circle to put group image -->
+    <div class="nk-group-image-wrap">
+      <button class="nk-big-circle" id="nkGroupImageBtn">
+        <i data-lucide="camera" class="nk-camera-icon"></i>
+        <span class="nk-add-photo-text">Add group photo</span>
+        <img id="nkGroupImagePreview" style="display:none" alt="Group preview" />
+      </button>
+      <input type="file" id="nkGroupImageInput" accept="image/*" hidden />
+    </div>
+
+    <!-- Group name line under -->
+    <div class="nk-search-wrap">
+      <div class="nk-search-box nk-line-only">
+        <input type="text" id="nkGroupNameInput" placeholder="Group name" autocomplete="off" />
+      </div>
+    </div>
+
+    <!-- Permission border click to open permissions -->
+    <div class="nk-newchat-list">
+      <button class="nk-newchat-row nk-round-border" id="nkGroupPermissionRow">
+        <div class="nk-row-icon nk-round-icon dark">
+          <i data-lucide="settings" class="nk-main-icon"></i>
+        </div>
+        <div class="nk-row-info">
+          <p class="nk-row-title">Group permissions</p>
+          <p class="nk-row-sub">Edit settings, send messages, add members</p>
+        </div>
+        <i data-lucide="chevron-right" class="nk-chevron"></i>
+      </button>
+    </div>
+
+    <!-- Final create button down -->
+    <div class="nk-bottom-next-wrap">
+      <button class="nk-next-border" id="nkGroupFinalCreateBtn">
+        <span>Create Group</span>
+        <i data-lucide="check"></i>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= STEP 3C: GROUP PERMISSIONS ================= -->
+<!-- Covers EVERYTHING -->
+<!-- Toggles with explanation text under each -->
+<div class="nk-newchat-overlay nk-fourth" id="nkGroupPermissionOverlay">
+  <div class="nk-newchat-sheet">
+    
+    <div class="nk-newchat-header">
+      <button class="nk-back-btn" id="nkPermissionBack" aria-label="Back">
+        <i data-lucide="chevron-left"></i>
+      </button>
+      <p class="nk-newchat-title">Group permissions</p>
+    </div>
+
+    <div class="nk-permission-list">
+
+      <div class="nk-permission-row">
+        <div class="nk-permission-info">
+          <p class="nk-permission-title">Members can edit settings</p>
+          <p class="nk-permission-desc">Allow members to change group name, photo and description. When off, only admins can edit.</p>
+        </div>
+        <button class="nk-toggle" id="nkToggleEdit" data-on="true" aria-label="Toggle edit">
+          <span class="nk-toggle-knob"></span>
+        </button>
+      </div>
+
+      <div class="nk-straight-line"></div>
+
+      <div class="nk-permission-row">
+        <div class="nk-permission-info">
+          <p class="nk-permission-title">Send new messages</p>
+          <p class="nk-permission-desc">When off, only admins can send messages. Members can still read messages.</p>
+        </div>
+        <button class="nk-toggle" id="nkToggleSend" data-on="true" aria-label="Toggle send">
+          <span class="nk-toggle-knob"></span>
+        </button>
+      </div>
+
+      <div class="nk-straight-line"></div>
+
+      <div class="nk-permission-row">
+        <div class="nk-permission-info">
+          <p class="nk-permission-title">Add other members</p>
+          <p class="nk-permission-desc">Allow all members to add new people to this group. When off, only admins can add.</p>
+        </div>
+        <button class="nk-toggle" id="nkToggleAdd" data-on="true" aria-label="Toggle add">
+          <span class="nk-toggle-knob"></span>
+        </button>
+      </div>
+
+    </div>
+
+    <div class="nk-bottom-next-wrap">
+      <button class="nk-next-border" id="nkPermissionDoneBtn">
+        <span>Done</span>
+        <i data-lucide="check"></i>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+
+
+
  
      <!-- NORMAL CHATS -->
       <div class="chat-item" data-type="chat" data-user-id="1" data-username="johndoe">
@@ -634,7 +952,7 @@
  <!-- end chat-background -->
 
 <!-- ===== CALL UI - GLOBAL, OUTSIDE CHAT BACKGROUNDS ===== -->
-<!-- INCOMING FOR LIST already dey inside chatLoadList - keep am there -->
+
 
   <!-- ===== CALL UI - GLOBAL ===== -->
   <div class="konnekt-call-overlay" id="callOverlay">
@@ -802,6 +1120,7 @@
 <script src="reaction.js"></script>
 <script src="call.js"></script>
 <script src="video.js"></script>
+<script src="new-chat.js"></script>
 </html>
 
 
