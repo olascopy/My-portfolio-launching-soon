@@ -1,21 +1,63 @@
-/* ===== KONNEKT CALL CSS V6 - DESKTOP ONLY LIST + STRAIGHT SHAKE ===== */
+/* ===== KONNEKT CALL CSS V6 - FIXED FOR IPHONE NOTCH + NAME DOWN ===== */
 
-/* CALL OVERLAY */
+/* CALL OVERLAY - FIXED WITH SAFE AREA AND DVH */
 .konnekt-call-overlay{
   position:fixed; inset:0; z-index:9999;
-  display:none; flex-direction:column; justify-content:space-between;
-  padding:22px 18px 40px;
+  display:none; 
+  flex-direction:column; 
+  justify-content:space-between;
+  /* FIX 1: Use dvh + safe area so e no go up */
+  height: 100vh;
+  height: 100dvh;
+  height: 100svh;
+  height: -webkit-fill-available;
+  padding-top: calc(22px + var(--safe-top, env(safe-area-inset-top, 0px)));
+  padding-left: calc(18px + var(--safe-left, env(safe-area-inset-left, 0px)));
+  padding-right: calc(18px + var(--safe-right, env(safe-area-inset-right, 0px)));
+  padding-bottom: calc(40px + var(--safe-bottom, env(safe-area-inset-bottom, 0px)));
+  background: #000;
   background: radial-gradient(120% 120% at 50% 10%, #1a1a1a 0%, #0e0e0e 55%, #000 100%);
   color:#fff;
+  contain: layout style paint;
+  transform: translateZ(0);
 }
 .konnekt-call-overlay.show{ display:flex; }
 .konnekt-call-overlay.minimized{ display:none !important; }
 
-.konnekt-call-top{ display:flex; align-items:flex-start; justify-content:space-between; width:100%; }
-.konnekt-call-center{ text-align:center; flex:1; }
-.konnekt-call-name{ font-size:22px; font-weight:700; margin:0 0 6px; }
-.konnekt-call-status{ font-size:15px; color:rgba(255,255,255,.7); margin:0; }
-.konnekt-call-top-right{ display:flex; gap:10px; }
+/* FIX 2: TOP - MAKE NAME GO DOWN FOR IPHONE */
+.konnekt-call-top{ 
+  display:flex; 
+  align-items:flex-start; 
+  justify-content:space-between; 
+  width:100%; 
+  margin-top: 12px; /* push down small from notch */
+}
+.konnekt-call-center{ 
+  text-align:center; 
+  flex:1; 
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  /* FIX 3: Push center down for iPhone so name no enter island */
+  padding-top: 14px;
+}
+.konnekt-call-name{ 
+  font-size:22px; 
+  font-weight:700; 
+  margin:0 0 6px; 
+  line-height:1.2;
+  /* FIX 4: Ensure name dey visible */
+  transform: translateZ(0);
+}
+.konnekt-call-status{ 
+  font-size:15px; 
+  color:rgba(255,255,255,.7); 
+  margin:0; 
+  line-height:1.2;
+}
+
+.konnekt-call-top-right{ display:flex; gap:10px; flex-shrink:0; }
 .konnekt-top-icon{
   width:36px; height:36px; border-radius:999px;
   background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.15);
@@ -23,7 +65,17 @@
 }
 .konnekt-top-icon svg{ width:18px; height:18px; }
 
-.konnekt-call-middle{ display:flex; flex-direction:column; align-items:center; gap:26px; margin-top:20px; }
+/* MIDDLE - FIXED TO CENTER WELL FOR IPHONE */
+.konnekt-call-middle{ 
+  display:flex; 
+  flex-direction:column; 
+  align-items:center; 
+  justify-content:center;
+  gap:26px; 
+  flex:1; /* make am take available space, so name no go up */
+  margin-top:0;
+  padding: 20px 0;
+}
 .konnekt-call-big-ava{ width:132px; height:132px; border-radius:999px; object-fit:cover; border:3px solid rgba(255,255,255,.15); }
 .konnekt-glass-tile{
   display:flex; gap:12px; padding:10px 14px; border-radius:24px;
@@ -38,11 +90,11 @@
 .konnekt-glass-btn.active{ background:#fff; color:#000; }
 .konnekt-glass-btn.wiggle{ animation:konnekt-wiggle .5s ease; }
 
-.konnekt-call-bottom{ display:flex; flex-direction:column; align-items:center; gap:10px; padding-bottom:10px; }
+.konnekt-call-bottom{ display:flex; flex-direction:column; align-items:center; gap:10px; padding-bottom:10px; flex-shrink:0; }
 .konnekt-end-btn{
   width:76px; height:76px; border-radius:999px; background:#ff3b30; border:none; color:#fff;
   display:grid; place-items:center; cursor:pointer;
-  transform:rotate(135deg); /* END ROTATE LIKE END */
+  transform:rotate(135deg);
   box-shadow:none;
   transition:transform .2s ease;
 }
@@ -63,34 +115,15 @@
 }
 .konnekt-incoming-tile.show{ display:flex; }
 
-/* DESKTOP RULE - ONLY CHAT LIST SHOW */
 @media (min-width: 769px){
-  #chatLoadList .konnekt-incoming-tile{
-    margin-top:14px;
-    display:none; /* default hidden */
-  }
-  #chatLoadList .konnekt-incoming-tile.show{
-    display:flex; /* only show here on desktop */
-  }
-  .konnekt-incoming-tile.inside-chat{
-    display:none !important; /* HIDE INSIDE CHAT ON DESKTOP */
-  }
+  #chatLoadList .konnekt-incoming-tile{ margin-top:14px; display:none; }
+  #chatLoadList .konnekt-incoming-tile.show{ display:flex; }
+  .konnekt-incoming-tile.inside-chat{ display:none !important; }
 }
-
-/* MOBILE RULE - BOTH CAN SHOW BUT UNDER BORDERS */
 @media (max-width: 768px){
-  #chatLoadList .konnekt-incoming-tile{
-    margin-top:18px;
-    z-index:999;
-  }
-  .konnekt-incoming-tile.inside-chat{
-    margin-top:14px;
-    z-index:50;
-    display:none;
-  }
-  .konnekt-incoming-tile.inside-chat.show{
-    display:flex;
-  }
+  #chatLoadList .konnekt-incoming-tile{ margin-top:18px; z-index:999; }
+  .konnekt-incoming-tile.inside-chat{ margin-top:14px; z-index:50; display:none; }
+  .konnekt-incoming-tile.inside-chat.show{ display:flex; }
 }
 
 .konnekt-incoming-ava{ width:44px; height:44px; border-radius:999px; object-fit:cover; flex-shrink:0; border:1px solid rgba(255,255,255,.5); }
@@ -104,11 +137,9 @@
   animation:konnekt-icon-shake-straight 0.7s ease-in-out infinite;
 }
 .konnekt-call-mini.accept{ background:#1ec95b; color:#fff; }
-.konnekt-call-mini.decline{ background:#ff3b30; color:#fff; transform:rotate(135deg); /* END ROTATE */ }
+.konnekt-call-mini.decline{ background:#ff3b30; color:#fff; transform:rotate(135deg); }
 .konnekt-call-mini.decline svg{ transform:rotate(-135deg); }
 .konnekt-call-mini svg{ width:18px; height:18px; }
-
-/* DECLINE ALSO ROTATE LIKE END */
 .konnekt-call-mini.decline{ animation:konnekt-icon-shake-decline 0.7s ease-in-out infinite; }
 
 @keyframes konnekt-straight-shake{
@@ -133,14 +164,16 @@
   0%{ transform:scale(1); } 25%{ transform:scale(1.08); } 50%{ transform:scale(1.12); } 100%{ transform:scale(1); }
 }
 
-/* PILL DOWN FOR ISLAND */
+/* PILL - FIXED FOR ISLAND */
 .konnekt-dynamic-pill{
-  position:fixed; top:12px; left:50%; transform:translateX(-50%);
+  position:fixed; 
+  top: calc(12px + var(--safe-top, env(safe-area-inset-top, 0px))); 
+  left:50%; transform:translateX(-50%);
   z-index:10000; display:flex; align-items:center; gap:8px;
   padding:8px 14px; border-radius:999px; background:#000; color:#fff;
   box-shadow:0 8px 24px rgba(0,0,0,.25); cursor:pointer; max-width:90vw;
 }
-@media (max-width:768px){ .konnekt-dynamic-pill{ top:58px; } }
+@media (max-width:768px){ .konnekt-dynamic-pill{ top: calc(58px + var(--safe-top, env(safe-area-inset-top, 0px))); } }
 .konnekt-dynamic-pill.hidden{ display:none !important; }
 .konnekt-dot{ width:8px; height:8px; border-radius:999px; background:#1ec95b; flex-shrink:0; }
 .konnekt-pill-ava{ width:24px; height:24px; border-radius:999px; object-fit:cover; }
@@ -148,12 +181,13 @@
 .konnekt-pill-time{ font-size:12px; color:rgba(255,255,255,.8); }
 
 .konnekt-expanded-pill{
-  position:fixed; left:50%; transform:translateX(-50%); top:12px;
+  position:fixed; left:50%; transform:translateX(-50%); 
+  top: calc(12px + var(--safe-top, env(safe-area-inset-top, 0px)));
   z-index:10001; width:min(360px, calc(100vw - 20px));
   display:flex; align-items:center; justify-content:space-between; gap:10px;
   padding:12px 14px; border-radius:22px; background:#000; color:#fff; box-shadow:0 12px 32px rgba(0,0,0,.3);
 }
-@media (max-width:768px){ .konnekt-expanded-pill{ top:58px; } }
+@media (max-width:768px){ .konnekt-expanded-pill{ top: calc(58px + var(--safe-top, env(safe-area-inset-top, 0px))); } }
 .konnekt-expanded-pill.hidden{ display:none !important; }
 .konnekt-expanded-left{ display:flex; align-items:center; gap:10px; cursor:pointer; min-width:0; }
 .konnekt-expanded-ava{ width:32px; height:32px; border-radius:999px; object-fit:cover; }
@@ -178,4 +212,16 @@ body.konnekt-in-call.mobile-bottom-nav,
 body.konnekt-in-call nav {
   display:none!important;
   visibility:hidden!important;
+}
+
+
+
+/* IPHONE EXTRA FIX - FOR CALLING STATE */
+@supports (padding-top: env(safe-area-inset-top)){
+  .konnekt-call-overlay{
+    padding-top: calc(32px + env(safe-area-inset-top));
+  }
+  .konnekt-call-center{
+    margin-top: 10px;
+  }
 }
