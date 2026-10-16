@@ -268,3 +268,69 @@
   .konnekt-leaf-icon{ color: #aebac1; fill: #aebac1; stroke: #aebac1; }
   .konnekt-leaf-icon *{ fill: #aebac1 !important; stroke: #aebac1 !important; }
 }
+
+/* YOUR VIDEO BTN - BUTTON NONE + ICON FILL WHITE - WELL STYLED */
+
+#yourVideoBtn,
+button[data-waitlist-video]{
+  /* button none */
+  background: none !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  padding: 8px;
+  margin: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  display: inline-grid;
+  place-items: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* lucide video icon - well styled - fill white */
+#yourVideoBtn i[data-lucide="video"],
+button[data-waitlist-video] i[data-lucide="video"],
+#yourVideoBtn .lucide-video,
+button[data-waitlist-video] .lucide-video{
+  width: 22px;
+  height: 22px;
+  color: #fff;
+  fill: #fff !important;
+  stroke: #fff !important;
+  stroke-width: 2;
+  display: block;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,.2));
+}
+
+/* make all paths inside lucide white */
+#yourVideoBtn i[data-lucide="video"] *,
+button[data-waitlist-video] i[data-lucide="video"] *{
+  fill: #fff !important;
+  stroke: #fff !important;
+}
+
+/* svg direct if lucide already rendered */
+#yourVideoBtn svg,
+button[data-waitlist-video] svg{
+  width: 22px;
+  height: 22px;
+  fill: #fff !important;
+  stroke: #fff !important;
+  color: #fff;
+}
+
+#yourVideoBtn svg *,
+button[data-waitlist-video] svg *{
+  fill: #fff !important;
+  stroke: #fff !important;
+}
+
+/* hover active - small scale like iPhone */
+#yourVideoBtn:active,
+button[data-waitlist-video]:active{
+  transform: scale(.92);
+  opacity: .9;
+}
