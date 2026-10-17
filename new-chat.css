@@ -1,23 +1,21 @@
 /* ================================================================ */
-/* NK NEW CHAT - CSS V13 CLEAN - EXTRA EXTRA HEIGHT MOBILE FIX */
-/* - Mobile takes extra extra height 100dvh+100svh+safe-area+20px */
-/* - All backgrounds fixed: New ID, Groups, all except scroll area */
-/* - SVG backgrounds fixed, not scrolling with content */
-/* - No cut bottom, comes down small for Dynamic Island/Android */
-/* - Scroll areas only scroll like chat-items-list */
-/* - Soft OLED #0f0f0f not chocolate */
+/* NK NEW CHAT - CSS V17 - PLUS ICON BACKGROUND FIXED NO MOVE */
+/* - When click plus icon, background fixed not moving */
+/* - Only stuff inside border (nk-plus-scroll-area) dey move */
+/* - New ID nk-third also fixed no scroll */
+/* - Extra extra height, no cut, Dynamic Island 12px down */
+/* - No glow, liquid click + wiggle, line inputs only bottom */
 /* ================================================================ */
 
-/* ---------- LOCK BODY - EXTRA HEIGHT ---------- */
+/* ---------- LOCK BODY ---------- */
 body.nk-lock-scroll{
   overflow:hidden !important;
   height:100dvh !important;
   height:100svh !important;
-  min-height:100dvh !important;
   min-height:-webkit-fill-available !important;
   overscroll-behavior:none !important;
-  /* Extra extra height for mobile */
-  padding-bottom:env(safe-area-inset-bottom) !important;
+  position:fixed !important; /* lock body no move */
+  width:100% !important;
 }
 @media (max-width:768px){
   body.nk-lock-scroll .sidebar-section,
@@ -26,378 +24,310 @@ body.nk-lock-scroll{
   body.nk-lock-scroll .pill-nav,
   body.nk-lock-scroll .sidebar,
   body.nk-lock-scroll nav.mobile-nav{
-    opacity:0 !important;
-    pointer-events:none !important;
-    visibility:hidden !important;
-    transform:translateY(100%) !important;
+    opacity:0 !important; pointer-events:none !important; visibility:hidden !important; transform:translateY(100%) !important;
   }
 }
-.nk-hide-pill-sidebar{
-  opacity:0 !important;
-  pointer-events:none !important;
-  visibility:hidden !important;
-  transform:translateY(100%) !important;
-}
+.nk-hide-pill-sidebar{ opacity:0 !important; pointer-events:none !important; visibility:hidden !important; transform:translateY(100%) !important; }
 
 /* ---------- POPUP ---------- */
 .nk-popup-overlay{
-  position:fixed;
-  inset:0;
-  width:100vw;
-  height:100dvh;
-  height:100svh;
-  min-height:100dvh;
-  min-height:-webkit-fill-available;
+  position:fixed; inset:0;
+  width:100vw; height:100dvh; height:100svh; min-height:-webkit-fill-available;
   z-index:100000000;
-  background:rgba(0,0,0,0.45);
-  backdrop-filter:blur(10px);
-  -webkit-backdrop-filter:blur(10px);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-  opacity:0;
-  pointer-events:none;
-  transition:opacity .24s ease;
+  background:rgba(0,0,0,0.4);
+  backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  display:flex; align-items:center; justify-content:center;
+  padding:20px; opacity:0; pointer-events:none; transition:opacity .24s ease;
 }
 .nk-popup-overlay.show{ opacity:1; pointer-events:auto; }
 .nk-popup-overlay.hidden{ display:none; }
-@media (min-width:769px){
-  .nk-popup-overlay{ left:55px !important; width:500px !important; right:auto !important; }
-}
+@media (min-width:769px){ .nk-popup-overlay{ left:55px !important; width:500px !important; right:auto !important; } }
 .nk-popup-box{
-  width:100%; max-width:300px;
-  background:#1c1c1e;
-  border:1px solid rgba(255,255,255,0.06);
-  border-radius:20px;
-  padding:24px 20px 14px 20px;
+  width:100%; max-width:310px;
+  background:rgba(38,38,40,0.82);
+  backdrop-filter:blur(28px) saturate(180%); -webkit-backdrop-filter:blur(28px) saturate(180%);
+  border:0.5px solid rgba(255,255,255,0.1); border-radius:22px;
+  padding:24px 20px 16px 20px;
   display:flex; flex-direction:column; align-items:center; text-align:center;
-  transform:scale(.92) translateY(8px);
-  transition:transform .38s cubic-bezier(.32,.72,0,1);
+  transform:scale(.9) translateY(10px); transition:transform .36s cubic-bezier(.32,.72,0,1);
 }
 .nk-popup-overlay.show .nk-popup-box{ transform:scale(1) translateY(0); }
-.nk-popup-icon-wrap{
-  width:52px; height:52px; border-radius:999px;
-  background:rgba(10,132,255,0.12);
-  display:grid; place-items:center; margin-bottom:12px;
-}
-.nk-popup-icon{ width:24px; height:24px; color:#0a84ff; }
+.nk-popup-icon-wrap{ width:52px; height:52px; border-radius:999px; background:rgba(255,255,255,0.08); display:grid; place-items:center; margin-bottom:12px; }
+.nk-popup-icon{ width:24px; height:24px; color:#fff; }
 .nk-popup-title{ font-size:16px; font-weight:700; color:#fff; margin-bottom:6px; }
 .nk-popup-desc{ font-size:14px; color:#8e8e93; line-height:1.4; margin-bottom:18px; }
-.nk-popup-btn{
-  width:100%; height:44px; border-radius:999px;
-  border:none; background:#0a84ff; color:#fff;
-  font-size:15px; font-weight:600; cursor:pointer;
-}
+.nk-popup-btn{ width:100%; height:44px; border-radius:999px; border:none; background:#0a84ff; color:#fff; font-size:15px; font-weight:600; cursor:pointer; transition:transform .18s ease; }
 .nk-popup-btn:active{ transform:scale(.96); }
+.nk-popup-btn.nk-liquid-click{ animation:nkLiquidWiggle .42s cubic-bezier(.32,.72,0,1); }
+@keyframes nkLiquidWiggle{ 0%{ transform:scale(.96); } 30%{ transform:scale(1.03) rotate(-1.2deg); } 60%{ transform:scale(.98) rotate(1.2deg); } 100%{ transform:scale(1) rotate(0); } }
 
-/* ---------- OVERLAY - EXTRA EXTRA HEIGHT, BACKGROUND FIXED ---------- */
-/* Background fixed, not moving, only scroll area scrolls */
+/* ---------- OVERLAY BASE - ALL BACKGROUNDS FIXED NO MOVE ---------- */
 .nk-newchat-overlay{
-  position:fixed;
-  inset:0;
-  width:100vw;
-  height:100dvh;
-  height:100svh;
-  min-height:100dvh;
-  min-height:100svh;
-  min-height:-webkit-fill-available;
+  position:fixed; inset:0;
+  width:100vw; height:100dvh; height:100svh;
+  min-height:100dvh; min-height:-webkit-fill-available;
   z-index:9999999;
   background:#000;
-  background-attachment:fixed !important; /* fixed bg */
-  display:none;
-  flex-direction:column;
-  overflow:hidden;
-  overscroll-behavior:none;
+  background-attachment:fixed !important; /* fixed background */
+  display:none; flex-direction:column;
+  overflow:hidden !important; /* outer never scroll */
+  overscroll-behavior:none !important;
+  touch-action:none !important;
 }
 .nk-newchat-overlay.show{ display:flex; }
 .nk-newchat-overlay.nk-second{ z-index:99999991; }
 .nk-newchat-overlay.nk-third{ z-index:99999992; }
 .nk-newchat-overlay.nk-fourth{ z-index:99999993; }
 
-/* ---------- SHEET - EXTRA EXTRA HEIGHT + FIXED BACKGROUND ---------- */
 .nk-newchat-sheet{
-  width:100%;
-  height:100%;
-  min-height:100%;
-  max-height:100%;
-  background:#000;
-  background-attachment:fixed !important; /* svg bg fixed */
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
+  width:100%; height:100%; min-height:100%; max-height:100%;
+  background:#000; background-attachment:fixed !important;
+  display:flex; flex-direction:column;
+  overflow:hidden !important; /* sheet never scroll */
+  overscroll-behavior:none !important;
+  touch-action:none !important;
   box-sizing:border-box;
-  position:relative;
-  /* Fixed background for all non-scroll */
 }
 
 /* ---------- DESKTOP ---------- */
 @media (min-width:769px){
-  .nk-newchat-overlay{ left:55px; width:500px; right:auto; background:#000; background-attachment:fixed !important; }
-  .nk-newchat-sheet{ background:#000; background-attachment:fixed !important; }
-  .nk-newchat-overlay.show .nk-newchat-sheet{
-    animation:nkSlideLeft .38s cubic-bezier(.32,.72,0,1) forwards;
-  }
+  .nk-newchat-overlay{ left:55px; width:500px; right:auto; }
+  .nk-newchat-overlay.show .nk-newchat-sheet{ animation:nkSlideLeft .38s cubic-bezier(.32,.72,0,1) forwards; }
   @keyframes nkSlideLeft{ 0%{ transform:translateX(-100%); } 100%{ transform:translateX(0); } }
 }
 
-/* ---------- MOBILE - EXTRA EXTRA HEIGHT + COME DOWN SMALL ---------- */
+/* ---------- MOBILE - EXTRA HEIGHT + BACKGROUND FIXED NO MOVE ---------- */
 @media (max-width:768px){
   .nk-newchat-overlay{
     position:fixed !important;
     left:0 !important; right:0 !important; top:0 !important; bottom:0 !important;
     width:100vw !important;
-    /* Extra extra height - 100dvh + 100svh + safe-area + 20px */
-    height:100dvh !important;
-    height:100svh !important;
-    min-height:100dvh !important;
-    min-height:100svh !important;
-    min-height:-webkit-fill-available !important;
+    height:100dvh !important; height:100svh !important;
+    min-height:100dvh !important; min-height:-webkit-fill-available !important;
     min-height:calc(100dvh + env(safe-area-inset-bottom) + 20px) !important;
     max-height:calc(100dvh + env(safe-area-inset-bottom) + 20px) !important;
-    background:#0f0f0f !important;
-    background-attachment:fixed !important; /* fixed bg */
-    border-radius:0 !important;
-    margin:0 !important;
-    padding:0 !important;
+    background:#0f0f0f !important; background-attachment:fixed !important;
+    border-radius:0 !important; margin:0 !important; padding:0 !important;
     padding-bottom:env(safe-area-inset-bottom) !important;
-    overflow:hidden !important;
-    display:none;
-    flex-direction:column !important;
-    box-sizing:border-box !important;
+    overflow:hidden !important; display:none; flex-direction:column !important;
+    overscroll-behavior:none !important; touch-action:none !important;
   }
-  .nk-newchat-overlay.show{
-    display:flex !important;
-    flex-direction:column !important;
-  }
-
+  .nk-newchat-overlay.show{ display:flex !important; flex-direction:column !important; }
   .nk-newchat-sheet{
-    width:100% !important;
-    height:100% !important;
-    /* Extra extra height inside */
+    width:100% !important; height:100% !important;
     min-height:calc(100dvh + env(safe-area-inset-bottom) + 20px) !important;
-    min-height:-webkit-fill-available !important;
     max-height:calc(100dvh + env(safe-area-inset-bottom) + 20px) !important;
-    height:100dvh !important;
-    height:100svh !important;
-    background:#0f0f0f !important;
-    background-attachment:fixed !important; /* all svg bg fixed */
-    border-radius:0 !important;
-    overflow:hidden !important;
-    display:flex !important;
-    flex-direction:column !important;
+    height:100dvh !important; height:100svh !important;
+    min-height:-webkit-fill-available !important;
+    background:#0f0f0f !important; background-attachment:fixed !important;
+    overflow:hidden !important; display:flex !important; flex-direction:column !important;
     box-sizing:border-box !important;
-    /* Come down small for Dynamic Island - 12px + safe-area */
     padding-top:calc(env(safe-area-inset-top) + 12px) !important;
     padding-bottom:0 !important;
     padding-left:env(safe-area-inset-left) !important;
     padding-right:env(safe-area-inset-right) !important;
-    animation:nkSlideUpFull .42s cubic-bezier(.32,.72,0,1) forwards;
+    overscroll-behavior:none !important; touch-action:none !important;
+    animation:nkSlideUpFull .4s cubic-bezier(.32,.72,0,1) forwards;
   }
   @keyframes nkSlideUpFull{ 0%{ transform:translateY(100%); } 100%{ transform:translateY(0); } }
 }
 
-/* ---------- HEADER - FIXED BACKGROUND, COME DOWN SMALL ---------- */
+/* ---------- HEADER - FIXED NO MOVE ---------- */
 .nk-newchat-header{
   height:60px; min-height:60px;
   display:flex; align-items:center; justify-content:center;
   border-bottom:1px solid #2a2a2e;
-  background:#000;
-  background-attachment:fixed !important; /* fixed bg */
-  flex-shrink:0;
-  z-index:10;
-  position:relative;
+  background:#000; background-attachment:fixed !important;
+  flex-shrink:0 !important; z-index:10; position:relative;
+  overflow:hidden !important; overscroll-behavior:none !important; touch-action:none !important;
 }
 .nk-glass-fixed{
-  position:relative;
-  background:#000;
-  background-attachment:fixed !important; /* fixed bg */
+  position:relative; background:#000; background-attachment:fixed !important;
   border-bottom:1px solid #2a2a2e;
-  flex-shrink:0;
-  z-index:10;
+  flex-shrink:0 !important; z-index:10;
+  overflow:hidden !important; overscroll-behavior:none !important; touch-action:none !important;
 }
 @media (max-width:768px){
   .nk-newchat-header{
-    background:#0f0f0f !important;
-    background-attachment:fixed !important;
+    background:#0f0f0f !important; background-attachment:fixed !important;
     border-bottom:1px solid #2a2a2e !important;
-    height:auto !important;
     min-height:calc(56px + env(safe-area-inset-top) + 12px) !important;
     padding-top:calc(env(safe-area-inset-top) + 12px) !important;
-    padding-bottom:12px !important;
-    flex-shrink:0 !important;
-    position:relative !important;
-    z-index:10 !important;
+    padding-bottom:12px !important; flex-shrink:0 !important;
+    overflow:hidden !important;
   }
   .nk-glass-fixed{
-    background:#0f0f0f !important;
-    background-attachment:fixed !important;
+    background:#0f0f0f !important; background-attachment:fixed !important;
     min-height:calc(60px + env(safe-area-inset-top) + 12px) !important;
-    padding-top:calc(env(safe-area-inset-top) + 12px) !important;
-    padding-bottom:8px !important;
-    flex-shrink:0 !important;
-    z-index:10 !important;
+    padding-top:calc(env(safe-area-inset-top) + 12px) !important; flex-shrink:0 !important;
+    overflow:hidden !important;
   }
 }
 .nk-newchat-title{ font-size:17px; font-weight:600; color:#fff; }
 .nk-back-btn, .nk-close-btn, .nk-mark-btn{
-  width:34px; height:34px; border-radius:999px;
-  border:none; display:grid; place-items:center;
-  cursor:pointer; flex-shrink:0;
+  width:34px; height:34px; border-radius:999px; border:none;
+  display:grid; place-items:center; cursor:pointer; flex-shrink:0;
+  transition:transform .18s cubic-bezier(.32,.72,0,1);
 }
 .nk-back-btn{ position:absolute; left:14px; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.08); color:#fff; }
 .nk-close-btn{ position:absolute; right:14px; top:50%; transform:translateY(-50%); background:#1c1c1e; color:#fff; }
 .nk-mark-btn{ position:absolute; right:14px; top:50%; transform:translateY(-50%); background:#0a84ff; color:#fff; }
-.nk-close-btn.nk-wiggle, .nk-back-btn.nk-wiggle{ animation:nkWigglePop .4s ease; }
-@keyframes nkWigglePop{
-  0%{ transform:translateY(-50%) scale(1); }
-  30%{ transform:translateY(-50%) scale(1.12) rotate(-6deg); }
-  60%{ transform:translateY(-50%) scale(.94) rotate(6deg); }
+.nk-back-btn:active, .nk-close-btn:active, .nk-mark-btn:active{ transform:translateY(-50%) scale(.92); }
+.nk-back-btn.nk-wiggle, .nk-close-btn.nk-wiggle{ animation:nkHeaderWiggle .42s cubic-bezier(.32,.72,0,1); }
+@keyframes nkHeaderWiggle{
+  0%{ transform:translateY(-50%) scale(.92); }
+  32%{ transform:translateY(-50%) scale(1.08) rotate(-5deg); }
+  64%{ transform:translateY(-50%) scale(.96) rotate(5deg); }
   100%{ transform:translateY(-50%) scale(1) rotate(0); }
 }
 .nk-desktop-only{ display:none; }
 @media (min-width:769px){ .nk-desktop-only{ display:grid; } .nk-close-btn{ display:none; } }
 
-/* ---------- SEARCH - FIXED BG ---------- */
+/* ---------- SEARCH - FIXED NO MOVE ---------- */
 .nk-search-wrap{
-  padding:10px 16px;
-  flex-shrink:0;
-  background:transparent;
-  background-attachment:fixed !important;
+  padding:10px 16px; flex-shrink:0 !important; background:transparent;
+  overflow:hidden !important; overscroll-behavior:none !important; touch-action:none !important;
 }
 .nk-search-box{
   display:flex; align-items:center; gap:10px;
-  padding:11px 16px;
-  border-radius:999px;
-  background:rgba(28,28,30,0.9);
-  background-attachment:fixed !important;
-  border:none !important;
+  padding:11px 16px; border-radius:999px; background:#1c1c1e; border:none !important;
+  transition:transform .18s ease;
 }
+.nk-search-box:focus-within{ transform:scale(1.01); background:#232326; }
 .nk-search-box input{ flex:1; background:transparent; border:none; outline:none; color:#fff; font-size:15px; }
 .nk-search-box input::placeholder{ color:#8e8e93; }
 .nk-search-icon{ width:18px; height:18px; color:#8e8e93; flex-shrink:0; }
 .nk-glass-fixed-search{
-  padding:6px 0 10px 0;
-  flex-shrink:0;
-  background:transparent;
-  background-attachment:fixed !important;
-  z-index:9;
+  padding:6px 0 10px 0; flex-shrink:0 !important; background:transparent;
+  overflow:hidden !important; overscroll-behavior:none !important; touch-action:none !important;
 }
 
-/* ---------- SCROLL AREAS - ONLY THESE SCROLL, BG NOT FIXED FOR SCROLL ---------- */
-/* Fixed bg for everything except scroll */
-.nk-plus-scroll-area,
-.nk-form-wrap,
-.nk-profile-wrap,
-.nk-newchat-list,
-.nk-permission-list{
+/* ---------- PLUS ICON SCREEN - ONLY THIS SCROLLS, BACKGROUND FIXED ---------- */
+/* When you click plus icon, only nk-plus-scroll-area moves */
+.nk-plus-scroll-area{
   flex:1 1 0 !important;
   min-height:0 !important;
-  overflow-y:auto !important;
+  overflow-y:auto !important; /* only this scrolls */
   overflow-x:hidden !important;
   -webkit-overflow-scrolling:touch !important;
   overscroll-behavior:contain !important;
+  touch-action:pan-y !important; /* allow vertical scroll only here */
   box-sizing:border-box !important;
-  /* Scroll area bg can scroll, but sheet bg fixed */
   background:transparent !important;
-  /* Extra padding bottom so no cut under fixed next */
+  /* Isolate scroll - background behind fixed */
+  isolation:isolate;
+}
+.nk-plus-scroll-area::-webkit-scrollbar{ display:none; width:0; }
+.nk-plus-scroll-area{ scrollbar-width:none; -ms-overflow-style:none; }
+
+.nk-newchat-list,
+.nk-permission-list{
+  flex:1 1 0 !important; min-height:0 !important;
+  overflow-y:auto !important; overflow-x:hidden !important;
+  -webkit-overflow-scrolling:touch !important;
+  overscroll-behavior:contain !important;
+  touch-action:pan-y !important;
+  box-sizing:border-box !important; background:transparent !important;
 }
 
-/* Desktop padding */
-.nk-plus-scroll-area{ padding-bottom:20px; }
-.nk-form-wrap{ padding:20px; display:flex; flex-direction:column; gap:26px; }
-.nk-profile-wrap{ padding:0 0 10px 0; display:flex; flex-direction:column; }
-.nk-newchat-list{ padding:0 0 10px 0; }
-.nk-permission-list{ padding:8px 0; }
-
-/* Mobile extra padding for bottom - no cut */
+/* ---------- NEW ID + PROFILE - FIXED NO SCROLL ---------- */
+.nk-form-wrap{
+  flex:1 1 0 !important; min-height:0 !important;
+  overflow:hidden !important; overflow-y:hidden !important;
+  overscroll-behavior:none !important; touch-action:none !important;
+  -webkit-overflow-scrolling:auto !important;
+  padding:20px; display:flex; flex-direction:column; gap:22px;
+  box-sizing:border-box !important; background:transparent !important;
+}
+.nk-profile-wrap{
+  flex:1 1 0 !important; min-height:0 !important;
+  overflow:hidden !important; overflow-y:hidden !important;
+  overscroll-behavior:none !important; touch-action:none !important;
+  padding:0 0 10px 0; display:flex; flex-direction:column;
+  box-sizing:border-box !important; background:transparent !important;
+}
+@media (max-height:600px){
+  .nk-form-wrap, .nk-profile-wrap{ overflow-y:auto !important; -webkit-overflow-scrolling:touch !important; overscroll-behavior:contain !important; touch-action:pan-y !important; }
+}
 @media (max-width:768px){
-  .nk-plus-scroll-area,
-  .nk-form-wrap,
-  .nk-profile-wrap,
-  .nk-newchat-list,
-  .nk-permission-list{
-    /* Extra extra space for fixed bottom + safe-area */
+  .nk-plus-scroll-area{
+    padding-bottom:calc(100px + env(safe-area-inset-bottom) + 30px) !important;
+  }
+  .nk-newchat-list, .nk-permission-list{
     padding-bottom:calc(100px + env(safe-area-inset-bottom) + 30px) !important;
   }
   .nk-form-wrap{
-    padding:20px 20px calc(120px + env(safe-area-inset-bottom) + 30px) 20px !important;
+    overflow:hidden !important; overflow-y:hidden !important; touch-action:none !important;
+    padding:20px 20px calc(20px + env(safe-area-inset-bottom)) 20px !important;
+  }
+  .nk-profile-wrap{
+    overflow:hidden !important; overflow-y:hidden !important; touch-action:none !important;
+    padding-bottom:calc(20px + env(safe-area-inset-bottom)) !important;
   }
 }
 
-/* ---------- ROWS ---------- */
+/* ---------- NEW ID INPUTS - ONLY LINE ---------- */
+.nk-input-group{ display:flex; flex-direction:column; gap:6px; flex-shrink:0 !important; background:transparent; overflow:hidden !important; }
+.nk-input-label{ font-size:11px; font-weight:600; color:#8e8e93; text-transform:uppercase; letter-spacing:0.4px; }
+.nk-input-line-box{
+  display:flex; align-items:center; gap:10px;
+  border:none !important; border-bottom:1px solid #2a2a2e !important;
+  border-radius:0 !important; background:transparent !important;
+  padding:12px 0 10px 0 !important; flex-shrink:0 !important;
+  transition:border-color .2s ease;
+}
+.nk-input-line-box:focus-within{ border-bottom-color:#fff !important; background:transparent !important; box-shadow:none !important; }
+.nk-input-line-box input{ flex:1; background:transparent !important; border:none !important; outline:none !important; color:#fff; font-size:16px; }
+.nk-input-line-box input::placeholder{ color:#3a3a3c; }
+.nk-id-prefix{ color:#8e8e93; font-size:15px; font-weight:500; }
+
+/* ---------- ROWS LIQUID CLICK NO GLOW ---------- */
 .nk-newchat-row{
   width:100%; display:flex; align-items:center; gap:12px;
-  padding:15px 20px;
-  background:transparent; border:none;
-  border-bottom:1px solid #2a2a2e;
-  cursor:pointer; text-align:left;
-  flex-shrink:0;
+  padding:15px 20px; background:transparent; border:none;
+  border-bottom:1px solid #2a2a2e; cursor:pointer; text-align:left;
+  flex-shrink:0 !important; transition:background .16s ease, transform .18s ease;
 }
-.nk-row-icon{ width:40px; height:40px; border-radius:999px; display:grid; place-items:center; flex-shrink:0; }
+.nk-newchat-row:active{ background:rgba(255,255,255,0.04); transform:scale(.98); }
+.nk-newchat-row.nk-liquid-click{ animation:nkRowWiggle .42s cubic-bezier(.32,.72,0,1); }
+@keyframes nkRowWiggle{ 0%{ transform:scale(.98); } 32%{ transform:scale(1.01) rotate(-0.8deg); } 64%{ transform:scale(.99) rotate(0.8deg); } 100%{ transform:scale(1) rotate(0); } }
+.nk-row-icon{ width:40px; height:40px; border-radius:999px; display:grid; place-items:center; flex-shrink:0; background:#1c1c1e; border:1px solid #2a2a2e; transition:transform .18s ease; }
 .nk-row-icon.nk-round-icon{ background:#1c1c1e; border:1px solid #2a2a2e; }
+.nk-newchat-row:active .nk-row-icon{ transform:scale(.92); }
+.nk-icon-stack{ position:relative; display:grid; place-items:center; }
 .nk-main-icon{ width:19px; height:19px; color:#fff; }
+.nk-plus-small{ position:absolute; right:-5px; bottom:-3px; width:13px; height:13px; background:#0a84ff; border-radius:999px; color:#fff; padding:1px; border:2px solid #000; }
 .nk-row-info{ flex:1; min-width:0; display:flex; flex-direction:column; }
 .nk-row-title{ font-size:15px; font-weight:600; color:#fff; }
 .nk-row-sub{ font-size:12px; color:#8e8e93; margin-top:2px; }
 .nk-chevron{ width:18px; height:18px; color:#3a3a3c; flex-shrink:0; }
-.nk-straight-line{ height:1px; background:#2a2a2e; margin:0 20px; flex-shrink:0; }
-.nk-down-section{ padding:0 0 10px 0; flex-shrink:0; background:transparent; background-attachment:fixed !important; }
-.nk-section-label{ font-size:12px; font-weight:600; color:#8e8e93; padding:14px 20px 8px 20px; text-transform:uppercase; flex-shrink:0; background:transparent; }
+.nk-straight-line{ height:1px; background:#2a2a2e; margin:0 20px; flex-shrink:0 !important; }
+.nk-down-section{ padding:0 0 10px 0; flex-shrink:0 !important; background:transparent; overflow:hidden !important; }
+.nk-up-section{ flex-shrink:0 !important; overflow:hidden !important; background:transparent; }
+.nk-section-label{ font-size:12px; font-weight:600; color:#8e8e93; padding:14px 20px 8px 20px; text-transform:uppercase; flex-shrink:0 !important; }
 .nk-empty{ font-size:14px; color:#8e8e93; text-align:center; padding:24px 20px; }
 .hidden{ display:none !important; }
 
-/* ---------- INPUTS - FIXED BG ---------- */
-.nk-input-group{
-  display:flex; flex-direction:column; gap:8px; flex-shrink:0;
-  background:transparent; background-attachment:fixed !important;
-}
-.nk-input-label{ font-size:12px; font-weight:600; color:#8e8e93; text-transform:uppercase; }
-.nk-input-line-box{
-  display:flex; align-items:center; gap:10px;
-  border-bottom:1px solid #2a2a2e;
-  padding:10px 0; flex-shrink:0;
-  background:transparent; background-attachment:fixed !important;
-}
-.nk-input-line-box input{ flex:1; background:transparent; border:none; outline:none; color:#fff; font-size:16px; }
-.nk-input-line-box input::placeholder{ color:#3a3a3c; }
-.nk-id-prefix{ color:#8e8e93; font-size:15px; }
-
-/* ---------- PROFILE - FIXED BG ---------- */
-.nk-profile-image-wrap{
-  display:flex; justify-content:center;
-  padding:22px 20px 12px 20px;
-  flex-shrink:0;
-  background:transparent; background-attachment:fixed !important;
-}
+/* ---------- PROFILE ---------- */
+.nk-profile-image-wrap{ display:flex; justify-content:center; padding:22px 20px 12px 20px; flex-shrink:0 !important; background:transparent; overflow:hidden !important; }
 .nk-big-circle{
   width:108px; height:108px; border-radius:999px;
   background:#1c1c1e; border:1px dashed #2a2a2e;
   display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
-  cursor:pointer; position:relative; overflow:hidden;
+  cursor:pointer; position:relative; overflow:hidden; transition:transform .18s ease;
 }
+.nk-big-circle:active{ transform:scale(.94); }
+.nk-big-circle.nk-liquid-click{ animation:nkRowWiggle .42s ease; }
 .nk-big-circle img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
 .nk-camera-icon{ width:26px; height:26px; color:#8e8e93; }
 .nk-add-photo-text{ font-size:11px; color:#8e8e93; }
-.nk-profile-info{
-  display:flex; flex-direction:column; align-items:center; gap:4px;
-  padding:0 20px 10px 20px; text-align:center; flex-shrink:0;
-  background:transparent; background-attachment:fixed !important;
-}
+.nk-profile-info{ display:flex; flex-direction:column; align-items:center; gap:4px; padding:0 20px 10px 20px; text-align:center; flex-shrink:0 !important; background:transparent; overflow:hidden !important; }
 .nk-profile-name{ font-size:19px; font-weight:700; color:#fff; }
 .nk-profile-username{ font-size:14px; color:#8e8e93; }
-.nk-profile-require-text{
-  font-size:12px; color:#ff9f0a; margin-top:8px;
-  background:rgba(255,159,10,0.1); padding:7px 12px;
-  border-radius:999px; border:1px solid rgba(255,159,10,0.15);
-}
+.nk-profile-require-text{ font-size:12px; color:#ff9f0a; margin-top:8px; background:rgba(255,159,10,0.1); padding:7px 12px; border-radius:999px; border:1px solid rgba(255,159,10,0.15); }
 
 /* ---------- LEAVES ---------- */
-.nk-konnekting-wrap{
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  gap:10px; padding:22px 0; margin-top:6px; flex-shrink:0;
-  background:transparent; background-attachment:fixed !important;
-}
+.nk-konnekting-wrap{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:22px 0; margin-top:6px; flex-shrink:0 !important; background:transparent; overflow:hidden !important; }
 .nk-konnekting-wrap.hidden{ display:none; }
 .nk-leaves-circle{ position:relative; width:52px; height:52px; animation:nkCircleSpin 1.6s linear infinite; }
 @keyframes nkCircleSpin{ 0%{ transform:rotate(0deg); } 100%{ transform:rotate(360deg); } }
@@ -415,59 +345,45 @@ body.nk-lock-scroll{
 .nk-konnekting-text{ font-size:13px; font-weight:600; color:#0a84ff; animation:nkPulse 1s ease-in-out infinite; }
 @keyframes nkPulse{ 0%,100%{ opacity:.6; } 50%{ opacity:1; } }
 
-/* ---------- BOTTOM NEXT - FIXED BOTTOM, FIXED BG, NEVER CUT ---------- */
+/* ---------- BOTTOM NEXT - FIXED NO MOVE ---------- */
 .nk-bottom-next-wrap{
-  flex-shrink:0;
+  flex-shrink:0 !important;
   padding:14px 20px calc(14px + env(safe-area-inset-bottom));
   border-top:1px solid #2a2a2e;
-  background:#000;
-  background-attachment:fixed !important; /* fixed bg */
-  z-index:15;
-  box-sizing:border-box;
+  background:#000; background-attachment:fixed !important;
+  z-index:15; box-sizing:border-box;
+  overflow:hidden !important; overscroll-behavior:none !important; touch-action:none !important;
 }
 @media (max-width:768px){
   .nk-bottom-next-wrap{
-    position:sticky !important;
-    bottom:0 !important;
-    left:0 !important; right:0 !important;
-    background:#0f0f0f !important;
-    background-attachment:fixed !important; /* fixed bg */
+    position:sticky !important; bottom:0 !important; left:0 !important; right:0 !important;
+    background:#0f0f0f !important; background-attachment:fixed !important;
     padding:14px 20px calc(14px + env(safe-area-inset-bottom) + 10px) !important;
     border-top:1px solid #2a2a2e !important;
-    flex-shrink:0 !important;
-    z-index:15 !important;
-    box-sizing:border-box !important;
-    /* Extra height - not cut */
+    flex-shrink:0 !important; z-index:15 !important;
     min-height:calc(72px + env(safe-area-inset-bottom)) !important;
+    overflow:hidden !important;
   }
 }
 .nk-next-border{
   width:100%; height:48px; border-radius:999px; border:none;
   background:#0a84ff; color:#fff;
   display:flex; align-items:center; justify-content:center; gap:8px;
-  font-size:15px; font-weight:600; cursor:pointer;
+  font-size:15px; font-weight:600; cursor:pointer; transition:transform .18s ease;
 }
-.nk-next-border:active{ transform:scale(.97); }
-.nk-group-image-wrap{
-  display:flex; justify-content:center;
-  padding:22px 20px 12px 20px;
-  flex-shrink:0;
-  background:transparent; background-attachment:fixed !important;
-}
-.nk-permission-row{
-  display:flex; align-items:flex-start; justify-content:space-between;
-  gap:16px; padding:16px 20px;
-  border-bottom:1px solid #2a2a2e;
-  flex-shrink:0;
-  background:transparent; background-attachment:fixed !important;
-}
+.nk-next-border:active{ transform:scale(.96); }
+.nk-next-border.nk-liquid-click{ animation:nkLiquidWiggle .42s ease; }
+
+.nk-group-image-wrap{ display:flex; justify-content:center; padding:22px 20px 12px 20px; flex-shrink:0 !important; background:transparent; overflow:hidden !important; }
+.nk-permission-row{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; padding:16px 20px; border-bottom:1px solid #2a2a2e; flex-shrink:0 !important; background:transparent; }
 .nk-permission-title{ font-size:15px; font-weight:600; color:#fff; }
 .nk-permission-desc{ font-size:12px; color:#8e8e93; margin-top:5px; line-height:1.4; }
-.nk-toggle{ width:48px; height:28px; border-radius:999px; background:#3a3a3c; border:none; position:relative; cursor:pointer; flex-shrink:0; }
+.nk-toggle{ width:48px; height:28px; border-radius:999px; background:#3a3a3c; border:none; position:relative; cursor:pointer; flex-shrink:0; transition:background .2s ease, transform .18s ease; }
+.nk-toggle:active{ transform:scale(.94); }
 .nk-toggle[data-on="true"]{ background:#34c759; }
 .nk-toggle-knob{ position:absolute; top:2px; left:2px; width:24px; height:24px; border-radius:999px; background:#fff; transition:transform .28s ease; }
 .nk-toggle[data-on="true"] .nk-toggle-knob{ transform:translateX(20px); }
 
-/* Hide scrollbars like main */
-.nk-plus-scroll-area::-webkit-scrollbar, .nk-form-wrap::-webkit-scrollbar, .nk-newchat-list::-webkit-scrollbar, .nk-permission-list::-webkit-scrollbar, .nk-profile-wrap::-webkit-scrollbar{ display:none; width:0; }
-.nk-plus-scroll-area, .nk-form-wrap, .nk-newchat-list, .nk-permission-list, .nk-profile-wrap{ scrollbar-width:none; -ms-overflow-style:none; }
+/* Hide scrollbars */
+.nk-newchat-list::-webkit-scrollbar, .nk-permission-list::-webkit-scrollbar, .nk-form-wrap::-webkit-scrollbar, .nk-profile-wrap::-webkit-scrollbar{ display:none; width:0; }
+.nk-newchat-list, .nk-permission-list, .nk-form-wrap, .nk-profile-wrap{ scrollbar-width:none; -ms-overflow-style:none; }

@@ -627,4 +627,19 @@
   });
 
   console.log('NK JS V9 loaded - X working all, popup centered, fake chat fix, @username flow');
+
+  // Liquid click + wiggle follow - no glow
+function nkLiquid(el){
+  if(!el) return;
+  el.classList.remove('nk-liquid-click');
+  void el.offsetWidth; // reflow
+  el.classList.add('nk-liquid-click');
+  setTimeout(()=> el.classList.remove('nk-liquid-click'), 450);
+}
+document.addEventListener('click', (e)=>{
+  const row = e.target.closest('.nk-newchat-row, .nk-next-border, .nk-popup-btn, .nk-big-circle, .nk-back-btn, .nk-close-btn');
+  if(row) nkLiquid(row);
+});
+
+
 })();
