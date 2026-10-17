@@ -1,19 +1,18 @@
 /* ================================================================ */
-/* NK NEW CHAT - CSS V11 FINAL - FIX CUT UNDER MOBILE */
-/* - New ID, Groups, Permissions background no cut under */
-/* - Mobile scroll like chat-items-list flex:1 min-height:0 */
-/* - Not behave like normal chat loadlist scroll - inner scroll only */
-/* - Dynamic Island safe - 8px + safe-area */
-/* - Soft OLED charcoal #0f0f0f not chocolate */
-/* - Next button fixed well, not go down too much */
+/* NK NEW CHAT - CSS V12 CLEAN - FIX ALL HEIGHT + BOTTOM CUT */
+/* - No cut under mobile, full height 100dvh/100svh */
+/* - Backgrounds New ID, Groups, Permissions all fixed full */
+/* - Inner scroll only, outer no scroll, like chat-items-list */
+/* - Next button fixed bottom, content never cut under */
+/* - Dynamic Island / notch safe-area detect */
+/* - Soft OLED #0f0f0f not chocolate */
 /* ================================================================ */
 
 /* ---------- LOCK BODY ---------- */
 body.nk-lock-scroll{
   overflow:hidden !important;
-  width:100% !important;
   height:100dvh !important;
-  height:100vh !important;
+  height:100svh !important;
   overscroll-behavior:none !important;
 }
 @media (max-width:768px){
@@ -34,7 +33,6 @@ body.nk-lock-scroll{
   pointer-events:none !important;
   visibility:hidden !important;
   transform:translateY(100%) !important;
-  transition:all .2s cubic-bezier(.32,.72,0,1) !important;
 }
 
 /* ---------- POPUP ---------- */
@@ -43,7 +41,6 @@ body.nk-lock-scroll{
   inset:0;
   width:100vw;
   height:100dvh;
-  height:100vh;
   z-index:100000000;
   background:rgba(0,0,0,0.45);
   backdrop-filter:blur(10px);
@@ -54,28 +51,20 @@ body.nk-lock-scroll{
   padding:20px;
   opacity:0;
   pointer-events:none;
-  transition:opacity .24s cubic-bezier(.32,.72,0,1);
+  transition:opacity .24s ease;
 }
 .nk-popup-overlay.show{ opacity:1; pointer-events:auto; }
 .nk-popup-overlay.hidden{ display:none; }
 @media (min-width:769px){
-  .nk-popup-overlay{
-    left:55px !important;
-    width:500px !important;
-    right:auto !important;
-  }
+  .nk-popup-overlay{ left:55px !important; width:500px !important; right:auto !important; }
 }
 .nk-popup-box{
-  width:100%;
-  max-width:300px;
+  width:100%; max-width:300px;
   background:#1c1c1e;
   border:1px solid rgba(255,255,255,0.06);
   border-radius:20px;
   padding:24px 20px 14px 20px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  text-align:center;
+  display:flex; flex-direction:column; align-items:center; text-align:center;
   transform:scale(.92) translateY(8px);
   transition:transform .38s cubic-bezier(.32,.72,0,1);
 }
@@ -83,8 +72,7 @@ body.nk-lock-scroll{
 .nk-popup-icon-wrap{
   width:52px; height:52px; border-radius:999px;
   background:rgba(10,132,255,0.12);
-  display:grid; place-items:center;
-  margin-bottom:12px;
+  display:grid; place-items:center; margin-bottom:12px;
 }
 .nk-popup-icon{ width:24px; height:24px; color:#0a84ff; }
 .nk-popup-title{ font-size:16px; font-weight:700; color:#fff; margin-bottom:6px; }
@@ -93,88 +81,72 @@ body.nk-lock-scroll{
   width:100%; height:44px; border-radius:999px;
   border:none; background:#0a84ff; color:#fff;
   font-size:15px; font-weight:600; cursor:pointer;
-  transition:transform .16s cubic-bezier(.32,.72,0,1);
 }
 .nk-popup-btn:active{ transform:scale(.96); }
 
-/* ---------- OVERLAY BASE - FIX CUT ---------- */
+/* ---------- OVERLAY - FULL HEIGHT NO CUT ---------- */
 .nk-newchat-overlay{
   position:fixed;
   inset:0;
-  left:0; right:0; top:0; bottom:0;
   width:100vw;
   height:100dvh;
-  height:100vh;
+  height:100svh;
+  min-height:100dvh;
+  min-height:100svh;
   z-index:9999999;
   background:#000;
   display:none;
-  overflow:hidden; /* outer no scroll */
-  overscroll-behavior:none;
-  touch-action:none;
+  flex-direction:column;
+  overflow:hidden;
 }
-.nk-newchat-overlay.show{ display:flex; flex-direction:column; }
+.nk-newchat-overlay.show{ display:flex; }
 .nk-newchat-overlay.nk-second{ z-index:99999991; }
 .nk-newchat-overlay.nk-third{ z-index:99999992; }
 .nk-newchat-overlay.nk-fourth{ z-index:99999993; }
 
-/* ---------- SHEET - FLEX COLUMN LIKE YOUR CHAT-LOAD-LIST ---------- */
-/* This is key fix: sheet is flex column, height 100%, not scrolling */
+/* SHEET - FULL HEIGHT FLEX COLUMN */
 .nk-newchat-sheet{
   width:100%;
   height:100%;
+  min-height:100%;
   max-height:100%;
   background:#000;
   display:flex;
   flex-direction:column;
-  overflow:hidden; /* no scroll here */
-  will-change:transform;
-  overscroll-behavior:none;
+  overflow:hidden;
   box-sizing:border-box;
-  padding-top:env(safe-area-inset-top);
-  padding-bottom:env(safe-area-inset-bottom);
 }
 
 /* ---------- DESKTOP ---------- */
 @media (min-width:769px){
-  .nk-newchat-overlay{
-    left:55px; width:500px; right:auto;
-    background:#000;
-    overscroll-behavior:auto;
-    touch-action:auto;
-  }
-  .nk-newchat-sheet{
-    padding-top:0; padding-bottom:0;
-    background:#000;
-    overscroll-behavior:auto;
-    touch-action:auto;
-  }
+  .nk-newchat-overlay{ left:55px; width:500px; right:auto; background:#000; }
+  .nk-newchat-sheet{ background:#000; }
   .nk-newchat-overlay.show .nk-newchat-sheet{
     animation:nkSlideLeft .38s cubic-bezier(.32,.72,0,1) forwards;
   }
   @keyframes nkSlideLeft{ 0%{ transform:translateX(-100%); } 100%{ transform:translateX(0); } }
 }
 
-/* ---------- MOBILE FIX - NO CUT UNDER - INNER SCROLL ---------- */
+/* ---------- MOBILE - FULL HEIGHT FIX ---------- */
 @media (max-width:768px){
   .nk-newchat-overlay{
     position:fixed !important;
     left:0 !important; right:0 !important; top:0 !important; bottom:0 !important;
     width:100vw !important;
     height:100dvh !important;
-    height:100vh !important;
     height:100svh !important;
     min-height:100dvh !important;
     min-height:100svh !important;
     min-height:-webkit-fill-available !important;
-    z-index:9999999 !important;
+    max-height:100dvh !important;
+    max-height:100svh !important;
     background:#0f0f0f !important;
     border-radius:0 !important;
     margin:0 !important;
     padding:0 !important;
+    overflow:hidden !important;
     display:none;
     flex-direction:column !important;
-    overflow:hidden !important; /* outer no scroll */
-    overscroll-behavior:none !important;
   }
   .nk-newchat-overlay.show{
     display:flex !important;
@@ -184,63 +156,56 @@ body.nk-lock-scroll{
   .nk-newchat-sheet{
     width:100% !important;
     height:100% !important;
+    min-height:100% !important;
+    max-height:100% !important;
     height:100dvh !important;
     height:100svh !important;
-    max-height:100dvh !important;
-    max-height:100svh !important;
-    min-height:100dvh !important;
     min-height:-webkit-fill-available !important;
-    border-radius:0 !important;
     background:#0f0f0f !important;
-    /* Dynamic Island - bring down small 8px + safe-area */
-    padding-top:calc(8px + env(safe-area-inset-top)) !important;
-    padding-bottom:0 !important; /* bottom handled by fixed next button */
-    padding-left:env(safe-area-inset-left) !important;
-    padding-right:env(safe-area-inset-right) !important;
-    overflow:hidden !important; /* sheet no scroll, inner scrolls */
-    overscroll-behavior:none !important;
+    border-radius:0 !important;
+    overflow:hidden !important;
     display:flex !important;
     flex-direction:column !important;
     box-sizing:border-box !important;
+    /* Dynamic Island - small down */
+    padding-top:0 !important;
+    padding-bottom:0 !important;
     animation:nkSlideUpFull .4s cubic-bezier(.32,.72,0,1) forwards;
   }
   @keyframes nkSlideUpFull{ 0%{ transform:translateY(100%); } 100%{ transform:translateY(0); } }
 }
 
-/* ---------- HEADER ---------- */
+/* ---------- HEADER - FIXED TOP ---------- */
 .nk-newchat-header{
-  position:relative;
   height:60px; min-height:60px;
   display:flex; align-items:center; justify-content:center;
   border-bottom:1px solid #2a2a2e;
   background:#000;
-  flex-shrink:0; /* header never shrink */
-  z-index:2;
+  flex-shrink:0;
+  z-index:5;
+  position:relative;
 }
 .nk-glass-fixed{
-  position:sticky; top:0;
-  background:rgba(0,0,0,0.72);
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
+  position:relative;
+  background:#000;
   border-bottom:1px solid #2a2a2e;
   flex-shrink:0;
+  z-index:5;
 }
 @media (max-width:768px){
-  .nk-glass-fixed{
-    background:rgba(15,15,15,0.88) !important;
-    backdrop-filter:blur(18px);
-    -webkit-backdrop-filter:blur(18px);
-    padding-top:calc(8px + env(safe-area-inset-top)) !important;
-    min-height:calc(60px + 8px + env(safe-area-inset-top)) !important;
-    height:auto !important;
-    top:0 !important;
-    flex-shrink:0 !important;
-  }
   .nk-newchat-header{
     background:#0f0f0f !important;
     border-bottom:1px solid #2a2a2e !important;
-    min-height:calc(56px + env(safe-area-inset-top)) !important;
-    padding-top:env(safe-area-inset-top) !important;
+    height:60px !important;
+    min-height:60px !important;
+    padding-top:calc(env(safe-area-inset-top) + 8px) !important;
+    padding-bottom:8px !important;
+    flex-shrink:0 !important;
+  }
+  .nk-glass-fixed{
+    background:#0f0f0f !important;
+    padding-top:calc(env(safe-area-inset-top) + 8px) !important;
+    min-height:calc(60px + env(safe-area-inset-top) + 8px) !important;
     flex-shrink:0 !important;
   }
 }
@@ -249,13 +214,11 @@ body.nk-lock-scroll{
   width:34px; height:34px; border-radius:999px;
   border:none; display:grid; place-items:center;
   cursor:pointer; flex-shrink:0;
-  transition:transform .16s cubic-bezier(.32,.72,0,1);
 }
 .nk-back-btn{ position:absolute; left:14px; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.08); color:#fff; }
 .nk-close-btn{ position:absolute; right:14px; top:50%; transform:translateY(-50%); background:#1c1c1e; color:#fff; }
 .nk-mark-btn{ position:absolute; right:14px; top:50%; transform:translateY(-50%); background:#0a84ff; color:#fff; }
-.nk-back-btn:active, .nk-close-btn:active, .nk-mark-btn:active{ transform:translateY(-50%) scale(.9); }
-.nk-close-btn.nk-wiggle, .nk-back-btn.nk-wiggle{ animation:nkWigglePop .4s cubic-bezier(.32,.72,0,1); }
+.nk-close-btn.nk-wiggle, .nk-back-btn.nk-wiggle{ animation:nkWigglePop .4s ease; }
 @keyframes nkWigglePop{
   0%{ transform:translateY(-50%) scale(1); }
   30%{ transform:translateY(-50%) scale(1.12) rotate(-6deg); }
@@ -273,153 +236,91 @@ body.nk-lock-scroll{
   border-radius:999px;
   background:rgba(28,28,30,0.9);
   border:none !important;
-  transition:all .22s cubic-bezier(.32,.72,0,1);
 }
-.nk-search-box:focus-within{ background:rgba(36,36,38,0.95); transform:scale(1.01); }
-.nk-search-box.nk-line-only{
-  border-radius:999px !important;
-  background:rgba(28,28,30,0.9) !important;
-  border:none !important;
-  padding:11px 16px !important;
-}
-.nk-search-box input{
-  flex:1; background:transparent; border:none; outline:none;
-  color:#fff; font-size:15px;
-}
+.nk-search-box input{ flex:1; background:transparent; border:none; outline:none; color:#fff; font-size:15px; }
 .nk-search-box input::placeholder{ color:#8e8e93; }
 .nk-search-icon{ width:18px; height:18px; color:#8e8e93; flex-shrink:0; }
 .nk-glass-fixed-search{
-  position:sticky; top:60px;
+  padding:6px 0 10px 0;
+  flex-shrink:0;
   background:transparent;
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
-  z-index:1;
-  border-bottom:none;
-  padding-top:6px; padding-bottom:10px;
-  flex-shrink:0; /* search never shrink */
-}
-@media (max-width:768px){
-  .nk-glass-fixed-search{
-    top:calc(60px + 8px + env(safe-area-inset-top)) !important;
-    background:transparent !important;
-    position:sticky !important;
-    flex-shrink:0 !important;
-  }
 }
 
-/* ---------- PLUS SCROLL AREA - LIKE YOUR CHAT-ITEMS-LIST ---------- */
-/* Key fix: flex:1 min-height:0 overflow-y:auto like your .chat-items-list */
-.nk-plus-scroll-area{
+/* ---------- SCROLL AREAS - FLEX:1 MIN-HEIGHT:0 ---------- */
+/* This is what stops cut - inner scroll only */
+.nk-plus-scroll-area,
+.nk-form-wrap,
+.nk-profile-wrap,
+.nk-newchat-list,
+.nk-permission-list{
   flex:1 1 0 !important;
   min-height:0 !important;
   overflow-y:auto !important;
   overflow-x:hidden !important;
   -webkit-overflow-scrolling:touch !important;
   overscroll-behavior:contain !important;
-  display:flex !important;
-  flex-direction:column !important;
-  padding-bottom:20px; /* normal desktop */
+  box-sizing:border-box !important;
 }
+
+/* Padding bottom for fixed next button */
+.nk-plus-scroll-area{ padding-bottom:20px; }
+.nk-form-wrap{ padding:20px; display:flex; flex-direction:column; gap:26px; }
+.nk-profile-wrap{ padding:0 0 10px 0; display:flex; flex-direction:column; }
+.nk-newchat-list{ padding:0 0 10px 0; }
+.nk-permission-list{ padding:8px 0; }
+
 @media (max-width:768px){
-  .nk-plus-scroll-area{
-    flex:1 1 0 !important;
-    min-height:0 !important;
-    overflow-y:auto !important;
-    overflow-x:hidden !important;
-    -webkit-overflow-scrolling:touch !important;
-    overscroll-behavior:contain !important;
-    padding-bottom:calc(90px + env(safe-area-inset-bottom)) !important; /* space for fixed next */
+  .nk-plus-scroll-area,
+  .nk-form-wrap,
+  .nk-profile-wrap,
+  .nk-newchat-list,
+  .nk-permission-list{
+    padding-bottom:calc(80px + env(safe-area-inset-bottom) + 20px) !important;
+  }
+  .nk-form-wrap{
+    padding:20px 20px calc(100px + env(safe-area-inset-bottom)) 20px !important;
   }
 }
-.nk-up-section{ padding:6px 0 0 0; flex-shrink:0; }
+
+/* ---------- ROWS ---------- */
 .nk-newchat-row{
   width:100%; display:flex; align-items:center; gap:12px;
   padding:15px 20px;
   background:transparent; border:none;
   border-bottom:1px solid #2a2a2e;
   cursor:pointer; text-align:left;
-  transition:transform .16s cubic-bezier(.32,.72,0,1), background .16s ease;
   flex-shrink:0;
 }
-.nk-newchat-row:active{ transform:scale(.98); background:rgba(255,255,255,0.05); }
 .nk-row-icon{ width:40px; height:40px; border-radius:999px; display:grid; place-items:center; flex-shrink:0; }
 .nk-row-icon.nk-round-icon{ background:#1c1c1e; border:1px solid #2a2a2e; }
-.nk-icon-stack{ position:relative; display:grid; place-items:center; }
 .nk-main-icon{ width:19px; height:19px; color:#fff; }
-.nk-plus-small{ position:absolute; right:-5px; bottom:-3px; width:13px; height:13px; background:#0a84ff; border-radius:999px; color:#fff; padding:1px; border:2px solid #000; }
 .nk-row-info{ flex:1; min-width:0; display:flex; flex-direction:column; }
 .nk-row-title{ font-size:15px; font-weight:600; color:#fff; }
-.nk-row-sub{ font-size:12px; color:#8e8e93; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.nk-row-sub{ font-size:12px; color:#8e8e93; margin-top:2px; }
 .nk-chevron{ width:18px; height:18px; color:#3a3a3c; flex-shrink:0; }
 .nk-straight-line{ height:1px; background:#2a2a2e; margin:0 20px; flex-shrink:0; }
-.nk-down-section{ padding:0 0 20px 0; flex-shrink:0; }
-.nk-section-label{ font-size:12px; font-weight:600; color:#8e8e93; padding:14px 20px 8px 20px; text-transform:uppercase; letter-spacing:0.4px; flex-shrink:0; }
-.nk-results{ padding:0; flex-shrink:0; }
-.nk-person-row{ padding:12px 20px; }
-.nk-row-icon.nk-person-avatar{ background:#2a2a2e; color:#fff; font-weight:700; font-size:14px; width:38px; height:38px; }
-.nk-empty{ font-size:14px; color:#8e8e93; text-align:center; padding:24px 20px; line-height:1.4; }
+.nk-down-section{ padding:0 0 10px 0; flex-shrink:0; }
+.nk-section-label{ font-size:12px; font-weight:600; color:#8e8e93; padding:14px 20px 8px 20px; text-transform:uppercase; flex-shrink:0; }
+.nk-empty{ font-size:14px; color:#8e8e93; text-align:center; padding:24px 20px; }
 .hidden{ display:none !important; }
 
-/* ---------- FORM - NEW ID - FIX CUT ---------- */
-.nk-form-wrap{
-  padding:20px;
-  display:flex;
-  flex-direction:column;
-  gap:26px;
-  flex:1 1 0 !important;
-  min-height:0 !important;
-  overflow-y:auto !important;
-  overflow-x:hidden !important;
-  -webkit-overflow-scrolling:touch !important;
-  overscroll-behavior:contain !important;
-  box-sizing:border-box;
-}
-@media (max-width:768px){
-  .nk-form-wrap{
-    flex:1 1 0 !important;
-    min-height:0 !important;
-    padding-bottom:calc(110px + env(safe-area-inset-bottom)) !important;
-  }
-}
+/* ---------- INPUTS ---------- */
 .nk-input-group{ display:flex; flex-direction:column; gap:8px; flex-shrink:0; }
-.nk-input-label{ font-size:12px; font-weight:600; color:#8e8e93; text-transform:uppercase; letter-spacing:0.3px; }
-.nk-input-line-box{ display:flex; align-items:center; gap:10px; border-bottom:1px solid #2a2a2e; padding:10px 0; transition:border-color .2s ease; flex-shrink:0; }
-.nk-input-line-box:focus-within{ border-bottom-color:#3a3a3c; }
+.nk-input-label{ font-size:12px; font-weight:600; color:#8e8e93; text-transform:uppercase; }
+.nk-input-line-box{ display:flex; align-items:center; gap:10px; border-bottom:1px solid #2a2a2e; padding:10px 0; flex-shrink:0; }
 .nk-input-line-box input{ flex:1; background:transparent; border:none; outline:none; color:#fff; font-size:16px; }
 .nk-input-line-box input::placeholder{ color:#3a3a3c; }
 .nk-id-prefix{ color:#8e8e93; font-size:15px; }
 
-/* ---------- PROFILE - FIX CUT ---------- */
-.nk-profile-wrap{
-  flex:1 1 0 !important;
-  min-height:0 !important;
-  overflow-y:auto !important;
-  overflow-x:hidden !important;
-  -webkit-overflow-scrolling:touch !important;
-  overscroll-behavior:contain !important;
-  padding:0 0 10px 0;
-  display:flex;
-  flex-direction:column;
-  box-sizing:border-box;
-}
-@media (max-width:768px){
-  .nk-profile-wrap{
-    flex:1 1 0 !important;
-    min-height:0 !important;
-    padding-bottom:calc(110px + env(safe-area-inset-bottom)) !important;
-  }
-}
+/* ---------- PROFILE ---------- */
 .nk-profile-image-wrap{ display:flex; justify-content:center; padding:22px 20px 12px 20px; flex-shrink:0; }
 .nk-big-circle{
   width:108px; height:108px; border-radius:999px;
   background:#1c1c1e; border:1px dashed #2a2a2e;
   display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
   cursor:pointer; position:relative; overflow:hidden;
-  transition:transform .18s cubic-bezier(.32,.72,0,1);
 }
-.nk-big-circle:active{ transform:scale(.96); }
 .nk-big-circle img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
-.nk-profile-circle{ border-style:solid; }
 .nk-camera-icon{ width:26px; height:26px; color:#8e8e93; }
 .nk-add-photo-text{ font-size:11px; color:#8e8e93; }
 .nk-profile-info{ display:flex; flex-direction:column; align-items:center; gap:4px; padding:0 20px 10px 20px; text-align:center; flex-shrink:0; }
@@ -450,60 +351,24 @@ body.nk-lock-scroll{
 .nk-konnekting-text{ font-size:13px; font-weight:600; color:#0a84ff; animation:nkPulse 1s ease-in-out infinite; }
 @keyframes nkPulse{ 0%,100%{ opacity:.6; } 50%{ opacity:1; } }
 
-/* ---------- NEW CHAT LIST + PERMISSION LIST - FIX CUT ---------- */
-.nk-newchat-list{
-  flex:1 1 0 !important;
-  min-height:0 !important;
-  overflow-y:auto !important;
-  overflow-x:hidden !important;
-  -webkit-overflow-scrolling:touch !important;
-  overscroll-behavior:contain !important;
-  padding:0 0 10px 0;
-  box-sizing:border-box;
-}
-.nk-permission-list{
-  flex:1 1 0 !important;
-  min-height:0 !important;
-  overflow-y:auto !important;
-  overflow-x:hidden !important;
-  -webkit-overflow-scrolling:touch !important;
-  overscroll-behavior:contain !important;
-  padding:8px 0;
-  box-sizing:border-box;
-}
-@media (max-width:768px){
-  .nk-permission-list{
-    padding-bottom:calc(110px + env(safe-area-inset-bottom)) !important;
-  }
-  .nk-newchat-list{
-    padding-bottom:calc(110px + env(safe-area-inset-bottom)) !important;
-  }
-}
-
-/* ---------- GROUP IMAGE ---------- */
-.nk-group-image-wrap{ display:flex; justify-content:center; padding:22px 20px 12px 20px; flex-shrink:0; }
-
-/* ---------- BOTTOM NEXT - FIXED NOT CUT ---------- */
+/* ---------- BOTTOM NEXT - FIXED BOTTOM NEVER CUT ---------- */
 .nk-bottom-next-wrap{
+  flex-shrink:0;
   padding:14px 20px calc(14px + env(safe-area-inset-bottom));
-  flex-shrink:0; /* never shrink */
   border-top:1px solid #2a2a2e;
   background:#000;
-  position:sticky;
-  bottom:0;
-  z-index:2;
+  z-index:10;
   box-sizing:border-box;
 }
 @media (max-width:768px){
   .nk-bottom-next-wrap{
-    position:fixed !important;
-    left:0 !important; right:0 !important; bottom:0 !important;
+    position:sticky !important;
+    bottom:0 !important;
+    left:0 !important; right:0 !important;
     background:#0f0f0f !important;
     padding:12px 20px calc(12px + env(safe-area-inset-bottom)) !important;
     border-top:1px solid #2a2a2e !important;
-    z-index:10 !important;
     flex-shrink:0 !important;
-    box-sizing:border-box !important;
   }
 }
 .nk-next-border{
@@ -511,21 +376,17 @@ body.nk-lock-scroll{
   background:#0a84ff; color:#fff;
   display:flex; align-items:center; justify-content:center; gap:8px;
   font-size:15px; font-weight:600; cursor:pointer;
-  transition:transform .16s cubic-bezier(.32,.72,0,1);
 }
 .nk-next-border:active{ transform:scale(.97); }
-
+.nk-group-image-wrap{ display:flex; justify-content:center; padding:22px 20px 12px 20px; flex-shrink:0; }
 .nk-permission-row{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; padding:16px 20px; border-bottom:1px solid #2a2a2e; flex-shrink:0; }
-.nk-permission-info{ flex:1; min-width:0; }
 .nk-permission-title{ font-size:15px; font-weight:600; color:#fff; }
 .nk-permission-desc{ font-size:12px; color:#8e8e93; margin-top:5px; line-height:1.4; }
-.nk-toggle{ width:48px; height:28px; border-radius:999px; background:#3a3a3c; border:none; position:relative; cursor:pointer; flex-shrink:0; transition:background .24s ease; }
+.nk-toggle{ width:48px; height:28px; border-radius:999px; background:#3a3a3c; border:none; position:relative; cursor:pointer; flex-shrink:0; }
 .nk-toggle[data-on="true"]{ background:#34c759; }
-.nk-toggle-knob{ position:absolute; top:2px; left:2px; width:24px; height:24px; border-radius:999px; background:#fff; transition:transform .28s cubic-bezier(.32,.72,0,1); }
+.nk-toggle-knob{ position:absolute; top:2px; left:2px; width:24px; height:24px; border-radius:999px; background:#fff; transition:transform .28s ease; }
 .nk-toggle[data-on="true"] .nk-toggle-knob{ transform:translateX(20px); }
-.nk-fake-badge{ background:#0a84ff; color:#fff; font-size:10px; font-weight:700; padding:2px 6px; border-radius:999px; margin-left:6px; }
-.chat-item.nk-fake{ background:rgba(10,132,255,0.08) !important; border-left:3px solid #0a84ff !important; pointer-events:auto !important; }
 
-/* Hide scrollbars like your main css */
-.nk-plus-scroll-area::-webkit-scrollbar, .nk-form-wrap::-webkit-scrollbar, .nk-newchat-list::-webkit-scrollbar, .nk-permission-list::-webkit-scrollbar, .nk-profile-wrap::-webkit-scrollbar{ display:none; width:0; height:0; }
+/* Hide scrollbars */
+.nk-plus-scroll-area::-webkit-scrollbar, .nk-form-wrap::-webkit-scrollbar, .nk-newchat-list::-webkit-scrollbar, .nk-permission-list::-webkit-scrollbar, .nk-profile-wrap::-webkit-scrollbar{ display:none; width:0; }
 .nk-plus-scroll-area, .nk-form-wrap, .nk-newchat-list, .nk-permission-list, .nk-profile-wrap{ scrollbar-width:none; -ms-overflow-style:none; }
