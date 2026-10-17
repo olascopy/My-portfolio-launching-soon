@@ -392,7 +392,7 @@
       if(!existing){
         const chatObj = { id, name: selectedProfileUser.name, username: selectedProfileUser.username, fake:true };
         fakeChats.unshift(chatObj);
-        fakeMessagesMap[id] = [{ text:`Chat with ${selectedProfileUser.name} @${selectedProfileUser.username} verified ${entered} 🎉`, sender:'other' }];
+        fakeMessagesMap[id] = [{ text:`Chat with ${selectedProfileUser.name} @${selectedProfileUser.username} verified ${entered} `, sender:'other' }];
         const initials = selectedProfileUser.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
         const div = document.createElement('div');
         div.className = 'chat-item nk-fake';
