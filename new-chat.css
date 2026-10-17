@@ -1,19 +1,23 @@
 /* ================================================================ */
-/* NK NEW CHAT - CSS V12 CLEAN - FIX ALL HEIGHT + BOTTOM CUT */
-/* - No cut under mobile, full height 100dvh/100svh */
-/* - Backgrounds New ID, Groups, Permissions all fixed full */
-/* - Inner scroll only, outer no scroll, like chat-items-list */
-/* - Next button fixed bottom, content never cut under */
-/* - Dynamic Island / notch safe-area detect */
+/* NK NEW CHAT - CSS V13 CLEAN - EXTRA EXTRA HEIGHT MOBILE FIX */
+/* - Mobile takes extra extra height 100dvh+100svh+safe-area+20px */
+/* - All backgrounds fixed: New ID, Groups, all except scroll area */
+/* - SVG backgrounds fixed, not scrolling with content */
+/* - No cut bottom, comes down small for Dynamic Island/Android */
+/* - Scroll areas only scroll like chat-items-list */
 /* - Soft OLED #0f0f0f not chocolate */
 /* ================================================================ */
 
-/* ---------- LOCK BODY ---------- */
+/* ---------- LOCK BODY - EXTRA HEIGHT ---------- */
 body.nk-lock-scroll{
   overflow:hidden !important;
   height:100dvh !important;
   height:100svh !important;
+  min-height:100dvh !important;
+  min-height:-webkit-fill-available !important;
   overscroll-behavior:none !important;
+  /* Extra extra height for mobile */
+  padding-bottom:env(safe-area-inset-bottom) !important;
 }
 @media (max-width:768px){
   body.nk-lock-scroll .sidebar-section,
@@ -41,6 +45,9 @@ body.nk-lock-scroll{
   inset:0;
   width:100vw;
   height:100dvh;
+  height:100svh;
+  min-height:100dvh;
+  min-height:-webkit-fill-available;
   z-index:100000000;
   background:rgba(0,0,0,0.45);
   backdrop-filter:blur(10px);
@@ -84,7 +91,8 @@ body.nk-lock-scroll{
 }
 .nk-popup-btn:active{ transform:scale(.96); }
 
-/* ---------- OVERLAY - FULL HEIGHT NO CUT ---------- */
+/* ---------- OVERLAY - EXTRA EXTRA HEIGHT, BACKGROUND FIXED ---------- */
+/* Background fixed, not moving, only scroll area scrolls */
 .nk-newchat-overlay{
   position:fixed;
   inset:0;
@@ -93,60 +101,70 @@ body.nk-lock-scroll{
   height:100svh;
   min-height:100dvh;
   min-height:100svh;
+  min-height:-webkit-fill-available;
   z-index:9999999;
   background:#000;
+  background-attachment:fixed !important; /* fixed bg */
   display:none;
   flex-direction:column;
   overflow:hidden;
+  overscroll-behavior:none;
 }
 .nk-newchat-overlay.show{ display:flex; }
 .nk-newchat-overlay.nk-second{ z-index:99999991; }
 .nk-newchat-overlay.nk-third{ z-index:99999992; }
 .nk-newchat-overlay.nk-fourth{ z-index:99999993; }
 
-/* SHEET - FULL HEIGHT FLEX COLUMN */
+/* ---------- SHEET - EXTRA EXTRA HEIGHT + FIXED BACKGROUND ---------- */
 .nk-newchat-sheet{
   width:100%;
   height:100%;
   min-height:100%;
   max-height:100%;
   background:#000;
+  background-attachment:fixed !important; /* svg bg fixed */
   display:flex;
   flex-direction:column;
   overflow:hidden;
   box-sizing:border-box;
+  position:relative;
+  /* Fixed background for all non-scroll */
 }
 
 /* ---------- DESKTOP ---------- */
 @media (min-width:769px){
-  .nk-newchat-overlay{ left:55px; width:500px; right:auto; background:#000; }
-  .nk-newchat-sheet{ background:#000; }
+  .nk-newchat-overlay{ left:55px; width:500px; right:auto; background:#000; background-attachment:fixed !important; }
+  .nk-newchat-sheet{ background:#000; background-attachment:fixed !important; }
   .nk-newchat-overlay.show .nk-newchat-sheet{
     animation:nkSlideLeft .38s cubic-bezier(.32,.72,0,1) forwards;
   }
   @keyframes nkSlideLeft{ 0%{ transform:translateX(-100%); } 100%{ transform:translateX(0); } }
 }
 
-/* ---------- MOBILE - FULL HEIGHT FIX ---------- */
+/* ---------- MOBILE - EXTRA EXTRA HEIGHT + COME DOWN SMALL ---------- */
 @media (max-width:768px){
   .nk-newchat-overlay{
     position:fixed !important;
     left:0 !important; right:0 !important; top:0 !important; bottom:0 !important;
     width:100vw !important;
+    /* Extra extra height - 100dvh + 100svh + safe-area + 20px */
     height:100dvh !important;
     height:100svh !important;
     min-height:100dvh !important;
     min-height:100svh !important;
     min-height:-webkit-fill-available !important;
-    max-height:100dvh !important;
-    max-height:100svh !important;
+    min-height:calc(100dvh + env(safe-area-inset-bottom) + 20px) !important;
+    max-height:calc(100dvh + env(safe-area-inset-bottom) + 20px) !important;
     background:#0f0f0f !important;
+    background-attachment:fixed !important; /* fixed bg */
     border-radius:0 !important;
     margin:0 !important;
     padding:0 !important;
+    padding-bottom:env(safe-area-inset-bottom) !important;
     overflow:hidden !important;
     display:none;
     flex-direction:column !important;
+    box-sizing:border-box !important;
   }
   .nk-newchat-overlay.show{
     display:flex !important;
@@ -156,57 +174,69 @@ body.nk-lock-scroll{
   .nk-newchat-sheet{
     width:100% !important;
     height:100% !important;
-    min-height:100% !important;
-    max-height:100% !important;
+    /* Extra extra height inside */
+    min-height:calc(100dvh + env(safe-area-inset-bottom) + 20px) !important;
+    min-height:-webkit-fill-available !important;
+    max-height:calc(100dvh + env(safe-area-inset-bottom) + 20px) !important;
     height:100dvh !important;
     height:100svh !important;
-    min-height:-webkit-fill-available !important;
     background:#0f0f0f !important;
+    background-attachment:fixed !important; /* all svg bg fixed */
     border-radius:0 !important;
     overflow:hidden !important;
     display:flex !important;
     flex-direction:column !important;
     box-sizing:border-box !important;
-    /* Dynamic Island - small down */
-    padding-top:0 !important;
+    /* Come down small for Dynamic Island - 12px + safe-area */
+    padding-top:calc(env(safe-area-inset-top) + 12px) !important;
     padding-bottom:0 !important;
-    animation:nkSlideUpFull .4s cubic-bezier(.32,.72,0,1) forwards;
+    padding-left:env(safe-area-inset-left) !important;
+    padding-right:env(safe-area-inset-right) !important;
+    animation:nkSlideUpFull .42s cubic-bezier(.32,.72,0,1) forwards;
   }
   @keyframes nkSlideUpFull{ 0%{ transform:translateY(100%); } 100%{ transform:translateY(0); } }
 }
 
-/* ---------- HEADER - FIXED TOP ---------- */
+/* ---------- HEADER - FIXED BACKGROUND, COME DOWN SMALL ---------- */
 .nk-newchat-header{
   height:60px; min-height:60px;
   display:flex; align-items:center; justify-content:center;
   border-bottom:1px solid #2a2a2e;
   background:#000;
+  background-attachment:fixed !important; /* fixed bg */
   flex-shrink:0;
-  z-index:5;
+  z-index:10;
   position:relative;
 }
 .nk-glass-fixed{
   position:relative;
   background:#000;
+  background-attachment:fixed !important; /* fixed bg */
   border-bottom:1px solid #2a2a2e;
   flex-shrink:0;
-  z-index:5;
+  z-index:10;
 }
 @media (max-width:768px){
   .nk-newchat-header{
     background:#0f0f0f !important;
+    background-attachment:fixed !important;
     border-bottom:1px solid #2a2a2e !important;
-    height:60px !important;
-    min-height:60px !important;
-    padding-top:calc(env(safe-area-inset-top) + 8px) !important;
-    padding-bottom:8px !important;
+    height:auto !important;
+    min-height:calc(56px + env(safe-area-inset-top) + 12px) !important;
+    padding-top:calc(env(safe-area-inset-top) + 12px) !important;
+    padding-bottom:12px !important;
     flex-shrink:0 !important;
+    position:relative !important;
+    z-index:10 !important;
   }
   .nk-glass-fixed{
     background:#0f0f0f !important;
-    padding-top:calc(env(safe-area-inset-top) + 8px) !important;
-    min-height:calc(60px + env(safe-area-inset-top) + 8px) !important;
+    background-attachment:fixed !important;
+    min-height:calc(60px + env(safe-area-inset-top) + 12px) !important;
+    padding-top:calc(env(safe-area-inset-top) + 12px) !important;
+    padding-bottom:8px !important;
     flex-shrink:0 !important;
+    z-index:10 !important;
   }
 }
 .nk-newchat-title{ font-size:17px; font-weight:600; color:#fff; }
@@ -228,13 +258,19 @@ body.nk-lock-scroll{
 .nk-desktop-only{ display:none; }
 @media (min-width:769px){ .nk-desktop-only{ display:grid; } .nk-close-btn{ display:none; } }
 
-/* ---------- SEARCH ---------- */
-.nk-search-wrap{ padding:10px 16px; flex-shrink:0; }
+/* ---------- SEARCH - FIXED BG ---------- */
+.nk-search-wrap{
+  padding:10px 16px;
+  flex-shrink:0;
+  background:transparent;
+  background-attachment:fixed !important;
+}
 .nk-search-box{
   display:flex; align-items:center; gap:10px;
   padding:11px 16px;
   border-radius:999px;
   background:rgba(28,28,30,0.9);
+  background-attachment:fixed !important;
   border:none !important;
 }
 .nk-search-box input{ flex:1; background:transparent; border:none; outline:none; color:#fff; font-size:15px; }
@@ -244,10 +280,12 @@ body.nk-lock-scroll{
   padding:6px 0 10px 0;
   flex-shrink:0;
   background:transparent;
+  background-attachment:fixed !important;
+  z-index:9;
 }
 
-/* ---------- SCROLL AREAS - FLEX:1 MIN-HEIGHT:0 ---------- */
-/* This is what stops cut - inner scroll only */
+/* ---------- SCROLL AREAS - ONLY THESE SCROLL, BG NOT FIXED FOR SCROLL ---------- */
+/* Fixed bg for everything except scroll */
 .nk-plus-scroll-area,
 .nk-form-wrap,
 .nk-profile-wrap,
@@ -260,25 +298,30 @@ body.nk-lock-scroll{
   -webkit-overflow-scrolling:touch !important;
   overscroll-behavior:contain !important;
   box-sizing:border-box !important;
+  /* Scroll area bg can scroll, but sheet bg fixed */
+  background:transparent !important;
+  /* Extra padding bottom so no cut under fixed next */
 }
 
-/* Padding bottom for fixed next button */
+/* Desktop padding */
 .nk-plus-scroll-area{ padding-bottom:20px; }
 .nk-form-wrap{ padding:20px; display:flex; flex-direction:column; gap:26px; }
 .nk-profile-wrap{ padding:0 0 10px 0; display:flex; flex-direction:column; }
 .nk-newchat-list{ padding:0 0 10px 0; }
 .nk-permission-list{ padding:8px 0; }
 
+/* Mobile extra padding for bottom - no cut */
 @media (max-width:768px){
   .nk-plus-scroll-area,
   .nk-form-wrap,
   .nk-profile-wrap,
   .nk-newchat-list,
   .nk-permission-list{
-    padding-bottom:calc(80px + env(safe-area-inset-bottom) + 20px) !important;
+    /* Extra extra space for fixed bottom + safe-area */
+    padding-bottom:calc(100px + env(safe-area-inset-bottom) + 30px) !important;
   }
   .nk-form-wrap{
-    padding:20px 20px calc(100px + env(safe-area-inset-bottom)) 20px !important;
+    padding:20px 20px calc(120px + env(safe-area-inset-bottom) + 30px) 20px !important;
   }
 }
 
@@ -299,21 +342,34 @@ body.nk-lock-scroll{
 .nk-row-sub{ font-size:12px; color:#8e8e93; margin-top:2px; }
 .nk-chevron{ width:18px; height:18px; color:#3a3a3c; flex-shrink:0; }
 .nk-straight-line{ height:1px; background:#2a2a2e; margin:0 20px; flex-shrink:0; }
-.nk-down-section{ padding:0 0 10px 0; flex-shrink:0; }
-.nk-section-label{ font-size:12px; font-weight:600; color:#8e8e93; padding:14px 20px 8px 20px; text-transform:uppercase; flex-shrink:0; }
+.nk-down-section{ padding:0 0 10px 0; flex-shrink:0; background:transparent; background-attachment:fixed !important; }
+.nk-section-label{ font-size:12px; font-weight:600; color:#8e8e93; padding:14px 20px 8px 20px; text-transform:uppercase; flex-shrink:0; background:transparent; }
 .nk-empty{ font-size:14px; color:#8e8e93; text-align:center; padding:24px 20px; }
 .hidden{ display:none !important; }
 
-/* ---------- INPUTS ---------- */
-.nk-input-group{ display:flex; flex-direction:column; gap:8px; flex-shrink:0; }
+/* ---------- INPUTS - FIXED BG ---------- */
+.nk-input-group{
+  display:flex; flex-direction:column; gap:8px; flex-shrink:0;
+  background:transparent; background-attachment:fixed !important;
+}
 .nk-input-label{ font-size:12px; font-weight:600; color:#8e8e93; text-transform:uppercase; }
-.nk-input-line-box{ display:flex; align-items:center; gap:10px; border-bottom:1px solid #2a2a2e; padding:10px 0; flex-shrink:0; }
+.nk-input-line-box{
+  display:flex; align-items:center; gap:10px;
+  border-bottom:1px solid #2a2a2e;
+  padding:10px 0; flex-shrink:0;
+  background:transparent; background-attachment:fixed !important;
+}
 .nk-input-line-box input{ flex:1; background:transparent; border:none; outline:none; color:#fff; font-size:16px; }
 .nk-input-line-box input::placeholder{ color:#3a3a3c; }
 .nk-id-prefix{ color:#8e8e93; font-size:15px; }
 
-/* ---------- PROFILE ---------- */
-.nk-profile-image-wrap{ display:flex; justify-content:center; padding:22px 20px 12px 20px; flex-shrink:0; }
+/* ---------- PROFILE - FIXED BG ---------- */
+.nk-profile-image-wrap{
+  display:flex; justify-content:center;
+  padding:22px 20px 12px 20px;
+  flex-shrink:0;
+  background:transparent; background-attachment:fixed !important;
+}
 .nk-big-circle{
   width:108px; height:108px; border-radius:999px;
   background:#1c1c1e; border:1px dashed #2a2a2e;
@@ -323,7 +379,11 @@ body.nk-lock-scroll{
 .nk-big-circle img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
 .nk-camera-icon{ width:26px; height:26px; color:#8e8e93; }
 .nk-add-photo-text{ font-size:11px; color:#8e8e93; }
-.nk-profile-info{ display:flex; flex-direction:column; align-items:center; gap:4px; padding:0 20px 10px 20px; text-align:center; flex-shrink:0; }
+.nk-profile-info{
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+  padding:0 20px 10px 20px; text-align:center; flex-shrink:0;
+  background:transparent; background-attachment:fixed !important;
+}
 .nk-profile-name{ font-size:19px; font-weight:700; color:#fff; }
 .nk-profile-username{ font-size:14px; color:#8e8e93; }
 .nk-profile-require-text{
@@ -333,7 +393,11 @@ body.nk-lock-scroll{
 }
 
 /* ---------- LEAVES ---------- */
-.nk-konnekting-wrap{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:22px 0; margin-top:6px; flex-shrink:0; }
+.nk-konnekting-wrap{
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:10px; padding:22px 0; margin-top:6px; flex-shrink:0;
+  background:transparent; background-attachment:fixed !important;
+}
 .nk-konnekting-wrap.hidden{ display:none; }
 .nk-leaves-circle{ position:relative; width:52px; height:52px; animation:nkCircleSpin 1.6s linear infinite; }
 @keyframes nkCircleSpin{ 0%{ transform:rotate(0deg); } 100%{ transform:rotate(360deg); } }
@@ -351,13 +415,14 @@ body.nk-lock-scroll{
 .nk-konnekting-text{ font-size:13px; font-weight:600; color:#0a84ff; animation:nkPulse 1s ease-in-out infinite; }
 @keyframes nkPulse{ 0%,100%{ opacity:.6; } 50%{ opacity:1; } }
 
-/* ---------- BOTTOM NEXT - FIXED BOTTOM NEVER CUT ---------- */
+/* ---------- BOTTOM NEXT - FIXED BOTTOM, FIXED BG, NEVER CUT ---------- */
 .nk-bottom-next-wrap{
   flex-shrink:0;
   padding:14px 20px calc(14px + env(safe-area-inset-bottom));
   border-top:1px solid #2a2a2e;
   background:#000;
-  z-index:10;
+  background-attachment:fixed !important; /* fixed bg */
+  z-index:15;
   box-sizing:border-box;
 }
 @media (max-width:768px){
@@ -366,9 +431,14 @@ body.nk-lock-scroll{
     bottom:0 !important;
     left:0 !important; right:0 !important;
     background:#0f0f0f !important;
-    padding:12px 20px calc(12px + env(safe-area-inset-bottom)) !important;
+    background-attachment:fixed !important; /* fixed bg */
+    padding:14px 20px calc(14px + env(safe-area-inset-bottom) + 10px) !important;
     border-top:1px solid #2a2a2e !important;
     flex-shrink:0 !important;
+    z-index:15 !important;
+    box-sizing:border-box !important;
+    /* Extra height - not cut */
+    min-height:calc(72px + env(safe-area-inset-bottom)) !important;
   }
 }
 .nk-next-border{
@@ -378,8 +448,19 @@ body.nk-lock-scroll{
   font-size:15px; font-weight:600; cursor:pointer;
 }
 .nk-next-border:active{ transform:scale(.97); }
-.nk-group-image-wrap{ display:flex; justify-content:center; padding:22px 20px 12px 20px; flex-shrink:0; }
-.nk-permission-row{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; padding:16px 20px; border-bottom:1px solid #2a2a2e; flex-shrink:0; }
+.nk-group-image-wrap{
+  display:flex; justify-content:center;
+  padding:22px 20px 12px 20px;
+  flex-shrink:0;
+  background:transparent; background-attachment:fixed !important;
+}
+.nk-permission-row{
+  display:flex; align-items:flex-start; justify-content:space-between;
+  gap:16px; padding:16px 20px;
+  border-bottom:1px solid #2a2a2e;
+  flex-shrink:0;
+  background:transparent; background-attachment:fixed !important;
+}
 .nk-permission-title{ font-size:15px; font-weight:600; color:#fff; }
 .nk-permission-desc{ font-size:12px; color:#8e8e93; margin-top:5px; line-height:1.4; }
 .nk-toggle{ width:48px; height:28px; border-radius:999px; background:#3a3a3c; border:none; position:relative; cursor:pointer; flex-shrink:0; }
@@ -387,6 +468,6 @@ body.nk-lock-scroll{
 .nk-toggle-knob{ position:absolute; top:2px; left:2px; width:24px; height:24px; border-radius:999px; background:#fff; transition:transform .28s ease; }
 .nk-toggle[data-on="true"] .nk-toggle-knob{ transform:translateX(20px); }
 
-/* Hide scrollbars */
+/* Hide scrollbars like main */
 .nk-plus-scroll-area::-webkit-scrollbar, .nk-form-wrap::-webkit-scrollbar, .nk-newchat-list::-webkit-scrollbar, .nk-permission-list::-webkit-scrollbar, .nk-profile-wrap::-webkit-scrollbar{ display:none; width:0; }
 .nk-plus-scroll-area, .nk-form-wrap, .nk-newchat-list, .nk-permission-list, .nk-profile-wrap{ scrollbar-width:none; -ms-overflow-style:none; }
