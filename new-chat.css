@@ -1,11 +1,11 @@
 /* ================================================================ */
-/* NK NEW CHAT - CSS V10 FINAL - MOBILE SCROLL FIX + OLED SOFT BG */
-/* - Mobile background scroll like load-list not fixed */
-/* - No break when scroll up/down - overscroll contain fix */
-/* - Dynamic Island / Android notch detection - safe-area small down */
-/* - Background no cut - 100dvh + -webkit-fill-available */
-/* - Next button fixed not go down too much */
-/* - New soft OLED charcoal #0f0f0f fits app, not chocolate not pure black */
+/* NK NEW CHAT - CSS V11 FINAL - FIX CUT UNDER MOBILE */
+/* - New ID, Groups, Permissions background no cut under */
+/* - Mobile scroll like chat-items-list flex:1 min-height:0 */
+/* - Not behave like normal chat loadlist scroll - inner scroll only */
+/* - Dynamic Island safe - 8px + safe-area */
+/* - Soft OLED charcoal #0f0f0f not chocolate */
+/* - Next button fixed well, not go down too much */
 /* ================================================================ */
 
 /* ---------- LOCK BODY ---------- */
@@ -37,7 +37,7 @@ body.nk-lock-scroll{
   transition:all .2s cubic-bezier(.32,.72,0,1) !important;
 }
 
-/* ---------- POPUP - CENTER OF YOUR STUFF ---------- */
+/* ---------- POPUP ---------- */
 .nk-popup-overlay{
   position:fixed;
   inset:0;
@@ -97,7 +97,7 @@ body.nk-lock-scroll{
 }
 .nk-popup-btn:active{ transform:scale(.96); }
 
-/* ---------- OVERLAY BASE ---------- */
+/* ---------- OVERLAY BASE - FIX CUT ---------- */
 .nk-newchat-overlay{
   position:fixed;
   inset:0;
@@ -108,21 +108,28 @@ body.nk-lock-scroll{
   z-index:9999999;
   background:#000;
   display:none;
-  overflow:hidden;
+  overflow:hidden; /* outer no scroll */
   overscroll-behavior:none;
   touch-action:none;
 }
-.nk-newchat-overlay.show{ display:flex; }
+.nk-newchat-overlay.show{ display:flex; flex-direction:column; }
 .nk-newchat-overlay.nk-second{ z-index:99999991; }
 .nk-newchat-overlay.nk-third{ z-index:99999992; }
 .nk-newchat-overlay.nk-fourth{ z-index:99999993; }
+
+/* ---------- SHEET - FLEX COLUMN LIKE YOUR CHAT-LOAD-LIST ---------- */
+/* This is key fix: sheet is flex column, height 100%, not scrolling */
 .nk-newchat-sheet{
-  width:100%; height:100%;
+  width:100%;
+  height:100%;
+  max-height:100%;
   background:#000;
-  display:flex; flex-direction:column;
-  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden; /* no scroll here */
   will-change:transform;
   overscroll-behavior:none;
+  box-sizing:border-box;
   padding-top:env(safe-area-inset-top);
   padding-bottom:env(safe-area-inset-bottom);
 }
@@ -147,9 +154,7 @@ body.nk-lock-scroll{
   @keyframes nkSlideLeft{ 0%{ transform:translateX(-100%); } 100%{ transform:translateX(0); } }
 }
 
-/* ---------- MOBILE FIX - SCROLL LIKE LOAD LIST + NO CUT + DYNAMIC ISLAND ---------- */
-/* Other devs: This is critical - mobile must scroll like chat-load-list, not fixed */
-/* Background #0f0f0f soft OLED charcoal fits app, not chocolate, not pure black */
+/* ---------- MOBILE FIX - NO CUT UNDER - INNER SCROLL ---------- */
 @media (max-width:768px){
   .nk-newchat-overlay{
     position:fixed !important;
@@ -157,19 +162,24 @@ body.nk-lock-scroll{
     width:100vw !important;
     height:100dvh !important;
     height:100vh !important;
-    height:100svh !important; /* small viewport fix */
+    height:100svh !important;
     min-height:100dvh !important;
     min-height:100svh !important;
     min-height:-webkit-fill-available !important;
     z-index:9999999 !important;
-    background:#0f0f0f !important; /* soft OLED charcoal fits app */
+    background:#0f0f0f !important;
     border-radius:0 !important;
     margin:0 !important;
     padding:0 !important;
-    overscroll-behavior:contain !important; /* no break when scroll */
-    -webkit-overflow-scrolling:touch !important;
+    display:none;
+    flex-direction:column !important;
+    overflow:hidden !important; /* outer no scroll */
+    overscroll-behavior:none !important;
   }
-  .nk-newchat-overlay.show{ display:flex !important; }
+  .nk-newchat-overlay.show{
+    display:flex !important;
+    flex-direction:column !important;
+  }
 
   .nk-newchat-sheet{
     width:100% !important;
@@ -181,33 +191,30 @@ body.nk-lock-scroll{
     min-height:100dvh !important;
     min-height:-webkit-fill-available !important;
     border-radius:0 !important;
-    background:#0f0f0f !important; /* same soft charcoal */
-    /* Bring down small - detect Dynamic Island / notch - safe area + 8px */
+    background:#0f0f0f !important;
+    /* Dynamic Island - bring down small 8px + safe-area */
     padding-top:calc(8px + env(safe-area-inset-top)) !important;
-    padding-bottom:0 !important; /* bottom handled by next-wrap fixed */
+    padding-bottom:0 !important; /* bottom handled by fixed next button */
     padding-left:env(safe-area-inset-left) !important;
     padding-right:env(safe-area-inset-right) !important;
-    /* Scroll like load list - not fixed */
-    overflow-y:auto !important;
-    overflow-x:hidden !important;
-    overscroll-behavior:contain !important;
-    -webkit-overflow-scrolling:touch !important;
-    touch-action:pan-y !important;
+    overflow:hidden !important; /* sheet no scroll, inner scrolls */
+    overscroll-behavior:none !important;
     display:flex !important;
     flex-direction:column !important;
+    box-sizing:border-box !important;
     animation:nkSlideUpFull .4s cubic-bezier(.32,.72,0,1) forwards;
   }
   @keyframes nkSlideUpFull{ 0%{ transform:translateY(100%); } 100%{ transform:translateY(0); } }
 }
 
-/* ---------- HEADER - BRING DOWN SMALL FOR DYNAMIC ISLAND ---------- */
+/* ---------- HEADER ---------- */
 .nk-newchat-header{
   position:relative;
   height:60px; min-height:60px;
   display:flex; align-items:center; justify-content:center;
   border-bottom:1px solid #2a2a2e;
   background:#000;
-  flex-shrink:0;
+  flex-shrink:0; /* header never shrink */
   z-index:2;
 }
 .nk-glass-fixed{
@@ -216,23 +223,25 @@ body.nk-lock-scroll{
   backdrop-filter:blur(18px);
   -webkit-backdrop-filter:blur(18px);
   border-bottom:1px solid #2a2a2e;
+  flex-shrink:0;
 }
 @media (max-width:768px){
   .nk-glass-fixed{
-    /* Bring down small - 12px + safe area for Dynamic Island/Android notch */
-    background:rgba(15,15,15,0.88) !important; /* soft charcoal glassy */
+    background:rgba(15,15,15,0.88) !important;
     backdrop-filter:blur(18px);
     -webkit-backdrop-filter:blur(18px);
     padding-top:calc(8px + env(safe-area-inset-top)) !important;
     min-height:calc(60px + 8px + env(safe-area-inset-top)) !important;
     height:auto !important;
     top:0 !important;
+    flex-shrink:0 !important;
   }
   .nk-newchat-header{
     background:#0f0f0f !important;
     border-bottom:1px solid #2a2a2e !important;
     min-height:calc(56px + env(safe-area-inset-top)) !important;
     padding-top:env(safe-area-inset-top) !important;
+    flex-shrink:0 !important;
   }
 }
 .nk-newchat-title{ font-size:17px; font-weight:600; color:#fff; }
@@ -256,7 +265,7 @@ body.nk-lock-scroll{
 .nk-desktop-only{ display:none; }
 @media (min-width:769px){ .nk-desktop-only{ display:grid; } .nk-close-btn{ display:none; } }
 
-/* ---------- SEARCH @USERNAME - ROUND NO BORDER ---------- */
+/* ---------- SEARCH ---------- */
 .nk-search-wrap{ padding:10px 16px; flex-shrink:0; }
 .nk-search-box{
   display:flex; align-items:center; gap:10px;
@@ -287,32 +296,39 @@ body.nk-lock-scroll{
   z-index:1;
   border-bottom:none;
   padding-top:6px; padding-bottom:10px;
+  flex-shrink:0; /* search never shrink */
 }
 @media (max-width:768px){
   .nk-glass-fixed-search{
     top:calc(60px + 8px + env(safe-area-inset-top)) !important;
     background:transparent !important;
     position:sticky !important;
+    flex-shrink:0 !important;
   }
 }
 
-/* ---------- PLUS SCROLL AREA - SCROLL LIKE LOAD LIST ---------- */
+/* ---------- PLUS SCROLL AREA - LIKE YOUR CHAT-ITEMS-LIST ---------- */
+/* Key fix: flex:1 min-height:0 overflow-y:auto like your .chat-items-list */
 .nk-plus-scroll-area{
-  flex:1;
-  overflow-y:auto;
-  -webkit-overflow-scrolling:touch;
-  overscroll-behavior:contain;
-  /* Fix no cut - ensure content visible */
-  min-height:0;
+  flex:1 1 0 !important;
+  min-height:0 !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  -webkit-overflow-scrolling:touch !important;
+  overscroll-behavior:contain !important;
+  display:flex !important;
+  flex-direction:column !important;
+  padding-bottom:20px; /* normal desktop */
 }
 @media (max-width:768px){
   .nk-plus-scroll-area{
+    flex:1 1 0 !important;
+    min-height:0 !important;
     overflow-y:auto !important;
+    overflow-x:hidden !important;
     -webkit-overflow-scrolling:touch !important;
     overscroll-behavior:contain !important;
-    flex:1 !important;
-    min-height:0 !important;
-    padding-bottom:calc(80px + env(safe-area-inset-bottom)) !important; /* space for next button */
+    padding-bottom:calc(90px + env(safe-area-inset-bottom)) !important; /* space for fixed next */
   }
 }
 .nk-up-section{ padding:6px 0 0 0; flex-shrink:0; }
@@ -323,6 +339,7 @@ body.nk-lock-scroll{
   border-bottom:1px solid #2a2a2e;
   cursor:pointer; text-align:left;
   transition:transform .16s cubic-bezier(.32,.72,0,1), background .16s ease;
+  flex-shrink:0;
 }
 .nk-newchat-row:active{ transform:scale(.98); background:rgba(255,255,255,0.05); }
 .nk-row-icon{ width:40px; height:40px; border-radius:999px; display:grid; place-items:center; flex-shrink:0; }
@@ -335,48 +352,64 @@ body.nk-lock-scroll{
 .nk-row-sub{ font-size:12px; color:#8e8e93; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .nk-chevron{ width:18px; height:18px; color:#3a3a3c; flex-shrink:0; }
 .nk-straight-line{ height:1px; background:#2a2a2e; margin:0 20px; flex-shrink:0; }
-.nk-down-section{ padding:0 0 20px 0; }
-.nk-section-label{ font-size:12px; font-weight:600; color:#8e8e93; padding:14px 20px 8px 20px; text-transform:uppercase; letter-spacing:0.4px; }
-.nk-results{ padding:0; }
+.nk-down-section{ padding:0 0 20px 0; flex-shrink:0; }
+.nk-section-label{ font-size:12px; font-weight:600; color:#8e8e93; padding:14px 20px 8px 20px; text-transform:uppercase; letter-spacing:0.4px; flex-shrink:0; }
+.nk-results{ padding:0; flex-shrink:0; }
 .nk-person-row{ padding:12px 20px; }
 .nk-row-icon.nk-person-avatar{ background:#2a2a2e; color:#fff; font-weight:700; font-size:14px; width:38px; height:38px; }
 .nk-empty{ font-size:14px; color:#8e8e93; text-align:center; padding:24px 20px; line-height:1.4; }
 .hidden{ display:none !important; }
 
-/* ---------- FORM ---------- */
+/* ---------- FORM - NEW ID - FIX CUT ---------- */
 .nk-form-wrap{
-  padding:20px; display:flex; flex-direction:column; gap:26px;
-  flex:1; overflow-y:auto;
-  -webkit-overflow-scrolling:touch;
-  overscroll-behavior:contain;
-  min-height:0;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  gap:26px;
+  flex:1 1 0 !important;
+  min-height:0 !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  -webkit-overflow-scrolling:touch !important;
+  overscroll-behavior:contain !important;
+  box-sizing:border-box;
 }
 @media (max-width:768px){
   .nk-form-wrap{
-    padding-bottom:calc(90px + env(safe-area-inset-bottom)) !important;
+    flex:1 1 0 !important;
+    min-height:0 !important;
+    padding-bottom:calc(110px + env(safe-area-inset-bottom)) !important;
   }
 }
-.nk-input-group{ display:flex; flex-direction:column; gap:8px; }
+.nk-input-group{ display:flex; flex-direction:column; gap:8px; flex-shrink:0; }
 .nk-input-label{ font-size:12px; font-weight:600; color:#8e8e93; text-transform:uppercase; letter-spacing:0.3px; }
-.nk-input-line-box{ display:flex; align-items:center; gap:10px; border-bottom:1px solid #2a2a2e; padding:10px 0; transition:border-color .2s ease; }
+.nk-input-line-box{ display:flex; align-items:center; gap:10px; border-bottom:1px solid #2a2a2e; padding:10px 0; transition:border-color .2s ease; flex-shrink:0; }
 .nk-input-line-box:focus-within{ border-bottom-color:#3a3a3c; }
 .nk-input-line-box input{ flex:1; background:transparent; border:none; outline:none; color:#fff; font-size:16px; }
 .nk-input-line-box input::placeholder{ color:#3a3a3c; }
 .nk-id-prefix{ color:#8e8e93; font-size:15px; }
 
-/* ---------- PROFILE ---------- */
+/* ---------- PROFILE - FIX CUT ---------- */
 .nk-profile-wrap{
-  flex:1; overflow-y:auto; padding:0 0 10px 0;
-  -webkit-overflow-scrolling:touch; overscroll-behavior:contain;
-  display:flex; flex-direction:column;
-  min-height:0;
+  flex:1 1 0 !important;
+  min-height:0 !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  -webkit-overflow-scrolling:touch !important;
+  overscroll-behavior:contain !important;
+  padding:0 0 10px 0;
+  display:flex;
+  flex-direction:column;
+  box-sizing:border-box;
 }
 @media (max-width:768px){
   .nk-profile-wrap{
-    padding-bottom:calc(90px + env(safe-area-inset-bottom)) !important;
+    flex:1 1 0 !important;
+    min-height:0 !important;
+    padding-bottom:calc(110px + env(safe-area-inset-bottom)) !important;
   }
 }
-.nk-profile-image-wrap{ display:flex; justify-content:center; padding:22px 20px 12px 20px; }
+.nk-profile-image-wrap{ display:flex; justify-content:center; padding:22px 20px 12px 20px; flex-shrink:0; }
 .nk-big-circle{
   width:108px; height:108px; border-radius:999px;
   background:#1c1c1e; border:1px dashed #2a2a2e;
@@ -389,7 +422,7 @@ body.nk-lock-scroll{
 .nk-profile-circle{ border-style:solid; }
 .nk-camera-icon{ width:26px; height:26px; color:#8e8e93; }
 .nk-add-photo-text{ font-size:11px; color:#8e8e93; }
-.nk-profile-info{ display:flex; flex-direction:column; align-items:center; gap:4px; padding:0 20px 10px 20px; text-align:center; }
+.nk-profile-info{ display:flex; flex-direction:column; align-items:center; gap:4px; padding:0 20px 10px 20px; text-align:center; flex-shrink:0; }
 .nk-profile-name{ font-size:19px; font-weight:700; color:#fff; }
 .nk-profile-username{ font-size:14px; color:#8e8e93; }
 .nk-profile-require-text{
@@ -398,8 +431,8 @@ body.nk-lock-scroll{
   border-radius:999px; border:1px solid rgba(255,159,10,0.15);
 }
 
-/* ---------- 10 TINY LEAVES ---------- */
-.nk-konnekting-wrap{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:22px 0; margin-top:6px; }
+/* ---------- LEAVES ---------- */
+.nk-konnekting-wrap{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:22px 0; margin-top:6px; flex-shrink:0; }
 .nk-konnekting-wrap.hidden{ display:none; }
 .nk-leaves-circle{ position:relative; width:52px; height:52px; animation:nkCircleSpin 1.6s linear infinite; }
 @keyframes nkCircleSpin{ 0%{ transform:rotate(0deg); } 100%{ transform:rotate(360deg); } }
@@ -417,31 +450,61 @@ body.nk-lock-scroll{
 .nk-konnekting-text{ font-size:13px; font-weight:600; color:#0a84ff; animation:nkPulse 1s ease-in-out infinite; }
 @keyframes nkPulse{ 0%,100%{ opacity:.6; } 50%{ opacity:1; } }
 
-.nk-newchat-list{ flex:1; overflow-y:auto; padding:0 0 10px 0; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; min-height:0; }
+/* ---------- NEW CHAT LIST + PERMISSION LIST - FIX CUT ---------- */
+.nk-newchat-list{
+  flex:1 1 0 !important;
+  min-height:0 !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  -webkit-overflow-scrolling:touch !important;
+  overscroll-behavior:contain !important;
+  padding:0 0 10px 0;
+  box-sizing:border-box;
+}
+.nk-permission-list{
+  flex:1 1 0 !important;
+  min-height:0 !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  -webkit-overflow-scrolling:touch !important;
+  overscroll-behavior:contain !important;
+  padding:8px 0;
+  box-sizing:border-box;
+}
+@media (max-width:768px){
+  .nk-permission-list{
+    padding-bottom:calc(110px + env(safe-area-inset-bottom)) !important;
+  }
+  .nk-newchat-list{
+    padding-bottom:calc(110px + env(safe-area-inset-bottom)) !important;
+  }
+}
 
-/* ---------- BOTTOM NEXT - FIXED NOT GO DOWN TOO MUCH ---------- */
-/* Other devs: Next button fixed bottom, well positioned with safe-area, not jumping */
+/* ---------- GROUP IMAGE ---------- */
+.nk-group-image-wrap{ display:flex; justify-content:center; padding:22px 20px 12px 20px; flex-shrink:0; }
+
+/* ---------- BOTTOM NEXT - FIXED NOT CUT ---------- */
 .nk-bottom-next-wrap{
   padding:14px 20px calc(14px + env(safe-area-inset-bottom));
-  flex-shrink:0;
+  flex-shrink:0; /* never shrink */
   border-top:1px solid #2a2a2e;
-  background:transparent;
-  position:sticky; /* sticky bottom not go down too much */
+  background:#000;
+  position:sticky;
   bottom:0;
   z-index:2;
+  box-sizing:border-box;
 }
 @media (max-width:768px){
   .nk-bottom-next-wrap{
-    position:fixed !important; /* fixed bottom for mobile so no cut */
+    position:fixed !important;
     left:0 !important; right:0 !important; bottom:0 !important;
-    background:#0f0f0f !important; /* soft OLED charcoal */
+    background:#0f0f0f !important;
     padding:12px 20px calc(12px + env(safe-area-inset-bottom)) !important;
     border-top:1px solid #2a2a2e !important;
     z-index:10 !important;
+    flex-shrink:0 !important;
+    box-sizing:border-box !important;
   }
-}
-@media (min-width:769px){
-  .nk-bottom-next-wrap{ background:#000; position:sticky; bottom:0; }
 }
 .nk-next-border{
   width:100%; height:48px; border-radius:999px; border:none;
@@ -452,13 +515,7 @@ body.nk-lock-scroll{
 }
 .nk-next-border:active{ transform:scale(.97); }
 
-.nk-group-image-wrap{ display:flex; justify-content:center; padding:22px 20px 12px 20px; }
-.nk-permission-list{ flex:1; overflow-y:auto; padding:8px 0; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; min-height:0; }
-@media (max-width:768px){
-  .nk-permission-list{ padding-bottom:calc(90px + env(safe-area-inset-bottom)) !important; }
-  .nk-newchat-list{ padding-bottom:calc(90px + env(safe-area-inset-bottom)) !important; }
-}
-.nk-permission-row{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; padding:16px 20px; border-bottom:1px solid #2a2a2e; }
+.nk-permission-row{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; padding:16px 20px; border-bottom:1px solid #2a2a2e; flex-shrink:0; }
 .nk-permission-info{ flex:1; min-width:0; }
 .nk-permission-title{ font-size:15px; font-weight:600; color:#fff; }
 .nk-permission-desc{ font-size:12px; color:#8e8e93; margin-top:5px; line-height:1.4; }
@@ -466,8 +523,9 @@ body.nk-lock-scroll{
 .nk-toggle[data-on="true"]{ background:#34c759; }
 .nk-toggle-knob{ position:absolute; top:2px; left:2px; width:24px; height:24px; border-radius:999px; background:#fff; transition:transform .28s cubic-bezier(.32,.72,0,1); }
 .nk-toggle[data-on="true"] .nk-toggle-knob{ transform:translateX(20px); }
-
 .nk-fake-badge{ background:#0a84ff; color:#fff; font-size:10px; font-weight:700; padding:2px 6px; border-radius:999px; margin-left:6px; }
 .chat-item.nk-fake{ background:rgba(10,132,255,0.08) !important; border-left:3px solid #0a84ff !important; pointer-events:auto !important; }
 
-.nk-plus-scroll-area::-webkit-scrollbar, .nk-form-wrap::-webkit-scrollbar, .nk-newchat-list::-webkit-scrollbar, .nk-permission-list::-webkit-scrollbar, .nk-profile-wrap::-webkit-scrollbar{ display:none; }
+/* Hide scrollbars like your main css */
+.nk-plus-scroll-area::-webkit-scrollbar, .nk-form-wrap::-webkit-scrollbar, .nk-newchat-list::-webkit-scrollbar, .nk-permission-list::-webkit-scrollbar, .nk-profile-wrap::-webkit-scrollbar{ display:none; width:0; height:0; }
+.nk-plus-scroll-area, .nk-form-wrap, .nk-newchat-list, .nk-permission-list, .nk-profile-wrap{ scrollbar-width:none; -ms-overflow-style:none; }
