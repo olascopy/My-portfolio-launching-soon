@@ -1,9 +1,11 @@
 /* ================================================================ */
-/* NK NEW CHAT - CSS V9 FINAL - FIXED POPUP CENTER + NO BORDER SEARCH */
-/* - Popup center of your stuff (chat-load-list) for desktop, full center mobile */
-/* - Search @username round no border, transparent glass so scroll under shows */
-/* - No glowing/box-shadow heavy, clean soft */
-/* - Nice iPhone 17 popup click spring */
+/* NK NEW CHAT - CSS V10 FINAL - MOBILE SCROLL FIX + OLED SOFT BG */
+/* - Mobile background scroll like load-list not fixed */
+/* - No break when scroll up/down - overscroll contain fix */
+/* - Dynamic Island / Android notch detection - safe-area small down */
+/* - Background no cut - 100dvh + -webkit-fill-available */
+/* - Next button fixed not go down too much */
+/* - New soft OLED charcoal #0f0f0f fits app, not chocolate not pure black */
 /* ================================================================ */
 
 /* ---------- LOCK BODY ---------- */
@@ -36,8 +38,6 @@ body.nk-lock-scroll{
 }
 
 /* ---------- POPUP - CENTER OF YOUR STUFF ---------- */
-/* Other devs: Desktop popup must center inside chat-load-list (500px + 55px), not full viewport */
-/* Mobile: center full screen */
 .nk-popup-overlay{
   position:fixed;
   inset:0;
@@ -58,25 +58,18 @@ body.nk-lock-scroll{
 }
 .nk-popup-overlay.show{ opacity:1; pointer-events:auto; }
 .nk-popup-overlay.hidden{ display:none; }
-
-/* Desktop: popup centered over your stuff (chat-load-list area) */
 @media (min-width:769px){
   .nk-popup-overlay{
-    left:55px !important; /* after sidebar */
-    width:500px !important; /* same as chat-load-list */
+    left:55px !important;
+    width:500px !important;
     right:auto !important;
-    background:rgba(0,0,0,0.45) !important;
-    justify-content:center !important;
-    align-items:center !important;
   }
 }
-
-/* Popup box - nice iPhone 17 style, no glow */
 .nk-popup-box{
   width:100%;
   max-width:300px;
   background:#1c1c1e;
-  border:1px solid rgba(255,255,255,0.06); /* soft grey no glow */
+  border:1px solid rgba(255,255,255,0.06);
   border-radius:20px;
   padding:24px 20px 14px 20px;
   display:flex;
@@ -85,10 +78,8 @@ body.nk-lock-scroll{
   text-align:center;
   transform:scale(.92) translateY(8px);
   transition:transform .38s cubic-bezier(.32,.72,0,1);
-  will-change:transform;
 }
 .nk-popup-overlay.show .nk-popup-box{ transform:scale(1) translateY(0); }
-
 .nk-popup-icon-wrap{
   width:52px; height:52px; border-radius:999px;
   background:rgba(10,132,255,0.12);
@@ -96,19 +87,13 @@ body.nk-lock-scroll{
   margin-bottom:12px;
 }
 .nk-popup-icon{ width:24px; height:24px; color:#0a84ff; }
-.nk-popup-title{
-  font-size:16px; font-weight:700; color:#fff;
-  margin-bottom:6px; letter-spacing:-0.2px;
-}
-.nk-popup-desc{
-  font-size:14px; color:#8e8e93; line-height:1.4;
-  margin-bottom:18px;
-}
+.nk-popup-title{ font-size:16px; font-weight:700; color:#fff; margin-bottom:6px; }
+.nk-popup-desc{ font-size:14px; color:#8e8e93; line-height:1.4; margin-bottom:18px; }
 .nk-popup-btn{
   width:100%; height:44px; border-radius:999px;
   border:none; background:#0a84ff; color:#fff;
   font-size:15px; font-weight:600; cursor:pointer;
-  transition:transform .16s cubic-bezier(.32,.72,0,1), background .2s ease;
+  transition:transform .16s cubic-bezier(.32,.72,0,1);
 }
 .nk-popup-btn:active{ transform:scale(.96); }
 
@@ -142,7 +127,7 @@ body.nk-lock-scroll{
   padding-bottom:env(safe-area-inset-bottom);
 }
 
-/* Desktop - cover chat-load-list only from header start */
+/* ---------- DESKTOP ---------- */
 @media (min-width:769px){
   .nk-newchat-overlay{
     left:55px; width:500px; right:auto;
@@ -162,7 +147,9 @@ body.nk-lock-scroll{
   @keyframes nkSlideLeft{ 0%{ transform:translateX(-100%); } 100%{ transform:translateX(0); } }
 }
 
-/* Mobile - chocolate rhyme OLED */
+/* ---------- MOBILE FIX - SCROLL LIKE LOAD LIST + NO CUT + DYNAMIC ISLAND ---------- */
+/* Other devs: This is critical - mobile must scroll like chat-load-list, not fixed */
+/* Background #0f0f0f soft OLED charcoal fits app, not chocolate, not pure black */
 @media (max-width:768px){
   .nk-newchat-overlay{
     position:fixed !important;
@@ -170,33 +157,50 @@ body.nk-lock-scroll{
     width:100vw !important;
     height:100dvh !important;
     height:100vh !important;
+    height:100svh !important; /* small viewport fix */
     min-height:100dvh !important;
+    min-height:100svh !important;
     min-height:-webkit-fill-available !important;
     z-index:9999999 !important;
-    background:#1c140f !important;
+    background:#0f0f0f !important; /* soft OLED charcoal fits app */
     border-radius:0 !important;
-    margin:0 !important; padding:0 !important;
-    overscroll-behavior:none !important;
-    touch-action:none !important;
+    margin:0 !important;
+    padding:0 !important;
+    overscroll-behavior:contain !important; /* no break when scroll */
+    -webkit-overflow-scrolling:touch !important;
   }
   .nk-newchat-overlay.show{ display:flex !important; }
+
   .nk-newchat-sheet{
-    width:100% !important; height:100% !important;
-    max-height:none !important; min-height:100dvh !important;
+    width:100% !important;
+    height:100% !important;
+    height:100dvh !important;
+    height:100svh !important;
+    max-height:100dvh !important;
+    max-height:100svh !important;
+    min-height:100dvh !important;
+    min-height:-webkit-fill-available !important;
     border-radius:0 !important;
-    background:#1c140f !important;
-    padding-top:0 !important;
-    padding-bottom:env(safe-area-inset-bottom) !important;
+    background:#0f0f0f !important; /* same soft charcoal */
+    /* Bring down small - detect Dynamic Island / notch - safe area + 8px */
+    padding-top:calc(8px + env(safe-area-inset-top)) !important;
+    padding-bottom:0 !important; /* bottom handled by next-wrap fixed */
     padding-left:env(safe-area-inset-left) !important;
     padding-right:env(safe-area-inset-right) !important;
+    /* Scroll like load list - not fixed */
+    overflow-y:auto !important;
+    overflow-x:hidden !important;
     overscroll-behavior:contain !important;
+    -webkit-overflow-scrolling:touch !important;
     touch-action:pan-y !important;
+    display:flex !important;
+    flex-direction:column !important;
     animation:nkSlideUpFull .4s cubic-bezier(.32,.72,0,1) forwards;
   }
   @keyframes nkSlideUpFull{ 0%{ transform:translateY(100%); } 100%{ transform:translateY(0); } }
 }
 
-/* ---------- HEADER - GLASSY ---------- */
+/* ---------- HEADER - BRING DOWN SMALL FOR DYNAMIC ISLAND ---------- */
 .nk-newchat-header{
   position:relative;
   height:60px; min-height:60px;
@@ -215,10 +219,20 @@ body.nk-lock-scroll{
 }
 @media (max-width:768px){
   .nk-glass-fixed{
-    background:rgba(28,20,15,0.8);
+    /* Bring down small - 12px + safe area for Dynamic Island/Android notch */
+    background:rgba(15,15,15,0.88) !important; /* soft charcoal glassy */
     backdrop-filter:blur(18px);
     -webkit-backdrop-filter:blur(18px);
-    padding-top:calc(12px + env(safe-area-inset-top));
+    padding-top:calc(8px + env(safe-area-inset-top)) !important;
+    min-height:calc(60px + 8px + env(safe-area-inset-top)) !important;
+    height:auto !important;
+    top:0 !important;
+  }
+  .nk-newchat-header{
+    background:#0f0f0f !important;
+    border-bottom:1px solid #2a2a2e !important;
+    min-height:calc(56px + env(safe-area-inset-top)) !important;
+    padding-top:env(safe-area-inset-top) !important;
   }
 }
 .nk-newchat-title{ font-size:17px; font-weight:600; color:#fff; }
@@ -232,8 +246,6 @@ body.nk-lock-scroll{
 .nk-close-btn{ position:absolute; right:14px; top:50%; transform:translateY(-50%); background:#1c1c1e; color:#fff; }
 .nk-mark-btn{ position:absolute; right:14px; top:50%; transform:translateY(-50%); background:#0a84ff; color:#fff; }
 .nk-back-btn:active, .nk-close-btn:active, .nk-mark-btn:active{ transform:translateY(-50%) scale(.9); }
-
-/* X wiggle iPhone */
 .nk-close-btn.nk-wiggle, .nk-back-btn.nk-wiggle{ animation:nkWigglePop .4s cubic-bezier(.32,.72,0,1); }
 @keyframes nkWigglePop{
   0%{ transform:translateY(-50%) scale(1); }
@@ -244,69 +256,71 @@ body.nk-lock-scroll{
 .nk-desktop-only{ display:none; }
 @media (min-width:769px){ .nk-desktop-only{ display:grid; } .nk-close-btn{ display:none; } }
 
-/* ---------- SEARCH @USERNAME - ROUND NO BORDER, TRANSPARENT GLASS ---------- */
-/* Other devs: No border, transparent so scroll shows under input, only round bubble */
-.nk-search-wrap{ padding:12px 16px; flex-shrink:0; }
-
+/* ---------- SEARCH @USERNAME - ROUND NO BORDER ---------- */
+.nk-search-wrap{ padding:10px 16px; flex-shrink:0; }
 .nk-search-box{
   display:flex; align-items:center; gap:10px;
   padding:11px 16px;
-  border-radius:999px; /* round silky iPhone */
-  background:rgba(28,28,30,0.9); /* soft no border */
-  border:none !important; /* no border as requested */
-  outline:none;
+  border-radius:999px;
+  background:rgba(28,28,30,0.9);
+  border:none !important;
   transition:all .22s cubic-bezier(.32,.72,0,1);
-  will-change:transform, background;
 }
-.nk-search-box:focus-within{
-  background:rgba(36,36,38,0.95);
-  transform:scale(1.01);
-}
-
+.nk-search-box:focus-within{ background:rgba(36,36,38,0.95); transform:scale(1.01); }
 .nk-search-box.nk-line-only{
   border-radius:999px !important;
   background:rgba(28,28,30,0.9) !important;
-  border:none !important; /* no border */
+  border:none !important;
   padding:11px 16px !important;
 }
-.nk-search-box.nk-line-only:focus-within{
-  background:rgba(36,36,38,0.95) !important;
-  border:none !important;
-}
-
 .nk-search-box input{
   flex:1; background:transparent; border:none; outline:none;
   color:#fff; font-size:15px;
 }
 .nk-search-box input::placeholder{ color:#8e8e93; }
-.nk-search-icon{ width:18px; height:18px; color:#8e8e93; flex-shrink:0; transition:color .2s ease; }
-.nk-search-box:focus-within .nk-search-icon{ color:#fff; }
-
-/* Glassy fixed search - transparent so scroll under shows */
+.nk-search-icon{ width:18px; height:18px; color:#8e8e93; flex-shrink:0; }
 .nk-glass-fixed-search{
   position:sticky; top:60px;
-  background:transparent; /* transparent so round input only shows */
+  background:transparent;
   backdrop-filter:blur(18px);
   -webkit-backdrop-filter:blur(18px);
   z-index:1;
-  border-bottom:none; /* no border */
+  border-bottom:none;
   padding-top:6px; padding-bottom:10px;
 }
 @media (max-width:768px){
   .nk-glass-fixed-search{
-    top:calc(60px + 12px + env(safe-area-inset-top));
-    background:transparent;
+    top:calc(60px + 8px + env(safe-area-inset-top)) !important;
+    background:transparent !important;
+    position:sticky !important;
   }
 }
 
-/* ---------- PLUS SCROLL AREA ---------- */
-.nk-plus-scroll-area{ flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; }
+/* ---------- PLUS SCROLL AREA - SCROLL LIKE LOAD LIST ---------- */
+.nk-plus-scroll-area{
+  flex:1;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
+  /* Fix no cut - ensure content visible */
+  min-height:0;
+}
+@media (max-width:768px){
+  .nk-plus-scroll-area{
+    overflow-y:auto !important;
+    -webkit-overflow-scrolling:touch !important;
+    overscroll-behavior:contain !important;
+    flex:1 !important;
+    min-height:0 !important;
+    padding-bottom:calc(80px + env(safe-area-inset-bottom)) !important; /* space for next button */
+  }
+}
 .nk-up-section{ padding:6px 0 0 0; flex-shrink:0; }
 .nk-newchat-row{
   width:100%; display:flex; align-items:center; gap:12px;
   padding:15px 20px;
   background:transparent; border:none;
-  border-bottom:1px solid #2a2a2e; /* grey only here */
+  border-bottom:1px solid #2a2a2e;
   cursor:pointer; text-align:left;
   transition:transform .16s cubic-bezier(.32,.72,0,1), background .16s ease;
 }
@@ -330,7 +344,18 @@ body.nk-lock-scroll{
 .hidden{ display:none !important; }
 
 /* ---------- FORM ---------- */
-.nk-form-wrap{ padding:20px; display:flex; flex-direction:column; gap:26px; flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; }
+.nk-form-wrap{
+  padding:20px; display:flex; flex-direction:column; gap:26px;
+  flex:1; overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
+  min-height:0;
+}
+@media (max-width:768px){
+  .nk-form-wrap{
+    padding-bottom:calc(90px + env(safe-area-inset-bottom)) !important;
+  }
+}
 .nk-input-group{ display:flex; flex-direction:column; gap:8px; }
 .nk-input-label{ font-size:12px; font-weight:600; color:#8e8e93; text-transform:uppercase; letter-spacing:0.3px; }
 .nk-input-line-box{ display:flex; align-items:center; gap:10px; border-bottom:1px solid #2a2a2e; padding:10px 0; transition:border-color .2s ease; }
@@ -340,8 +365,18 @@ body.nk-lock-scroll{
 .nk-id-prefix{ color:#8e8e93; font-size:15px; }
 
 /* ---------- PROFILE ---------- */
-.nk-profile-wrap{ flex:1; overflow-y:auto; padding:0 0 10px 0; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; display:flex; flex-direction:column; }
-.nk-profile-image-wrap{ display:flex; justify-content:center; padding:26px 20px 14px 20px; }
+.nk-profile-wrap{
+  flex:1; overflow-y:auto; padding:0 0 10px 0;
+  -webkit-overflow-scrolling:touch; overscroll-behavior:contain;
+  display:flex; flex-direction:column;
+  min-height:0;
+}
+@media (max-width:768px){
+  .nk-profile-wrap{
+    padding-bottom:calc(90px + env(safe-area-inset-bottom)) !important;
+  }
+}
+.nk-profile-image-wrap{ display:flex; justify-content:center; padding:22px 20px 12px 20px; }
 .nk-big-circle{
   width:108px; height:108px; border-radius:999px;
   background:#1c1c1e; border:1px dashed #2a2a2e;
@@ -382,10 +417,32 @@ body.nk-lock-scroll{
 .nk-konnekting-text{ font-size:13px; font-weight:600; color:#0a84ff; animation:nkPulse 1s ease-in-out infinite; }
 @keyframes nkPulse{ 0%,100%{ opacity:.6; } 50%{ opacity:1; } }
 
-.nk-newchat-list{ flex:1; overflow-y:auto; padding:0 0 10px 0; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; }
-.nk-bottom-next-wrap{ padding:14px 20px calc(14px + env(safe-area-inset-bottom)); flex-shrink:0; border-top:1px solid #2a2a2e; background:transparent; }
-@media (max-width:768px){ .nk-bottom-next-wrap{ background:#1c140f; } }
-@media (min-width:769px){ .nk-bottom-next-wrap{ background:#000; } }
+.nk-newchat-list{ flex:1; overflow-y:auto; padding:0 0 10px 0; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; min-height:0; }
+
+/* ---------- BOTTOM NEXT - FIXED NOT GO DOWN TOO MUCH ---------- */
+/* Other devs: Next button fixed bottom, well positioned with safe-area, not jumping */
+.nk-bottom-next-wrap{
+  padding:14px 20px calc(14px + env(safe-area-inset-bottom));
+  flex-shrink:0;
+  border-top:1px solid #2a2a2e;
+  background:transparent;
+  position:sticky; /* sticky bottom not go down too much */
+  bottom:0;
+  z-index:2;
+}
+@media (max-width:768px){
+  .nk-bottom-next-wrap{
+    position:fixed !important; /* fixed bottom for mobile so no cut */
+    left:0 !important; right:0 !important; bottom:0 !important;
+    background:#0f0f0f !important; /* soft OLED charcoal */
+    padding:12px 20px calc(12px + env(safe-area-inset-bottom)) !important;
+    border-top:1px solid #2a2a2e !important;
+    z-index:10 !important;
+  }
+}
+@media (min-width:769px){
+  .nk-bottom-next-wrap{ background:#000; position:sticky; bottom:0; }
+}
 .nk-next-border{
   width:100%; height:48px; border-radius:999px; border:none;
   background:#0a84ff; color:#fff;
@@ -395,8 +452,12 @@ body.nk-lock-scroll{
 }
 .nk-next-border:active{ transform:scale(.97); }
 
-.nk-group-image-wrap{ display:flex; justify-content:center; padding:26px 20px 14px 20px; }
-.nk-permission-list{ flex:1; overflow-y:auto; padding:8px 0; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; }
+.nk-group-image-wrap{ display:flex; justify-content:center; padding:22px 20px 12px 20px; }
+.nk-permission-list{ flex:1; overflow-y:auto; padding:8px 0; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; min-height:0; }
+@media (max-width:768px){
+  .nk-permission-list{ padding-bottom:calc(90px + env(safe-area-inset-bottom)) !important; }
+  .nk-newchat-list{ padding-bottom:calc(90px + env(safe-area-inset-bottom)) !important; }
+}
 .nk-permission-row{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; padding:16px 20px; border-bottom:1px solid #2a2a2e; }
 .nk-permission-info{ flex:1; min-width:0; }
 .nk-permission-title{ font-size:15px; font-weight:600; color:#fff; }
