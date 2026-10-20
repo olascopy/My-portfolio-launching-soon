@@ -1,4 +1,4 @@
-// reaction-and-other.js - V23 FINAL CLEAN - No blank link + iPhone sticker fix + fake cut online play
+// reaction-and-other.js - No blank link + iPhone sticker fix + fake cut online play
 (function() {
   // ================= DOM ELEMENTS =================
   const chatMessages = document.getElementById('chatMessages');

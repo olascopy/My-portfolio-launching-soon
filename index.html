@@ -17,7 +17,6 @@
 <!----- sidebar css link ------>
 <link rel="stylesheet" href="sidebar.css">
 <!----- main css link ------>
-
 <link rel="stylesheet" href="main.css">
 <!----- main media css link ------>
 <link rel="stylesheet" href="main-media.css">
@@ -29,10 +28,15 @@
 <link rel="stylesheet" href="general-media.css">
 <!----- desktop media scroll  link ------>
 <link rel="stylesheet" href="desktop-media.css">
+<!----- extra css link ------>
 <link rel="stylesheet" href="extra.css">
+<!----- call css link ------>
 <link rel="stylesheet" href="call.css">
+<!----- video call css link  link ------>
 <link rel="stylesheet" href="video.css">
+<!----- new chat ui css link------>
 <link rel="stylesheet" href="new-chat.css">
+<!-----  ------>
     <title>KONNEKT</title>
 </head>
 <body>
@@ -91,8 +95,11 @@
     </section>
     
 </header>
+
+
 <main>
-  <div class="chat-load-list" id="chatLoadList">
+    <!---------  chatloadlist header---------->
+  <div class="chat-load-list" id="chatLoadList" style="display: none;">
     <div class="start-up" id="mobileTopBar">
       <p class="app-name">KONNEKT</p>
       <p class="app-chats-mid" id="midChatsText">Chats</p>
@@ -103,12 +110,15 @@
     </div>
 
     
-    
+    <!--------- search list of chat on chatloadlist---------->
     <div class="search-wrap">
       <input type="text" placeholder=" search @username or start new chat" class="search-chat" id="searchChatInput">
       <i data-lucide="search" class="search-chat-icon"></i>
     </div>
 
+
+    
+<!--------- incoming calls ui preview---------->
  <div class="konnekt-incoming-tile" id="incomingTileList">
     <img class="konnekt-incoming-ava" id="incomingAvaList" src="https://i.pravatar.cc/300?img=12" />
     <div class="konnekt-incoming-info">
@@ -138,18 +148,11 @@
           <div class="chat-bottom-row"><p class="chat-last-message">Hey, are you free today? Let's link</p><span class="chat-unread">3</span></div>
         </div>
       </div>
-<!-- ================================================================ -->
-<!-- NK NEW CHAT SYSTEM - HTML V7 FINAL -->
-<!-- Covers: Plus screen with @username search, profile ID required, -->
-<!-- New ID, New Group search, Group create, Permissions, Popup -->
-<!-- Mobile: chocolate bg rhyme with OLED, glassy fixed header -->
-<!-- Desktop: covers chat-load-list only, sidebar stays -->
-<!-- All nk- prefix, lucide only, no conflict -->
-<!-- ================================================================ -->
 
-<!-- ---------- POPUP OVERLAY - NOT ALERT - VALIDATION ---------- -->
-<!-- Used for "Enter 6 digit ID" etc - iPhone style center popup -->
-<!-- JS shows this instead of alert() - works desktop + mobile centered -->
+
+<!-- ---------- POPUP OVERLAY ALERT - VALIDATION ---------- -->
+
+
 <div id="nkPopupOverlay" class="nk-popup-overlay hidden">
   <div class="nk-popup-box">
     <div class="nk-popup-icon-wrap">
@@ -162,15 +165,12 @@
 </div>
 
 <!-- ---------- 1. PLUS SCREEN OVERLAY - MAIN WHEN CLICK PLUS ICON ---------- -->
-<!-- This covers everything in mobile (including header, pill, sidebar) -->
-<!-- Desktop: covers chat-load-list left side only (55px sidebar remain) -->
-<!-- Contains: Fixed header with X, Fixed search @username/name with glassy effect -->
-<!-- Up section: New ID + New Group (scrolls with list, not fixed) -->
+
 <!-- Down section: Chatted people + search results -->
 <div id="nkNewChatOverlay" class="nk-newchat-overlay">
   <div class="nk-newchat-sheet nk-plus-sheet">
     <!-- Fixed header with glassy blur - stays on top when scroll -->
-    <!-- Other devs: This header is fixed, content scrolls under it with glass see-through -->
+
     <div class="nk-newchat-header nk-glass-fixed">
       <button id="nkNewChatBackDesktop" class="nk-back-btn nk-desktop-only" aria-label="Back">
         <i data-lucide="arrow-left" style="width:20px;height:20px;"></i>
@@ -181,8 +181,8 @@
       </button>
     </div>
 
-    <!-- Fixed search with glassy blur - stays on top when scroll -->
-    <!-- Other devs: Search @username or name. @ -> global, name -> local chatted -->
+
+    <!--  Search @username or name. @ -> global, name -> local chatted -->
     <div class="nk-search-wrap nk-glass-fixed-search">
       <div class="nk-search-box nk-line-only">
         <i data-lucide="search" class="nk-search-icon"></i>
@@ -190,10 +190,10 @@
       </div>
     </div>
 
-    <!-- Scrollable content - New ID + New Group + chatted list all scroll together -->
-    <!-- Other devs: This whole area scrolls, not fixed. Header + search fixed above -->
+    <!-- New ID + New Group + chatted list-->
+   
     <div class="nk-plus-scroll-area">
-      <!-- Up section: New ID and New Group - now scrolls, not fixed -->
+
       <div class="nk-up-section">
         <button id="nkNewIdRow" class="nk-newchat-row">
           <div class="nk-row-icon nk-round-icon">
@@ -234,8 +234,8 @@
         <!-- This list shows chatted people OR search results -->
         <!-- JS will inject results here: local name search OR global @username search -->
         <div id="nkChattedPeopleList" class="nk-results">
-          <!-- Example fake item - JS will render real -->
-          <!-- <button class="nk-newchat-row nk-person-row">...</button> -->
+          <!--  JS will render real -->
+        
         </div>
         <div id="nkMainSearchResults" class="nk-results hidden"></div>
       </div>
@@ -243,7 +243,7 @@
   </div>
 </div>
 
-<!-- ---------- 2. NEW ID OVERLAY - ENTER FIRST NAME, LAST NAME, ID ---------- -->
+<!-- ----------  NEW ID OVERLAY - ENTER FIRST NAME, LAST NAME, ID ---------- -->
 <!-- Second overlay when click New ID row -->
 <!-- Contains: Header, form with straight line inputs, konnekting 10 leaves -->
 <div id="nkNewIdOverlay" class="nk-newchat-overlay nk-second">
@@ -262,14 +262,14 @@
       <div class="nk-input-group">
         <label class="nk-input-label">First Name</label>
         <div class="nk-input-line-box">
-          <input id="nkFirstName" type="text" placeholder="John" />
+          <input id="nkFirstName" type="text" placeholder="ben" />
         </div>
       </div>
 
       <div class="nk-input-group">
         <label class="nk-input-label">Last Name</label>
         <div class="nk-input-line-box">
-          <input id="nkLastName" type="text" placeholder="Doe" />
+          <input id="nkLastName" type="text" placeholder="saint" />
         </div>
       </div>
 
@@ -281,7 +281,7 @@
         </div>
       </div>
 
-      <!-- Konnekting - 10 tiny leaves rotating circle close to each other -->
+      <!-- Konnekting - 10 tiny leaves rotating circle  -->
       <div id="nkKonnektingWrap" class="nk-konnekting-wrap hidden">
         <div class="nk-leaves-circle">
           <i data-lucide="leaf" class="nk-leaf-tiny"></i>
@@ -301,9 +301,9 @@
   </div>
 </div>
 
-<!-- ---------- 3. USER PROFILE ID REQUIRED OVERLAY - NEW FOR @USERNAME FLOW ---------- -->
+<!-- ----------  USER PROFILE ID REQUIRED OVERLAY - NEW FOR @USERNAME FLOW ---------- -->
 <!-- This shows when you search @username that requires ID -->
-<!-- Other devs: Backend will return requiresId true/false. If true show this -->
+<!--  Backend will return requiresId true/false. If true show this -->
 <!-- Fake demo: mock users with requiresId true need this screen -->
 <div id="nkUserProfileOverlay" class="nk-newchat-overlay nk-second">
   <div class="nk-newchat-sheet">
@@ -335,7 +335,7 @@
         <p class="nk-profile-require-text">This user requires 6 digit ID to chat</p>
       </div>
 
-      <!-- ID input - straight line grey -->
+      <!-- ID input  -->
       <div class="nk-form-wrap" style="padding-top:10px;">
         <div class="nk-input-group">
           <label class="nk-input-label">Enter 6 Digit ID</label>
@@ -364,7 +364,7 @@
       </div>
     </div>
 
-    <!-- Bottom Next border - big rounded for down -->
+    <!-- Bottom Next border  -->
     <div class="nk-bottom-next-wrap">
       <button id="nkProfileNextBtn" class="nk-next-border">
         <span>Next</span>
@@ -388,7 +388,7 @@
       </button>
     </div>
 
-    <!-- Search people you have chatted with - line only grey border -->
+    <!-- Search people you have chatted with -->
     <div class="nk-search-wrap">
       <div class="nk-search-box nk-line-only">
         <i data-lucide="search" class="nk-search-icon"></i>
@@ -396,9 +396,11 @@
       </div>
     </div>
 
-    <div id="nkGroupPeopleResults" class="nk-newchat-list"></div>
+    <div id="nkGroupPeopleResults" class="nk-newchat-list">
 
-    <!-- Bottom Next border - down not top - big rounded like WhatsApp iPhone -->
+    </div>
+
+    <!-- Bottom Next border -->
     <div class="nk-bottom-next-wrap">
       <button id="nkGroupNextBtn" class="nk-next-border">
         <span>Next</span>
@@ -418,7 +420,7 @@
       <p class="nk-newchat-title">New Group</p>
     </div>
 
-    <!-- Big circle for group image - lucide only -->
+    <!-- Big circle for group image  -->
     <div class="nk-group-image-wrap">
       <div id="nkGroupImageBtn" class="nk-big-circle">
         <i data-lucide="camera" class="nk-camera-icon"></i>
@@ -458,7 +460,7 @@
   </div>
 </div>
 
-<!-- ---------- 6. PERMISSIONS OVERLAY - LIST OF TOGGLES ---------- -->
+<!-- ---------- 6. NEW KONNEKT  PERMISSIONS OVERLAY - LIST OF TOGGLES ---------- -->
 <div id="nkGroupPermissionOverlay" class="nk-newchat-overlay nk-fourth">
   <div class="nk-newchat-sheet">
     <div class="nk-newchat-header">
@@ -671,7 +673,7 @@
           </div>
         </div>
       </div>
-      <!-- ANONYMOUS - goes to All and Chats too if you want -->
+      <!-- ANONYMOUS - chats on pending-->
       <div class="chat-item anon" data-type="chat" data-anonymous="true" data-user-id="anon_1">
         <div class="chat-avatar anon-avatar" data-anonymous="true">
           <i data-lucide="ghost" class="anon-ghost-icon"></i>
@@ -712,18 +714,9 @@
   </div>
 
   <!-- CHAT BACKGROUND WITH MOOD PILL -->
-<div class="chat-background" id="chatBackground">
+<div class="chat-background" id="chatBackground" style="display: none;">
   <!-- ================= HEADER SECTION ================= -->
-  <!-- Contains profile, mood pill, and call/select controls -->
-   <!-- INCOMING CALL TILE - FOR CHAT BACKGROUND (top) -->
-
-  
-  <!-- ✅ INCOMING FOR CHAT - VERY TOP -->
-
-
-
-  <!-- OUTGOING + CONNECTED OVERLAY - OLED BLACK, NO BORDER -->
- 
+  <!-- Contains profile, mood pill, and call,select controls -->
 
   <div class="profile-headerchatBackground">
     <div class="profile-extraBorder">
@@ -731,12 +724,12 @@
       <div class="profile-with-mood">
         <div class="profile-border"><p class="profile-text">JD</p></div>
         
-        <!-- MOOD PILL - FIXED HEIGHT 28px - 3 STATES AUTO-CYCLE FOR MVP -->
+        <!-- MOOD PILL  3 STATES AUTO-CYCLE FOR MVP -->
         <!-- State 1: Playing now + wave | State 2: Was feeling + time | State 3: moon icon + typed text -->
         <!-- Later backend will replace timer with real Spotify event -->
         <!-- Tap only, NOT swipeable -->
         <div class="mood-float" id="moodFloat">
-          <!-- Fixed height wrapper so chat no go shift -->
+    
           <div class="mood-pill-wrapper" id="moodPillWrapper">
             <!-- State 1: Playing now - tap shows artist card -->
             <div class="mood-pill-mini active" data-state="playing" data-has-card="true">
@@ -745,7 +738,7 @@
             </div>
             <!-- State 2: Recently - tap shows played time card -->
             <div class="mood-pill-mini" data-state="recent" data-has-card="true">
-              <span>Was feeling Chilling • 2m ago</span>
+              <span>Was feeling Chilling . 2m ago</span>
             </div>
             <!-- State 3: Typed mood - moon icon - tap does NOTHING -->
             <div class="mood-pill-mini" data-state="typed" data-has-card="false">
@@ -797,7 +790,7 @@
     </div>
   </div>
 
-<!-- iPhone 18 Notification - VISIBLE PREVIEW -->
+<!-- IN-APP  Notification  -->
 <div class="ios-notify" id="iosNotifyPreview">
   <div class="ios-notify-avatar">JD</div>
   <div class="ios-notify-content">
@@ -817,7 +810,7 @@
     <div class="msg-row receiver" data-message-id="msg1"><div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble receiver-bubble"><p>Bro how far, you don see my code?</p><span class="msg-meta right-meta"><span class="msg-time">9:41 AM</span></span><span class="msg-reaction-badge" id="reaction-msg1"></span></div></div>
     <div class="msg-row sender" data-message-id="msg2"><div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble sender-bubble sending"><p>Yes I don see am</p><span class="msg-meta right-meta"><span class="msg-time">9:42 AM</span><i data-lucide="clock-3" class="tick-icon clock"></i></span></div></div>
 
-    <!-- Call logs - no actions -->
+    <!-- Call logs -->
     <div class="msg-row no-actions call-row" data-message-id="call1">
       <div class="bubble call-bubble missed">
         <i data-lucide="phone-missed" class="call-icon missed"></i>
@@ -863,7 +856,7 @@
   <div class="message-focus-overlay" id="messageFocusOverlay"></div>
 
   <!-- ================= HOLD MESSAGE PILL POPUP ================= -->
-  <!-- Long press shows this - Reply button must trigger SAME function as swipe-to-reply -->
+
   <div class="popped-message-container always-middle" id="poppedMessageContainer">
     <div class="emoji-react-bar" id="emojiReactBar"><button data-emoji="❤️">❤️</button><button data-emoji="😂">😂</button><button data-emoji="😮">😮</button><button data-emoji="😢">😢</button><button data-emoji="🙏">🙏</button><button class="emoji-plus-btn" id="emojiPlusBtn"><i data-lucide="plus"></i></button></div>
     <div class="popped-clone" id="poppedClone"></div>
@@ -885,11 +878,11 @@
   <div class="plus-pill-menu" id="plusPillMenu"><button class="pill-btn" data-action="send-file"><i data-lucide="file-image"></i><span>Send file</span></button><button class="pill-btn" data-action="create-sticker"><i data-lucide="sticker"></i><span>Create sticker</span></button><button class="pill-btn" data-action="camera"><i data-lucide="camera"></i><span>Camera</span></button></div>
 
   <!-- ================= STICKER PANEL ================= -->
-  <!-- Video stickers must autoplay muted loop inside panel -->
+
   <div class="sticker-border-panel" id="stickerBorderPanel"><div class="sticker-panel-header"><div class="panel-drag"></div><span class="sticker-panel-title">Stickers</span><button class="sticker-panel-close" id="stickerPanelClose"><i data-lucide="x"></i></button></div><div class="sticker-grid" id="stickerGrid"><button class="sticker-add-box" id="stickerAddBox"><div class="dashed-plus"><i data-lucide="plus"></i></div><span>Add sticker</span></button></div></div>
 
   <!-- ================= INPUT BAR - GROWS WITH TEXT LIKE WHATSAPP ================= -->
-  <!-- Whole bar with plus/send/mic must increase height when textarea grows -->
+
   <div class="chat-input-bar" id="chatInputBar">
     <button class="input-plus-btn" id="inputPlusBtn"><i data-lucide="plus"></i></button>
     <div class="input-pill" id="inputPill">
@@ -902,7 +895,7 @@
   <div class="delete-action-bar" id="deleteActionBar"><button class="delete-opt" data-delete="me"><i data-lucide="trash"></i><span>Delete for me</span></button><button class="delete-opt" data-delete="everyone"><i data-lucide="trash-2"></i><span>Delete for everyone</span></button></div>
 
   <!-- ================= ADD STICKER MODE - SELECT FROM CHAT ================= -->
-  <!-- X icon beside Add sticker button to cancel -->
+
   <div class="chat-sticker-select-mode" id="chatStickerSelectMode">
     <div class="sticker-select-header"><h4>Select from chat</h4><button id="stickerSelectClose"><i data-lucide="x"></i></button></div>
     <div class="sticker-select-center-wrap">
@@ -933,7 +926,7 @@
     </div>
   </div>
 
-  <!-- ================= VIDEO FULL OVERLAY WITH X ICON TO CLOSE ================= -->
+  <!-- ================= VIDEO FULL OVERLAY WITH  ================= -->
   <div class="video-full-overlay" id="videoFullOverlay">
     <div class="preview-blur-bg"></div>
     <div class="preview-header">
@@ -946,9 +939,7 @@
   </div>
 
   <!-- ================= CREATE STICKER PAGE ================= -->
-  <!-- Text, Zoom, Crop must reflect on final sticker -->
-  <!-- Crop = WhatsApp iPhone 17 style direct pinch/drag on image -->
-  <!-- Video must trim to 3s max -->
+ 
   <div class="create-sticker-page" id="createStickerPage">
     <!-- FFMPEG 2MB LOADER + CUTTING LOADER -->
 <div id="ffmpegLoader">
@@ -1002,13 +993,12 @@
   <input type="file" id="galleryInput" accept="image/*,video/*" hidden><input type="file" id="cameraInput" accept="image/*,video/*" capture="environment" hidden>
 </div>
 
- <!-- end chat-background -->
+
 
 <!-- ===== CALL UI - GLOBAL, OUTSIDE CHAT BACKGROUNDS ===== -->
 
-
   <!-- ===== CALL UI - GLOBAL ===== -->
-  <div class="konnekt-call-overlay" id="callOverlay">
+  <div class="konnekt-call-overlay" id="callOverlay" style="display: none;">
     <div class="konnekt-call-top">
       <div style="width:68px"></div>
       <div class="konnekt-call-center">
@@ -1034,14 +1024,14 @@
     </div>
   </div>
 
-  <div class="konnekt-dynamic-pill hidden" id="dynamicPill">
+  <div class="konnekt-dynamic-pill hidden" id="dynamicPill" style="display: none;">
     <div class="konnekt-dot"></div>
     <img class="konnekt-pill-ava" id="pillAva" src="https://i.pravatar.cc/300?img=12" />
     <span class="konnekt-pill-name" id="pillName">Joshua dayo</span>
     <span class="konnekt-pill-time" id="pillTime">00:00</span>
   </div>
 
-  <div class="konnekt-expanded-pill hidden" id="expandedPill">
+  <div class="konnekt-expanded-pill hidden" id="expandedPill" style="display: none;">
     <div class="konnekt-expanded-left" id="expandBackToCall">
       <img class="konnekt-expanded-ava" id="expandedAva" src="https://i.pravatar.cc/300?img=12" />
       <div><b id="expandedName">Joshua dayo</b><span id="expandedTime">00:00 • tap</span></div>
@@ -1053,11 +1043,8 @@
     </div>
   </div>
 
-
-
-
-<!-- ===== KONNEKT VIDEO CALL WAITLIST - BOTTOM SHEET WITH LUCIDE ===== -->
-<div id="videoWaitlistOverlay" class="konnekt-waitlist-overlay">
+<!-- ===== KONNEKT VIDEO CALL WAITLIST ===== -->
+<div id="videoWaitlistOverlay" class="konnekt-waitlist-overlay" style="display: none;">
   <div id="videoWaitlistSheet" class="konnekt-waitlist-sheet">
      <div class="konnekt-waitlist-scroll-track">
     <div class="konnekt-waitlist-scroll-thumb" id="kwScrollThumb"></div>
@@ -1070,7 +1057,7 @@
       <i data-lucide="x" class="konnekt-waitlist-close-icon"></i>
     </button>
 
-    <!-- TOP ICON WITH GLOW - LUCIDE VIDEO -->
+    <!-- TOP ICON With VIDEO -->
     <div class="konnekt-waitlist-icon-wrap">
       <div class="konnekt-waitlist-icon-glow"></div>
       <div class="konnekt-waitlist-icon">
@@ -1139,13 +1126,6 @@
 
   </div>
 </div>
-
-
-  <audio id="ringtoneAudio" loop preload="auto">
-    <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_5a4fb2a7d0.mp3" type="audio/mpeg">
-  </audio>
-
-
 
 </main>
 
