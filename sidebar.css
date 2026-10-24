@@ -1,6 +1,6 @@
 /* sidebar section */
 .sidebar-section{
-  width: 70px;
+  width: 65px;
     background-color: var(--side-border);
     position: fixed;
     top: 0px;
@@ -20,20 +20,22 @@ z-index: 10000;
    height: 50px;
    flex: 1;
    margin-top: 3px;
-  
+  margin-bottom: 30px;
+  margin-right: 10px;
 }
 
 
 /* all sidebar command section */
 .icon-sidebar-btn{
     position: relative;
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
     margin-bottom: 30px;
     margin-top: 10px;
+  
     z-index: 10000;
 }
 
@@ -84,13 +86,18 @@ color: rgb(143, 137, 137);
 /* second sidebar  section */
 
 .sidebar-section-2{
-    border-top:2px solid #000 ;
+    border-top:1px solid #000 ;
     margin-bottom: 20px;
-    width: 53px;
+    width: 52px;
     height: 200px;
-    margin-left: 2px;
+    margin-left: 5px;
+   margin-top: 400px;
 }
 
+
+.extra-mobile{
+    display: none !important;
+}
 
 .active-none{
     display: none;

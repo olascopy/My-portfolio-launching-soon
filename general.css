@@ -35,7 +35,6 @@ body{
   background-color: var(--bg-app);
   color: var(--text-main);
 
-  /* DESKTOP - Keep your sidebar space */
   padding-top: var(--header-height);
   padding-left: calc(var(--sidebar-width) + var(--safe-left));
   padding-right: var(--safe-right);
@@ -54,7 +53,7 @@ body{
   -webkit-text-size-adjust: 100%;
 }
 
-/* ===== MOBILE FIX - COMOT SIDEBAR PADDING FOR MOBILE ===== */
+/* ===== MOBILE  ===== */
 @media (max-width: 768px){
   body{
     padding-left: var(--safe-left);

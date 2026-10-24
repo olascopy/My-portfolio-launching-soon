@@ -36,7 +36,8 @@
 <link rel="stylesheet" href="video.css">
 <!----- new chat ui css link------>
 <link rel="stylesheet" href="new-chat.css">
-<!-----  ------>
+<!----- status css link ------>
+<link rel="stylesheet" href="status.css">
     <title>KONNEKT</title>
 </head>
 <body>
@@ -51,10 +52,10 @@
   
 <div class="icon-sidebar-btn">
 
-  <i data-lucide="compass" class="home-icon active"></i>
+  <i data-lucide="radio" class="home-icon active"></i>
  
-  <span class="nav-label active-none"> Discover</span>
-    <span class="tooltip">Discover</span>
+  <span class="nav-label active-none">loops</span>
+    <span class="tooltip">loops</span>
 </div>
   <div class="icon-sidebar-btn">
   <i data-lucide="messages-square" class="home-icon"></i>
@@ -62,34 +63,34 @@
     <span class="tooltip">Chats</span>
 </div>
 <div class="icon-sidebar-btn">
-  <i data-lucide="users" class="home-icon"></i>
-    <span class="nav-label active-none"> People</span>
-    <span class="tooltip">people</span>
-</div>
-<div class="icon-sidebar-btn">
-  <i data-lucide="map-pin" class="home-icon"></i>
-    <span class="nav-label active-none"> Location</span>
-    <span class="tooltip">Location</span>
+  <i data-lucide="aperture" class="home-icon"></i>
+    <span class="nav-label active-none"> moments</span>
+    <span class="tooltip">moments</span>
 </div>
 
-<div class="icon-sidebar-btn active-none">
-  <i data-lucide="cog" class="home-icon"></i>
-    <span class="nav-label active-none"> Settings</span>
-    
+
+
+<div class="icon-sidebar-btn" >
+  <i data-lucide="circle-user" class="home-icon extra-mobile"></i>
+   <span class="nav-label active-none"> profile</span>
+ 
+</div>
+
+<div class="icon-sidebar-btn ">
+  <i data-lucide="settings-2" class="home-icon extra-mobile"></i>
+   <span class="nav-label active-none"> settings</span>
+  
 </div>
     </section>
 
     <section class="sidebar-section-2">
-  <div class="icon-sidebar-btn">
-  <i data-lucide="plus-circle" class="home-icon"></i>
-    <span class="tooltip">Create</span>
-</div>
+
 <div class="icon-sidebar-btn">
-  <i data-lucide="cog" class="home-icon"></i>
+  <i data-lucide="cog" class="home-icon more"></i>
     <span class="tooltip">settings</span>
 </div>
 <div class="icon-sidebar-btn">
-  <i data-lucide="circle-user" class="home-icon"></i>
+  <i data-lucide="circle-user" class="home-icon more"></i>
     <span class="tooltip">profile</span>
 </div>
     </section>
@@ -98,6 +99,7 @@
 
 
 <main>
+
     <!---------  chatloadlist header---------->
   <div class="chat-load-list" id="chatLoadList" style="display: none;">
     <div class="start-up" id="mobileTopBar">
@@ -1127,6 +1129,263 @@
   </div>
 </div>
 
+
+
+
+<div class="moments-page">
+<div class="moments-page-left">
+    <!-- ========== FIXED TOP HEADER ========== -->
+    <div class="moments-header-fixed">
+        <h2 class="moments-text">moments</h2>
+        <div class="header-icons-right">
+            <!-- More button -->
+            <div class="icon-btn" id="moreBtn">
+                <i data-lucide="more-vertical"></i>
+                <span class="tooltip-text">Moments menu</span>
+                <div class="pop" id="morePop">
+                    <div class="pop-item"><i data-lucide="lock" style="width:16px"></i> Moments privacy</div>
+                </div>
+            </div>
+            <!-- Plus button - pop same style as my profile pop -->
+            <div class="icon-btn" id="plusBtn">
+                <i data-lucide="plus"></i>
+                <span class="tooltip-text">Add moments</span>
+                <div class="pop" id="plusPop">
+                    <div class="pop-item" id="plusPhoto"><i data-lucide="image" style="width:16px"></i> Photo and Video</div>
+                    <div class="pop-item" id="plusText"><i data-lucide="type" style="width:16px"></i> Text moments</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== SCROLL UNDER FIXED ========== -->
+    <div class="moments-scroll">
+        <!-- MY MOMENTS ROW -->
+        <div class="post-mymoments" id="myMomentsRow">
+          <div class="post-moments" id="myAvatarBorder">
+            <div class="click-to-post"><i data-lucide="plus" class="plus-click"></i></div>
+          </div>
+          <div class="moments-post-text">
+            <p class="post-text-1">My moments</p>
+            <p class="post-text-2">Tap To Add a moment</p>
+          </div>
+        </div>
+
+        <!-- ========== MY PROFILE POP WHEN NO POST - SAME STYLE AS PLUS POP ========== -->
+        <!-- Desktop: same as plusPop. Mobile: side by side + gallery under -->
+        <div id="myProfilePop" class="my-profile-pop">
+          <div class="pop show my-profile-pop-inner">
+            <div class="pop-item" id="myProfilePhoto"><i data-lucide="image" style="width:16px"></i> Photo and Video</div>
+            <div class="pop-item" id="myProfileText"><i data-lucide="type" style="width:16px"></i> Text moments</div>
+          </div>
+          <!-- Gallery under - MOBILE ONLY - phone gallery pics each in own border -->
+          <div id="myGalleryUnder" class="my-gallery-under"></div>
+        </div>
+
+        <div class="section">Recents</div>
+ 
+         <div class="row">
+            <div class="avatar"><img src="konnect2.jfif"><div class="blue-ring"></div></div>
+            <div class="info"><div class="name">blessing adeyemi</div><div class="time">5m ago</div></div>
+        </div>
+        <div class="row">
+            <div class="avatar"><img src="konnect2.jfif"><div class="blue-ring"></div></div>
+            <div class="info"><div class="name">joshua yemi</div><div class="time">now</div></div>
+        </div>
+        <div class="row">
+            <div class="avatar"><img src="konnect2.jfif"><div class="blue-ring"></div></div>
+            <div class="info"><div class="name">saheed adisa</div><div class="time">Yesterday 2:45pm</div></div>
+        </div>
+
+        <div class="section">Just viewed</div>
+        <div class="row" style="opacity:0.6;">
+            <div class="avatar"><img src="konnect2.jfif"><div class="blue-ring" style="border-color:#3A3A3C"></div></div>
+            <div class="info"><div class="name">sarah</div><div class="time">now</div></div>
+        </div>
+    </div>
+
+    <!-- ========== MOMENTS PRIVACY FULL PAGE ========== -->
+    <div class="privacy-page" id="privacyPage">
+      <div class="privacy-header">
+        <button class="back-btn" id="backPrivacy">
+          <i data-lucide="chevron-left" class="ios-arrow"></i>
+          <i data-lucide="arrow-left" class="android-arrow"></i>
+        </button>
+        <h3 class="privacy-title">moments</h3>
+        <div style="width:32px;"></div>
+      </div>
+      <div class="privacy-body">
+        <p class="privacy-question">Who can see my moments in konneckt</p>
+        <div class="privacy-option" data-value="contacts">
+          <div class="circle-check"><div class="inner-dot"></div></div>
+          <span>My contacts</span>
+        </div>
+        <div class="privacy-option" data-value="everyone">
+          <div class="circle-check"><div class="inner-dot"></div></div>
+          <span>Everyone</span>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- ========== GALLERY INPUT - MOBILE ONLY PHONE GALLERY ========== -->
+<input type="file" id="galleryInput" accept="image/*,video/*" multiple hidden>
+
+<!-- ========== TEXT MOMENTS PAGE ========== -->
+<div id="textPage">
+  <div class="top">
+    <button id="closeText"><i data-lucide="x"></i></button>
+    <div class="top-right">
+      <button id="aaBtn">Aa</button>
+      <button id="palBtn"><i data-lucide="palette"></i></button>
+    </div>
+  </div>
+  <div class="center" id="centerBox">
+    <div id="placeholder">Type a moment</div>
+    <div class="type-row">
+      <div id="input" contenteditable="true" spellcheck="false"></div>
+      <div id="cursor"></div>
+    </div>
+  </div>
+  <div class="bottom">
+    <div id="pill">
+      <i data-lucide="users" style="width:14px"></i>
+      <span id="pillText">Moments - Everyone</span>
+      <i data-lucide="chevron-down" style="width:14px"></i>
+    </div>
+    <button id="sendBtn"><i data-lucide="send"></i></button>
+  </div>
+  <div id="miniPop">
+    <div class="mini-item active" data-v="Everyone"><span>Everyone</span><i data-lucide="check" class="check"></i></div>
+    <div class="mini-item" data-v="My contacts"><span>My contacts</span><i data-lucide="check" class="check" style="opacity:0"></i></div>
+  </div>
+  <div id="palWrap" class="pop pal-ca"></div>
+</div>
+
+<!-- ========== MY HUB PAGE - WHEN POSTED ========== -->
+<div id="myHubPage">
+  <div class="hub-header">
+    <button id="closeHub"><i data-lucide="x"></i></button>
+    <h3>My moments</h3>
+    <div style="width:42px"></div>
+  </div>
+  <div class="hub-fixed-top">
+    <div class="hub-round-small" id="hubBigCircle"></div>
+    <div class="hub-plus" id="hubPlus"><i data-lucide="plus"></i></div>
+    <p class="hub-add-text">Tap to add</p>
+  </div>
+  <!-- List - normal height, not full -->
+  <div class="hub-list" id="hubList"></div>
+</div>
+
+<!-- ========== VIEWER PAGE - FULL HEIGHT FOR TEXT POST ========== -->
+<div id="viewerPage">
+  <div class="viewer-lines" id="viewerLines"></div>
+  <div class="viewer-top">
+    <div class="viewer-top-left">
+      <button id="closeViewer"><i data-lucide="x"></i></button>
+      <img id="viewerAvatar" src="konnect2.jfif">
+      <div>
+        <div id="viewerName">My moments</div>
+        <div id="viewerTime">Today</div>
+      </div>
+    </div>
+    <div class="viewer-top-right">
+      <button id="viewerMoreBtn"><i data-lucide="more-vertical"></i></button>
+      <div class="pop" id="viewerMorePop">
+        <div class="pop-item" style="color:#FF3B30"><i data-lucide="trash-2" style="width:16px"></i> Delete</div>
+      </div>
+    </div>
+  </div>
+  <div class="viewer-center" id="viewerCenter">
+    <button class="nav-arrow left" id="prevMoment"><i data-lucide="chevron-left"></i></button>
+    <button class="nav-arrow right" id="nextMoment"><i data-lucide="chevron-right"></i></button>
+    <img id="viewerImage" style="display:none">
+    <video id="viewerVideo" style="display:none" playsinline></video>
+    <div id="viewerText" style="display:none"></div>
+    <div class="loading-circle" id="viewerLoading" style="display:none"><div class="spinner"></div></div>
+    <div class="video-controls">
+      <button id="playPauseBtn" style="display:none"><i data-lucide="pause"></i></button>
+      <button id="muteBtn" style="display:none"><i data-lucide="volume-2"></i></button>
+    </div>
+    <div class="tap-zone left" id="tapLeft"></div>
+    <div class="tap-zone right" id="tapRight"></div>
+  </div>
+  <!-- Caption under pic - working -->
+  <div class="viewer-caption-wrap"><p id="viewerCaption"></p></div>
+  <div class="viewer-views" id="viewerViews">
+    <i data-lucide="eye" style="width:18px"></i>
+    <span id="viewerViewsCount">0</span>
+  </div>
+  <div class="viewers-pop" id="viewersPop">
+    <div class="viewers-pop-header">
+      <span>Viewed by</span>
+      <button id="closeViewersPop"><i data-lucide="x" style="width:16px"></i></button>
+    </div>
+    <div id="viewersList"></div>
+  </div>
+</div>
+
+<!-- ========== PREVIEW EDITOR PAGE ========== -->
+<div id="previewPage">
+  <div id="previewBg" class="preview-bg"></div>
+  <div id="previewTextFull" style="display:none"></div>
+  <div class="preview-header">
+    <button id="closePreview"><i data-lucide="x"></i></button>
+    <div style="width:42px"></div>
+  </div>
+  <div class="preview-center">
+    <p id="previewCenterCaption" class="preview-center-caption"></p>
+    <div class="loading-circle" id="previewLoading" style="display:none"><div class="spinner"></div></div>
+  </div>
+  <div class="preview-bottom">
+    <div class="preview-borders-wrap">
+      <div class="preview-borders" id="previewBorders"></div>
+      <div class="preview-plus" id="previewAddMore"><i data-lucide="plus"></i></div>
+    </div>
+    <div class="preview-input-row">
+      <input type="text" id="captionInput" placeholder="Write caption for this...">
+      <button id="previewSend"><i data-lucide="send"></i></button>
+    </div>
+    <div class="preview-bottom-row">
+      <div id="previewPill" class="pill">
+        <i data-lucide="users" style="width:14px"></i>
+        <span id="previewPillText">Moments - Everyone</span>
+        <i data-lucide="chevron-down" style="width:14px"></i>
+      </div>
+      <button id="previewNext" class="preview-next-btn" style="display:none">Next <i data-lucide="chevron-right" style="width:16px"></i></button>
+    </div>
+  </div>
+  <div id="previewMiniPop" class="pop">
+    <div class="pop-item active" data-v="Everyone"><span>Moments - Everyone</span><i data-lucide="check" style="width:16px"></i></div>
+    <div class="pop-item" data-v="My contacts"><span>Moments - My contacts</span><i data-lucide="check" style="width:16px;opacity:0"></i></div>
+  </div>
+</div>
+
+
+
+    <div class="moments-page-right">
+      <div class="moments-page-right-2">
+        <i data-lucide="Aperture" class="moments-icon-right"></i>
+      <p class="moments-right-text">Share moments</p>
+      <p class="moments-right-text-2">Share photos, videos and text that disappear after 24 hours.</p>
+
+<div class="border-text">
+        <i data-lucide="pencil" class="text-write"></i>
+   
+      </div>
+           <p class="text-moments">Text moments</p>
+<div class="border-camera">
+<i data-lucide="camera" class="camera-send"></i>
+   
+</div>
+           <p class="photo-text">Photos and video</p>  
+
+       
+    </div>
+      </div>
+      
+</div>
 </main>
 
 
@@ -1154,7 +1413,7 @@
 <script src="call.js"></script>
 <script src="video.js"></script>
 <script src="new-chat.js"></script>
+<script src="status.js"></script>
 </html>
-
 
 

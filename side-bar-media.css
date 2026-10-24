@@ -114,6 +114,11 @@
   }
   .tooltip { display: none !important; }
 
+  .extra-mobile{
+    display: block !important;
+}
+
+
   @keyframes wa-wiggle {
     0%, 100% { transform: scale(1); }
     30% { transform: scale(0.92); }
