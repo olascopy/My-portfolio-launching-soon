@@ -1,282 +1,395 @@
-// ========== BOOST MOMENTS - FULL JS - 3-TIER FLOW ==========
-let boostState = {
-  selectedMoment: null,
-  audience: 'contacts_campus', // default tier 1
-  audiencePrice: 300,
-  audienceViews: '~300-500',
-  placement: 'Contacts + Campus feed',
-  placementKey: 'contacts_campus',
-  days: 1,
-  multi: 1
-};
+// ========== BOOST.JS - CLEAN - 3 TIER FLOW - BOTTOM SHEET ==========
 
-const boostTiers = {
-  contacts_campus: {
-    price: 300,
-    views: '~300-500',
-    placement: 'Contacts + Campus feed',
-    showIn: ['contacts', 'campus_only'],
-    label: 'your contacts & campus'
-  },
-  campus_anon: {
-    price: 700,
-    views: '~1k',
-    placement: 'Campus feed and Anonymous feed',
-    showIn: ['campus_feed', 'anonymous_feed'],
-    label: 'campus + anonymous feed'
-  },
-  everyone: {
-    price: 1500,
-    views: '~5k+',
-    placement: 'Everyone u get',
-    showIn: ['everywhere'],
-    label: 'everyone'
-  }
-};
-
-// DOM
+// Elements
 const boostPage = document.getElementById('boostPage');
+const boostMomentsList = document.getElementById('boostMomentsList');
+const boostEmpty = document.getElementById('boostEmpty');
 const boostStep1 = document.getElementById('boostStep1');
 const boostStep2 = document.getElementById('boostStep2');
 const boostStep3 = document.getElementById('boostStep3');
-const boostList = document.getElementById('boostMomentsList');
-const boostEmpty = document.getElementById('boostEmpty');
-const boostTotalPrice = document.getElementById('boostTotalPrice');
 const boostContinueBtn = document.getElementById('boostContinueBtn');
+const boostTotalPrice = document.getElementById('boostTotalPrice');
+const closeBoostBtn = document.getElementById('closeBoost');
+const boostSuccess = document.getElementById('boostSuccess');
+const boostDoneBtn = document.getElementById('boostDoneBtn');
 const boostPreviewInner = document.getElementById('boostPreviewInner');
 
-// Bill
+// Bill elements
 const billAudience = document.getElementById('billAudience');
 const billDuration = document.getElementById('billDuration');
 const billPlacement = document.getElementById('billPlacement');
 const billViews = document.getElementById('billViews');
 const billTotal = document.getElementById('billTotal');
-
-// Success
-const boostSuccess = document.getElementById('boostSuccess');
 const successAudience = document.getElementById('successAudience');
 
-// ========== 1. RENDER YOUR MOMENTS ==========
-function renderBoostMoments(moments){ // moments = your array from DB [{id, type, src, text}]
-  boostList.innerHTML = '';
-  if(!moments || moments.length === 0){
-    boostEmpty.style.display = 'block';
+// State
+let selectedBoostMomentIndex = null; // Which moment selected
+let selectedAudience = {
+  id: 'contacts_campus',
+  name: 'Contacts & Campus',
+  placement: 'Contacts + Campus feed',
+  price: 300,
+  views: '~300-500'
+};
+let selectedDuration = {
+  days: 1,
+  label: '24 hours',
+  multi: 1
+};
+
+// ========== HELPERS ==========
+function getMyMoments(){
+  try{
+    return JSON.parse(localStorage.getItem('myMoments') || '[]');
+  }catch(e){ return []; }
+}
+
+function calculateTotal(){
+  const total = selectedAudience.price * selectedDuration.multi;
+  return Math.round(total);
+}
+
+function updateTotalUI(){
+  const total = calculateTotal();
+  if(selectedBoostMomentIndex === null){
+    boostTotalPrice.innerText = 'Select a moment';
     boostContinueBtn.disabled = true;
-    boostTotalPrice.innerText = 'No moments';
+  }else{
+    boostTotalPrice.innerText = `₦${total.toLocaleString()}`;
+    billTotal.innerText = `₦${total.toLocaleString()}`;
+    boostContinueBtn.disabled = false;
+  }
+}
+
+// ========== STEP 1: RENDER MOMENTS LIST WITH BORDER ==========
+function renderBoostMomentsList(){
+  const moments = getMyMoments();
+  boostMomentsList.innerHTML = '';
+
+  if(moments.length === 0){
+    boostEmpty.style.display = 'block';
+    boostMomentsList.style.display = 'none';
+    boostContinueBtn.disabled = true;
+    boostTotalPrice.innerText = 'No moments to boost';
     return;
   }
+
   boostEmpty.style.display = 'none';
-  moments.forEach(m=>{
-    const div = document.createElement('div');
-    div.className = 'boost-moment-item';
-    div.dataset.id = m.id;
-    div.innerHTML = `
-      ${m.type === 'video' ? `<video src="${m.src}" class="boost-moment-thumb" muted></video>` : 
-        m.type === 'image' ? `<img src="${m.src}" class="boost-moment-thumb"/>` : 
-        `<div class="boost-moment-thumb" style="display:flex;align-items:center;justify-content:center;font-size:12px;padding:4px;background:#f0f0f0">${(m.text||'').substring(0,30)}</div>`}
+  boostMomentsList.style.display = 'flex';
+
+  moments.forEach((m, idx)=>{
+    const item = document.createElement('div');
+    item.className = 'boost-moment-item' + (idx === selectedBoostMomentIndex ? ' active' : '');
+    
+    let thumbHtml = '';
+    if(m.type === 'image'){
+      thumbHtml = `<img src="${m.src}" class="boost-moment-thumb">`;
+    }else if(m.type === 'video'){
+      thumbHtml = `<video src="${m.src}" class="boost-moment-thumb" muted></video>`;
+    }else{
+      thumbHtml = `<div class="boost-moment-thumb" style="background:${m.bg};display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;">Text</div>`;
+    }
+
+    const caption = (m.caption || m.text || 'No caption').slice(0, 30);
+    const time = new Date(m.time).toLocaleDateString();
+
+    item.innerHTML = `
+      ${thumbHtml}
       <div class="boost-moment-info">
-        <h5>${m.text ? m.text.substring(0,35) : m.type}</h5>
-        <p>${new Date(m.createdAt).toLocaleDateString()} • ${m.type}</p>
+        <h5>${caption}</h5>
+        <p>${time} • ${m.privacy || 'Everyone'}</p>
       </div>
       <div class="boost-radio"></div>
     `;
-    div.onclick = ()=> selectBoostMoment(m, div);
-    boostList.appendChild(div);
+
+    item.onclick = ()=>{
+      selectedBoostMomentIndex = idx;
+      document.querySelectorAll('.boost-moment-item').forEach(el=>el.classList.remove('active'));
+      item.classList.add('active');
+      updateTotalUI();
+      updatePreview();
+      // Auto enable continue
+      boostContinueBtn.disabled = false;
+      boostContinueBtn.innerText = 'Continue';
+    };
+
+    boostMomentsList.appendChild(item);
   });
 }
 
-function selectBoostMoment(moment, el){
-  document.querySelectorAll('.boost-moment-item').forEach(i=>i.classList.remove('active'));
-  el.classList.add('active');
-  boostState.selectedMoment = moment;
-  
-  // preview
-  if(moment.type === 'image') boostPreviewInner.innerHTML = `<img src="${moment.src}" style="width:100%;border-radius:12px;max-height:200px;object-fit:cover">`;
-  else if(moment.type === 'video') boostPreviewInner.innerHTML = `<video src="${moment.src}" style="width:100%;border-radius:12px;max-height:200px" controls></video>`;
-  else boostPreviewInner.innerHTML = `<div style="padding:16px;font-size:14px">${moment.text}</div>`;
+// ========== STEP 2: AUDIENCE - 3 TIERS - PROPER ENGLISH ==========
+function initAudience(){
+  const cards = document.querySelectorAll('.boost-audience-card');
+  cards.forEach(card=>{
+    card.onclick = ()=>{
+      cards.forEach(c=>c.classList.remove('active'));
+      card.classList.add('active');
 
-  boostContinueBtn.disabled = false;
-  boostTotalPrice.innerText = `₦${getTotal()}`;
-  boostContinueBtn.innerText = 'Continue';
+      selectedAudience = {
+        id: card.dataset.audience,
+        name: card.querySelector('h4').innerText,
+        placement: card.querySelector('p').innerText,
+        price: parseInt(card.dataset.price),
+        views: card.dataset.views
+      };
+
+      // Update bill
+      billAudience.innerText = selectedAudience.name;
+      billPlacement.innerText = selectedAudience.placement;
+      billViews.innerText = selectedAudience.views;
+
+      updateTotalUI();
+    };
+  });
+
+  // Set initial
+  const activeCard = document.querySelector('.boost-audience-card.active');
+  if(activeCard){
+    selectedAudience.price = parseInt(activeCard.dataset.price);
+    selectedAudience.views = activeCard.dataset.views;
+    selectedAudience.name = activeCard.querySelector('h4').innerText;
+    selectedAudience.placement = activeCard.querySelector('p').innerText;
+  }
 }
 
-// ========== 2. AUDIENCE SELECT ==========
-document.querySelectorAll('.boost-audience-card').forEach(card=>{
-  card.onclick = ()=>{
-    document.querySelectorAll('.boost-audience-card').forEach(c=>c.classList.remove('active'));
-    card.classList.add('active');
-    const key = card.dataset.audience;
-    boostState.placementKey = key;
-    boostState.audience = card.querySelector('h4').innerText;
-    boostState.audiencePrice = parseInt(card.dataset.price);
-    boostState.audienceViews = card.dataset.views;
-    boostState.placement = boostTiers[key].placement;
-    
-    // update bill
-    billAudience.innerText = boostState.audience;
-    billPlacement.innerText = boostState.placement;
-    billViews.innerText = boostState.audienceViews;
-    updateTotal();
-  };
-});
+// ========== DURATION ==========
+function initDuration(){
+  const items = document.querySelectorAll('.boost-duration-item');
+  items.forEach(item=>{
+    item.onclick = ()=>{
+      items.forEach(i=>i.classList.remove('active'));
+      item.classList.add('active');
 
-// ========== 3. DURATION SELECT ==========
-document.querySelectorAll('.boost-duration-item').forEach(item=>{
-  item.onclick = ()=>{
-    document.querySelectorAll('.boost-duration-item').forEach(i=>i.classList.remove('active'));
-    item.classList.add('active');
-    boostState.days = parseInt(item.dataset.days);
-    boostState.multi = parseFloat(item.dataset.multi);
-    billDuration.innerText = item.querySelector('.boost-duration-name').innerText;
-    updateTotal();
-  };
-});
+      selectedDuration = {
+        days: parseInt(item.dataset.days),
+        label: item.querySelector('.boost-duration-name').innerText,
+        multi: parseFloat(item.dataset.multi)
+      };
 
-function getTotal(){
-  return Math.round(boostState.audiencePrice * boostState.multi);
-}
-function updateTotal(){
-  const total = getTotal();
-  boostTotalPrice.innerText = `₦${total.toLocaleString()}`;
-  billTotal.innerText = `₦${total.toLocaleString()}`;
+      billDuration.innerText = selectedDuration.label;
+      updateTotalUI();
+    };
+  });
+
+  const active = document.querySelector('.boost-duration-item.active');
+  if(active){
+    selectedDuration.days = parseInt(active.dataset.days);
+    selectedDuration.label = active.querySelector('.boost-duration-name').innerText;
+    selectedDuration.multi = parseFloat(active.dataset.multi);
+  }
 }
 
-// ========== 4. STEP NAVIGATION ==========
-let currentStep = 1;
-boostContinueBtn.onclick = ()=>{
-  if(currentStep === 1){
-    if(!boostState.selectedMoment) return;
-    boostStep1.style.display = 'none';
-    boostStep2.style.display = 'block';
-    currentStep = 2;
-    boostContinueBtn.innerText = 'Continue to pay';
-    updateTotal();
-    return;
-  }
-  if(currentStep === 2){
-    boostStep2.style.display = 'none';
-    boostStep3.style.display = 'block';
-    currentStep = 3;
-    boostContinueBtn.innerText = `Pay ₦${getTotal().toLocaleString()}`;
-    return;
-  }
-  if(currentStep === 3){
-    // PAYSTACK
-    payWithPaystack();
-  }
-};
+// ========== PREVIEW - HOW OTHERS WILL SEE IT ==========
+function updatePreview(){
+  if(selectedBoostMomentIndex === null) return;
+  const moments = getMyMoments();
+  const m = moments[selectedBoostMomentIndex];
+  if(!m || !boostPreviewInner) return;
 
-// Back button
-document.getElementById('closeBoost').onclick = closeBoostFlow;
-function closeBoostFlow(){
-  if(currentStep > 1){
-    if(currentStep === 2){ boostStep2.style.display='none'; boostStep1.style.display='block'; currentStep=1; boostContinueBtn.innerText='Continue'; }
-    else if(currentStep === 3){ boostStep3.style.display='none'; boostStep2.style.display='block'; currentStep=2; boostContinueBtn.innerText='Continue to pay'; }
-    return;
+  boostPreviewInner.innerHTML = '';
+
+  if(m.type === 'image'){
+    boostPreviewInner.innerHTML = `<img src="${m.src}" style="width:100%;height:100%;object-fit:cover;">`;
+  }else if(m.type === 'video'){
+    boostPreviewInner.innerHTML = `<video src="${m.src}" style="width:100%;height:100%;object-fit:cover;" muted autoplay loop playsinline></video>`;
+  }else{
+    const div = document.createElement('div');
+    div.style.cssText = `width:100%;height:100%;background:${m.bg};display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;font-weight:700;text-align:center;padding:12px;`;
+    div.innerText = m.text || 'Text moment';
+    div.style.fontFamily = m.fontF || 'inherit';
+    boostPreviewInner.appendChild(div);
   }
-  boostPage.classList.remove('active');
-  // reset
-  currentStep = 1;
-  boostStep1.style.display='block';
-  boostStep2.style.display='none';
-  boostStep3.style.display='none';
-  boostContinueBtn.innerText='Continue';
 }
 
-// ========== 5. PAYSTACK + BOOST LOGIC ==========
-function payWithPaystack(){
-  const total = getTotal();
-  const email = localStorage.getItem('userEmail') || 'user@example.com'; // replace with real user email
+// ========== STEPS FLOW - STEP 1 -> 2 -> 3 -> PAY ==========
+let currentBoostStep = 1;
 
-  boostContinueBtn.innerText = 'Processing...';
-  boostContinueBtn.disabled = true;
+function showBoostStep(step){
+  currentBoostStep = step;
+  boostStep1.style.display = step === 1 ? 'block' : 'none';
+  boostStep2.style.display = step === 2 ? 'block' : 'none';
+  boostStep3.style.display = step === 3 ? 'block' : 'none';
 
-  // If you have Paystack inline
-  if(window.PaystackPop){
-    let handler = PaystackPop.setup({
-      key: 'YOUR_PAYSTACK_PUBLIC_KEY', // <-- put your key
-      email: email,
-      amount: total * 100, // kobo
-      currency: 'NGN',
-      ref: 'BOOST_'+Date.now(),
-      metadata: {
-        custom_fields: [
-          { display_name: "Moment ID", variable_name: "moment_id", value: boostState.selectedMoment.id },
-          { display_name: "Audience", variable_name: "audience", value: boostState.placementKey },
-          { display_name: "Duration", variable_name: "duration", value: boostState.days+' days' }
-        ]
-      },
-      callback: function(response){
-        // payment success - now boost
-        saveBoostToDB(response.reference);
-      },
-      onClose: function(){
-        boostContinueBtn.innerText = `Pay ₦${total.toLocaleString()}`;
-        boostContinueBtn.disabled = false;
+  if(step === 1){
+    boostContinueBtn.innerText = 'Continue';
+    boostTotalPrice.innerText = selectedBoostMomentIndex === null ? 'Select a moment' : `₦${calculateTotal().toLocaleString()}`;
+  }else if(step === 2){
+    boostContinueBtn.innerText = 'Continue to checkout';
+  }else if(step === 3){
+    boostContinueBtn.innerText = `Pay ₦${calculateTotal().toLocaleString()}`;
+    updatePreview();
+    // Update bill for step 3
+    billAudience.innerText = selectedAudience.name;
+    billDuration.innerText = selectedDuration.label;
+    billPlacement.innerText = selectedAudience.placement;
+    billViews.innerText = selectedAudience.views;
+    billTotal.innerText = `₦${calculateTotal().toLocaleString()}`;
+  }
+}
+
+if(boostContinueBtn){
+  boostContinueBtn.onclick = ()=>{
+    if(currentBoostStep === 1){
+      if(selectedBoostMomentIndex === null){
+        alert('Please select a moment to boost');
+        return;
       }
-    });
-    handler.openIframe();
-  } else {
-    // TEST MODE if no Paystack loaded - simulate success
-    setTimeout(()=> saveBoostToDB('TEST_'+Date.now()), 1200);
-  }
-}
+      showBoostStep(2);
+    }else if(currentBoostStep === 2){
+      showBoostStep(3);
+    }else if(currentBoostStep === 3){
+      // PAY - simulate payment
+      boostContinueBtn.innerText = 'Processing...';
+      boostContinueBtn.disabled = true;
 
-function saveBoostToDB(payRef){
-  const tier = boostTiers[boostState.placementKey];
-  
-  // 1. Save to your DB - replace with your Firebase/Supabase call
-  const boostData = {
-    momentId: boostState.selectedMoment.id,
-    tier: boostState.placementKey,
-    showIn: tier.showIn, // WHERE TO SHOW - THIS IS YOUR CORE LOGIC
-    price: getTotal(),
-    days: boostState.days,
-    payRef: payRef,
-    status: 'active',
-    createdAt: Date.now(),
-    expiresAt: Date.now() + (boostState.days * 24 * 60 * 60 * 1000)
+      setTimeout(()=>{
+        onBoostSuccess();
+      }, 1500);
+    }
   };
-  
-  console.log('BOOST SAVED:', boostData);
-  
-  // Example Firebase:
-  // db.collection('boosts').add(boostData);
-  // If tier is campus_anon or everyone, also inject into anonymous feed:
-  // if(tier.showIn.includes('anonymous_feed') || tier.showIn.includes('everywhere')){
-  //   db.collection('anonymous_feed').doc(boostData.momentId).set({isSponsored:true, boostTier:tier}, {merge:true});
-  // }
+}
 
-  // Show success
-  successAudience.innerText = tier.label;
+// ========== BOOST SUCCESS - ADD GOLD BORDER UNDER PROFILE ==========
+function onBoostSuccess(){
+  // Save boosted state
+  localStorage.setItem('momentsBoosted', 'true');
+  localStorage.setItem('boostedMomentIndex', selectedBoostMomentIndex);
+  localStorage.setItem('boostInfo', JSON.stringify({
+    audience: selectedAudience,
+    duration: selectedDuration,
+    total: calculateTotal(),
+    time: Date.now()
+  }));
+
+  // Add gold border under my profile
+  const myAvatar = document.getElementById('myAvatarBorder');
+  const boostFirstBorder = document.getElementById('boostFirstBorder');
+  const boostMomentsBtn = document.getElementById('boostMoments');
+
+  if(myAvatar){
+    myAvatar.classList.add('boosted');
+    myAvatar.classList.add('boost-has-border');
+    myAvatar.classList.add('has-moments');
+  }
+  if(boostFirstBorder){
+    boostFirstBorder.classList.add('boosted');
+  }
+  if(boostMomentsBtn){
+    boostMomentsBtn.classList.add('boosted');
+  }
+
+  // Show success pop with proper English
+  successAudience.innerText = selectedAudience.name.toLowerCase();
   boostSuccess.style.display = 'flex';
+  lucide.createIcons({ attrs: { "stroke-width": 1.8 } });
+
+  boostContinueBtn.innerText = `Pay ₦${calculateTotal().toLocaleString()}`;
   boostContinueBtn.disabled = false;
-  boostContinueBtn.innerText = 'Done';
 }
 
-document.getElementById('boostDoneBtn').onclick = ()=>{
-  boostSuccess.style.display = 'none';
-  closeBoostFlow();
-  // optional refresh
-  location.reload();
-};
+// Close success
+if(boostDoneBtn){
+  boostDoneBtn.onclick = ()=>{
+    boostSuccess.style.display = 'none';
+    boostPage.classList.remove('active');
+    document.body.classList.remove('boost-open');
+    // Reset to step 1
+    selectedBoostMomentIndex = null;
+    showBoostStep(1);
+    renderBoostMomentsList();
+    updateTotalUI();
+  };
+}
 
-// ========== 6. OPEN BOOST PAGE ==========
-// Call this when user clicks Boost on a moment
+// ========== OPEN BOOST PAGE - FROM FIRST BORDER UNDER PROFILE ==========
+const boostFirstBorder = document.getElementById('boostFirstBorder');
+
 function openBoostPage(){
+  const moments = getMyMoments();
+  if(moments.length === 0){
+    alert('Post a moment first to boost it');
+    // Open gallery
+    document.getElementById('galleryInput')?.click();
+    return;
+  }
+
   boostPage.classList.add('active');
-  currentStep = 1;
-  boostStep1.style.display = 'block';
-  boostStep2.style.display = 'none';
-  boostStep3.style.display = 'none';
-  // Load moments - replace with your real fetch
-  // const myMoments = fetchMyMoments();
-  // renderBoostMoments(myMoments);
+  document.body.classList.add('boost-open');
+  showBoostStep(1);
+  renderBoostMomentsList();
+  updateTotalUI();
+  lucide.createIcons({ attrs: { "stroke-width": 1.8 } });
 }
 
-// FOR TESTING - mock data, remove later
-const mockMoments = [
-  {id:'1', type:'text', text:'Party tonight at Yaba!', createdAt: Date.now()},
-  {id:'2', type:'image', src:'https://picsum.photos/200', text:'My new shop', createdAt: Date.now()}
-];
-renderBoostMoments(mockMoments);
+if(boostFirstBorder){
+  boostFirstBorder.onclick = (e)=>{
+    e.stopPropagation();
+    openBoostPage();
+  };
+}
+
+// Also allow old boost button if exists
+document.getElementById('boostMoments')?.addEventListener('click', openBoostPage);
+
+// ========== CLOSE BOOST PAGE - CAN GO BACK - SWIPE DOWN ==========
+if(closeBoostBtn){
+  closeBoostBtn.onclick = ()=>{
+    boostPage.classList.remove('active');
+    document.body.classList.remove('boost-open');
+    // If success is open, close it too
+    boostSuccess.style.display = 'none';
+  };
+}
+
+// Click outside to close (bottom sheet behavior)
+boostPage.addEventListener('click', (e)=>{
+  if(e.target === boostPage){
+    boostPage.classList.remove('active');
+    document.body.classList.remove('boost-open');
+  }
+});
+
+// Swipe down to close - mobile
+let boostStartY = 0;
+boostPage.addEventListener('touchstart', (e)=>{
+  boostStartY = e.touches[0].clientY;
+}, {passive:true});
+
+boostPage.addEventListener('touchend', (e)=>{
+  const diff = e.changedTouches[0].clientY - boostStartY;
+  if(diff > 120){ // Swipe down > 120px = close
+    boostPage.classList.remove('active');
+    document.body.classList.remove('boost-open');
+  }
+}, {passive:true});
+
+// ========== INIT ==========
+document.addEventListener('DOMContentLoaded', ()=>{
+  initAudience();
+  initDuration();
+  updateTotalUI();
+  // If already boosted, show border
+  if(localStorage.getItem('momentsBoosted') === 'true'){
+    document.getElementById('myAvatarBorder')?.classList.add('boosted');
+    document.getElementById('myAvatarBorder')?.classList.add('boost-has-border');
+    document.getElementById('boostFirstBorder')?.classList.add('boosted');
+  }
+  showBoostStep(1);
+});
+
+
+function openBoostPage(){
+  const moments = getMyMoments();
+  if(moments.length === 0){
+    document.getElementById('boostNoMomentsPopup').classList.add('show');
+    lucide.createIcons();
+    return;
+  }
+  boostPage.classList.add('active');
+}
+// Also init when page loaded (in case DOMContentLoaded already fired)
+initAudience();
+initDuration();
+showBoostStep(1);
+renderBoostMomentsList();
+updateTotalUI();

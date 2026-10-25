@@ -90,6 +90,7 @@ text-align: center;
     color: var(--text-main);
 transform: translateY(-55px);
 }
+
 /* ========== ROOT ========== */
 :root{
   --bg-app:#000;
@@ -98,13 +99,14 @@ transform: translateY(-55px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* ========== PWA SAFE AREA - iPHONE DYNAMIC ISLAND + ANDROID ========== */
+/* ========== PWA SAFE AREA ========== */
 body{
   padding-top: var(--safe-top);
   padding-bottom: var(--safe-bottom);
   background:#000;
   margin:0;
   -webkit-tap-highlight-color: transparent;
+  font-family:-apple-system, sans-serif;
 }
 
 /* ========== HIDE SIDEBAR WHEN FULL PAGE OPEN ========== */
@@ -126,7 +128,7 @@ body.text-open .moments-page-left{
   display:none !important;
 }
 
-/* ========== MOMENTS PAGE LEFT - SIDEBAR ========== */
+/* ========== MOMENTS PAGE LEFT ========== */
 .moments-page-left{
     background-color:var(--bg-app);
     position: fixed;
@@ -142,7 +144,7 @@ body.text-open .moments-page-left{
     padding-top: var(--safe-top);
 }
 
-/* ========== FIXED HEADER - BRING DOWN FOR PWA IPHONE ========== */
+/* ========== FIXED HEADER ========== */
 .moments-header-fixed{
     display: flex;
     align-items: center;
@@ -154,7 +156,7 @@ body.text-open .moments-page-left{
     position: relative;
     z-index: 10;
     border-bottom:1px solid rgba(255,255,255,.04);
-    margin-top: 8px; /* bring down small for dynamic island */
+    margin-top: 8px;
     padding-top: 4px;
 }
 .moments-text{
@@ -165,7 +167,6 @@ body.text-open .moments-page-left{
     line-height: 60px;
 }
 
-/* ========== ICONS RIGHT ========== */
 .header-icons-right{
     display: flex;
     align-items: center;
@@ -188,8 +189,6 @@ body.text-open .moments-page-left{
 .icon-btn:hover{ background: rgba(255,255,255,0.14); }
 .icon-btn.active{ background: rgba(255,255,255,0.18); }
 .icon-btn i{width:18px; height:18px; color:var(--text-main);}
-
-/* Tooltip - desktop only, hide mobile */
 .tooltip-text{
     position: absolute;
     top: 42px;
@@ -207,13 +206,11 @@ body.text-open .moments-page-left{
     border: 1px solid rgba(255,255,255,0.1);
 }
 .icon-btn:not(.active):hover .tooltip-text{opacity:1;}
-
-/* Hide tooltip on mobile */
 @media(max-width:768px){
   .tooltip-text{ display:none !important; }
 }
 
-/* ========== POP - iPHONE 17 NICE POPUP ========== */
+/* ========== FIX 2: MORE VERT POPUP - ONLY ON CLICK, CAN GO BACK, NOT LONG ========== */
 .pop{
     display: none;
     position: absolute;
@@ -228,6 +225,10 @@ body.text-open .moments-page-left{
     backdrop-filter:blur(24px);
     -webkit-backdrop-filter:blur(24px);
     box-shadow:0 16px 40px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.06) inset;
+    /* FIX: not long */
+    height:auto;
+    max-height:110px;
+    overflow:hidden;
 }
 .pop.show{
   display:block;
@@ -251,6 +252,7 @@ body.text-open .moments-page-left{
   color:#fff;
   transition:background .12s;
   border:1px solid transparent;
+  height:42px;
 }
 .pop-item:hover{background: rgba(255,255,255,0.08); border-color:rgba(255,255,255,.06);}
 .pop-item:active{ transform:scale(.97); }
@@ -299,7 +301,7 @@ body.text-open .moments-page-left{
 .post-text-2{font-size: 12px; font-weight: 400; opacity:.6;}
 .moments-post-text{margin-left: 12px;}
 
-/* ========== MY PROFILE POP - SMALL DESKTOP SIDE BY SIDE MOBILE ========== */
+/* ========== FIX 5: MY PROFILE POP - PILL SIDE BY SIDE MOBILE + REAL GALLERY ========== */
 .my-profile-pop{
   display:none;
   width: 300px;
@@ -314,33 +316,38 @@ body.text-open .moments-page-left{
   display: flex !important;
   flex-direction: column;
   animation:iphonePop .38s ease;
+  background:#1C1C1E;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:16px;
+  padding:6px;
 }
 .my-profile-pop-inner .pop-item{
   padding:10px 12px !important;
   font-size:12px !important;
 }
 
-/* Real gallery under - mobile only - each in own border */
+/* Real gallery under - mobile only - each in own border - REAL GALLERY */
 .my-gallery-under{
   display:none;
   width:100%;
   margin-top:10px;
   grid-template-columns:repeat(3,1fr);
   gap:6px;
-  max-height: 280px;
+  max-height: 320px;
   overflow-y:auto;
   padding-bottom:4px;
 }
 .my-gallery-under.show{ display:grid; }
+.my-gallery-under .gallery-thumb{
+  width:100%; aspect-ratio:1; border-radius:12px; overflow:hidden;
+  border:1px solid rgba(255,255,255,.08); background:#1C1C1E; cursor:pointer;
+}
 .my-gallery-under img,
 .my-gallery-under video{
-  width:100%; aspect-ratio:1; object-fit:cover; border-radius:12px; border:1px solid rgba(255,255,255,.08); cursor:pointer; background:#1C1C1E;
-  transition:transform .12s;
+  width:100%; height:100%; object-fit:cover; border-radius:12px; transition:transform .12s;
 }
 .my-gallery-under img:active{ transform:scale(.94); }
 @media(min-width:769px){ .my-gallery-under{ display:none !important; } }
-
-/* ========== BOOST MOMENTS - SMALL NOT BIG - MAKE MONEY ========== */
 
 /* ========== RECENTS ========== */
 .section{margin:20px 0 8px 58px; font-size:10px; opacity:0.4; text-transform:uppercase; letter-spacing:0.8px; font-weight:700;}
@@ -353,7 +360,19 @@ body.text-open .moments-page-left{
 .time{font-size:11px; opacity:0.5; margin-top:2px;}
 .blue-ring{position:absolute; inset:-2px; border-radius:50%; border:2px solid #0A84FF;}
 
-/* ========== PRIVACY PAGE - MARGIN LEFT FIX - CHEVRON MOBILE ARROW DESKTOP ========== */
+/* ========== FIX 7: BOOST BORDER UNDER PROFILE ========== */
+.post-moments.has-moments{ 
+  border:2px solid #0A84FF !important; 
+  box-shadow:0 0 0 3px rgba(10,132,255,.22) 
+}
+.post-moments.boost-has-border{ 
+  border-color:#FFD60A !important; 
+  box-shadow:0 0 0 3px rgba(255,214,10,.25) !important;
+}
+#myAvatarBorder.has-moments{ border:2px solid #0A84FF; }
+#myAvatarBorder.boost-has-border{ border-color:#FFD60A; box-shadow:0 0 0 3px rgba(255,214,10,.25); }
+
+/* ========== PRIVACY PAGE ========== */
 .privacy-page{
   position: absolute;
   top: 0; left: 0;
@@ -373,7 +392,7 @@ body.text-open .moments-page-left{
   background: var(--bg-app); flex-shrink: 0;
   margin-left: 58px;
   width: calc(100% - 58px);
-  margin-top: 8px; /* PWA bring down */
+  margin-top: 8px;
 }
 .back-btn{
   width: 36px; height: 36px; border-radius:50%;
@@ -393,11 +412,10 @@ body.text-open .moments-page-left{
 .circle-check{ width: 20px; height: 20px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; }
 .inner-dot{ width: 10px; height: 10px; border-radius: 50%; background: #0A84FF; transform: scale(0); transition: .2s ease; }
 .privacy-option span{font-size: 13px; font-weight:500;}
-/* Chevron mobile arrow desktop */
 .ios-arrow{display:none;} .android-arrow{display:block;}
 @media(max-width:768px){ .ios-arrow{display:block;} .android-arrow{display:none;} }
 
-/* ========== TEXT PAGE - PWA ========== */
+/* ========== TEXT PAGE ========== */
 #textPage{position:fixed;inset:0;background:#000;z-index:9999;display:none;flex-direction:column; padding-top: var(--safe-top); padding-bottom: var(--safe-bottom);}
 #textPage.open{display:flex}
 #textPage .top{height:56px;display:flex;justify-content:space-between;align-items:center;padding:0 14px; margin-top:8px; flex-shrink:0;}
@@ -410,17 +428,46 @@ body.text-open .moments-page-left{
 @keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
 .bottom{height:84px;display:flex;justify-content:space-between;align-items:center;padding:0 16px calc(16px + var(--safe-bottom)); flex-shrink:0;}
 #pill{display:flex;gap:6px;align-items:center;padding:9px 14px;background:rgba(255,255,255,.12);border-radius:99px;font-size:12px;cursor:pointer;border:1px solid rgba(255,255,255,.12);color:#fff;}
+
+/* FIX 6: Privacy popup in editing - small not long, down, switching works */
+#miniPop{
+  position:absolute;
+  bottom:90px;
+  left:16px;
+  width:200px;
+  background:#1C1C1E;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:16px;
+  padding:6px;
+  display:none;
+  z-index:600;
+  height:auto;
+  max-height:110px;
+  overflow:hidden;
+}
+#miniPop.show{display:block; animation:iphonePop .3s ease;}
+.mini-item{
+  padding:12px 10px;
+  border-radius:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  cursor:pointer;
+  font-size:12px;
+  color:#fff;
+  height:42px;
+}
+.mini-item.active{ background:rgba(255,255,255,.08); }
+.mini-item .check{ opacity:0; }
+.mini-item.active .check{ opacity:1; }
+
 #sendBtn{width:44px;height:44px;border-radius:50%;background:#0A84FF;border:none;color:#fff;opacity:.3;pointer-events:none;display:flex;align-items:center;justify-content:center;}
 #sendBtn.on{opacity:1;pointer-events:auto}
-#miniPop{position:absolute;bottom:90px;left:16px;width:190px;background:#1C1C1E;border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:5px;display:none;z-index:600}
-#miniPop.show{display:block; animation:iphonePop .3s ease;}
-.mini-item{padding:12px 10px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-size:12px;color:#fff;}
 .pal-ca{top:70px;right:14px;width:220px;padding:8px;display:none;gap:8px;flex-wrap:wrap;max-height:300px;overflow-y:auto;}
 .pal-ca.show{display:flex !important; animation:iphonePop .3s ease;}
 .dot{width:38px;height:38px;border-radius:50%;border:2px solid rgba(255,255,255,.18);cursor:pointer;flex-shrink:0;}
 .dot.active{border-color:#fff;box-shadow:0 0 0 2px #fff}
 
-/* ========== X ICONS ========== */
 #closeHub,#closeViewer,#closePreview,#closeText,#closeViewersPop{
   width:38px !important; height:38px !important;
   border-radius:50% !important;
@@ -432,12 +479,12 @@ body.text-open .moments-page-left{
   cursor:pointer !important;
 }
 
-/* ========== LOADING - VIDEO LOADING TILL FINISH ========== */
+/* ========== LOADING ========== */
 .loading-circle{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:5; pointer-events:none; }
 .spinner{ width:32px; height:32px; border:3px solid rgba(255,255,255,.2); border-top-color:#fff; border-radius:50%; animation:spin .8s linear infinite }
 @keyframes spin{ to{ transform:rotate(360deg) } }
 
-/* ========== MY HUB PAGE - VIDEO SAME HEIGHT NOT BIG - PWA ========== */
+/* ========== HUB - FIX 4: VIDEO SAME HEIGHT NOT BIG ========== */
 #myHubPage{ position:fixed; inset:0; background:#000; z-index:99999; display:none; flex-direction:column; padding-top: var(--safe-top); padding-bottom: var(--safe-bottom);}
 #myHubPage.open{ display:flex; }
 .hub-header{
@@ -487,10 +534,10 @@ body.text-open .moments-page-left{
   color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer;
 }
 
-/* ========== VIEWER PAGE - PWA BRING DOWN + HOLD CONTINUE + VIDEO LINE 50s=50s ========== */
+/* ========== VIEWER - FIX 3: EYE ONLY FOR ME, PAUSE/PLAY, LINE 50s=50s ========== */
 #viewerPage{ position:fixed; inset:0; background:#000; z-index:100000; display:none; flex-direction:column; padding-top: var(--safe-top); padding-bottom: var(--safe-bottom);}
 #viewerPage.open{ display:flex }
-.viewer-lines{ display:flex; gap:4px; padding: calc(10px + 8px) 8px 0; flex-shrink:0 } /* bring down for PWA */
+.viewer-lines{ display:flex; gap:4px; padding: calc(10px + 8px) 8px 0; flex-shrink:0 }
 .line{ height:2px; background:rgba(255,255,255,.28); border-radius:99px; flex:1; overflow:hidden; position:relative; }
 .line .fill{ position:absolute; left:0; top:0; bottom:0; width:0%; background:#fff; border-radius:99px; transition:width .1s linear; }
 .line.filled .fill{ width:100%; }
@@ -534,6 +581,7 @@ body.text-open .moments-page-left{
   padding:7px 11px; background:rgba(0,0,0,.55); border:1px solid rgba(255,255,255,.14);
   border-radius:99px; font-size:11px; color:#fff; z-index:4; backdrop-filter:blur(12px); cursor:pointer
 }
+.viewer-views.hidden{ display:none !important; } /* FIX 3: eye only for owner */
 .viewers-pop{
   position:absolute; bottom:0; left:0; right:0;
   background:#1C1C1E; border-top-left-radius:20px; border-top-right-radius:20px;
@@ -547,8 +595,15 @@ body.text-open .moments-page-left{
   padding-bottom:12px; border-bottom:1px solid rgba(255,255,255,.08);
   margin-bottom:10px; color:#fff; font-size:13px; font-weight:600
 }
+#viewerMorePopMe, #viewerMorePopOther{
+  position:absolute; top:50px; right:0; width:180px;
+  background:#1C1C1E; border:1px solid rgba(255,255,255,.12);
+  border-radius:16px; padding:6px; display:none; z-index:20;
+  height:auto; max-height:120px;
+}
+#viewerMorePopMe.show, #viewerMorePopOther.show{ display:flex; flex-direction:column; }
 
-/* ========== PREVIEW EDITOR - PWA + SWIPE LINE + CAPTION PER ITEM ========== */
+/* ========== FIX 1: PREVIEW EDITOR - CAPTION PER ITEM + SWIPE LINE ========== */
 #previewPage{ position:fixed; inset:0; background:#000; z-index:100001; display:none; flex-direction:column; padding-top: var(--safe-top); padding-bottom: var(--safe-bottom);}
 #previewPage.open{ display:flex; }
 .preview-bg{ position:absolute; inset:0; z-index:0 }
@@ -564,12 +619,13 @@ body.text-open .moments-page-left{
 }
 .preview-center-caption{
   font-size:14px; color:#fff; text-align:center; max-width:300px; word-break:break-word;
-  background:rgba(0,0,0,.45); padding:6px 12px; border-radius:99px; backdrop-filter:blur(8px)
+  background:rgba(0,0,0,.55); padding:8px 12px; border-radius:99px; backdrop-filter:blur(8px);
+  margin-top:12px;
 }
 .preview-center-caption:empty{ display:none }
 .preview-bottom{
   padding:10px 10px calc(14px + var(--safe-bottom)); flex-shrink:0;
-  background:rgba(0,0,0,.75); backdrop-filter:blur(20px);
+  background:rgba(0,0,0,.85); backdrop-filter:blur(20px);
   border-top:1px solid rgba(255,255,255,.08); z-index:2; position:relative
 }
 .preview-borders-wrap{
@@ -584,9 +640,13 @@ body.text-open .moments-page-left{
 .preview-border-item{
   width:52px; height:52px; border-radius:12px; overflow:hidden;
   border:2px solid transparent; cursor:pointer; background:#1C1C1E;
-  flex-shrink:0; transition:all .15s;
+  flex-shrink:0; transition:all .15s; position:relative;
 }
 .preview-border-item.active{ border-color:#0A84FF; transform:scale(1.06); }
+.preview-border-item.has-caption::after{
+  content:''; position:absolute; bottom:2px; left:50%; transform:translateX(-50%);
+  width:4px; height:4px; background:#0A84FF; border-radius:50%;
+}
 .preview-border-item img,.preview-border-item video{ width:100%; height:100%; object-fit:cover }
 .preview-plus{
   width:52px; height:52px; border-radius:12px; background:#1C1C1E;
@@ -609,15 +669,21 @@ body.text-open .moments-page-left{
   border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.12);
   color:#fff; display:flex; align-items:center; gap:4px; cursor:pointer; font-size:12px;
 }
-#previewMiniPop{ bottom:100px; left:12px; }
+#previewMiniPop{ 
+  bottom:100px; left:12px; 
+  position:absolute; width:200px; background:#1C1C1E; border:1px solid rgba(255,255,255,.12);
+  border-radius:16px; padding:6px; display:none; z-index:600; height:auto; max-height:110px; overflow:hidden;
+}
+#previewMiniPop.show{ display:block; animation:iphonePop .3s ease; }
+#previewMiniPop .pop-item{ height:42px; }
+#previewMiniPop .pop-item.active{ background:rgba(255,255,255,.08); }
 .pill{
   display:flex; gap:6px; align-items:center; padding:8px 12px;
   background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.14);
   border-radius:99px; font-size:11px; cursor:pointer; color:#fff;
 }
-.post-moments.has-moments{ border:2px solid #0A84FF; box-shadow:0 0 0 3px rgba(10,132,255,.22) }
 
-/* ========== RESPONSIVE MOBILE - PWA BRING DOWN ========== */
+/* ========== RESPONSIVE MOBILE ========== */
 @media(max-width: 768px){
   .moments-page-left{ width:100% !important; left:0 !important; inset:0; border-right:none; padding-top: calc(var(--safe-top) + 4px); }
   .moments-text{ margin-left:16px; font-size:20px; }

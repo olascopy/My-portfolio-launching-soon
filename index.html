@@ -1140,7 +1140,7 @@
     <div class="moments-header-fixed">
         <h2 class="moments-text">moments</h2>
         <div class="header-icons-right">
-            <!-- More button - privacy -->
+            <!-- More button - privacy - popup only on click -->
             <div class="icon-btn" id="moreBtn">
                 <i data-lucide="more-vertical"></i>
                 <span class="tooltip-text">Moments menu</span>
@@ -1148,7 +1148,7 @@
                     <div class="pop-item"><i data-lucide="lock" style="width:16px"></i> Moments privacy</div>
                 </div>
             </div>
-            <!-- Plus button - add moments -->
+            <!-- Plus button - add moments - popup only on click -->
             <div class="icon-btn" id="plusBtn">
                 <i data-lucide="plus"></i>
                 <span class="tooltip-text">Add moments</span>
@@ -1180,11 +1180,72 @@
             <div class="pop-item" id="myProfilePhoto"><i data-lucide="image" style="width:16px"></i> Photo and Video</div>
             <div class="pop-item" id="myProfileText"><i data-lucide="type" style="width:16px"></i> Text moments</div>
           </div>
-          <!-- Real phone gallery - mobile only - access permission - each in own border -->
+          <!-- Real phone gallery - mobile only - access permission - each in own border - real gallery will be injected by JS -->
           <div id="myGalleryUnder" class="my-gallery-under"></div>
         </div>
-<!-- ========== BOOST MOMENTS PAGE - NEW 3-TIER FLOW ========== -->
-<div id="boostPage" class="boost-page">
+
+
+        <!-- ========== BOOST FIRST BORDER - UNDER MY PROFILE - CLICK TO BOOST ========== -->
+<div class="boost-first-border" id="boostFirstBorder">
+  <div class="boost-first-icon">
+    <i data-lucide="rocket" style="width:16px"></i>
+  </div>
+  <div class="boost-first-text">
+    <p class="boost-first-title">Boost moments</p>
+    <p class="boost-first-sub">Get more views</p>
+  </div>
+  <div class="boost-first-arrow">
+    <i data-lucide="chevron-right" style="width:16px"></i>
+  </div>
+</div>
+        <!-- ========== RECENTS - OTHER PEOPLE ========== -->
+        <div class="section">Recents</div>
+        <div class="row" data-name="blessing adeyemi">
+            <div class="avatar"><img src="konnect2.jfif"><div class="blue-ring"></div></div>
+            <div class="info"><div class="name">blessing adeyemi</div><div class="time">5m ago</div></div>
+        </div>
+        <div class="row" data-name="joshua yemi">
+            <div class="avatar"><img src="konnect2.jfif"><div class="blue-ring"></div></div>
+            <div class="info"><div class="name">joshua yemi</div><div class="time">now</div></div>
+        </div>
+        <div class="row" data-name="saheed adisa">
+            <div class="avatar"><img src="konnect2.jfif"><div class="blue-ring"></div></div>
+            <div class="info"><div class="name">saheed adisa</div><div class="time">Yesterday 2:45pm</div></div>
+        </div>
+
+        <div class="section">Just viewed</div>
+        <div class="row" style="opacity:0.6;" data-name="sarah">
+            <div class="avatar"><img src="konnect2.jfif"><div class="blue-ring" style="border-color:#3A3A3C"></div></div>
+            <div class="info"><div class="name">sarah</div><div class="time">now</div></div>
+        </div>
+    </div>
+
+    <!-- ========== MOMENTS PRIVACY FULL PAGE - MARGIN LEFT FIX - CHEVRON MOBILE ARROW DESKTOP ========== -->
+    <div class="privacy-page" id="privacyPage">
+      <div class="privacy-header">
+        <button class="back-btn" id="backPrivacy">
+          <i data-lucide="chevron-left" class="ios-arrow"></i>
+          <i data-lucide="arrow-left" class="android-arrow"></i>
+        </button>
+        <h3 class="privacy-title">moments</h3>
+        <div style="width:32px;"></div>
+      </div>
+      <div class="privacy-body">
+        <p class="privacy-question">Who can see my moments in konneckt</p>
+        <div class="privacy-option" data-value="contacts">
+          <div class="circle-check"><div class="inner-dot"></div></div>
+          <span>My contacts</span>
+        </div>
+        <div class="privacy-option" data-value="everyone">
+          <div class="circle-check"><div class="inner-dot"></div></div>
+          <span>Everyone</span>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- ========== BOOST MOMENTS PAGE - NEW 3-TIER FLOW - BOTTOM SHEET NOT FULL TAKEOVER ========== -->
+<div id="boostPage" class="boost-page boost-bottom-sheet">
   <!-- ========== BOOST HEADER - PWA SAFE ========== -->
   <div class="boost-header">
     <button class="back-btn" id="closeBoost">
@@ -1202,7 +1263,7 @@
       <h2 class="boost-title-main">Choose a moment to boost</h2>
       <p class="boost-sub-main">Your moment will be shown as Sponsored to more people</p>
 
-      <!-- Your moments list to choose -->
+      <!-- Your moments list to choose - with border under profile fixed -->
       <div class="boost-moments-list" id="boostMomentsList">
         <!-- JS will fill: each item is image/video/text in border + radio -->
       </div>
@@ -1219,7 +1280,7 @@
       <div class="boost-step-label">Step 2 of 3</div>
       <h2 class="boost-title-main">Who should see it?</h2>
       
-      <!-- NEW AUDIENCE - 3 TIERS AS YOU SAID -->
+      <!-- AUDIENCE - 3 TIERS - PROPER ENGLISH FIXED -->
       <div class="boost-audience-grid">
         <div class="boost-audience-card active" data-audience="contacts_campus" data-price="300" data-views="~300-500">
           <div class="boost-audience-top">
@@ -1227,7 +1288,7 @@
             <span class="boost-check"><i data-lucide="check"></i></span>
           </div>
           <h4>Contacts & Campus</h4>
-          <p>Only ppl in ur contact and campus feed only u get</p>
+          <p>Only your contacts and people in your campus feed</p>
           <span class="boost-audience-price">₦300</span>
         </div>
         <div class="boost-audience-card" data-audience="campus_anon" data-price="700" data-views="~1k">
@@ -1236,7 +1297,7 @@
             <span class="boost-check"><i data-lucide="check"></i></span>
           </div>
           <h4>Campus + Anonymous</h4>
-          <p>Campus feed and anonymous feed</p>
+          <p>Shown in campus feed and anonymous feed</p>
           <span class="boost-audience-price">₦700</span>
         </div>
         <div class="boost-audience-card" data-audience="everyone" data-price="1500" data-views="~5k+">
@@ -1245,12 +1306,12 @@
             <span class="boost-check"><i data-lucide="check"></i></span>
           </div>
           <h4>Everyone</h4>
-          <p>Everyone u get</p>
+          <p>Shown to everyone on Konneckt</p>
           <span class="boost-audience-price">₦1,500</span>
         </div>
       </div>
 
-      <h2 class="boost-title-main" style="margin-top:28px">How long?</h2>
+      <h2 class="boost-title-main" style="margin-top:28px">How long should it run?</h2>
       <!-- Duration -->
       <div class="boost-duration-list">
         <div class="boost-duration-item active" data-days="1" data-multi="1">
@@ -1311,7 +1372,7 @@
   <div class="boost-bottom">
     <div class="boost-total-left">
       <span class="boost-total-label">Total</span>
-      <span class="boost-total-price" id="boostTotalPrice">Select moment</span>
+      <span class="boost-total-price" id="boostTotalPrice">Select a moment</span>
     </div>
     <button class="boost-continue-btn" id="boostContinueBtn" disabled>Continue</button>
   </div>
@@ -1325,51 +1386,6 @@
       <button class="boost-done-btn" id="boostDoneBtn">Done</button>
     </div>
   </div>
-</div>
-        <!-- ========== RECENTS - OTHER PEOPLE ========== -->
-        <div class="section">Recents</div>
-        <div class="row" data-name="blessing adeyemi">
-            <div class="avatar"><img src="konnect2.jfif"><div class="blue-ring"></div></div>
-            <div class="info"><div class="name">blessing adeyemi</div><div class="time">5m ago</div></div>
-        </div>
-        <div class="row" data-name="joshua yemi">
-            <div class="avatar"><img src="konnect2.jfif"><div class="blue-ring"></div></div>
-            <div class="info"><div class="name">joshua yemi</div><div class="time">now</div></div>
-        </div>
-        <div class="row" data-name="saheed adisa">
-            <div class="avatar"><img src="konnect2.jfif"><div class="blue-ring"></div></div>
-            <div class="info"><div class="name">saheed adisa</div><div class="time">Yesterday 2:45pm</div></div>
-        </div>
-
-        <div class="section">Just viewed</div>
-        <div class="row" style="opacity:0.6;" data-name="sarah">
-            <div class="avatar"><img src="konnect2.jfif"><div class="blue-ring" style="border-color:#3A3A3C"></div></div>
-            <div class="info"><div class="name">sarah</div><div class="time">now</div></div>
-        </div>
-    </div>
-
-    <!-- ========== MOMENTS PRIVACY FULL PAGE - MARGIN LEFT FIX - CHEVRON MOBILE ARROW DESKTOP ========== -->
-    <div class="privacy-page" id="privacyPage">
-      <div class="privacy-header">
-        <button class="back-btn" id="backPrivacy">
-          <i data-lucide="chevron-left" class="ios-arrow"></i>
-          <i data-lucide="arrow-left" class="android-arrow"></i>
-        </button>
-        <h3 class="privacy-title">moments</h3>
-        <div style="width:32px;"></div>
-      </div>
-      <div class="privacy-body">
-        <p class="privacy-question">Who can see my moments in konneckt</p>
-        <div class="privacy-option" data-value="contacts">
-          <div class="circle-check"><div class="inner-dot"></div></div>
-          <span>My contacts</span>
-        </div>
-        <div class="privacy-option" data-value="everyone">
-          <div class="circle-check"><div class="inner-dot"></div></div>
-          <span>Everyone</span>
-        </div>
-      </div>
-    </div>
 </div>
 
 <!-- ========== HIDDEN GALLERY INPUT - REAL PHONE GALLERY ACCESS ========== -->
@@ -1450,7 +1466,7 @@
     <button class="nav-arrow left" id="prevMoment"><i data-lucide="chevron-left"></i></button>
     <button class="nav-arrow right" id="nextMoment"><i data-lucide="chevron-right"></i></button>
     <img id="viewerImage" style="display:none">
-    <video id="viewerVideo" style="display:none" playsinline></video>
+    <video id="viewerVideo" style="display:none" playsinline preload="metadata"></video>
     <div id="viewerText" style="display:none"></div>
     <div class="loading-circle" id="viewerLoading" style="display:none"><div class="spinner"></div></div>
     <div class="video-controls">
@@ -1461,7 +1477,8 @@
     <div class="tap-zone right" id="tapRight"></div>
   </div>
   <div class="viewer-caption-wrap"><p id="viewerCaption"></p></div>
-  <div class="viewer-views" id="viewerViews">
+  <!-- Eye icon - only visible for owner, JS will hide for others -->
+  <div class="viewer-views owner-only" id="viewerViews">
     <i data-lucide="eye" style="width:18px"></i>
     <span id="viewerViewsCount">0</span>
   </div>
@@ -1474,7 +1491,7 @@
   </div>
 </div>
 
-<!-- ========== PREVIEW EDITOR PAGE - CAPTION PER ITEM - SWIPE LINE ========== -->
+<!-- ========== PREVIEW EDITOR PAGE - CAPTION PER ITEM - SWIPE LINE - EACH CAPTION SEPARATE ========== -->
 <div id="previewPage">
   <div id="previewBg" class="preview-bg"></div>
   <div id="previewTextFull" style="display:none"></div>
@@ -1483,17 +1500,18 @@
     <div style="width:42px"></div>
   </div>
   <div class="preview-center">
+    <!-- Center caption per item - shown under preview -->
     <p id="previewCenterCaption" class="preview-center-caption"></p>
     <div class="loading-circle" id="previewLoading" style="display:none"><div class="spinner"></div></div>
   </div>
   <div class="preview-bottom">
-    <!-- Borders line - swipe properly - caption per item -->
+    <!-- Borders line - swipe properly - caption per item - each border has data-index -->
     <div class="preview-borders-wrap" id="previewBordersWrap">
       <div class="preview-borders" id="previewBorders"></div>
       <div class="preview-plus" id="previewAddMore"><i data-lucide="plus"></i></div>
     </div>
     <div class="preview-input-row">
-      <input type="text" id="captionInput" placeholder="Write caption for this...">
+      <input type="text" id="captionInput" placeholder="Write caption for this..." data-current-index="0">
       <button id="previewSend"><i data-lucide="send"></i></button>
     </div>
     <div class="preview-bottom-row">
@@ -1511,6 +1529,18 @@
   </div>
 </div>
 
+
+<div id="boostNoMomentsPopup" class="boost-no-moments-popup">
+  <div class="boost-no-moments-card">
+    <div class="boost-no-moments-icon"><i data-lucide="image-off"></i></div>
+    <h3>No moments yet</h3>
+    <p>Post a moment first to boost it and get more views</p>
+    <div class="boost-no-moments-actions">
+      <button class="boost-no-moments-btn secondary" id="closeNoMomentsPopup">Cancel</button>
+      <button class="boost-no-moments-btn primary" id="goPostMoment">Post moment</button>
+    </div>
+  </div>
+</div>
 
 
     <div class="moments-page-right">
