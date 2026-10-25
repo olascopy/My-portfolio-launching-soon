@@ -38,6 +38,7 @@
 <link rel="stylesheet" href="new-chat.css">
 <!----- status css link ------>
 <link rel="stylesheet" href="status.css">
+<link rel="stylesheet" href="boost-moment.css">
     <title>KONNEKT</title>
 </head>
 <body>
@@ -1133,12 +1134,13 @@
 
 
 <div class="moments-page">
+<!-- ========== MOMENTS PAGE LEFT - MAIN SIDEBAR ========== -->
 <div class="moments-page-left">
     <!-- ========== FIXED TOP HEADER ========== -->
     <div class="moments-header-fixed">
         <h2 class="moments-text">moments</h2>
         <div class="header-icons-right">
-            <!-- More button -->
+            <!-- More button - privacy -->
             <div class="icon-btn" id="moreBtn">
                 <i data-lucide="more-vertical"></i>
                 <span class="tooltip-text">Moments menu</span>
@@ -1146,7 +1148,7 @@
                     <div class="pop-item"><i data-lucide="lock" style="width:16px"></i> Moments privacy</div>
                 </div>
             </div>
-            <!-- Plus button - pop same style as my profile pop -->
+            <!-- Plus button - add moments -->
             <div class="icon-btn" id="plusBtn">
                 <i data-lucide="plus"></i>
                 <span class="tooltip-text">Add moments</span>
@@ -1158,9 +1160,9 @@
         </div>
     </div>
 
-    <!-- ========== SCROLL UNDER FIXED ========== -->
+    <!-- ========== SCROLL UNDER FIXED HEADER ========== -->
     <div class="moments-scroll">
-        <!-- MY MOMENTS ROW -->
+        <!-- ========== MY MOMENTS ROW - TAP TO ADD ========== -->
         <div class="post-mymoments" id="myMomentsRow">
           <div class="post-moments" id="myAvatarBorder">
             <div class="click-to-post"><i data-lucide="plus" class="plus-click"></i></div>
@@ -1172,39 +1174,181 @@
         </div>
 
         <!-- ========== MY PROFILE POP WHEN NO POST - SAME STYLE AS PLUS POP ========== -->
-        <!-- Desktop: same as plusPop. Mobile: side by side + gallery under -->
+        <!-- Desktop small, Mobile side by side + real gallery under -->
         <div id="myProfilePop" class="my-profile-pop">
           <div class="pop show my-profile-pop-inner">
             <div class="pop-item" id="myProfilePhoto"><i data-lucide="image" style="width:16px"></i> Photo and Video</div>
             <div class="pop-item" id="myProfileText"><i data-lucide="type" style="width:16px"></i> Text moments</div>
           </div>
-          <!-- Gallery under - MOBILE ONLY - phone gallery pics each in own border -->
+          <!-- Real phone gallery - mobile only - access permission - each in own border -->
           <div id="myGalleryUnder" class="my-gallery-under"></div>
         </div>
+<!-- ========== BOOST MOMENTS PAGE - NEW 3-TIER FLOW ========== -->
+<div id="boostPage" class="boost-page">
+  <!-- ========== BOOST HEADER - PWA SAFE ========== -->
+  <div class="boost-header">
+    <button class="back-btn" id="closeBoost">
+      <i data-lucide="chevron-left" class="ios-arrow"></i>
+      <i data-lucide="arrow-left" class="android-arrow"></i>
+    </button>
+    <h3 class="boost-header-title">Boost moments</h3>
+    <div style="width:36px"></div>
+  </div>
 
+  <div class="boost-scroll">
+    <!-- ========== STEP 1 - SELECT WHICH MOMENT TO BOOST ========== -->
+    <div class="boost-step" id="boostStep1">
+      <div class="boost-step-label">Step 1 of 3</div>
+      <h2 class="boost-title-main">Choose a moment to boost</h2>
+      <p class="boost-sub-main">Your moment will be shown as Sponsored to more people</p>
+
+      <!-- Your moments list to choose -->
+      <div class="boost-moments-list" id="boostMomentsList">
+        <!-- JS will fill: each item is image/video/text in border + radio -->
+      </div>
+
+      <div class="boost-empty" id="boostEmpty" style="display:none">
+        <div class="boost-empty-icon"><i data-lucide="image-off"></i></div>
+        <p>You have no moments yet</p>
+        <span>Post a moment first to boost it</span>
+      </div>
+    </div>
+
+    <!-- ========== STEP 2 - AUDIENCE + DURATION + PRICE ========== -->
+    <div class="boost-step" id="boostStep2" style="display:none">
+      <div class="boost-step-label">Step 2 of 3</div>
+      <h2 class="boost-title-main">Who should see it?</h2>
+      
+      <!-- NEW AUDIENCE - 3 TIERS AS YOU SAID -->
+      <div class="boost-audience-grid">
+        <div class="boost-audience-card active" data-audience="contacts_campus" data-price="300" data-views="~300-500">
+          <div class="boost-audience-top">
+            <i data-lucide="users"></i>
+            <span class="boost-check"><i data-lucide="check"></i></span>
+          </div>
+          <h4>Contacts & Campus</h4>
+          <p>Only ppl in ur contact and campus feed only u get</p>
+          <span class="boost-audience-price">₦300</span>
+        </div>
+        <div class="boost-audience-card" data-audience="campus_anon" data-price="700" data-views="~1k">
+          <div class="boost-audience-top">
+            <i data-lucide="layers"></i>
+            <span class="boost-check"><i data-lucide="check"></i></span>
+          </div>
+          <h4>Campus + Anonymous</h4>
+          <p>Campus feed and anonymous feed</p>
+          <span class="boost-audience-price">₦700</span>
+        </div>
+        <div class="boost-audience-card" data-audience="everyone" data-price="1500" data-views="~5k+">
+          <div class="boost-audience-top">
+            <i data-lucide="rocket"></i>
+            <span class="boost-check"><i data-lucide="check"></i></span>
+          </div>
+          <h4>Everyone</h4>
+          <p>Everyone u get</p>
+          <span class="boost-audience-price">₦1,500</span>
+        </div>
+      </div>
+
+      <h2 class="boost-title-main" style="margin-top:28px">How long?</h2>
+      <!-- Duration -->
+      <div class="boost-duration-list">
+        <div class="boost-duration-item active" data-days="1" data-multi="1">
+          <div class="circle-check"><div class="inner-dot"></div></div>
+          <div class="boost-duration-info">
+            <span class="boost-duration-name">24 hours</span>
+            <span class="boost-duration-sub">Standard</span>
+          </div>
+          <span class="boost-duration-mult">x1</span>
+        </div>
+        <div class="boost-duration-item" data-days="3" data-multi="2.5">
+          <div class="circle-check"><div class="inner-dot"></div></div>
+          <div class="boost-duration-info">
+            <span class="boost-duration-name">3 days</span>
+            <span class="boost-duration-sub">Most popular</span>
+          </div>
+          <span class="boost-duration-mult">x2.5</span>
+        </div>
+        <div class="boost-duration-item" data-days="7" data-multi="5">
+          <div class="circle-check"><div class="inner-dot"></div></div>
+          <div class="boost-duration-info">
+            <span class="boost-duration-name">7 days</span>
+            <span class="boost-duration-sub">Best value</span>
+          </div>
+          <span class="boost-duration-mult">x5</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== STEP 3 - CHECKOUT PAY ========== -->
+    <div class="boost-step" id="boostStep3" style="display:none">
+      <div class="boost-step-label">Step 3 of 3</div>
+      <h2 class="boost-title-main">Checkout</h2>
+
+      <!-- Preview of boosted moment how it will look to others -->
+      <div class="boost-preview-card">
+        <div class="boost-preview-label">How others will see it</div>
+        <div class="boost-preview-inner" id="boostPreviewInner">
+          <!-- image / video / text preview -->
+        </div>
+        <div class="boost-sponsored-tag"><i data-lucide="flame" style="width:10px"></i> Sponsored • Boosted</div>
+      </div>
+
+      <!-- Bill -->
+      <div class="boost-bill">
+        <div class="boost-bill-row"><span>Audience</span><span id="billAudience">Contacts & Campus</span></div>
+        <div class="boost-bill-row"><span>Duration</span><span id="billDuration">24 hours</span></div>
+        <div class="boost-bill-row"><span>Shows in</span><span id="billPlacement">Contacts + Campus feed</span></div>
+        <div class="boost-bill-row"><span>Views</span><span id="billViews">~300-500</span></div>
+        <div class="boost-bill-row total"><span>Total to pay</span><span id="billTotal">₦300</span></div>
+      </div>
+
+      <p class="boost-note">Your moment will appear first as Sponsored. You will be charged only once.</p>
+    </div>
+  </div>
+
+  <!-- ========== FIXED BOTTOM ACTION ========== -->
+  <div class="boost-bottom">
+    <div class="boost-total-left">
+      <span class="boost-total-label">Total</span>
+      <span class="boost-total-price" id="boostTotalPrice">Select moment</span>
+    </div>
+    <button class="boost-continue-btn" id="boostContinueBtn" disabled>Continue</button>
+  </div>
+
+  <!-- ========== SUCCESS POP ========== -->
+  <div class="boost-success" id="boostSuccess" style="display:none">
+    <div class="boost-success-card">
+      <div class="boost-success-icon"><i data-lucide="check"></i></div>
+      <h3>Boost started!</h3>
+      <p>Your moment is now being shown to <span id="successAudience">your contacts & campus</span> as Sponsored</p>
+      <button class="boost-done-btn" id="boostDoneBtn">Done</button>
+    </div>
+  </div>
+</div>
+        <!-- ========== RECENTS - OTHER PEOPLE ========== -->
         <div class="section">Recents</div>
- 
-         <div class="row">
+        <div class="row" data-name="blessing adeyemi">
             <div class="avatar"><img src="konnect2.jfif"><div class="blue-ring"></div></div>
             <div class="info"><div class="name">blessing adeyemi</div><div class="time">5m ago</div></div>
         </div>
-        <div class="row">
+        <div class="row" data-name="joshua yemi">
             <div class="avatar"><img src="konnect2.jfif"><div class="blue-ring"></div></div>
             <div class="info"><div class="name">joshua yemi</div><div class="time">now</div></div>
         </div>
-        <div class="row">
+        <div class="row" data-name="saheed adisa">
             <div class="avatar"><img src="konnect2.jfif"><div class="blue-ring"></div></div>
             <div class="info"><div class="name">saheed adisa</div><div class="time">Yesterday 2:45pm</div></div>
         </div>
 
         <div class="section">Just viewed</div>
-        <div class="row" style="opacity:0.6;">
+        <div class="row" style="opacity:0.6;" data-name="sarah">
             <div class="avatar"><img src="konnect2.jfif"><div class="blue-ring" style="border-color:#3A3A3C"></div></div>
             <div class="info"><div class="name">sarah</div><div class="time">now</div></div>
         </div>
     </div>
 
-    <!-- ========== MOMENTS PRIVACY FULL PAGE ========== -->
+    <!-- ========== MOMENTS PRIVACY FULL PAGE - MARGIN LEFT FIX - CHEVRON MOBILE ARROW DESKTOP ========== -->
     <div class="privacy-page" id="privacyPage">
       <div class="privacy-header">
         <button class="back-btn" id="backPrivacy">
@@ -1228,7 +1372,7 @@
     </div>
 </div>
 
-<!-- ========== GALLERY INPUT - MOBILE ONLY PHONE GALLERY ========== -->
+<!-- ========== HIDDEN GALLERY INPUT - REAL PHONE GALLERY ACCESS ========== -->
 <input type="file" id="galleryInput" accept="image/*,video/*" multiple hidden>
 
 <!-- ========== TEXT MOMENTS PAGE ========== -->
@@ -1262,7 +1406,7 @@
   <div id="palWrap" class="pop pal-ca"></div>
 </div>
 
-<!-- ========== MY HUB PAGE - WHEN POSTED ========== -->
+<!-- ========== MY HUB PAGE - ADDING AND ADDED - VIDEO SAME HEIGHT ========== -->
 <div id="myHubPage">
   <div class="hub-header">
     <button id="closeHub"><i data-lucide="x"></i></button>
@@ -1274,11 +1418,10 @@
     <div class="hub-plus" id="hubPlus"><i data-lucide="plus"></i></div>
     <p class="hub-add-text">Tap to add</p>
   </div>
-  <!-- List - normal height, not full -->
   <div class="hub-list" id="hubList"></div>
 </div>
 
-<!-- ========== VIEWER PAGE - FULL HEIGHT FOR TEXT POST ========== -->
+<!-- ========== VIEWER PAGE - FULL HEIGHT TEXT - VIDEO LOADING LINE 50s = 50s - HOLD PAUSE - DELETE VS REPORT BLOCK ========== -->
 <div id="viewerPage">
   <div class="viewer-lines" id="viewerLines"></div>
   <div class="viewer-top">
@@ -1292,8 +1435,14 @@
     </div>
     <div class="viewer-top-right">
       <button id="viewerMoreBtn"><i data-lucide="more-vertical"></i></button>
-      <div class="pop" id="viewerMorePop">
-        <div class="pop-item" style="color:#FF3B30"><i data-lucide="trash-2" style="width:16px"></i> Delete</div>
+      <!-- My own post - delete only -->
+      <div class="pop" id="viewerMorePopMe">
+        <div class="pop-item" id="viewerDeleteBtn" style="color:#FF3B30"><i data-lucide="trash-2" style="width:16px"></i> Delete</div>
+      </div>
+      <!-- Other person post - report block red -->
+      <div class="pop" id="viewerMorePopOther">
+        <div class="pop-item" style="color:#FF3B30"><i data-lucide="flag" style="width:16px"></i> Report</div>
+        <div class="pop-item" style="color:#FF3B30"><i data-lucide="ban" style="width:16px"></i> Block</div>
       </div>
     </div>
   </div>
@@ -1311,7 +1460,6 @@
     <div class="tap-zone left" id="tapLeft"></div>
     <div class="tap-zone right" id="tapRight"></div>
   </div>
-  <!-- Caption under pic - working -->
   <div class="viewer-caption-wrap"><p id="viewerCaption"></p></div>
   <div class="viewer-views" id="viewerViews">
     <i data-lucide="eye" style="width:18px"></i>
@@ -1326,7 +1474,7 @@
   </div>
 </div>
 
-<!-- ========== PREVIEW EDITOR PAGE ========== -->
+<!-- ========== PREVIEW EDITOR PAGE - CAPTION PER ITEM - SWIPE LINE ========== -->
 <div id="previewPage">
   <div id="previewBg" class="preview-bg"></div>
   <div id="previewTextFull" style="display:none"></div>
@@ -1339,7 +1487,8 @@
     <div class="loading-circle" id="previewLoading" style="display:none"><div class="spinner"></div></div>
   </div>
   <div class="preview-bottom">
-    <div class="preview-borders-wrap">
+    <!-- Borders line - swipe properly - caption per item -->
+    <div class="preview-borders-wrap" id="previewBordersWrap">
       <div class="preview-borders" id="previewBorders"></div>
       <div class="preview-plus" id="previewAddMore"><i data-lucide="plus"></i></div>
     </div>
@@ -1414,6 +1563,7 @@
 <script src="video.js"></script>
 <script src="new-chat.js"></script>
 <script src="status.js"></script>
+<script src="boost-moment.js"></script>
 </html>
 
 

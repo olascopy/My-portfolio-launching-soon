@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#000;color:#fff;font-family:-apple-system,sans-serif}
+#textPage{
+  position:fixed;inset:0;background:#000;z-index:9999;
+  display:flex;flex-direction:column;
+  transition:background .35s ease;
+}
+.top{
+  height:64px;display:flex;justify-content:space-between;
+  align-items:center;padding:0 14px;
+}
+.top button{
+  width:40px;height:40px;border-radius:50%;
+  border:none;background:rgba(255,255,255,0.14);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+}
+.center{
+  flex:1;display:flex;align-items:center;
+  justify-content:center;padding:20px;position:relative;
+}
+#placeholder{
+  font-size:34px;opacity:.35;font-weight:300;
+  position:absolute;pointer-events:none;
+}
+.type-row{display:flex;align-items:center;justify-content:center;max-width:90%}
+#input{
+  font-size:44px;font-weight:700;line-height:1.15;
+  min-width:4px;outline:none;text-align:center;
+  word-break:break-word;max-width:700px;
+}
+#cursor{width:3px;height:48px;background:#fff;margin-left:6px;animation:blink 1s infinite}
+@keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
+.bottom{
+  height:90px;display:flex;justify-content:space-between;
+  align-items:center;padding:0 18px 14px;
+}
+#pill{
+  display:flex;gap:6px;align-items:center;
+  padding:10px 16px;background:rgba(255,255,255,0.14);
+  border-radius:99px;font-size:13px;cursor:pointer;
+  border:1px solid rgba(255,255,255,0.12);
+}
+#send{
+  width:50px;height:50px;border-radius:50%;
+  background:#0A84FF;border:none;color:#fff;
+  opacity:.3;pointer-events:none;display:flex;align-items:center;justify-content:center;
+}
+#send.on{opacity:1;pointer-events:auto}
+
+#miniPop{
+  position:absolute;bottom:100px;left:18px;
+  background:#1C1C1E;border:1px solid rgba(255,255,255,0.14);
+  border-radius:18px;padding:6px;width:200px;display:none;
+}
+#miniPop.show{display:block;animation:pop .2s}
+.mini-item{padding:14px 12px;border-radius:12px;font-size:14px;cursor:pointer;display:flex;justify-content:space-between}
+.mini-item.active{background:rgba(255,255,255,0.1)}
+@keyframes pop{0%{transform:scale(.96) translateY(6px);opacity:0}100%{transform:scale(1) translateY(0);opacity:1}}
+</style>
+</head>
+<body>
+
+<div id="textPage">
+  <div class="top">
+    <button id="closeBtn"><i data-lucide="x" style="width:20px"></i></button>
+    <div style="display:flex;gap:10px">
+      <button id="aaBtn" style="font-weight:800;font-family:serif">Aa</button>
+      <button id="palBtn"><i data-lucide="palette" style="width:20px"></i></button>
+    </div>
+  </div>
+
+  <div class="center" id="centerBox">
+    <div id="placeholder">Type a moment</div>
+    <div class="type-row">
+      <div id="input" contenteditable="true" spellcheck="false"></div>
+      <div id="cursor"></div>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <div id="pill"><i data-lucide="lock" style="width:14px"></i><span id="pillText">Moments - Everyone</span><i data-lucide="chevron-down" style="width:14px"></i></div>
+    <button id="send"><i data-lucide="send" style="width:20px"></i></button>
+  </div>
+
+  <div id="miniPop">
+    <div class="mini-item active" data-v="Everyone"><span>Everyone</span><span>✓</span></div>
+    <div class="mini-item" data-v="My contacts"><span>My contacts</span><span></span></div>
+  </div>
+</div>
+
+<script>
+lucide.createIcons();
+const input = document.getElementById('input');
+const placeholder = document.getElementById('placeholder');
+const cursor = document.getElementById('cursor');
+const send = document.getElementById('send');
+const centerBox = document.getElementById('centerBox');
+const textPage = document.getElementById('textPage');
+
+input.focus();
+
+function check(){
+  let t = input.innerText.trim();
+  if(t.length>0){
+    placeholder.style.display='none';
+    cursor.style.display='none';
+    send.classList.add('on');
+  }else{
+    placeholder.style.display='block';
+    cursor.style.display='block';
+    send.classList.remove('on');
+  }
+}
+input.addEventListener('input', check);
+centerBox.addEventListener('click', ()=> input.focus());
+
+// MANY FONTS ON Aa CLICK
+const fonts = [
+  {family:'-apple-system, sans-serif', weight:'700', size:'44px'},
+  {family:'Georgia, serif', weight:'800', size:'46px', style:'italic'},
+  {family:'"Times New Roman", serif', weight:'900', size:'50px'},
+  {family:'Impact, sans-serif', weight:'900', size:'52px', transform:'uppercase'},
+  {family:'Courier New, monospace', weight:'700', size:'38px'},
+  {family:'cursive', weight:'700', size:'46px'},
+  {family:'"Comic Sans MS", cursive', weight:'800', size:'44px'},
+  {family:'"Brush Script MT", cursive', weight:'700', size:'54px'},
+  {family:'Verdana, sans-serif', weight:'800', size:'42px', spacing:'-1px'}
+];
+let fi=0;
+document.getElementById('aaBtn').onclick = (e)=>{
+  e.stopPropagation();
+  fi=(fi+1)%fonts.length;
+  let f = fonts[fi];
+  input.style.fontFamily = f.family;
+  input.style.fontWeight = f.weight;
+  input.style.fontSize = f.size;
+  input.style.fontStyle = f.style || 'normal';
+  input.style.textTransform = f.transform || 'none';
+  input.style.letterSpacing = f.spacing || 'normal';
+  cursor.style.height = f.size;
+};
+
+ // COLOR CHANGE ON EACH CLICK - NO PALETTE POP
+const colors = [
+  '#000000','#0A84FF','#FF3B30','#34C759','#AF52DE','#FF9500','#5856D6',
+  'linear-gradient(135deg,#667eea,#764ba2)',
+  'linear-gradient(135deg,#f093fb,#f5576c)',
+  'linear-gradient(135deg,#4facfe,#00f2fe)',
+  'linear-gradient(135deg,#43e97b,#38f9d7)',
+  'linear-gradient(135deg,#fa709a,#fee140)',
+  'linear-gradient(135deg,#FF6B6B,#FFE66D)',
+  'linear-gradient(135deg,#30cfd0,#330867)',
+  'linear-gradient(135deg,#a8edea,#fed6e3)'
+];
+let ci=0;
+document.getElementById('palBtn').onclick = (e)=>{
+  e.stopPropagation();
+  ci=(ci+1)%colors.length;
+  textPage.style.background = colors[ci];
+};
+
+// privacy popup - show selected
+const miniPop = document.getElementById('miniPop');
+const pill = document.getElementById('pill');
+const pillText = document.getElementById('pillText');
+pill.onclick = (e)=>{
+  e.stopPropagation();
+  miniPop.classList.toggle('show');
+};
+miniPop.querySelectorAll('.mini-item').forEach(item=>{
+  item.onclick = ()=>{
+    miniPop.querySelectorAll('.mini-item').forEach(i=>{i.classList.remove('active'); i.lastElementChild.innerText=''});
+    item.classList.add('active');
+    item.lastElementChild.innerText='✓';
+    pillText.innerText = 'Moments - ' + item.dataset.v;
+    miniPop.classList.remove('show');
+  };
+});
+document.addEventListener('click', ()=> miniPop.classList.remove('show'));
+
+document.getElementById('closeBtn').onclick = ()=> textPage.style.display='none';
+check();
+</script>
+</body>
+</html>

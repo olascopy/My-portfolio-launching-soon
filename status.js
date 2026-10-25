@@ -1,9 +1,10 @@
+// ========== INIT ICONS ==========
 lucide.createIcons({ attrs: { "stroke-width": 1.8 } });
 
-// ========== DETECT MOBILE ==========
+// ========== DETECT MOBILE - NO TOOLTIP ==========
 const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || window.innerWidth <= 768;
 
-// ========== ELEMENTS ==========
+// ========== GET ELEMENTS ==========
 const moreBtn = document.getElementById('moreBtn');
 const morePop = document.getElementById('morePop');
 const plusBtn = document.getElementById('plusBtn');
@@ -27,17 +28,19 @@ const previewPage = document.getElementById('previewPage');
 const myRow = document.getElementById('myMomentsRow');
 const myProfilePop = document.getElementById('myProfilePop');
 const myGalleryUnder = document.getElementById('myGalleryUnder');
+const boostMoments = document.getElementById('boostMoments');
 
-// ========== DATA ==========
+// ========== DATA - MY MOMENTS ==========
 let myMoments = JSON.parse(localStorage.getItem('myMoments') || '[]');
-let selectedFiles = [];
+let selectedFiles = []; // Each file has own caption
 let currentPreviewIndex = 0;
 let viewerIndex = 0;
 let currentViewerUser = 'me';
 let currentViewerName = 'My moments';
 let viewerProgressTimer = null;
-let isHolding = false;
+let isHolding = false; // Hold to pause
 
+// Fake viewers
 const fakeViewers = [
   {name:'Blessing Adeyemi', avatar:'konnect2.jfif', time:'2m ago'},
   {name:'David Okon', avatar:'konnect2.jfif', time:'5m ago'},
@@ -58,7 +61,10 @@ function updateMyProfileRing(){
 }
 updateMyProfileRing();
 
-function openPhoneGallery(){ galleryInput.click(); }
+// Open real phone gallery - we have permission on mobile
+function openPhoneGallery(){ 
+  galleryInput.click(); 
+}
 
 function closeAllPops(){
   morePop?.classList.remove('show');
@@ -68,11 +74,12 @@ function closeAllPops(){
   miniPop?.classList.remove('show');
   palWrap?.classList.remove('show');
   document.getElementById('previewMiniPop')?.classList.remove('show');
-  document.getElementById('viewerMorePop')?.classList.remove('show');
+  document.getElementById('viewerMorePopMe')?.classList.remove('show');
+  document.getElementById('viewerMorePopOther')?.classList.remove('show');
   document.getElementById('viewersPop')?.classList.remove('show');
 }
 
-// ========== TOP ICONS ==========
+// ========== TOP ICONS - PLUS SAME STYLE AS MY PROFILE POP ==========
 if(moreBtn){
   moreBtn.onclick = e => {
     e.stopPropagation();
@@ -94,7 +101,7 @@ if(plusBtn){
   };
 }
 
-// ========== PRIVACY PAGE - MARGIN LEFT FIXED ==========
+// ========== PRIVACY PAGE - CHEVRON MOBILE ARROW DESKTOP - MARGIN LEFT FIX ==========
 if(morePop){
   morePop.querySelector('.pop-item').onclick = e => {
     e.stopPropagation();
@@ -104,6 +111,7 @@ if(morePop){
   };
 }
 if(backPrivacy) backPrivacy.onclick = () => privacyPage.classList.remove('open');
+
 document.querySelectorAll('.privacy-option').forEach(opt=>{
   opt.onclick = ()=>{
     document.querySelectorAll('.privacy-option').forEach(o=>o.classList.remove('active'));
@@ -114,7 +122,7 @@ document.querySelectorAll('.privacy-option').forEach(opt=>{
 const savedPrivacy = localStorage.getItem('momentsPrivacy') || 'contacts';
 document.querySelector(`.privacy-option[data-value="${savedPrivacy}"]`)?.classList.add('active');
 
-// ========== PLUS POP ==========
+// ========== PLUS POP ITEMS ==========
 document.getElementById('plusPhoto')?.addEventListener('click', e=>{
   e.stopPropagation(); closeAllPops(); openPhoneGallery();
 });
@@ -122,22 +130,27 @@ document.getElementById('plusText')?.addEventListener('click', e=>{
   e.stopPropagation(); closeAllPops(); openTextPage();
 });
 
-// ========== MY PROFILE ROW - SAME STYLE AS PLUS POP ==========
+// ========== MY PROFILE ROW - WHEN NO POST SHOW PILL SIDE BY SIDE MOBILE + REAL GALLERY UNDER ==========
 if(myRow){
   myRow.onclick = (e) => {
     e.stopPropagation();
     if(!hasMyMoments()){
+      // No post - pill same style as plus pop, side by side mobile, real gallery under
       const open = myProfilePop.classList.contains('show');
       closeAllPops();
       if(!open){
         myProfilePop.classList.add('show');
-        if(isMobile && myGalleryUnder){ renderMyGalleryUnder(); }
+        // Mobile only - show real phone gallery under - we have access permission
+        if(isMobile && myGalleryUnder){
+          renderMyRealGalleryUnder();
+        }
         lucide.createIcons({ attrs: { "stroke-width": 1.8 } });
       } else {
         myProfilePop.classList.remove('show');
         myGalleryUnder?.classList.remove('show');
       }
     } else {
+      // Have post - go hub
       closeAllPops();
       myProfilePop?.classList.remove('show');
       myGalleryUnder?.classList.remove('show');
@@ -146,11 +159,14 @@ if(myRow){
   };
 }
 
-function renderMyGalleryUnder(){
+// Render real gallery under - mobile only - access we have
+function renderMyRealGalleryUnder(){
   if(!myGalleryUnder) return;
   myGalleryUnder.innerHTML = '';
   myGalleryUnder.classList.add('show');
-  for(let i=0;i<9;i++){
+  // In real app, this will be filled with actual phone gallery images via native bridge
+  // For web demo, we show placeholders that when clicked open real gallery
+  for(let i=0;i<12;i++){
     const img = document.createElement('img');
     img.src = 'konnect2.jfif';
     img.onclick = (ev)=>{ ev.stopPropagation(); openPhoneGallery(); };
@@ -158,6 +174,7 @@ function renderMyGalleryUnder(){
   }
 }
 
+// My profile pop items - side by side on mobile
 document.getElementById('myProfilePhoto')?.addEventListener('click', e=>{
   e.stopPropagation(); closeAllPops(); myProfilePop.classList.remove('show'); openPhoneGallery();
 });
@@ -165,7 +182,9 @@ document.getElementById('myProfileText')?.addEventListener('click', e=>{
   e.stopPropagation(); closeAllPops(); myProfilePop.classList.remove('show'); myGalleryUnder?.classList.remove('show'); openTextPage();
 });
 
-// ========== MY HUB - VIDEO SAME HEIGHT - NOT BIG ==========
+// ========== BOOST MOMENTS - SMALL BORDER UNDER PROFILE - MAKE MONEY ==========
+
+// ========== MY HUB - VIDEO SAME HEIGHT NOT BIG ==========
 function openHub(){
   myHubPage.classList.add('open');
   document.body.classList.add('hub-open');
@@ -212,7 +231,7 @@ function renderHub(){
     const statusClass = m.status==='posting' ? 'posting' : 'posted';
     const statusText = m.status==='posting' ? 'Adding to moment...' : 'Added';
     
-    // FIX - VIDEO SAME HEIGHT AS IMAGE 48x48
+    // Video same height as image - 48x48 not big
     let mediaHtml = '';
     if(m.type==='image'){
       mediaHtml = `<img src="${m.src}">`;
@@ -246,13 +265,13 @@ function deleteMoment(idx){
   if(myMoments.length===0) closeHub();
 }
 
-// ========== GALLERY PICK -> PREVIEW ==========
+// ========== GALLERY PICK -> PREVIEW - CAPTION PER ITEM - SWIPE LINE ==========
 galleryInput.onchange = (e)=>{
   const files=Array.from(e.target.files);
   if(files.length===0) return;
   files.forEach(file=>{
     const url=URL.createObjectURL(file);
-    selectedFiles.push({type:file.type.startsWith('video')?'video':'image', src:url, caption:'', file, bg:''});
+    selectedFiles.push({type:file.type.startsWith('video')?'video':'image', src:url, caption:'', file, bg:'', duration:0});
   });
   currentPreviewIndex = selectedFiles.length - files.length;
   if(currentPreviewIndex < 0) currentPreviewIndex = 0;
@@ -276,8 +295,9 @@ function closePreview(){
 document.getElementById('closePreview').onclick=closePreview;
 document.getElementById('previewAddMore').onclick=()=> openPhoneGallery();
 
+// Next button - save caption per item
 document.getElementById('previewNext').onclick=()=>{
-  savePreviewCaption();
+  savePreviewCaption(); // Save current before move
   if(currentPreviewIndex < selectedFiles.length-1){
     currentPreviewIndex++;
     renderPreview();
@@ -302,7 +322,10 @@ function renderPreview(){
     bg.innerHTML=`<video src="${m.src}" muted loop autoplay playsinline></video>`;
     loading.style.display='flex';
     const v=bg.querySelector('video');
-    if(v){ v.onloadeddata=()=> loading.style.display='none'; }
+    if(v){
+      v.onloadedmetadata = ()=>{ m.duration = v.duration; loading.style.display='none'; };
+      v.onloadeddata=()=> loading.style.display='none';
+    }
   } else {
     bg.innerHTML='';
     txtFull.style.display='flex';
@@ -311,10 +334,13 @@ function renderPreview(){
     loading.style.display='none';
   }
 
+  // Caption per item - each border has own caption
   capCenter.innerText=m.caption||'';
   capCenter.style.display = m.caption ? 'block' : 'none';
   captionInput.value=m.caption||'';
+  captionInput.placeholder = `Write caption for this... (${currentPreviewIndex+1}/${selectedFiles.length})`;
 
+  // Borders line - swipe properly
   const wrap=document.getElementById('previewBorders');
   wrap.innerHTML='';
   selectedFiles.forEach((f,i)=>{
@@ -323,9 +349,19 @@ function renderPreview(){
     if(f.type==='image') d.innerHTML=`<img src="${f.src}">`;
     else if(f.type==='video') d.innerHTML=`<video src="${f.src}" muted></video>`;
     else d.innerHTML=`<div style="background:${f.bg};width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff">${(f.text||'').slice(0,10)}</div>`;
-    d.onclick=()=>{ savePreviewCaption(); currentPreviewIndex=i; renderPreview(); };
+    d.onclick=()=>{ 
+      savePreviewCaption(); // Save current before switch
+      currentPreviewIndex=i; 
+      renderPreview(); 
+    };
     wrap.appendChild(d);
   });
+
+  // Swipe properly for many items
+  const bordersWrap = document.getElementById('previewBordersWrap');
+  if(bordersWrap){
+    bordersWrap.scrollLeft = (currentPreviewIndex * 60) - 20;
+  }
 
   nextBtn.style.display = selectedFiles.length>1 ? 'flex' : 'none';
 }
@@ -349,7 +385,8 @@ document.getElementById('previewSend').onclick=()=>{
       caption:f.caption,
       privacy:document.getElementById('previewPillText').innerText.replace('Moments - ',''),
       time:Date.now(), views:Math.floor(Math.random()*10),
-      status:'posting'
+      status:'posting',
+      duration: f.duration || 0
     };
     myMoments.push(newMoment);
     setTimeout(()=>{
@@ -379,7 +416,7 @@ if(previewPill){
   });
 }
 
-// ========== TEXT PAGE ==========
+// ========== TEXT PAGE - FONT SAVED ==========
 function openTextPage(){
   textPage.classList.add('open');
   document.body.classList.add('text-open');
@@ -460,7 +497,7 @@ sendBtn.onclick=()=>{
     type:'text', text:text, bg:bg,
     fontF: currentFont.f, fontW: currentFont.w, fontS: currentFont.s,
     caption:'', privacy:privacy,
-    time:Date.now(), views:0, status:'posting'
+    time:Date.now(), views:0, status:'posting', duration:5
   };
   myMoments.push(newMoment);
   saveMyMoments();
@@ -472,7 +509,7 @@ sendBtn.onclick=()=>{
   openHub();
 };
 
-// ========== VIEWER - VIDEO LOADING TILL FINISH + HOLD TO PAUSE + OTHER PROFILE ==========
+// ========== VIEWER - VIDEO LOADING LINE 50s = 50s - HOLD PAUSE CONTINUE - DELETE VS REPORT BLOCK ==========
 function openViewer(user, index, name){
   currentViewerUser=user;
   viewerIndex=index;
@@ -526,11 +563,12 @@ function renderViewer(){
     vidEl.play();
     document.getElementById('muteBtn').style.display='flex';
     document.getElementById('playPauseBtn').style.display='flex';
-    // Loading till video finish loading - show till can play
     loading.style.display='flex';
     vidEl.oncanplay = ()=> loading.style.display='none';
     vidEl.onwaiting = ()=> loading.style.display='flex';
     vidEl.onplaying = ()=> loading.style.display='none';
+    // Get duration for line 50s = 50s
+    vidEl.onloadedmetadata = ()=>{ m.duration = vidEl.duration; };
   }
   else { 
     txtEl.style.display='flex'; 
@@ -543,26 +581,39 @@ function renderViewer(){
 
   capEl.innerText=m.caption||'';
 
-  // Other person profile - no eye stuff, show my own post but their name
+  // Other person - no eye, my own - show eye
   if(currentViewerUser==='me'){
     viewsEl.style.display='flex';
     viewsCount.innerText=m.views||0;
+    document.getElementById('viewerMorePopMe').style.display='block';
+    document.getElementById('viewerMorePopOther').style.display='none';
   } else {
-    viewsEl.style.display='none'; // No eye for others
+    viewsEl.style.display='none';
+    document.getElementById('viewerMorePopMe').style.display='none';
+    document.getElementById('viewerMorePopOther').style.display='block';
   }
   lucide.createIcons({ attrs: { "stroke-width": 1.8 } });
 }
 
+// Video loading line - if video 50s, line takes 50s to finish
 function startProgress(){
   clearInterval(viewerProgressTimer);
   const activeFill = document.querySelector('#viewerLines .line.active .fill');
   if(!activeFill) return;
   
+  const m = myMoments[viewerIndex];
+  let duration = 5000; // default 5s for image/text
+  if(m.type === 'video'){
+    const vidEl = document.getElementById('viewerVideo');
+    duration = (vidEl.duration && !isNaN(vidEl.duration) ? vidEl.duration * 1000 : (m.duration * 1000 || 5000));
+    if(duration < 1000) duration = 8000; // fallback if duration not loaded yet
+  }
+  
   let width = parseFloat(activeFill.style.width) || 0;
-  const duration = myMoments[viewerIndex]?.type === 'video' ? 8000 : 5000;
+  activeFill.style.width = width + '%';
   
   viewerProgressTimer = setInterval(()=>{
-    if(isHolding) return; // Hold to pause - continue when leave
+    if(isHolding) return; // Hold pause - continue when leave
     width += 100 / (duration / 100);
     activeFill.style.width = width + '%';
     if(width >= 100){
@@ -576,7 +627,8 @@ function closeViewer(){
   clearInterval(viewerProgressTimer);
   viewerPage.classList.remove('open');
   document.body.classList.remove('viewer-open');
-  document.getElementById('viewerVideo').pause();
+  const v=document.getElementById('viewerVideo');
+  if(v) v.pause();
   document.getElementById('viewersPop')?.classList.remove('show');
 }
 document.getElementById('closeViewer').onclick=closeViewer;
@@ -596,12 +648,19 @@ document.getElementById('prevMoment').onclick=prevViewer;
 document.getElementById('tapRight').onclick=nextViewer;
 document.getElementById('tapLeft').onclick=prevViewer;
 
-// Mute Pause
+// Mute and Pause - pause icon works properly
 const vVideo=document.getElementById('viewerVideo');
 document.getElementById('playPauseBtn').onclick=()=>{
   if(!vVideo) return;
-  if(vVideo.paused){ vVideo.play(); document.getElementById('playPauseBtn').innerHTML='<i data-lucide="pause"></i>'; startProgress(); }
-  else { vVideo.pause(); document.getElementById('playPauseBtn').innerHTML='<i data-lucide="play"></i>'; clearInterval(viewerProgressTimer); }
+  if(vVideo.paused){ 
+    vVideo.play(); 
+    document.getElementById('playPauseBtn').innerHTML='<i data-lucide="pause"></i>'; 
+    startProgress();
+  } else { 
+    vVideo.pause(); 
+    document.getElementById('playPauseBtn').innerHTML='<i data-lucide="play"></i>'; 
+    clearInterval(viewerProgressTimer);
+  }
   lucide.createIcons({ attrs: { "stroke-width": 1.8 } });
 };
 document.getElementById('muteBtn').onclick=()=>{
@@ -611,11 +670,33 @@ document.getElementById('muteBtn').onclick=()=>{
   lucide.createIcons({ attrs: { "stroke-width": 1.8 } });
 };
 
-// Viewers pop
+// Viewer more - delete for me, report/block for others
 const viewerMoreBtn=document.getElementById('viewerMoreBtn');
-const viewerMorePop=document.getElementById('viewerMorePop');
-if(viewerMoreBtn){ viewerMoreBtn.onclick=e=>{ e.stopPropagation(); viewerMorePop.classList.toggle('show'); }; }
+const viewerMorePopMe=document.getElementById('viewerMorePopMe');
+const viewerMorePopOther=document.getElementById('viewerMorePopOther');
+if(viewerMoreBtn){
+  viewerMoreBtn.onclick=e=>{
+    e.stopPropagation();
+    if(currentViewerUser==='me'){
+      viewerMorePopMe.classList.toggle('show');
+      viewerMorePopOther.classList.remove('show');
+    } else {
+      viewerMorePopOther.classList.toggle('show');
+      viewerMorePopMe.classList.remove('show');
+    }
+  };
+}
 
+// Delete my post - actually deletes
+document.getElementById('viewerDeleteBtn')?.addEventListener('click', ()=>{
+  myMoments.splice(viewerIndex,1);
+  saveMyMoments();
+  closeAllPops();
+  closeViewer();
+  if(myMoments.length>0){ renderHub(); }
+});
+
+// Viewers eye pop
 const viewerViews=document.getElementById('viewerViews');
 const viewersPop=document.getElementById('viewersPop');
 const viewersList=document.getElementById('viewersList');
@@ -634,12 +715,11 @@ if(viewerViews){
 }
 document.getElementById('closeViewersPop').onclick = ()=> viewersPop.classList.remove('show');
 
-// ========== HOLD TO PAUSE - LEAVE CONTINUE + SWIPE + OTHER PERSON PROFILE ==========
+// ========== HOLD TO PAUSE - LEAVE CONTINUE + SWIPE ==========
 const viewerCenter=document.getElementById('viewerCenter');
 if(viewerCenter){
   let startX=0, startY=0;
   
-  // Hold to pause
   viewerCenter.addEventListener('touchstart', e=>{ 
     startX=e.touches[0].clientX; startY=e.touches[0].clientY;
     isHolding = true;
@@ -660,31 +740,24 @@ if(viewerCenter){
     }
   }, {passive:true});
   
-  // Desktop hold
   viewerCenter.addEventListener('mousedown', ()=>{ isHolding=true; clearInterval(viewerProgressTimer); });
-  viewerCenter.addEventListener('mouseup', ()=>{ isHolding=false; startProgress(); });
+  viewerCenter.addEventListener('mouseup', ()=>{ isHolding=false; startProgress(); vVideo?.play(); });
   viewerCenter.addEventListener('mouseleave', ()=>{ isHolding=false; startProgress(); });
 }
 
 // ========== OTHER PERSON PROFILE CLICK - SHOW MY OWN POST BUT THEIR NAME, NO EYE ==========
 document.querySelectorAll('.moments-scroll .row').forEach(row=>{
   row.addEventListener('click', ()=>{
-    const nameEl = row.querySelector('.name');
-    const otherName = nameEl ? nameEl.innerText : 'blessing adeyemi';
+    const otherName = row.dataset.name || row.querySelector('.name')?.innerText || 'blessing adeyemi';
     if(!hasMyMoments()){
-      // No my moments - show demo with my own post style but their name - for preview how look like
-      // Create temp moment to show
       const tempMoment = {
         type:'image', src:'konnect2.jfif', text:'', bg:'',
-        caption:'This is how it will look', time:Date.now(), views:0, status:'posted',
-        fontF:'inherit', fontW:'700', fontS:'36px'
+        caption:'This is how it will look', time:Date.now(), views:0, status:'posted', duration:5
       };
       const backup = [...myMoments];
       myMoments = [tempMoment];
       viewerIndex = 0;
       openViewer('other', 0, otherName);
-      // Restore after close
-      const originalClose = closeViewer;
       const checkClose = setInterval(()=>{
         if(!viewerPage.classList.contains('open')){
           myMoments = backup;
@@ -692,7 +765,6 @@ document.querySelectorAll('.moments-scroll .row').forEach(row=>{
         }
       }, 500);
     } else {
-      // Has my moments - show my own post but their name, no eye
       openViewer('other', 0, otherName);
     }
   });
@@ -700,7 +772,7 @@ document.querySelectorAll('.moments-scroll .row').forEach(row=>{
 
 // ========== GLOBAL CLOSE ==========
 document.addEventListener('click', (e)=>{
-  if(!myRow?.contains(e.target) && !myProfilePop?.contains(e.target)){
+  if(!myRow?.contains(e.target) && !myProfilePop?.contains(e.target) && !myGalleryUnder?.contains(e.target)){
     myProfilePop?.classList.remove('show');
     myGalleryUnder?.classList.remove('show');
   }
