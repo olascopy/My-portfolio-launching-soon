@@ -387,6 +387,91 @@ function openBoostPage(){
   }
   boostPage.classList.add('active');
 }
+
+// ========== GLOBAL POPUP FUNCTIONS - MUST WORK ==========
+window.hideNoMomentsPopup = function(){
+  const pop = document.getElementById('boostNoMomentsPopup');
+  if(pop){
+    pop.classList.remove('show');
+    pop.style.display = 'none';
+  }
+  document.body.classList.remove('boost-open');
+  console.log('Popup closed - Cancel');
+};
+
+window.doPostMomentPill = function(){
+  console.log('Post moment pill clicked');
+  const pop = document.getElementById('boostNoMomentsPopup');
+  if(pop){
+    pop.classList.remove('show');
+    pop.style.display = 'none';
+  }
+  const boostPage = document.getElementById('boostPage');
+  if(boostPage) boostPage.classList.remove('active');
+  document.body.classList.remove('boost-open');
+
+  setTimeout(()=>{
+    // This is your pill function - same as clicking my moments
+    const myProfilePop = document.getElementById('myProfilePop');
+    const myMomentsRow = document.getElementById('myMomentsRow');
+    const myGalleryUnder = document.getElementById('myGalleryUnder');
+    const galleryInput = document.getElementById('galleryInput');
+
+    if(myProfilePop){
+      myProfilePop.classList.add('show');
+      myProfilePop.style.display = 'block';
+    }
+    if(window.innerWidth <= 768){
+      if(myGalleryUnder){
+        myGalleryUnder.classList.add('show');
+        myGalleryUnder.style.display = 'grid';
+      }
+    }
+    // Trigger your existing my moments click
+    if(myMomentsRow){
+      // Force show pop if your old JS hides it
+      myMomentsRow.dispatchEvent(new Event('click'));
+    }
+    // Also open file picker
+    if(galleryInput){
+      // Don't auto click file, just show options - user choose Photo/Video or Text
+      // galleryInput.click(); // Uncomment if you want auto open gallery
+    }
+    
+    if(window.lucide) lucide.createIcons();
+  }, 150);
+};
+
+window.showNoMomentsPopup = function(){
+  const pop = document.getElementById('boostNoMomentsPopup');
+  if(!pop) return;
+  pop.classList.add('show');
+  pop.style.display = 'flex';
+  document.body.classList.add('boost-open');
+  if(window.lucide) lucide.createIcons();
+};
+
+window.openBoostPage = function(){
+  let moments = [];
+  try{ moments = JSON.parse(localStorage.getItem('myMoments') || '[]'); }catch(e){ moments = []; }
+  if(moments.length === 0){
+    window.showNoMomentsPopup();
+    return;
+  }
+  const boostPage = document.getElementById('boostPage');
+  if(boostPage){
+    boostPage.classList.add('active');
+    document.body.classList.add('boost-open');
+  }
+};
+
+// Rebind border
+document.addEventListener('DOMContentLoaded', ()=>{
+  const border = document.getElementById('boostFirstBorder');
+  if(border){
+    border.onclick = (e)=>{ e.stopPropagation(); window.openBoostPage(); };
+  }
+});
 // Also init when page loaded (in case DOMContentLoaded already fired)
 initAudience();
 initDuration();

@@ -1530,14 +1530,14 @@
 </div>
 
 
-<div id="boostNoMomentsPopup" class="boost-no-moments-popup">
+<div id="boostNoMomentsPopup" class="boost-no-moments-popup" onclick="if(event.target===this) hideNoMomentsPopup()">
   <div class="boost-no-moments-card">
     <div class="boost-no-moments-icon"><i data-lucide="image-off"></i></div>
     <h3>No moments yet</h3>
-    <p>Post a moment first to boost it and get more views</p>
+    <p>Post a moment first to boost it</p>
     <div class="boost-no-moments-actions">
-      <button class="boost-no-moments-btn secondary" id="closeNoMomentsPopup">Cancel</button>
-      <button class="boost-no-moments-btn primary" id="goPostMoment">Post moment</button>
+      <button type="button" class="boost-no-moments-btn secondary" onclick="hideNoMomentsPopup(); event.stopPropagation();">Cancel</button>
+      <button type="button" class="boost-no-moments-btn primary" onclick="doPostMomentPill(); event.stopPropagation();">Post moment</button>
     </div>
   </div>
 </div>
