@@ -1134,264 +1134,114 @@
 
 
 <div class="moments-page">
-<!-- ========== MOMENTS PAGE LEFT - MAIN SIDEBAR ========== -->
+<!-- ======================================================
+     KONNEKT MOMENTS - FINAL FIXED HTML - CLEAN 2026
+     Fixed: Structure, IDs, Sheets, Caption head, Blocked badge
+====================================================== -->
+
+<!-- ========== MAIN SIDEBAR ========== -->
 <div class="moments-page-left">
-    <!-- ========== FIXED TOP HEADER ========== -->
-    <div class="moments-header-fixed">
-        <h2 class="moments-text">moments</h2>
-        <div class="header-icons-right">
-            <!-- More button - privacy - popup only on click -->
-            <div class="icon-btn" id="moreBtn">
-                <i data-lucide="more-vertical"></i>
-                <span class="tooltip-text">Moments menu</span>
-                <div class="pop" id="morePop">
-                    <div class="pop-item"><i data-lucide="lock" style="width:16px"></i> Moments privacy</div>
-                </div>
-            </div>
-            <!-- Plus button - add moments - popup only on click -->
-            <div class="icon-btn" id="plusBtn">
-                <i data-lucide="plus"></i>
-                <span class="tooltip-text">Add moments</span>
-                <div class="pop" id="plusPop">
-                    <div class="pop-item" id="plusPhoto"><i data-lucide="image" style="width:16px"></i> Photo and Video</div>
-                    <div class="pop-item" id="plusText"><i data-lucide="type" style="width:16px"></i> Text moments</div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- ========== SCROLL UNDER FIXED HEADER ========== -->
-    <div class="moments-scroll">
-        <!-- ========== MY MOMENTS ROW - TAP TO ADD ========== -->
-        <div class="post-mymoments" id="myMomentsRow">
-          <div class="post-moments" id="myAvatarBorder">
-            <div class="click-to-post"><i data-lucide="plus" class="plus-click"></i></div>
-          </div>
-          <div class="moments-post-text">
-            <p class="post-text-1">My moments</p>
-            <p class="post-text-2">Tap To Add a moment</p>
-          </div>
-        </div>
-
-        <!-- ========== MY PROFILE POP WHEN NO POST - SAME STYLE AS PLUS POP ========== -->
-        <!-- Desktop small, Mobile side by side + real gallery under -->
-        <div id="myProfilePop" class="my-profile-pop">
-          <div class="pop show my-profile-pop-inner">
-            <div class="pop-item" id="myProfilePhoto"><i data-lucide="image" style="width:16px"></i> Photo and Video</div>
-            <div class="pop-item" id="myProfileText"><i data-lucide="type" style="width:16px"></i> Text moments</div>
-          </div>
-          <!-- Real phone gallery - mobile only - access permission - each in own border - real gallery will be injected by JS -->
-          <div id="myGalleryUnder" class="my-gallery-under"></div>
-        </div>
-
-
-        <!-- ========== BOOST FIRST BORDER - UNDER MY PROFILE - CLICK TO BOOST ========== -->
-<div class="boost-first-border" id="boostFirstBorder">
-  <div class="boost-first-icon">
-    <i data-lucide="rocket" style="width:16px"></i>
-  </div>
-  <div class="boost-first-text">
-    <p class="boost-first-title">Boost moments</p>
-    <p class="boost-first-sub">Get more views</p>
-  </div>
-  <div class="boost-first-arrow">
-    <i data-lucide="chevron-right" style="width:16px"></i>
-  </div>
-</div>
-        <!-- ========== RECENTS - OTHER PEOPLE ========== -->
-        <div class="section">Recents</div>
-        <div class="row" data-name="blessing adeyemi">
-            <div class="avatar"><img src="konnect2.jfif"><div class="blue-ring"></div></div>
-            <div class="info"><div class="name">blessing adeyemi</div><div class="time">5m ago</div></div>
-        </div>
-        <div class="row" data-name="joshua yemi">
-            <div class="avatar"><img src="konnect2.jfif"><div class="blue-ring"></div></div>
-            <div class="info"><div class="name">joshua yemi</div><div class="time">now</div></div>
-        </div>
-        <div class="row" data-name="saheed adisa">
-            <div class="avatar"><img src="konnect2.jfif"><div class="blue-ring"></div></div>
-            <div class="info"><div class="name">saheed adisa</div><div class="time">Yesterday 2:45pm</div></div>
-        </div>
-
-        <div class="section">Just viewed</div>
-        <div class="row" style="opacity:0.6;" data-name="sarah">
-            <div class="avatar"><img src="konnect2.jfif"><div class="blue-ring" style="border-color:#3A3A3C"></div></div>
-            <div class="info"><div class="name">sarah</div><div class="time">now</div></div>
-        </div>
-    </div>
-
-    <!-- ========== MOMENTS PRIVACY FULL PAGE - MARGIN LEFT FIX - CHEVRON MOBILE ARROW DESKTOP ========== -->
-    <div class="privacy-page" id="privacyPage">
-      <div class="privacy-header">
-        <button class="back-btn" id="backPrivacy">
-          <i data-lucide="chevron-left" class="ios-arrow"></i>
-          <i data-lucide="arrow-left" class="android-arrow"></i>
-        </button>
-        <h3 class="privacy-title">moments</h3>
-        <div style="width:32px;"></div>
-      </div>
-      <div class="privacy-body">
-        <p class="privacy-question">Who can see my moments in konneckt</p>
-        <div class="privacy-option" data-value="contacts">
-          <div class="circle-check"><div class="inner-dot"></div></div>
-          <span>My contacts</span>
-        </div>
-        <div class="privacy-option" data-value="everyone">
-          <div class="circle-check"><div class="inner-dot"></div></div>
-          <span>Everyone</span>
+  <!-- ========== FIXED HEADER ========== -->
+  <div class="moments-header-fixed">
+    <h2 class="moments-text">moments</h2>
+    <div class="header-icons-right">
+      <!-- Moments menu - privacy only on click -->
+      <div class="icon-btn" id="moreBtn">
+        <i data-lucide="more-vertical"></i>
+        <span class="tooltip-text">Moments menu</span>
+        <div class="pop" id="morePop">
+          <div class="pop-item"><i data-lucide="lock" style="width:16px"></i> Moments privacy</div>
         </div>
       </div>
-    </div>
-</div>
-
-<!-- ========== BOOST MOMENTS PAGE - NEW 3-TIER FLOW - BOTTOM SHEET NOT FULL TAKEOVER ========== -->
-<div id="boostPage" class="boost-page boost-bottom-sheet">
-  <!-- ========== BOOST HEADER - PWA SAFE ========== -->
-  <div class="boost-header">
-    <button class="back-btn" id="closeBoost">
-      <i data-lucide="chevron-left" class="ios-arrow"></i>
-      <i data-lucide="arrow-left" class="android-arrow"></i>
-    </button>
-    <h3 class="boost-header-title">Boost moments</h3>
-    <div style="width:36px"></div>
-  </div>
-
-  <div class="boost-scroll">
-    <!-- ========== STEP 1 - SELECT WHICH MOMENT TO BOOST ========== -->
-    <div class="boost-step" id="boostStep1">
-      <div class="boost-step-label">Step 1 of 3</div>
-      <h2 class="boost-title-main">Choose a moment to boost</h2>
-      <p class="boost-sub-main">Your moment will be shown as Sponsored to more people</p>
-
-      <!-- Your moments list to choose - with border under profile fixed -->
-      <div class="boost-moments-list" id="boostMomentsList">
-        <!-- JS will fill: each item is image/video/text in border + radio -->
-      </div>
-
-      <div class="boost-empty" id="boostEmpty" style="display:none">
-        <div class="boost-empty-icon"><i data-lucide="image-off"></i></div>
-        <p>You have no moments yet</p>
-        <span>Post a moment first to boost it</span>
-      </div>
-    </div>
-
-    <!-- ========== STEP 2 - AUDIENCE + DURATION + PRICE ========== -->
-    <div class="boost-step" id="boostStep2" style="display:none">
-      <div class="boost-step-label">Step 2 of 3</div>
-      <h2 class="boost-title-main">Who should see it?</h2>
-      
-      <!-- AUDIENCE - 3 TIERS - PROPER ENGLISH FIXED -->
-      <div class="boost-audience-grid">
-        <div class="boost-audience-card active" data-audience="contacts_campus" data-price="300" data-views="~300-500">
-          <div class="boost-audience-top">
-            <i data-lucide="users"></i>
-            <span class="boost-check"><i data-lucide="check"></i></span>
-          </div>
-          <h4>Contacts & Campus</h4>
-          <p>Only your contacts and people in your campus feed</p>
-          <span class="boost-audience-price">₦300</span>
-        </div>
-        <div class="boost-audience-card" data-audience="campus_anon" data-price="700" data-views="~1k">
-          <div class="boost-audience-top">
-            <i data-lucide="layers"></i>
-            <span class="boost-check"><i data-lucide="check"></i></span>
-          </div>
-          <h4>Campus + Anonymous</h4>
-          <p>Shown in campus feed and anonymous feed</p>
-          <span class="boost-audience-price">₦700</span>
-        </div>
-        <div class="boost-audience-card" data-audience="everyone" data-price="1500" data-views="~5k+">
-          <div class="boost-audience-top">
-            <i data-lucide="rocket"></i>
-            <span class="boost-check"><i data-lucide="check"></i></span>
-          </div>
-          <h4>Everyone</h4>
-          <p>Shown to everyone on Konneckt</p>
-          <span class="boost-audience-price">₦1,500</span>
+      <!-- Add moments - only on click -->
+      <div class="icon-btn" id="plusBtn">
+        <i data-lucide="plus"></i>
+        <span class="tooltip-text">Add moments</span>
+        <div class="pop" id="plusPop">
+          <div class="pop-item" id="plusPhoto"><i data-lucide="image" style="width:16px"></i> Photo and Video</div>
+          <div class="pop-item" id="plusText"><i data-lucide="type" style="width:16px"></i> Text moments</div>
         </div>
       </div>
-
-      <h2 class="boost-title-main" style="margin-top:28px">How long should it run?</h2>
-      <!-- Duration -->
-      <div class="boost-duration-list">
-        <div class="boost-duration-item active" data-days="1" data-multi="1">
-          <div class="circle-check"><div class="inner-dot"></div></div>
-          <div class="boost-duration-info">
-            <span class="boost-duration-name">24 hours</span>
-            <span class="boost-duration-sub">Standard</span>
-          </div>
-          <span class="boost-duration-mult">x1</span>
-        </div>
-        <div class="boost-duration-item" data-days="3" data-multi="2.5">
-          <div class="circle-check"><div class="inner-dot"></div></div>
-          <div class="boost-duration-info">
-            <span class="boost-duration-name">3 days</span>
-            <span class="boost-duration-sub">Most popular</span>
-          </div>
-          <span class="boost-duration-mult">x2.5</span>
-        </div>
-        <div class="boost-duration-item" data-days="7" data-multi="5">
-          <div class="circle-check"><div class="inner-dot"></div></div>
-          <div class="boost-duration-info">
-            <span class="boost-duration-name">7 days</span>
-            <span class="boost-duration-sub">Best value</span>
-          </div>
-          <span class="boost-duration-mult">x5</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- ========== STEP 3 - CHECKOUT PAY ========== -->
-    <div class="boost-step" id="boostStep3" style="display:none">
-      <div class="boost-step-label">Step 3 of 3</div>
-      <h2 class="boost-title-main">Checkout</h2>
-
-      <!-- Preview of boosted moment how it will look to others -->
-      <div class="boost-preview-card">
-        <div class="boost-preview-label">How others will see it</div>
-        <div class="boost-preview-inner" id="boostPreviewInner">
-          <!-- image / video / text preview -->
-        </div>
-        <div class="boost-sponsored-tag"><i data-lucide="flame" style="width:10px"></i> Sponsored • Boosted</div>
-      </div>
-
-      <!-- Bill -->
-      <div class="boost-bill">
-        <div class="boost-bill-row"><span>Audience</span><span id="billAudience">Contacts & Campus</span></div>
-        <div class="boost-bill-row"><span>Duration</span><span id="billDuration">24 hours</span></div>
-        <div class="boost-bill-row"><span>Shows in</span><span id="billPlacement">Contacts + Campus feed</span></div>
-        <div class="boost-bill-row"><span>Views</span><span id="billViews">~300-500</span></div>
-        <div class="boost-bill-row total"><span>Total to pay</span><span id="billTotal">₦300</span></div>
-      </div>
-
-      <p class="boost-note">Your moment will appear first as Sponsored. You will be charged only once.</p>
     </div>
   </div>
 
-  <!-- ========== FIXED BOTTOM ACTION ========== -->
-  <div class="boost-bottom">
-    <div class="boost-total-left">
-      <span class="boost-total-label">Total</span>
-      <span class="boost-total-price" id="boostTotalPrice">Select a moment</span>
+  <!-- ========== SCROLL AREA ========== -->
+  <div class="moments-scroll">
+    <!-- My moments row -->
+    <div class="post-mymoments" id="myMomentsRow">
+      <div class="post-moments" id="myAvatarBorder">
+        <div class="click-to-post"><i data-lucide="plus" class="plus-click"></i></div>
+      </div>
+      <div class="moments-post-text">
+        <p class="post-text-1">My moments</p>
+        <p class="post-text-2">Tap To Add a moment</p>
+      </div>
     </div>
-    <button class="boost-continue-btn" id="boostContinueBtn" disabled>Continue</button>
+
+    <!-- No post pop - pills side by side on mobile -->
+    <div id="myProfilePop" class="my-profile-pop">
+      <div class="my-profile-pop-inner">
+        <div class="pop-item" id="myProfilePhoto"><i data-lucide="image" style="width:16px"></i> Photo and Video</div>
+        <div class="pop-item" id="myProfileText"><i data-lucide="type" style="width:16px"></i> Text moments</div>
+      </div>
+      <div id="myGalleryUnder" class="my-gallery-under"></div>
+    </div>
+
+    <!-- Boost -->
+    <div class="boost-first-border" id="boostFirstBorder">
+      <div class="boost-first-icon"><i data-lucide="rocket" style="width:16px"></i></div>
+      <div class="boost-first-text">
+        <p class="boost-first-title">Boost moments</p>
+        <p class="boost-first-sub">Get more views</p>
+      </div>
+      <div class="boost-first-arrow"><i data-lucide="chevron-right" style="width:16px"></i></div>
+    </div>
+
+    <!-- Recents -->
+    <div class="section">Recents</div>
+    <div class="row" data-name="blessing adeyemi">
+      <div class="avatar"><img src="konnect2.jfif" alt="blessing"><div class="blue-ring"></div></div>
+      <div class="info"><div class="name">blessing adeyemi</div><div class="time">5m ago</div></div>
+    </div>
+    <div class="row" data-name="joshua yemi">
+      <div class="avatar"><img src="konnect2.jfif" alt="joshua"><div class="blue-ring"></div></div>
+      <div class="info"><div class="name">joshua yemi</div><div class="time">now</div></div>
+    </div>
+    <div class="row" data-name="saheed adisa">
+      <div class="avatar"><img src="konnect2.jfif" alt="saheed"><div class="blue-ring"></div></div>
+      <div class="info"><div class="name">saheed adisa</div><div class="time">Yesterday 2:45pm</div></div>
+    </div>
+
+    <div class="section">Just viewed</div>
+    <div class="row" style="opacity:0.6;" data-name="sarah">
+      <div class="avatar"><img src="konnect2.jfif" alt="sarah"><div class="blue-ring" style="border-color:#3A3A3C"></div></div>
+      <div class="info"><div class="name">sarah</div><div class="time">now</div></div>
+    </div>
   </div>
 
-  <!-- ========== SUCCESS POP ========== -->
-  <div class="boost-success" id="boostSuccess" style="display:none">
-    <div class="boost-success-card">
-      <div class="boost-success-icon"><i data-lucide="check"></i></div>
-      <h3>Boost started!</h3>
-      <p>Your moment is now being shown to <span id="successAudience">your contacts & campus</span> as Sponsored</p>
-      <button class="boost-done-btn" id="boostDoneBtn">Done</button>
+  <!-- ========== PRIVACY PAGE ========== -->
+  <div class="privacy-page" id="privacyPage">
+    <div class="privacy-header">
+      <button class="back-btn" id="backPrivacy">
+        <i data-lucide="chevron-left" class="ios-arrow"></i>
+        <i data-lucide="arrow-left" class="android-arrow"></i>
+      </button>
+      <h3 class="privacy-title">moments</h3>
+      <div style="width:32px;"></div>
+    </div>
+    <div class="privacy-body">
+      <p class="privacy-question">Who can see my moments in konneckt</p>
+      <div class="privacy-option" data-value="contacts"><div class="circle-check"><div class="inner-dot"></div></div><span>My contacts</span></div>
+      <div class="privacy-option" data-value="everyone"><div class="circle-check"><div class="inner-dot"></div></div><span>Everyone</span></div>
     </div>
   </div>
 </div>
 
-<!-- ========== HIDDEN GALLERY INPUT - REAL PHONE GALLERY ACCESS ========== -->
+<!-- ========== HIDDEN FILE INPUT ========== -->
 <input type="file" id="galleryInput" accept="image/*,video/*" multiple hidden>
 
-<!-- ========== TEXT MOMENTS PAGE ========== -->
+<!-- ========== TEXT PAGE ========== -->
 <div id="textPage">
   <div class="top">
     <button id="closeText"><i data-lucide="x"></i></button>
@@ -1408,11 +1258,7 @@
     </div>
   </div>
   <div class="bottom">
-    <div id="pill">
-      <i data-lucide="users" style="width:14px"></i>
-      <span id="pillText">Moments - Everyone</span>
-      <i data-lucide="chevron-down" style="width:14px"></i>
-    </div>
+    <div id="pill"><i data-lucide="users" style="width:14px"></i><span id="pillText">Moments - Everyone</span><i data-lucide="chevron-down" style="width:14px"></i></div>
     <button id="sendBtn"><i data-lucide="send"></i></button>
   </div>
   <div id="miniPop">
@@ -1422,7 +1268,7 @@
   <div id="palWrap" class="pop pal-ca"></div>
 </div>
 
-<!-- ========== MY HUB PAGE - ADDING AND ADDED - VIDEO SAME HEIGHT ========== -->
+<!-- ========== MY HUB PAGE ========== -->
 <div id="myHubPage">
   <div class="hub-header">
     <button id="closeHub"><i data-lucide="x"></i></button>
@@ -1437,13 +1283,13 @@
   <div class="hub-list" id="hubList"></div>
 </div>
 
-<!-- ========== VIEWER PAGE - FULL HEIGHT TEXT - VIDEO LOADING LINE 50s = 50s - HOLD PAUSE - DELETE VS REPORT BLOCK ========== -->
+<!-- ========== VIEWER PAGE ========== -->
 <div id="viewerPage">
   <div class="viewer-lines" id="viewerLines"></div>
   <div class="viewer-top">
     <div class="viewer-top-left">
       <button id="closeViewer"><i data-lucide="x"></i></button>
-      <img id="viewerAvatar" src="konnect2.jfif">
+      <img id="viewerAvatar" src="konnect2.jfif" alt="avatar">
       <div>
         <div id="viewerName">My moments</div>
         <div id="viewerTime">Today</div>
@@ -1451,33 +1297,33 @@
     </div>
     <div class="viewer-top-right">
       <button id="viewerMoreBtn"><i data-lucide="more-vertical"></i></button>
-      <!-- My own post - delete only -->
       <div class="pop" id="viewerMorePopMe">
         <div class="pop-item" id="viewerDeleteBtn" style="color:#FF3B30"><i data-lucide="trash-2" style="width:16px"></i> Delete</div>
       </div>
-      <!-- Other person post - report block red -->
       <div class="pop" id="viewerMorePopOther">
-        <div class="pop-item" style="color:#FF3B30"><i data-lucide="flag" style="width:16px"></i> Report</div>
-        <div class="pop-item" style="color:#FF3B30"><i data-lucide="ban" style="width:16px"></i> Block</div>
+        <div class="pop-item" id="viewerReportBtn" style="color:#FF3B30"><i data-lucide="flag" style="width:16px"></i> Report</div>
+        <div class="pop-item" id="viewerBlockBtn" style="color:#FF3B30"><i data-lucide="ban" style="width:16px"></i> Block</div>
       </div>
     </div>
   </div>
   <div class="viewer-center" id="viewerCenter">
     <button class="nav-arrow left" id="prevMoment"><i data-lucide="chevron-left"></i></button>
     <button class="nav-arrow right" id="nextMoment"><i data-lucide="chevron-right"></i></button>
-    <img id="viewerImage" style="display:none">
+    <img id="viewerImage" style="display:none" alt="viewer">
     <video id="viewerVideo" style="display:none" playsinline preload="metadata"></video>
     <div id="viewerText" style="display:none"></div>
     <div class="loading-circle" id="viewerLoading" style="display:none"><div class="spinner"></div></div>
     <div class="video-controls">
-      <button id="playPauseBtn" style="display:none"><i data-lucide="pause"></i></button>
+      <button id="playPauseBtn" style="display:none">
+        <i data-lucide="pause" id="pauseIcon"></i>
+        <i data-lucide="play" id="playIcon" style="display:none"></i>
+      </button>
       <button id="muteBtn" style="display:none"><i data-lucide="volume-2"></i></button>
     </div>
     <div class="tap-zone left" id="tapLeft"></div>
     <div class="tap-zone right" id="tapRight"></div>
   </div>
-  <div class="viewer-caption-wrap"><p id="viewerCaption"></p></div>
-  <!-- Eye icon - only visible for owner, JS will hide for others -->
+  <div class="viewer-caption-wrap"><p id="viewerCaption" style="display:none"></p></div>
   <div class="viewer-views owner-only" id="viewerViews">
     <i data-lucide="eye" style="width:18px"></i>
     <span id="viewerViewsCount">0</span>
@@ -1491,7 +1337,7 @@
   </div>
 </div>
 
-<!-- ========== PREVIEW EDITOR PAGE - CAPTION PER ITEM - SWIPE LINE - EACH CAPTION SEPARATE ========== -->
+<!-- ========== PREVIEW PAGE ========== -->
 <div id="previewPage">
   <div id="previewBg" class="preview-bg"></div>
   <div id="previewTextFull" style="display:none"></div>
@@ -1500,18 +1346,16 @@
     <div style="width:42px"></div>
   </div>
   <div class="preview-center">
-    <!-- Center caption per item - shown under preview -->
-    <p id="previewCenterCaption" class="preview-center-caption"></p>
+    <p id="previewCenterCaption" class="preview-center-caption" style="display:none"></p>
     <div class="loading-circle" id="previewLoading" style="display:none"><div class="spinner"></div></div>
   </div>
   <div class="preview-bottom">
-    <!-- Borders line - swipe properly - caption per item - each border has data-index -->
     <div class="preview-borders-wrap" id="previewBordersWrap">
       <div class="preview-borders" id="previewBorders"></div>
       <div class="preview-plus" id="previewAddMore"><i data-lucide="plus"></i></div>
     </div>
     <div class="preview-input-row">
-      <input type="text" id="captionInput" placeholder="Write caption for this..." data-current-index="0">
+      <input type="text" id="captionInput" placeholder="Write caption for this...">
       <button id="previewSend"><i data-lucide="send"></i></button>
     </div>
     <div class="preview-bottom-row">
@@ -1529,19 +1373,157 @@
   </div>
 </div>
 
-
-<div id="boostNoMomentsPopup" class="boost-no-moments-popup" onclick="if(event.target===this) hideNoMomentsPopup()">
-  <div class="boost-no-moments-card">
-    <div class="boost-no-moments-icon"><i data-lucide="image-off"></i></div>
-    <h3>No moments yet</h3>
-    <p>Post a moment first to boost it</p>
-    <div class="boost-no-moments-actions">
-      <button type="button" class="boost-no-moments-btn secondary" onclick="hideNoMomentsPopup(); event.stopPropagation();">Cancel</button>
-      <button type="button" class="boost-no-moments-btn primary" onclick="doPostMomentPill(); event.stopPropagation();">Post moment</button>
+<!-- ========== SHEETS ========== -->
+<div id="deleteConfirmSheet" class="slide-sheet top-sheet">
+  <div class="slide-sheet-overlay" id="deleteSheetOverlay"></div>
+  <div class="slide-sheet-content top-content">
+    <div class="sheet-header">
+      <div style="display:flex;justify-content:flex-end"><button class="sheet-close" id="closeDeleteSheet"><i data-lucide="x"></i></button></div>
+    </div>
+    <div class="sheet-body">
+      <div class="sheet-icon red"><i data-lucide="trash-2"></i></div>
+      <h3>Delete this moment?</h3>
+      <p>This action cannot be undone.</p>
+      <div class="sheet-actions">
+        <button class="sheet-btn secondary" id="cancelDeleteBtn">Cancel</button>
+        <button class="sheet-btn danger" id="confirmDeleteBtn"><i data-lucide="trash-2" style="width:16px"></i> Delete</button>
+      </div>
     </div>
   </div>
 </div>
 
+<div id="reportSheet" class="slide-sheet bottom-sheet">
+  <div class="slide-sheet-overlay" id="reportSheetOverlay"></div>
+  <div class="slide-sheet-content bottom-content">
+    <div class="sheet-header">
+      <div class="sheet-handle-bar"></div>
+      <div class="sheet-title-row">
+        <div class="sheet-user-info"><img id="reportUserAvatar" src="konnect2.jfif" alt="user"><span>Report <strong id="reportUserName">this person</strong></span></div>
+        <button class="sheet-close" id="closeReportSheet"><i data-lucide="x"></i></button>
+      </div>
+    </div>
+    <div class="sheet-list" id="reportReasonsList">
+      <div class="sheet-list-item" data-reason="sexual_harassment"><span>Sexual harassment</span><i data-lucide="chevron-right" style="width:16px"></i></div>
+      <div class="sheet-list-item" data-reason="insulting"><span>Insulting words / Hate speech</span><i data-lucide="chevron-right" style="width:16px"></i></div>
+      <div class="sheet-list-item" data-reason="spam"><span>Spam or scam</span><i data-lucide="chevron-right" style="width:16px"></i></div>
+      <div class="sheet-list-item" data-reason="nudity"><span>Nudity / Sexual content</span><i data-lucide="chevron-right" style="width:16px"></i></div>
+      <div class="sheet-list-item" data-reason="violence"><span>Violence or dangerous behavior</span><i data-lucide="chevron-right" style="width:16px"></i></div>
+      <div class="sheet-list-item" data-reason="false_info"><span>False information</span><i data-lucide="chevron-right" style="width:16px"></i></div>
+      <div class="sheet-list-item" data-reason="other"><span>Others</span><i data-lucide="chevron-right" style="width:16px"></i></div>
+    </div>
+  </div>
+</div>
+
+<div id="blockSheet" class="slide-sheet bottom-sheet">
+  <div class="slide-sheet-overlay" id="blockSheetOverlay"></div>
+  <div class="slide-sheet-content bottom-content">
+    <div class="sheet-header">
+      <div class="sheet-handle-bar"></div>
+      <button class="sheet-close" id="closeBlockSheet" style="align-self:flex-end"><i data-lucide="x"></i></button>
+    </div>
+    <div class="sheet-body">
+      <div class="sheet-icon red"><i data-lucide="ban"></i></div>
+      <h3>Block <span id="blockUserName">this person</span>?</h3>
+      <p>They won't see your moments. You won't see theirs.</p>
+      <div class="sheet-actions">
+        <button class="sheet-btn secondary" id="cancelBlockBtn">Cancel</button>
+        <button class="sheet-btn danger" id="confirmBlockBtn">Block</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="unblockSheet" class="slide-sheet bottom-sheet">
+  <div class="slide-sheet-overlay" id="unblockSheetOverlay"></div>
+  <div class="slide-sheet-content bottom-content">
+    <div class="sheet-header">
+      <div class="sheet-handle-bar"></div>
+      <button class="sheet-close" id="closeUnblockSheet" style="align-self:flex-end"><i data-lucide="x"></i></button>
+    </div>
+    <div class="sheet-body">
+      <div class="sheet-icon"><i data-lucide="user-check"></i></div>
+      <h3>Unblock <span id="unblockUserName">this person</span>?</h3>
+      <p>You will see their moments again.</p>
+      <div class="sheet-actions">
+        <button class="sheet-btn secondary" id="cancelUnblockBtn">Cancel</button>
+        <button class="sheet-btn primary" id="confirmUnblockBtn">Unblock</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== TOASTS ========== -->
+<div id="toastDeleted" class="toast">Deleted</div>
+<div id="toastBlocked" class="toast">Blocked</div>
+<div id="toastUnblocked" class="toast">Unblocked</div>
+<div id="toastReported" class="toast">Reported</div>
+
+<!-- ========== BOOST ========== -->
+<div id="boostSuccess" class="boost-success-popup" style="display:none;">
+  <div class="boost-success-card">
+    <div class="boost-success-icon"><i data-lucide="check-circle"></i></div>
+    <h3>Boost active!</h3>
+    <p>Boosted to <span id="successAudience">campus</span>. Gold border added.</p>
+    <button id="boostDoneBtn" class="boost-done-btn" type="button">Done</button>
+  </div>
+</div>
+
+<div id="boostPage" class="boost-page">
+  <div class="boost-page-inner">
+    <div class="boost-header">
+      <div class="boost-handle-bar"></div>
+      <div class="boost-header-top">
+        <h2 class="boost-title">Boost your moment</h2>
+        <button id="closeBoost" class="boost-close-btn" type="button"><i data-lucide="x"></i></button>
+      </div>
+      <p class="boost-subtitle">Get more views from your campus</p>
+    </div>
+    <div class="boost-steps-indicator">
+      <div class="boost-step-dot active" data-step="1"><span>1</span></div><div class="boost-step-line"></div>
+      <div class="boost-step-dot" data-step="2"><span>2</span></div><div class="boost-step-line"></div>
+      <div class="boost-step-dot" data-step="3"><span>3</span></div>
+    </div>
+    <div id="boostStep1" class="boost-step active">
+      <div id="boostEmpty" class="boost-empty-state" style="display:none;"><h4>No moments yet</h4><p>Post a moment first</p></div>
+      <div id="boostMomentsList" class="boost-moments-list"></div>
+      <div class="boost-slot-info"><i data-lucide="info"></i><span><strong id="boostSlotCount">3</strong> boosted slots available</span></div>
+    </div>
+    <div id="boostStep2" class="boost-step" style="display:none;">
+      <h3 class="boost-section-title">Who should see it?</h3>
+      <div class="boost-audience-list">
+        <div class="boost-audience-card active" data-audience="contacts" data-price="2000"><span>Contacts Only - ₦2,000</span></div>
+        <div class="boost-audience-card" data-audience="campus" data-price="4000"><span>Campus Wide - ₦4,000</span></div>
+        <div class="boost-audience-card" data-audience="campus_push" data-price="7000"><span>Campus + Push - ₦7,000</span></div>
+      </div>
+      <h3 class="boost-section-title mt">How long?</h3>
+      <div class="boost-duration-list">
+        <div class="boost-duration-item active" data-days="1" data-multi="1"><span>24 hours</span><span>x1</span></div>
+        <div class="boost-duration-item" data-days="3" data-multi="2.2"><span>3 days</span><span>x2.2</span></div>
+        <div class="boost-duration-item" data-days="7" data-multi="4.5"><span>7 days</span><span>x4.5</span></div>
+      </div>
+    </div>
+    <div id="boostStep3" class="boost-step" style="display:none;">
+      <h3 class="boost-section-title">Preview</h3>
+      <div id="boostPreviewInner"></div>
+      <div class="boost-bill"><div class="boost-bill-row"><span>Total</span><strong id="billTotal">₦2,000</strong></div></div>
+    </div>
+    <div class="boost-footer">
+      <div class="boost-footer-left"><span class="boost-footer-label">Total</span><strong id="boostTotalPrice" class="boost-footer-price">Select a moment</strong></div>
+      <button id="boostContinueBtn" class="boost-continue-btn" type="button" disabled>Continue</button>
+    </div>
+  </div>
+</div>
+
+<div id="boostNoMomentsPopup" class="boost-no-moments-popup" style="display:none;" onclick="if(event.target===this) hideNoMomentsPopup()">
+  <div class="boost-no-moments-card">
+    <h3>No moments yet</h3>
+    <p>Post a moment first to boost it</p>
+    <div class="boost-no-moments-actions">
+      <button type="button" class="boost-no-moments-btn secondary" onclick="hideNoMomentsPopup()">Cancel</button>
+      <button type="button" class="boost-no-moments-btn primary" onclick="doPostMomentPill()">Post moment</button>
+    </div>
+  </div>
+</div>
 
     <div class="moments-page-right">
       <div class="moments-page-right-2">
