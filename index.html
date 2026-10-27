@@ -1135,8 +1135,8 @@
 
 <div class="moments-page">
 <!-- ======================================================
-     KONNEKT MOMENTS - FINAL FIXED HTML - CLEAN 2026
-     Fixed: Structure, IDs, Sheets, Caption head, Blocked badge
+   
+     Structure, IDs, Sheets, Caption head, Blocked badge
 ====================================================== -->
 
 <!-- ========== MAIN SIDEBAR ========== -->
@@ -1337,41 +1337,76 @@
   </div>
 </div>
 
-<!-- ========== PREVIEW PAGE ========== -->
+
+<!-- ========== PREVIEW PAGE - WHATSAPP TRIM ========== -->
 <div id="previewPage">
-  <div id="previewBg" class="preview-bg"></div>
-  <div id="previewTextFull" style="display:none"></div>
   <div class="preview-header">
     <button id="closePreview"><i data-lucide="x"></i></button>
-    <div style="width:42px"></div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <span id="previewCounter" style="color:#fff;font-size:12px;">0/10</span>
+      <button id="previewAddMore" class="preview-next-btn"><i data-lucide="plus"></i></button>
+      <button id="previewNext" class="preview-next-btn"><i data-lucide="chevron-right"></i> Next</button>
+    </div>
   </div>
+
+  <div id="previewBg" class="preview-bg"></div>
+
   <div class="preview-center">
-    <p id="previewCenterCaption" class="preview-center-caption" style="display:none"></p>
-    <div class="loading-circle" id="previewLoading" style="display:none"><div class="spinner"></div></div>
+    <div id="previewCenterCaption" class="preview-center-caption"></div>
   </div>
+
+  <!-- WHATSAPP REAL TRIM UI -->
+<!-- REAL WHATSAPP TRIM HANDLER -->
+<!-- WHATSAPP TRIM - HTML -->
+
   <div class="preview-bottom">
-    <div class="preview-borders-wrap" id="previewBordersWrap">
-      <div class="preview-borders" id="previewBorders"></div>
-      <div class="preview-plus" id="previewAddMore"><i data-lucide="plus"></i></div>
+<div id="whatsappTrimWrap">
+  <div class="trim-header">
+    <span id="trimStartLabel">0s</span>
+    <span id="trimDurLabel">60s</span>
+    <span id="trimEndLabel">60s</span>
+  </div>
+
+  <div id="trimFilmstrip">
+    <div class="trim-thumbs-bg"></div>
+    <div id="trimSelection">
+      <div id="trimHandleLeft" class="trim-handle left">
+        <span></span>
+      </div>
+      <div id="trimHandleRight" class="trim-handle right">
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="trim-hint">Drag white handles to choose start & end</div>
+</div>
+    
+    <div class="preview-borders-wrap">
+      <div id="previewBorders" class="preview-borders"></div>
+      <div class="preview-plus" id="previewPlusBtn"><i data-lucide="plus"></i></div>
     </div>
     <div class="preview-input-row">
-      <input type="text" id="captionInput" placeholder="Write caption for this...">
+      <input id="captionInput" placeholder="Write caption..." />
       <button id="previewSend"><i data-lucide="send"></i></button>
     </div>
     <div class="preview-bottom-row">
       <div id="previewPill" class="pill">
-        <i data-lucide="users" style="width:14px"></i>
-        <span id="previewPillText">Moments - Everyone</span>
-        <i data-lucide="chevron-down" style="width:14px"></i>
+        <i data-lucide="globe"></i>
+        <span id="previewPillText">Moments - My contacts</span>
+        <i data-lucide="chevron-down"></i>
       </div>
-      <button id="previewNext" class="preview-next-btn" style="display:none">Next <i data-lucide="chevron-right" style="width:16px"></i></button>
+    </div>
+    <div id="previewMiniPop">
+      <div class="pop-item" data-v="Everyone">Everyone</div>
+      <div class="pop-item active" data-v="My contacts">My contacts</div>
     </div>
   </div>
-  <div id="previewMiniPop" class="pop">
-    <div class="pop-item active" data-v="Everyone"><span>Moments - Everyone</span><i data-lucide="check" style="width:16px"></i></div>
-    <div class="pop-item" data-v="My contacts"><span>Moments - My contacts</span><i data-lucide="check" style="width:16px;opacity:0"></i></div>
-  </div>
 </div>
+
+<input type="file" id="galleryInput" accept="image/*,video/*" multiple style="display:none;" />
+
+
 
 <!-- ========== SHEETS ========== -->
 <div id="deleteConfirmSheet" class="slide-sheet top-sheet">
@@ -1531,12 +1566,12 @@
       <p class="moments-right-text">Share moments</p>
       <p class="moments-right-text-2">Share photos, videos and text that disappear after 24 hours.</p>
 
-<div class="border-text">
+<div class="border-text" id="konnektTextBtn">
         <i data-lucide="pencil" class="text-write"></i>
    
       </div>
            <p class="text-moments">Text moments</p>
-<div class="border-camera">
+<div class="border-camera" id="konnektMediaBtn">
 <i data-lucide="camera" class="camera-send"></i>
    
 </div>
