@@ -929,4 +929,7 @@ body.text-open .moments-page-left{
   .my-profile-pop-inner .pop-item{ flex:1; justify-content:center; background:rgba(255,255,255,.08); border-radius:14px; }
   .privacy-header{ margin-left:16px; width:calc(100% - 16px); margin-top:12px; }
   .privacy-body{ padding:20px 16px; }
+  .nav-arrow{
+    display: none !important;
+  }
 }

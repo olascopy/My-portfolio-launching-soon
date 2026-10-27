@@ -51,19 +51,19 @@
   <div class="nav-active-pill"></div>
     <section class="sidebar-section-1">
   
-<div class="icon-sidebar-btn">
+<div class="icon-sidebar-btn" id="navLoops">
 
   <i data-lucide="radio" class="home-icon active"></i>
  
   <span class="nav-label active-none">loops</span>
     <span class="tooltip">loops</span>
 </div>
-  <div class="icon-sidebar-btn">
+  <div class="icon-sidebar-btn" id=" navChats">
   <i data-lucide="messages-square" class="home-icon"></i>
     <span class="nav-label active-none"> Chats</span>
     <span class="tooltip">Chats</span>
 </div>
-<div class="icon-sidebar-btn">
+<div class="icon-sidebar-btn" id="navMoments">
   <i data-lucide="aperture" class="home-icon"></i>
     <span class="nav-label active-none"> moments</span>
     <span class="tooltip">moments</span>
@@ -71,13 +71,13 @@
 
 
 
-<div class="icon-sidebar-btn" >
+<div class="icon-sidebar-btn" id="navProfile" >
   <i data-lucide="circle-user" class="home-icon extra-mobile"></i>
    <span class="nav-label active-none"> profile</span>
  
 </div>
 
-<div class="icon-sidebar-btn ">
+<div class="icon-sidebar-btn "  id="navSettings">
   <i data-lucide="settings-2" class="home-icon extra-mobile"></i>
    <span class="nav-label active-none"> settings</span>
   
@@ -102,7 +102,7 @@
 <main>
 
     <!---------  chatloadlist header---------->
-  <div class="chat-load-list" id="chatLoadList" style="display: none;">
+  <div class="chat-load-list" id="chatLoadList" id="pageChats">
     <div class="start-up" id="mobileTopBar">
       <p class="app-name">KONNEKT</p>
       <p class="app-chats-mid" id="midChatsText">Chats</p>
@@ -717,7 +717,7 @@
   </div>
 
   <!-- CHAT BACKGROUND WITH MOOD PILL -->
-<div class="chat-background" id="chatBackground" style="display: none;">
+<div class="chat-background" id="chatBackground" id="pageChats">
   <!-- ================= HEADER SECTION ================= -->
   <!-- Contains profile, mood pill, and call,select controls -->
 
@@ -1001,7 +1001,7 @@
 <!-- ===== CALL UI - GLOBAL, OUTSIDE CHAT BACKGROUNDS ===== -->
 
   <!-- ===== CALL UI - GLOBAL ===== -->
-  <div class="konnekt-call-overlay" id="callOverlay" style="display: none;">
+  <div class="konnekt-call-overlay" id="callOverlay" id="pageChats">
     <div class="konnekt-call-top">
       <div style="width:68px"></div>
       <div class="konnekt-call-center">
@@ -1027,14 +1027,14 @@
     </div>
   </div>
 
-  <div class="konnekt-dynamic-pill hidden" id="dynamicPill" style="display: none;">
+  <div class="konnekt-dynamic-pill hidden" id="dynamicPill" id="pageChats">
     <div class="konnekt-dot"></div>
     <img class="konnekt-pill-ava" id="pillAva" src="https://i.pravatar.cc/300?img=12" />
     <span class="konnekt-pill-name" id="pillName">Joshua dayo</span>
     <span class="konnekt-pill-time" id="pillTime">00:00</span>
   </div>
 
-  <div class="konnekt-expanded-pill hidden" id="expandedPill" style="display: none;">
+  <div class="konnekt-expanded-pill hidden" id="expandedPill" id="pageChats">
     <div class="konnekt-expanded-left" id="expandBackToCall">
       <img class="konnekt-expanded-ava" id="expandedAva" src="https://i.pravatar.cc/300?img=12" />
       <div><b id="expandedName">Joshua dayo</b><span id="expandedTime">00:00 • tap</span></div>
@@ -1047,7 +1047,7 @@
   </div>
 
 <!-- ===== KONNEKT VIDEO CALL WAITLIST ===== -->
-<div id="videoWaitlistOverlay" class="konnekt-waitlist-overlay" style="display: none;">
+<div id="videoWaitlistOverlay" class="konnekt-waitlist-overlay" id="pageChats">
   <div id="videoWaitlistSheet" class="konnekt-waitlist-sheet">
      <div class="konnekt-waitlist-scroll-track">
     <div class="konnekt-waitlist-scroll-thumb" id="kwScrollThumb"></div>
@@ -1133,7 +1133,7 @@
 
 
 
-<div class="moments-page">
+<div class="moments-page page" id="pageMoments" >
 <!-- ======================================================
    
      Structure, IDs, Sheets, Caption head, Blocked badge
@@ -1307,7 +1307,7 @@
     </div>
   </div>
   <div class="viewer-center" id="viewerCenter">
-    <button class="nav-arrow left" id="prevMoment"><i data-lucide="chevron-left"></i></button>
+    <button class="nav-arrow left " id="prevMoment"><i data-lucide="chevron-left"></i></button>
     <button class="nav-arrow right" id="nextMoment"><i data-lucide="chevron-right"></i></button>
     <img id="viewerImage" style="display:none" alt="viewer">
     <video id="viewerVideo" style="display:none" playsinline preload="metadata"></video>
@@ -1582,6 +1582,20 @@
       </div>
       
 </div>
+
+<div id="pageLoops  page-switch page-active">
+
+</div>
+
+
+<div  id="navProfile">
+
+</div>
+
+
+<div id="navSettings">
+
+</div>
 </main>
 
 
@@ -1611,6 +1625,7 @@
 <script src="new-chat.js"></script>
 <script src="status.js"></script>
 <script src="boost-moment.js"></script>
+<script src="switching.js"></script>
 </html>
 
 

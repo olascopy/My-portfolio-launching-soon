@@ -721,3 +721,4 @@
   .receiver-bubble::before, .receiver-bubble::after{ left: -6px; width: 12px; }
   .sender-bubble::before, .sender-bubble::after{ right: -6px; width: 12px; }
 }
+
