@@ -1,7 +1,7 @@
 /* ===== LEFT SIDE: Chat list sidebar ===== */
 .chat-load-list{
     position: fixed;
-    width: 500px;
+    width: 460px;
     background-color:var(--bg-header);
     top: 0;
     bottom: 0;
@@ -396,7 +396,7 @@
 @keyframes moodFadeIn{ from{ opacity:0; transform: translateY(-4px) scale(0.96);} to{ opacity:1; transform: translateY(0) scale(1);} }
 @keyframes moodCardPop{ from{ opacity:0; transform: scale(0.9);} to{ opacity:1; transform: scale(1);} }
 
-.chat-background{ position: fixed; left: 555px; right: 0; top: 0; bottom: 0; width: auto; background-color: var(--bg-app); display: flex; flex-direction: column; overflow: hidden; }
+.chat-background{ position: fixed; left: 515px; right: 0; top: 0; bottom: 0; width: auto; background-color: var(--bg-app); display: flex; flex-direction: column; overflow: hidden; }
 .profile-headerchatBackground{ position: relative; flex-shrink: 0; width: 100%; height: 70px; background-color: var(--bg-header); border-bottom: 2px solid #000; display: flex; justify-content: space-between; align-items: center; z-index: 80 !important; }
 .chat-messages{ flex: 1; overflow-y: auto; overflow-x: hidden; padding: 14px; display: flex; flex-direction: column; gap: 10px; min-height: 0; position: relative; }
 .chat-input-bar{ position: relative; flex-shrink: 0; width: 100%; min-height: 62px; height: auto; display: flex; align-items: flex-end; gap: 8px; padding: 8px 10px 14px 10px; background: var(--bg-header); border-top: 1px solid rgba(255,255,255,0.08); z-index: 80 !important; box-sizing: border-box; transition: transform 0.22s cubic-bezier(0.16,1,0.3,1); }
@@ -721,4 +721,3 @@
   .receiver-bubble::before, .receiver-bubble::after{ left: -6px; width: 12px; }
   .sender-bubble::before, .sender-bubble::after{ right: -6px; width: 12px; }
 }
-
