@@ -1595,56 +1595,79 @@
   <div id="viewFeed" class="view active">
     <header>
       <div class="logo">Loop</div>
-      <div>
+      <div class="h-mid">
         <div class="sentence"><i data-lucide="shield-check" style="width:14px"></i> <b>Anonymous</b> • No names</div>
-        <div class="pill"><span class="dot"></span><span id="herdLabel">My Herd • Campus</span></div>
+        <div class="pill"><span class="dot" id="dotType"></span><span id="herdLabel">My Herd • Campus</span></div>
       </div>
       <div class="tabs"><button id="tabCampus" class="tab active">Campus</button><button id="tabGeneral" class="tab">General</button></div>
     </header>
 
-    <div class="desktop-nav glass"><button class="active"><i data-lucide="house"></i> Home</button><button data-go="profile"><i data-lucide="user-round"></i> My Loops</button><button id="deskNew" class="newLoopDesk"><i data-lucide="plus"></i> New Loop</button></div>
+    <div class="desktop-nav glass"><button class="active"><i data-lucide="house"></i> Home</button><button id="goProfileDesk"><i data-lucide="user-round"></i> My Loops • <span id="deskCount">0</span></button><button id="deskNew" class="newLoopDesk"><i data-lucide="plus"></i> New Loop</button></div>
 
-    <div class="mobile-stack">
-      <div class="myloops-border" id="myLoopsBtn"><b><i data-lucide="user-round" style="width:16px"></i> My Loops • <span id="topCount">0</span></b><span class="right"><small>Check yours</small><i data-lucide="chevron-right" style="width:16px"></i></span></div>
-      <div class="rot-wrap glass" id="mobileRotWrap">
-        <div class="rot-inner" id="mobileRot"></div>
-        <div class="rot-controls">
-          <button class="arrow-btn" id="prevBtn"><i data-lucide="chevron-left" style="width:18px"></i></button>
-          <div class="rot-dots" id="mobileDots"></div>
-          <button class="arrow-btn" id="nextBtn"><i data-lucide="chevron-right" style="width:18px"></i></button>
+    <div class="feed-column">
+      <div class="mobile-stack">
+        <div class="myloops-border mobile-only" id="myLoopsBtn"><b><i data-lucide="user-round" style="width:16px"></i> My Loops • <span id="topCount">0</span></b><span class="right"><small>Check yours</small><i data-lucide="chevron-right" style="width:16px"></i></span></div>
+        
+        <!-- ROTATING - HIDDEN UNTIL 5 POSTS -->
+        <div class="rot-wrap glass hidden" id="mobileRotWrap">
+          <div class="rot-inner" id="mobileRot"></div>
+          <div class="rot-controls"><button class="arrow-btn" id="prevBtn"><i data-lucide="chevron-left" style="width:18px"></i></button><div class="rot-dots" id="mobileDots"></div><button class="arrow-btn" id="nextBtn"><i data-lucide="chevron-right" style="width:18px"></i></button></div>
         </div>
+
+        <!-- NEW REFRESH PILL -->
+        <div class="new-pill hidden" id="newPill"><span class="red-dot"></span><span id="newCount">3 new loops</span><i data-lucide="chevron-up" style="width:14px"></i></div>
       </div>
+
+      <main id="feed">
+        <!-- EMPTY STATE INTERACTIVE -->
+        <div id="emptyState" class="empty">
+          <div class="ghost"><i data-lucide="ghost" style="width:44px;height:44px"></i></div>
+          <b id="emptyTitle">Your herd is quiet</b>
+          <p id="emptyText">No loops yet in Campus.<br>Be first to break the silence.</p>
+          <button id="emptyPostBtn" class="empty-btn"><i data-lucide="plus" style="width:16px"></i> Post your first Loop</button>
+          <button id="emptyExplore" class="empty-link"><i data-lucide="compass" style="width:16px"></i> Explore General</button>
+        </div>
+      </main>
     </div>
 
-    <main id="feed"></main>
-
-    <div class="right-panel"><div class="rot-wrap glass" id="deskWrap"><div class="rot-inner" id="deskRot"></div><div class="rot-controls"><button class="arrow-btn" id="dPrev"><i data-lucide="chevron-left" style="width:18px"></i></button><div class="rot-dots" id="deskDots"></div><button class="arrow-btn" id="dNext"><i data-lucide="chevron-right" style="width:18px"></i></button></div></div></div>
+    <div class="right-panel">
+      <div class="panel-card glass desktop-only"><div style="display:flex;justify-content:space-between"><h4>My Loops</h4><b id="rightCount">0</b></div><p>Only you see • 100% anon</p></div>
+      <div class="rot-wrap glass hidden" id="deskWrap"><div class="rot-inner" id="deskRot"></div><div class="rot-controls"><button class="arrow-btn" id="dPrev"><i data-lucide="chevron-left" style="width:18px"></i></button><div class="rot-dots" id="deskDots"></div><button class="arrow-btn" id="dNext"><i data-lucide="chevron-right" style="width:18px"></i></button></div></div>
+      <div class="new-pill hidden" id="newPillDesk"><span class="red-dot"></span><span id="newCountDesk">3 new loops • tap to refresh</span><i data-lucide="refresh-cw" style="width:14px"></i></div>
+    </div>
 
     <button id="mobNew" class="fab"><i data-lucide="plus"></i></button>
   </div>
 
   <!-- PROFILE -->
   <div id="viewProfile" class="view">
-    <header><div class="logo">My Loops</div><div class="sentence"><i data-lucide="eye-off" style="width:14px"></i> Only you</div></header>
-    <div class="desktop-nav glass" style="display:flex;"><button data-go="feed"><i data-lucide="house"></i> Home</button><button class="active"><i data-lucide="user-round"></i> My Loops</button><button id="deskNew2" class="newLoopDesk"><i data-lucide="plus"></i> New Loop</button></div>
-    <div class="mobile-stack"><div class="myloops-border" id="backBtn"><b><i data-lucide="chevron-left" style="width:18px"></i> Back to Feed</b><span class="right"><i data-lucide="x" style="width:16px"></i></span></div></div>
-    <main><div id="myPosts"></div></main>
-    <div class="right-panel"><div class="rot-wrap glass"><div style="padding:16px"><h4 style="font-size:11px;opacity:.4;text-transform:uppercase;margin-bottom:8px">Stats</h4><b id="count">0 posts</b></div></div></div>
+    <header><div class="logo">My Loops</div><div class="sentence"><i data-lucide="eye-off" style="width:14px"></i> Only you • local only</div></header>
+    <div class="desktop-nav glass" style="display:flex;"><button id="goFeedDesk"><i data-lucide="house"></i> Home</button><button class="active"><i data-lucide="user-round"></i> My Loops</button><button id="deskNew2" class="newLoopDesk"><i data-lucide="plus"></i> New Loop</button></div>
+    <div class="feed-column"><div class="mobile-stack"><div class="myloops-border mobile-only" id="backBtn"><b><i data-lucide="chevron-left" style="width:18px"></i> Back to Feed</b><span class="right"><i data-lucide="x" style="width:16px"></i></span></div></div><main><div id="myPosts"></div></main></div>
+    <div class="right-panel"><div class="rot-wrap glass"><div style="padding:16px"><h4 style="font-size:11px;opacity:.4;text-transform:uppercase;margin-bottom:8px">Stats</h4><b id="count">0 posts</b><p style="font-size:12px;opacity:.5;margin-top:6px">100% anon • no history</p></div></div></div>
   </div>
 
-  <!-- NEW -->
+  <!-- NEW POST -->
   <div id="viewNew" class="view">
-    <div class="new-top"><button id="closeNew"><i data-lucide="x" style="width:20px"></i></button><span style="font-weight:800">New Loop</span><button id="openSelector" class="postBtn" disabled>Post</button></div>
+    <div class="new-top"><button id="closeNew"><i data-lucide="x" style="width:20px"></i></button><span style="font-weight:800" id="newTitle">New Loop</span><button id="openSelector" class="postBtn" disabled>Post</button></div>
     <textarea id="postInput" maxlength="200" placeholder="What's happening? Share anonymously..."></textarea>
-    <div class="char"><span id="char">0</span>/200</div>
+    <div class="char"><span id="char">0</span>/200 • 100% anon</div>
   </div>
 
-  <!-- POPUP -->
+  <!-- WHERE TO POST -->
   <div id="popOverlay" class="pop-overlay">
-    <div class="pop-card"><div class="pop-top"><h3>Where to post?</h3><button id="closePop"><i data-lucide="x" style="width:18px"></i></button></div><div class="choice"><button id="chooseCampus"><span><span>Campus</span><small>Only campus sees</small></span><i data-lucide="school"></i></button><button id="chooseGeneral"><span><span>General</span><small>Everywhere</small></span><i data-lucide="globe"></i></button></div><div id="loader" class="loader-bar"><div></div></div></div>
+    <div class="pop-card"><div class="pop-top"><h3>Where to post?</h3><button id="closePop"><i data-lucide="x" style="width:18px"></i></button></div><div class="choice"><button id="chooseCampus" class="campus-choice"><span><span>Campus</span><small>Only campus sees</small></span><i data-lucide="school"></i></button><button id="chooseGeneral" class="general-choice"><span><span>General</span><small>Everywhere</small></span><i data-lucide="globe"></i></button></div><div id="loader" class="loader-bar"><div></div></div></div>
+  </div>
+
+  <!-- COMMENTS - CENTERED MOBILE + DESKTOP -->
+  <div id="commentOverlay" class="comment-overlay">
+    <div class="comment-card" id="commentCard">
+      <div class="comment-top"><h3 id="commentTitle"><i data-lucide="message-circle" style="width:18px"></i> Comments • 0</h3><button id="closeComment"><i data-lucide="x" style="width:18px"></i></button></div>
+      <div id="commentList" class="comment-list"></div>
+      <div class="comment-input-wrap" id="inputWrap"><div class="comment-input"><input id="commentInput" placeholder="Add anonymous comment..." maxlength="120"><button id="sendComment"><i data-lucide="send" style="width:18px"></i></button></div></div>
+    </div>
   </div>
 </div>
-
 
 <div  id="pageProfile">
 
