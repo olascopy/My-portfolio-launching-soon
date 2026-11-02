@@ -1,0 +1,85 @@
+/* SKIP BUTTON - STANDALONE - STICKY TOP */
+.skip-wrap{
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background: #0A0A0A;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.skip-btn{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.06);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+}
+
+.skip-btn:hover{
+  background: #fff;
+  color: #000;
+  border-color: #fff;
+}
+
+.skip-btn.active{
+  background: #fff;
+  color: #000;
+}// SKIP BUTTON - STANDALONE LOGIC
+// This is not part of main loops code. Put this in signup page only.
+document.addEventListener('DOMContentLoaded', ()=>{
+  const $ = id => document.getElementById(id);
+  const skipBtn = $('skipCampusBtn');
+
+  // check if already skipped before
+  let hasCampus = localStorage.getItem('hasCampus'); // 'true' or 'false' or null
+  if(hasCampus==='false' && skipBtn){
+    skipBtn.classList.add('active');
+    skipBtn.innerHTML = `<i data-lucide="check"></i> Skipped — General only`;
+  }
+
+  if(skipBtn){
+    skipBtn.onclick = ()=>{
+      let current = localStorage.getItem('hasCampus');
+      if(current==='false'){
+        // undo skip - user now has campus
+        localStorage.setItem('hasCampus','true');
+        skipBtn.classList.remove('active');
+        skipBtn.innerHTML = `<i data-lucide="skip-forward"></i> Skip — I don't have campus`;
+        alert('Campus enabled again - you will see Campus + General');
+      }else{
+        // skip - no campus
+        localStorage.setItem('hasCampus','false');
+        localStorage.setItem('loop_active','general'); // force general only
+        skipBtn.classList.add('active');
+        skipBtn.innerHTML = `<i data-lucide="check"></i> Skipped — General only`;
+        alert('Skipped - you will see only General feed');
+        // optional: redirect to feed
+        // window.location.href = '/feed.html';
+      }
+      if(typeof lucide!=='undefined') lucide.createIcons();
+    };
+  }
+
+  // helper for main app to read
+  // In main app, you will do:
+  // if(localStorage.getItem('hasCampus')==='false'){ 
+  //   hide campus tab, show only general 
+  // }
+});
+
+<!-- SKIP BUTTON - FOR SIGNUP ONLY -->
+<div class="skip-wrap">
+  <button id="skipCampusBtn" class="skip-btn">
+    <i data-lucide="skip-forward"></i> Skip — I don't have campus
+  </button>
+</div>

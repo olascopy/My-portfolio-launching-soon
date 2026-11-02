@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', ()=>{
   // ===== STORAGE =====
   let campus = JSON.parse(localStorage.getItem('loop_campus')||'[]');
@@ -11,17 +10,15 @@ document.addEventListener('DOMContentLoaded', ()=>{
   let rotIndex = 0;
   let activeType = localStorage.getItem('loop_active')||'campus';
   let selectedTag = null;
-  // test flag - only once first posted loop hides after 1 downvote
   let firstTestPostId = JSON.parse(localStorage.getItem('loop_first_test')||'null');
 
   const $ = id => document.getElementById(id);
   const feedEl = $('feed'), myEl = $('myPosts'), emptyState = $('emptyState');
   const viewFeed = $('viewFeed'), viewProf = $('viewProfile'), viewNew = $('viewNew');
   const popOverlay = $('popOverlay'), commentOverlay = $('commentOverlay'), loader = $('loader');
-  const inputWrap = $('inputWrap');
   const shareOverlay = $('shareOverlay'), appealOverlay = $('appealOverlay');
 
-  // save all to local
+  // save all
   const save = ()=>{ 
     localStorage.setItem('loop_campus',JSON.stringify(campus));
     localStorage.setItem('loop_general',JSON.stringify(general));
@@ -46,7 +43,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
   });
 
   // ===== TOP 7 DAYS WINNER =====
-  // backend later will decide, now: post with 0 downvotes and highest up
   function getTopWinner(list){ 
     if(list.length===0) return null; 
     let cands = list.filter(p=> (p.down||0)===0 && (p.up||0)>=1);
@@ -56,7 +52,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
   }
 
   // ===== ROTATING 4 CARDS =====
-  // Live, Question, Poll, Top 7 days
   function buildRotData(){
     const list = activeType==='campus'?campus:general;
     const topPost = getTopWinner(list);
@@ -91,7 +86,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
   const prevRot=()=>{ const len=buildRotData().length; rotIndex=(rotIndex-1+len)%len; renderRot(); };
   setInterval(nextRot,20000);
 
-  // unlock rotating after 5 posts
   function checkUnlock(){
     const total=campus.length+general.length;
     const mW=$('mobileRotWrap'), dW=$('deskWrap');
@@ -124,15 +118,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
     }else{
       if(emptyState) emptyState.style.display='none';
       list.forEach(p=>{
-        // normal hide: 5 downvotes and not owner hides from feed
-        // test hide: if this id == firstTestPostId and down >=1, also hide from feed for testing
         const isTestHide = firstTestPostId && p.id===firstTestPostId && (p.down||0)>=1;
         if(((p.down||0)>=5 || isTestHide) && !isOwner(p.id)) return;
-        // even owner sees hide in feed? No, owner still sees in feed until 5? For test we hide even for owner to show hidden state in My Loops
-        // but we keep showing in feed for owner if normal 5? For test we still hide from feed to simulate
-        if(isTestHide){ /* will still hide from feed to test appeal */ }
-        if((p.down||0)>=5 && isOwner(p.id) && !isTestHide){ /* still show? No, hide from feed too, show only in My Loops */ return; }
-
+        if((p.down||0)>=5 && isOwner(p.id) && !isTestHide){ return; }
         let v=myVotes[p.id]; let cCount=(commentsData[p.id]||[]).length;
         let isTop = p.id===topId;
         let d=document.createElement('div'); 
@@ -149,26 +137,11 @@ document.addEventListener('DOMContentLoaded', ()=>{
             <button data-down="${p.id}" class="${v==='down'?'downvoted':''}"><i data-lucide="arrow-down" style="width:16px"></i> ${p.down||0}</button>
             <button data-comment="${p.id}" style="margin-left:auto"><i data-lucide="message-circle" style="width:16px"></i> ${cCount}</button>
           </div>`;
-        // if test post, show helper text
-        if(p.id===firstTestPostId){
-          d.querySelector('.txt').innerHTML += `<div style="margin-top:8px;font-size:11px;opacity:.5">Test: 1 downvote will hide this for appeal</div>`;
-        }
         feedEl.appendChild(d);
       });
     }
-    // bind votes
     feedEl.querySelectorAll('[data-up]').forEach(b=>{ b.onclick=()=>{ let id=parseInt(b.dataset.up); let p=[...campus,...general].find(x=>x.id===id); if(!p) return; let cur=myVotes[id]; if(cur==='up'){ p.up--; delete myVotes[id]; } else { if(cur==='down') p.down--; p.up++; myVotes[id]='up'; } save(); renderFeed(); renderMy(); renderRot(); }; });
-    feedEl.querySelectorAll('[data-down]').forEach(b=>{ 
-      b.onclick=()=>{ 
-        let id=parseInt(b.dataset.down); 
-        let p=[...campus,...general].find(x=>x.id===id); 
-        if(!p) return; 
-        let cur=myVotes[id]; 
-        if(cur==='down'){ p.down--; delete myVotes[id]; } 
-        else { if(cur==='up') p.up--; p.down=(p.down||0)+1; myVotes[id]='down'; } 
-        save(); renderFeed(); renderMy(); renderRot(); 
-      }; 
-    });
+    feedEl.querySelectorAll('[data-down]').forEach(b=>{ b.onclick=()=>{ let id=parseInt(b.dataset.down); let p=[...campus,...general].find(x=>x.id===id); if(!p) return; let cur=myVotes[id]; if(cur==='down'){ p.down--; delete myVotes[id]; } else { if(cur==='up') p.up--; p.down=(p.down||0)+1; myVotes[id]='down'; } save(); renderFeed(); renderMy(); renderRot(); }; });
     feedEl.querySelectorAll('[data-comment]').forEach(b=>{ b.onclick=()=>openComments(parseInt(b.dataset.comment)); });
     feedEl.querySelectorAll('[data-share]').forEach(b=>{ b.onclick=()=>openShare(parseInt(b.dataset.share)); });
     if($('topCount')) $('topCount').textContent=String(myLoops.length);
@@ -185,7 +158,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
     myLoops.forEach((p,i)=>{ 
       let full = [...campus,...general].find(x=>x.id===p.id) || {up:0,down:0};
       let cCount=(commentsData[p.id]||[]).length;
-      // hidden if normal 5 down OR test 1 down for firstTestPostId
       let isTestHidden = firstTestPostId && p.id===firstTestPostId && (full.down||0)>=1;
       let isHidden = (full.down||0)>=5 || isTestHidden;
       let d=document.createElement('div'); d.className='post '+ (p.target==='Campus'?'campus':'general');
@@ -222,7 +194,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     if($('statComment')) $('statComment').textContent=String(comm);
   }
 
-  // ===== SHARE WITH ICON konnect2.png =====
+  // ===== SHARE =====
   function openShare(postId){
     const post=[...campus,...general].find(x=>x.id===postId);
     if(!post) return;
@@ -230,55 +202,23 @@ document.addEventListener('DOMContentLoaded', ()=>{
     if($('shareTag')){ if(post.tag){ $('shareTag').textContent='#'+post.tag; $('shareTag').style.display='block'; } else { $('shareTag').style.display='none'; } }
     if($('shareUp')) $('shareUp').textContent='↑'+(post.up||0);
     if($('shareDown')) $('shareDown').textContent='↓'+(post.down||0);
-    const iconImg=$('shareAppIcon'); 
-    if(iconImg){ 
-      iconImg.src='knnockt.png'; 
-      iconImg.crossOrigin='anonymous';
-      iconImg.style.display='block';
-    }
+    const iconImg=$('shareAppIcon'); if(iconImg){ iconImg.src='knnockt.png'; iconImg.crossOrigin='anonymous'; iconImg.style.display='block'; }
     shareOverlay?.classList.add('show');
     const saveBtn=$('saveShareImage');
     if(saveBtn){ saveBtn.classList.remove('saved'); saveBtn.innerHTML='<i data-lucide="download" style="width:18px"></i>'; icon(); }
   }
   function closeShare(){ shareOverlay?.classList.remove('show'); }
-
   async function saveShareImage(){
-    const card=$('shareImageCard'); 
-    if(!card) return;
+    const card=$('shareImageCard'); if(!card) return;
     const btn=$('saveShareImage');
     if(btn){ btn.innerHTML='<i data-lucide="loader-2" style="width:18px"></i>'; icon(); }
     try{
       const img=$('shareAppIcon');
-      if(img){
-        await new Promise(res=>{
-          if(img.complete && img.naturalWidth>0) res();
-          else { img.onload=res; img.onerror=res; setTimeout(res,1000); }
-        });
-      }
+      if(img){ await new Promise(res=>{ if(img.complete && img.naturalWidth>0) res(); else { img.onload=res; img.onerror=res; setTimeout(res,1000); } }); }
       const canvas = await html2canvas(card, {backgroundColor:'#0A0A0A', scale:2, useCORS:true, allowTaint:false, logging:false});
-      const link=document.createElement('a');
-      link.download=`konnect-loop-${Date.now()}.png`;
-      link.href=canvas.toDataURL('image/png');
-      link.click();
+      const link=document.createElement('a'); link.download=`konnect-loop-${Date.now()}.png`; link.href=canvas.toDataURL('image/png'); link.click();
       if(btn){ btn.classList.add('saved'); btn.innerHTML='<i data-lucide="check" style="width:18px"></i>'; icon(); setTimeout(closeShare,800); }
-    }catch(e){
-      console.warn('save failed', e);
-      // fallback without icon
-      const iconImg=$('shareAppIcon');
-      if(iconImg) iconImg.style.display='none';
-      try{
-        const canvas2 = await html2canvas(card, {backgroundColor:'#0A0A0A', scale:2});
-        const link=document.createElement('a');
-        link.download=`konnect-loop-${Date.now()}.png`;
-        link.href=canvas2.toDataURL('image/png');
-        link.click();
-        if(btn){ btn.classList.add('saved'); btn.innerHTML='<i data-lucide="check" style="width:18px"></i>'; icon(); setTimeout(closeShare,800); }
-      }catch(e2){
-        alert('Add html2canvas script in head: <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>');
-        if(btn){ btn.innerHTML='<i data-lucide="download" style="width:18px"></i>'; icon(); }
-      }
-      if(iconImg) iconImg.style.display='block';
-    }
+    }catch(e){ alert('Add html2canvas script'); }
   }
 
   // ===== APPEAL =====
@@ -288,7 +228,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   function sendAppeal(){
     const txt=$('appealInput')?.value.trim(); if(!txt || !appealPostId) return;
     appeals.push({postId:appealPostId, text:txt, time:new Date().toISOString()});
-    save(); closeAppeal(); alert('Appeal sent - we will review');
+    save(); closeAppeal(); alert('Appeal sent');
   }
 
   // ===== NEW POST =====
@@ -303,29 +243,62 @@ document.addEventListener('DOMContentLoaded', ()=>{
   if(shareOverlay) shareOverlay.onclick=e=>{ if(e.target===shareOverlay) closeShare(); };
   if(appealOverlay) appealOverlay.onclick=e=>{ if(e.target===appealOverlay) closeAppeal(); };
 
-  // ===== COMMENTS =====
+  // ===== COMMENTS WITH HEART + TOP BADGE =====
+  function getTopCommentIdx(arr){
+    if(!arr || arr.length===0) return -1;
+    let max = -1, idx = -1;
+    arr.forEach((c,i)=>{ if((c.likes||0) > max){ max=c.likes; idx=i; } });
+    return max >= 1 ? idx : -1; // show TOP once someone likes, or set to 3 if you want threshold
+  }
+
   function openComments(id){
     currentCommentPostId=id;
     if($('commentTitle')) $('commentTitle').innerHTML=`<i data-lucide="message-circle" style="width:18px"></i> Comments • ${(commentsData[id]||[]).length}`;
     renderComments(); commentOverlay?.classList.add('show'); setTimeout(()=>$('commentInput')?.focus(),100); icon();
   }
+
   function renderComments(){
     const list=$('commentList'); if(!list) return; list.innerHTML='';
     const arr=commentsData[currentCommentPostId]||[];
     if(arr.length===0){ list.innerHTML=`<div style="padding:30px;text-align:center;opacity:.4">No comments</div>`; return; }
-    arr.forEach(c=>{ 
-      let d=document.createElement('div'); d.className='comment-item'; 
+    const topIdx = getTopCommentIdx(arr);
+    arr.forEach((c,i)=>{ 
+      let d=document.createElement('div'); 
+      const isTop = i===topIdx && (c.likes||0) > 0;
+      d.className='comment-item ' + (isTop ? 'top-comment' : ''); 
       const opHtml = c.isOwner ? `<span class="op-badge">OP</span>` : '';
-      d.innerHTML=`<div class="meta">anon ${opHtml} • ${c.time}</div><div class="txt">${esc(c.text)}</div>`; 
+      const topHtml = isTop ? `<span class="top-badge">TOP</span>` : '';
+      const likedClass = c.likedByMe ? 'liked' : '';
+      const likes = c.likes || 0;
+      d.innerHTML=`
+        <div class="meta">anon ${opHtml} ${topHtml} • ${c.time}</div>
+        <div class="txt">${esc(c.text)}</div>
+        <div class="c-actions">
+          <button class="c-heart ${likedClass}" data-cidx="${i}">
+            <i data-lucide="heart" style="width:14px"></i> <span>${likes}</span>
+          </button>
+        </div>`; 
       list.appendChild(d); 
+    });
+    // bind heart clicks
+    list.querySelectorAll('.c-heart').forEach(btn=>{
+      btn.onclick=()=>{
+        const idx = parseInt(btn.dataset.cidx);
+        const cm = commentsData[currentCommentPostId][idx];
+        if(!cm) return;
+        if(!cm.likedByMe){ cm.likes=(cm.likes||0)+1; cm.likedByMe=true; }
+        else { cm.likes=Math.max(0,(cm.likes||0)-1); cm.likedByMe=false; }
+        save(); renderComments();
+      };
     });
     list.scrollTop=list.scrollHeight; icon();
   }
+
   function sendComment(){
     const inp=$('commentInput'); if(!inp) return; let txt=inp.value.trim(); if(!txt||!currentCommentPostId) return;
     if(!commentsData[currentCommentPostId]) commentsData[currentCommentPostId]=[];
     const isOwnerComment = isOwner(currentCommentPostId);
-    commentsData[currentCommentPostId].push({text:txt,time:'now', isOwner:isOwnerComment}); 
+    commentsData[currentCommentPostId].push({text:txt,time:'now', isOwner:isOwnerComment, likes:0, likedByMe:false}); 
     inp.value=''; save(); renderComments(); renderFeed(); renderMy();
   }
   bind('closeComment',()=>{ commentOverlay?.classList.remove('show'); });
@@ -343,7 +316,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
   if(postInput) postInput.oninput=e=>{ if(charEl) charEl.textContent=String(e.target.value.length); if(openSel) openSel.disabled=!e.target.value.trim(); };
   if(openSel) openSel.onclick=()=>{ if(popOverlay) popOverlay.classList.add('show'); icon(); };
 
-  // post now - mark first posted as test for 1 downvote hide
   function postNow(t){
     if(loader) loader.style.display='block';
     setTimeout(()=>{
@@ -352,10 +324,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
       let obj={id,text:txt,time:'now',up:1,down:0, tag:selectedTag};
       myLoops.unshift({id,text:txt,time:'now',target:t==='campus'?'Campus':'General', tag:selectedTag});
       if(t==='campus'){ campus.unshift(obj); setActiveType('campus'); } else { general.unshift(obj); setActiveType('general'); }
-      // mark this as first test post if none exists yet
-      if(!firstTestPostId){
-        firstTestPostId=id;
-      }
+      if(!firstTestPostId){ firstTestPostId=id; }
       te.value=''; if(charEl) charEl.textContent='0'; if(openSel) openSel.disabled=true;
       selectedTag=null; document.querySelectorAll('.tag-opt').forEach(b=>b.classList.remove('selected'));
       if(loader) loader.style.display='none'; if(popOverlay) popOverlay.classList.remove('show'); closeNew(); save(); renderMy(); renderFeed(); renderRot();
