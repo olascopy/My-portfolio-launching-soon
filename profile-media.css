@@ -1,0 +1,9 @@
+@media (max-width: 768px){
+    .pageProfile{
+        width: 100%;
+    }
+    .edit-section-profile{
+        width: 100%;
+        left: 0;
+    }
+}

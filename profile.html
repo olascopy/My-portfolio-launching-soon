@@ -1,0 +1,152 @@
+
+<!-- PROFILE PAGE - PASTE INSIDE YOUR index.html -->
+<div id="viewProfile" class="view">
+<style>
+#viewProfile{padding:0 14px 90px 14px; max-width:520px; margin:0 auto; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; color:#fff; background:#000; min-height:100vh;}
+.p-top{height:45px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; background:#000; z-index:5; border-bottom:1px solid #111;}
+.p-avatar-wrap{position:relative; margin:18px auto 10px; width:88px; height:88px;}
+.p-avatar{width:88px; height:88px; border-radius:50%; object-fit:cover; background:#111; border:2px solid #222;}
+.p-edit-avatar{position:absolute; bottom:0; right:0; width:28px; height:28px; border-radius:50%; background:#fff; color:#000; display:grid; place-items:center; font-weight:900; font-size:14px; border:2px solid #000;}
+.p-name{text-align:center; font-size:20px; font-weight:800; letter-spacing:-0.3px;}
+.p-handle{text-align:center; font-size:13px; color:#888; margin-top:2px;}
+.p-campus-pill{display:flex; gap:6px; justify-content:center; margin:12px auto; flex-wrap:wrap;}
+.p-pill{font-size:11px; font-weight:700; background:#111; border:1px solid #222; padding:6px 10px; border-radius:999px;}
+.p-stats{display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin:16px 0;}
+.p-stat{background:#0c0c0c; border:1px solid #1a1a1a; border-radius:14px; padding:12px 8px; text-align:center;}
+.p-stat b{display:block; font-size:18px; font-weight:800;}
+.p-stat span{font-size:10px; color:#777; font-weight:700; letter-spacing:0.5px; text-transform:uppercase;}
+.p-card{background:#0c0c0c; border:1px solid #1a1a1a; border-radius:16px; padding:14px; margin:12px 0;}
+.p-card h4{font-size:12px; letter-spacing:0.6px; color:#aaa; margin:0 0 10px 0; text-transform:uppercase;}
+.p-moods{display:flex; gap:8px;}
+.mood{width:38px; height:38px; border-radius:50%; background:#111; border:1px solid #222; display:grid; place-items:center; font-size:18px; cursor:pointer;}
+.mood.active{border-color:#fff; background:#fff; color:#000;}
+.p-spotify{display:flex; align-items:center; justify-content:space-between; background:#111; border-radius:12px; padding:10px 12px; margin-top:10px;}
+.p-tabs{display:flex; gap:6px; margin:18px 0 10px; background:#0c0c0c; padding:4px; border-radius:999px; border:1px solid #1a1a1a;}
+.p-tab{flex:1; padding:9px; border-radius:999px; text-align:center; font-size:12px; font-weight:800; color:#666; cursor:pointer;}
+.p-tab.active{background:#fff; color:#000;}
+.p-list-item{display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid #111; font-size:14px; font-weight:600;}
+.p-list-item small{color:#666; font-size:12px;}
+.p-btn{width:100%; padding:14px; border-radius:999px; border:0; font-weight:800; font-size:14px; margin-top:10px; cursor:pointer;}
+.p-btn-white{background:#fff; color:#000;}
+.p-btn-dark{background:#111; color:#fff; border:1px solid #222;}
+#fileAvatar{display:none;}
+</style>
+
+<div class="p-top"><b>Profile</b><span style="font-size:20px;">edit</span></div>
+
+<div class="p-avatar-wrap">
+  <img id="pAvatar" class="p-avatar" src="https://i.pravatar.cc/200">
+  <div class="p-edit-avatar" onclick="document.getElementById('fileAvatar').click()">+</div>
+  <input id="fileAvatar" type="file" accept="image/*">
+</div>
+
+<div class="p-name" id="pDisplayName">Tunde Chem</div>
+<div class="p-handle">@<span id="pUsername">tunde_chem</span> • ID <span id="pID">163962</span></div>
+
+<div class="p-campus-pill">
+  <div class="p-pill" id="pCampus">UNILAG</div>
+  <div class="p-pill" id="pDept">Chemical Eng • 300L</div>
+</div>
+
+<div class="p-stats">
+  <div class="p-stat"><b id="sMoments">24</b><span>Moments</span></div>
+  <div class="p-stat"><b id="sLoops">12</b><span>Loops</span></div>
+  <div class="p-stat"><b id="sChats">89</b><span>Chats</span></div>
+</div>
+
+<div class="p-card">
+  <h4>Mood Pill</h4>
+  <div class="p-moods" id="moodList">
+    <div class="mood active" data-mood="happy">😊</div>
+    <div class="mood" data-mood="chill">😎</div>
+    <div class="mood" data-mood="tired">😩</div>
+    <div class="mood" data-mood="fire">🔥</div>
+    <div class="mood" data-mood="love">❤️</div>
+  </div>
+  <div class="p-spotify">
+    <div><div style="font-size:12px; font-weight:800;">Spotify</div><div id="spotifyText" style="font-size:11px; color:#888;">Not connected</div></div>
+    <button id="btnSpotify" class="p-pill" style="border:0; background:#1DB954; color:#000; font-weight:800;">Connect</button>
+  </div>
+</div>
+
+<div class="p-tabs">
+  <div class="p-tab active" data-tab="moments">Moments</div>
+  <div class="p-tab" data-tab="loops">Loops</div>
+  <div class="p-tab" data-tab="about">About</div>
+</div>
+
+<div id="tabMoments" class="p-card">No archive yet — your 24h moments go show here after expiry (only you).</div>
+<div id="tabLoops" class="p-card" style="display:none;">Link your My Loops here — <span id="goLoops" style="text-decoration:underline;">Open My Loops</span></div>
+<div id="tabAbout" class="p-card" style="display:none;">
+  <div class="p-list-item"><span>Bio</span><small>Chem guy, UNILAG</small></div>
+  <div class="p-list-item"><span>Department</span><small>Chemical Engineering</small></div>
+  <div class="p-list-item"><span>Level</span><small>300L</small></div>
+  <div class="p-list-item"><span>Joined</span><small>Nov 2025</small></div>
+</div>
+
+<button class="p-btn p-btn-white" id="btnShareProfile">Share Profile</button>
+<button class="p-btn p-btn-dark" id="btnEditProfile">Edit Profile</button>
+
+<script>
+// PROFILE JS - MVP NO BACKEND YET
+const $ = id => document.getElementById(id);
+let mood = localStorage.getItem('campus_mood') || 'happy';
+
+// Avatar preview
+$('fileAvatar').addEventListener('change', e=>{
+  const file = e.target.files[0]; if(!file) return;
+  const url = URL.createObjectURL(file);
+  $('pAvatar').src = url;
+  localStorage.setItem('campus_avatar', url);
+});
+
+// Mood select
+document.querySelectorAll('.mood').forEach(el=>{
+  el.addEventListener('click', ()=>{
+    document.querySelectorAll('.mood').forEach(m=>m.classList.remove('active'));
+    el.classList.add('active');
+    mood = el.dataset.mood;
+    localStorage.setItem('campus_mood', mood);
+    // Later: connect.js -> POST /api/profile/mood {mood}
+  });
+});
+
+// Tabs
+document.querySelectorAll('.p-tab').forEach(t=>{
+  t.addEventListener('click', ()=>{
+    document.querySelectorAll('.p-tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    $('tabMoments').style.display = t.dataset.tab==='moments'?'block':'none';
+    $('tabLoops').style.display = t.dataset.tab==='loops'?'block':'none';
+    $('tabAbout').style.display = t.dataset.tab==='about'?'block':'none';
+  });
+});
+
+// Spotify mock
+$('btnSpotify').addEventListener('click', ()=>{
+  const connected = $('btnSpotify').innerText==='Connect';
+  if(connected){
+    $('spotifyText').innerText = 'Listening to Asake - Lonely';
+    $('btnSpotify').innerText = 'Disconnect';
+  }else{
+    $('spotifyText').innerText = 'Not connected';
+    $('btnSpotify').innerText = 'Connect';
+  }
+  // Later: connect.js -> window.open('/api/auth/spotify')
+});
+
+// Share
+$('btnShareProfile').addEventListener('click', async()=>{
+  const link = `https://yourapp.pages.dev/u/@${$('pUsername').innerText}`;
+  if(navigator.share){ await navigator.share({title:'My Campus Profile', url:link}); }
+  else { await navigator.clipboard.writeText(link); alert('Link copied: '+link); }
+});
+
+// Go to loops view (if you dey use one index.html)
+$('goLoops')?.addEventListener('click', ()=>{ location.hash='#loops'; document.getElementById('viewLoops')?.scrollIntoView(); });
+
+// Load saved
+const savedAvatar = localStorage.getItem('campus_avatar');
+if(savedAvatar) $('pAvatar').src = savedAvatar;
+</script>
+</div>

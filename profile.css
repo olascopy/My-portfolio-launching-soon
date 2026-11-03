@@ -1,0 +1,59 @@
+.edit-section-profile{
+    background-color: var(--bg-header);
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 65px;
+    height: 65px;
+    display: flex;
+    justify-content: space-between;
+}
+.cancel-button{
+    margin-top: 15px;
+    margin-left: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    border: none;
+   cursor: pointer;
+}
+.cancel-button:hover{
+    background-color: rgb(128, 128, 128,0.5);
+}
+.edit-section-cancel{
+    margin-top: 5px;
+    margin-left: 5px;
+    width: 30px;
+    height: 30px;
+    color: 20px;
+    stroke-width: 2;
+}
+.edit-section-text{
+    margin-top: 20px;
+    margin-right: 20px;
+    font-size: 25px;
+    color: var(--text-main);
+    font-weight: 500;
+}
+.edit-section-save{
+    width: 100px;
+    height: 40px;
+    border-radius: 40px;
+   
+    background-color: rgb(128, 128, 128,0.3);
+    margin-top: 20px;
+    margin-right: 5px;
+    cursor: pointer;
+   
+}
+
+.edit-section-save:hover{
+background-color: var(--text-main);
+}
+
+.save-edit-text{
+ color: #000;
+    font-size: 25px;
+text-align: center;
+font-weight: 500;
+}

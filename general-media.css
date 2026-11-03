@@ -1,16 +1,11 @@
-
-/* ===== GENERAL - WORKS FOR ALL PAGES - MOBILE PORTRAIT + LANDSCAPE SAME UI ===== */
-
-/* 1. ALL PHONES - whether portrait (390px) or landscape (844px-926px) - use mobile UI */
-@media screen and (max-width: 926px) {
+/* ===== GENERAL MEDIA - LOCK PORTRAIT ===== */
+@media screen and (max-width: 932px) {
   html, body {
     width: 100% !important;
     max-width: 100vw !important;
     height: 100% !important;
     overflow-x: hidden !important;
     overflow-y: auto !important;
-    touch-action: pan-y !important;
-    -webkit-text-size-adjust: 100% !important;
     margin: 0 !important;
     padding: 45px 0px 70px 0px !important;
     box-sizing: border-box !important;
@@ -19,20 +14,56 @@
     * { box-sizing: border-box !important; }
 }
 
-/* 2. PHONE LANDSCAPE LOCK - height small = phone, even if width big like WhatsApp */
-@media screen and (orientation: landscape) and (max-height: 600px) {
+/* LOCK LANDSCAPE - show rotate message */
+@media screen and (orientation: landscape) and (max-width: 932px) {
+  body::before {
+    content: "Please rotate to portrait";
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    background: #000;
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+  }
+  body > * {
+    display: none !important;
+  }
+}/* ===== GENERAL MEDIA - LOCK PORTRAIT ===== */
+@media screen and (max-width: 932px) {
   html, body {
     width: 100% !important;
     max-width: 100vw !important;
     height: 100% !important;
     overflow-x: hidden !important;
     overflow-y: auto !important;
+    margin: 0 !important;
     padding: 45px 0px 70px 0px !important;
+    box-sizing: border-box !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
   }
+    * { box-sizing: border-box !important; }
 }
 
-/* 3. DESKTOP ONLY - desktop CSS go only show when width BIG and height BIG - so landscape phone no go enter desktop */
-@media screen and (min-width: 927px) and (min-height: 601px) {
-  /* Leave empty - your desktop CSS inside (min-width:900px) will still work,
-     but this prevents phone landscape from triggering desktop */
+/* LOCK LANDSCAPE - show rotate message */
+@media screen and (orientation: landscape) and (max-width: 932px) {
+  body::before {
+    content: "Please rotate to portrait";
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    background: #000;
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+  }
+  body > * {
+    display: none !important;
+  }
 }
