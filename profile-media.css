@@ -1,9 +1,149 @@
-@media (max-width: 768px){
-    .pageProfile{
-        width: 100%;
-    }
-    .edit-section-profile{
-        width: 100%;
-        left: 0;
-    }
+/* ===== ONLY RESPONSIVE MOBILE - 768px ===== */
+@media (max-width: 768px) {
+
+  .edit-section-profile{
+    left: 0;
+    right: 0;
+    height: 60px;
+    padding: 0 10px;
+    align-items: center;
+  }
+  .cancel-button{
+    margin-top: 0;
+    margin-left: 0;
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+  }
+  .edit-section-cancel{
+    margin-top: 0;
+    margin-left: 0;
+    width: 22px;
+    height: 22px;
+  }
+  .edit-section-text{
+    margin-top: 0;
+    margin-right: 0;
+    font-size: 17px;
+    font-weight: 600;
+    text-align: center;
+    flex: 1;
+  }
+  .edit-section-save{
+    margin-top: 0;
+    margin-right: 0;
+    width: auto;
+    min-width: 68px;
+    height: 32px;
+    padding: 0 14px;
+    flex-shrink: 0;
+  }
+  .save-edit-text{
+    margin-top: 0;
+    transform: none;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 32px;
+  }
+
+  /* STILL FIXED LIKE YOURS, JUST MOBILE SIZE */
+  .extrabackground-profile{
+    top: 74px;
+    left: 12px;
+    right: 12px;
+    height: calc(100vh - 90px);
+    border-radius: 18px;
+  }
+
+  /* CENTER WITH CALC - STILL FIXED LAYOUT */
+  .round-profile{
+    margin-left: calc(50% - 60px);
+    margin-top: 55px;
+    width: 120px;
+    height: 120px;
+  }
+  .thought{
+    width: 150px;
+    left: -22px;
+  }
+  .mood-share-text{
+    font-size: 14px;
+  }
+  .edit-profile-btn{
+    right: 0;
+    gap: 6px;
+    align-items: center;
+    justify-content: center;
+  }
+  .edit-camera-icon{
+    margin-top: 0;
+    margin-left: 0;
+    width: 18px;
+    height: 18px;
+  }
+  .edit-text{
+    margin-top: 0;
+    font-size: 14px;
+  }
+
+  .username-border{
+    justify-content: center;
+    width: 100%;
+  }
+  .username-profile{
+    margin-right: 80px;
+    font-size: 19px;
+    text-align: center;
+  }
+  .id-profile{
+    margin-right: 120px;
+    text-align: center;
+  }
+  .edit-username{
+    margin-top: 20px;
+    transform: translateX(-80px);
+    width: 15px;
+    height: 15px;
+  }
+  .personal-information-text{
+    margin-left: 16px;
+    margin-top: 28px;
+    font-size: 18px;
+  }
+}
+
+/* ===== SMALL PHONE ONLY ===== */
+@media (max-width: 480px) {
+  .edit-section-profile{
+    height: 58px;
+  }
+  .edit-section-text{
+    font-size: 16px;
+  }
+  .edit-section-save{
+    min-width: 60px;
+    padding: 0 10px;
+  }
+  .extrabackground-profile{
+    left: 10px;
+    right: 10px;
+    top: 70px;
+    height: calc(100vh - 84px);
+  }
+  .round-profile{
+    margin-left: calc(50% - 52px);
+    width: 105px;
+    height: 105px;
+  }
+  .thought{
+    width: 135px;
+    left: -12px;
+  }
+  .username-profile{
+    margin-left: calc(50% - 82px);
+    font-size: 18px;
+  }
+  .id-profile{
+    margin-left: calc(50% - 42px);
+  }
 }

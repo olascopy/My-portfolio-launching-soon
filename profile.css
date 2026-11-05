@@ -18,7 +18,7 @@
    cursor: pointer;
 }
 .cancel-button:hover{
-    background-color: rgb(128, 128, 128,0.5);
+    background-color: rgb(128, 128, 128,0.1);
 }
 .edit-section-cancel{
     margin-top: 5px;
@@ -31,13 +31,13 @@
 .edit-section-text{
     margin-top: 20px;
     margin-right: 20px;
-    font-size: 25px;
+    font-size: 20px;
     color: var(--text-main);
     font-weight: 500;
 }
 .edit-section-save{
-    width: 100px;
-    height: 40px;
+    width: 120px;
+    height: 30px;
     border-radius: 40px;
    
     background-color: rgb(128, 128, 128,0.3);
@@ -52,8 +52,124 @@ background-color: var(--text-main);
 }
 
 .save-edit-text{
+    margin-top: 10px;
  color: #000;
-    font-size: 25px;
+    font-size: 15px;
 text-align: center;
 font-weight: 500;
+transform: translateY(5px);
+}
+.extrabackground-profile{
+    background-color: rgb(128, 128, 128,0.3);
+    position: fixed;
+    top: 100px;
+    left: 100px;
+    right: 65px;
+    height: 520px;
+    border-radius: 20px;
+    overflow-y: auto;
+    
+}
+
+.round-profile{
+
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+margin-left: 500px;
+cursor: pointer;
+    margin-top: 60px;
+    border: 1px solid #000;
+    position: relative;
+}
+.thought{
+    position: absolute;
+    background-color: #fff;
+    width: 160px;
+    height: 35px;
+    border-radius: 30px;
+    top: -30px;
+    left: -18px;
+}
+.first-circle{
+    background-color: #fff;
+    width: 30px;
+    height: 16px;
+    border-bottom-left-radius: 20px;
+      border-bottom-right-radius: 20px;
+      margin-left: 20px;
+}
+.second-circle{
+    width: 10px;
+    height: 10px;
+    border-radius: 20px;
+    background-color: #fff;
+    margin-left: 40px;
+    margin-top: 5px;
+}
+.mood-share-text{
+    font-size: 15px;
+    font-weight: 600;
+    color: rgb(128, 128, 128,0.8);
+    text-align: center;
+    margin-top: 10px;
+}
+.edit-profile-btn{
+    width: 80px;
+    height: 35px;
+    background-color: #fff;
+position: absolute;
+bottom: -10px;
+right: 20px;
+border-radius: 20px;
+display: flex;
+flex-direction: row;
+gap: 10px;
+}
+.edit-camera-icon{
+width: 20px;
+height: 20px;
+color: rgb(7, 7, 204,0.8);
+stroke-width: 2;
+margin-top: 10px;
+margin-left: 10px;
+}
+.edit-text{
+    color: rgb(7, 7, 204,0.8);
+    font-size: 16px;
+    font-weight: 700;
+    margin-top: 10px;
+}
+.username-profile{
+    color: var(--text-main);
+    margin-top: 15px;
+    margin-left: 490px;
+    font-size: 20px;
+    font-weight: 700;
+}
+.id-profile{
+      color: rgb(128, 128, 128,0.5);
+    margin-top: 5px;
+    margin-left: 525px;
+    font-size: 13px;
+    font-weight: 300;
+}
+.edit-username{
+    width: 20px;
+    height: 20px;
+    color: rgb(128, 128, 128,0.8) ;
+     margin-top: 18px;
+     cursor: pointer;
+}
+.username-border{
+    display: flex;
+    flex-direction: row;
+  gap: 6px;
+}
+.personal-information-text{
+    color: var(--text-main);
+    font-size: 20px;
+    font-weight: 600;
+    margin-left: 150px;
+    margin-top: 30px;
 }
