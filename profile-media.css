@@ -1,12 +1,25 @@
+/* ============================================================
+   ONLY RESPONSIVE MOBILE - CLEAN - FIXED V6
+   Fix V6:
+   1. All background height INCREASE - taller, more space
+   2. Connect btn SHORT - still short, not full width
+   3. All popup CENTER - not under
+   4. PWA iPhone Dynamic Island - bring down small
+   ============================================================ */
+
 /* ===== ONLY RESPONSIVE MOBILE - 768px ===== */
 @media (max-width: 768px) {
 
+  /* ---------- TOP BAR - MOBILE + PWA ---------- */
   .edit-section-profile{
     left: 0;
     right: 0;
     height: 60px;
     padding: 0 10px;
+    /* PWA iPhone: Bring down small for Dynamic Island */
+    padding-top: calc(6px + env(safe-area-inset-top));
     align-items: center;
+    box-sizing: border-box;
   }
   .cancel-button{
     margin-top: 0;
@@ -46,16 +59,32 @@
     line-height: 32px;
   }
 
-  /* STILL FIXED LIKE YOURS, JUST MOBILE SIZE */
+  /* ---------- BACKGROUND - MOBILE - FIX: INCREASE HEIGHT ---------- */
+  /* Before: 380px too short. Now: INCREASE - taller, more space, still scroll inside */
   .extrabackground-profile{
-    top: 74px;
+    top: calc(74px + env(safe-area-inset-top));
     left: 12px;
     right: 12px;
-    height: calc(100vh - 90px);
+    height: 600px; /* FIX: INCREASED */
     border-radius: 18px;
+    padding-bottom: env(safe-area-inset-bottom);
   }
 
-  /* CENTER WITH CALC - STILL FIXED LAYOUT */
+  /* ---------- PREVIEW BUTTON - MOBILE ---------- */
+  .preview-profile-btn{
+    margin-left: auto;
+    margin-right: 12px;
+    width: 140px;
+    height: 32px;
+  }
+  .preview-profile-text{
+    font-size: 15px;
+    margin-left: 12px;
+    line-height: 32px;
+    transform: none;
+  }
+
+  /* ---------- ROUND PROFILE - MOBILE ---------- */
   .round-profile{
     margin-left: calc(50% - 60px);
     margin-top: 55px;
@@ -86,36 +115,133 @@
     font-size: 14px;
   }
 
+  /* ---------- USERNAME / ID - MOBILE ---------- */
   .username-border{
     justify-content: center;
     width: 100%;
   }
   .username-profile{
-    margin-right: 80px;
+    margin-left: 0;
+    margin-right: 0;
     font-size: 19px;
     text-align: center;
   }
   .id-profile{
-    margin-right: 120px;
+    margin-left: 0;
+    margin-right: 0;
     text-align: center;
   }
   .edit-username{
     margin-top: 20px;
-    transform: translateX(-80px);
     width: 15px;
     height: 15px;
   }
+
+  /* ---------- PERSONAL INFO / ABOUT / SPOTIFY - MOBILE ---------- */
   .personal-information-text{
     margin-left: 16px;
     margin-top: 28px;
     font-size: 18px;
   }
+  .about-me-text,
+  .mood-connect-text{
+    margin-left: 16px;
+  }
+  .input-about-border{
+    padding-right: 16px;
+    box-sizing: border-box;
+  }
+  .input-about{
+    width: 100%;
+    margin-left: 16px;
+    margin-right: 0;
+  }
+  .edit-about{
+    flex-shrink: 0;
+  }
+  .mood-connect-display{
+    width: calc(100% - 32px);
+    margin-left: 16px;
+    margin-right: 16px;
+    height: auto;
+    min-height: 180px;
+    padding: 14px;
+  }
+  .spotify-explain{
+    font-size: 13px;
+  }
+
+  /* Connect btn SHORT - still short */
+  .spotify-connect-btn{
+    width: 110px;
+    height: 34px;
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  /* ---------- PHOTO PILL - MOBILE ---------- */
+  .photo-pill{
+    right: -10px;
+    left: auto;
+    min-width: 150px;
+    margin-top: 14px;
+  }
+
+  /* ---------- MOOD POPUP - MOBILE - CENTER ---------- */
+  .popup-overlay{
+    padding: 12px;
+    align-items: center; /* CENTER, not under */
+    justify-content: center; /* CENTER */
+    padding-top: calc(12px + env(safe-area-inset-top));
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+  .popup-liquid{
+    max-width: 380px;
+    max-height: 82vh;
+    border-radius: 24px;
+    padding: 18px;
+  }
+
+  /* ---------- PREVIEW POPUP - MOBILE - CENTER ---------- */
+  .preview-background{
+    padding: 12px;
+    align-items: center; /* CENTER, not under */
+    justify-content: center; /* CENTER */
+    padding-top: calc(12px + env(safe-area-inset-top));
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+  .preview-popup-card{
+    max-width: 380px;
+    max-height: 82vh;
+    border-radius: 24px;
+    padding: 16px;
+    padding-top: 10px;
+  }
+  .preview-round-profile{
+    margin-top: 38px !important;
+  }
+  .preview-actions{
+    gap: 14px;
+  }
+  .preview-about-border{
+    width: 100%;
+  }
+  .preview-spotify{
+    width: 100%;
+  }
+
+  /* ---------- FULL IMAGE - MOBILE ---------- */
+  #fullImageViewer img{
+    max-width: 92vw;
+    max-height: 78vh;
+  }
 }
 
-/* ===== SMALL PHONE ONLY ===== */
+/* ===== SMALL PHONE ONLY - 480px ===== */
 @media (max-width: 480px) {
   .edit-section-profile{
     height: 58px;
+    padding-top: calc(4px + env(safe-area-inset-top));
   }
   .edit-section-text{
     font-size: 16px;
@@ -124,12 +250,15 @@
     min-width: 60px;
     padding: 0 10px;
   }
+
+  /* FIX: Background height INCREASE - Small phone */
   .extrabackground-profile{
     left: 10px;
     right: 10px;
-    top: 70px;
-    height: calc(100vh - 84px);
+    top: calc(70px + env(safe-area-inset-top));
+    height: 520px; /* FIX: INCREASED */
   }
+
   .round-profile{
     margin-left: calc(50% - 52px);
     width: 105px;
@@ -138,12 +267,140 @@
   .thought{
     width: 135px;
     left: -12px;
+    top: -28px;
+    height: 32px;
   }
+  .mood-share-text{
+    font-size: 13px;
+  }
+  .edit-profile-btn{
+    width: 72px;
+    height: 32px;
+    bottom: -8px;
+    right: 0;
+  }
+  .edit-text{
+    font-size: 13px;
+  }
+
   .username-profile{
-    margin-left: calc(50% - 82px);
+    margin-left: 0;
     font-size: 18px;
   }
   .id-profile{
-    margin-left: calc(50% - 42px);
+    margin-left: 0;
+  }
+
+  .personal-information-text{
+    margin-left: 14px;
+    font-size: 17px;
+  }
+  .about-me-text,
+  .mood-connect-text{
+    margin-left: 14px;
+  }
+  .input-about{
+    margin-left: 14px;
+    height: 42px;
+    font-size: 14px;
+  }
+  .mood-connect-display{
+    width: calc(100% - 28px);
+    margin-left: 14px;
+    margin-right: 14px;
+    padding: 12px;
+  }
+  .preview-profile-btn{
+    width: 130px;
+    margin-right: 10px;
+  }
+  .preview-profile-text{
+    font-size: 14px;
+  }
+
+  /* Connect btn SHORT - Small phone */
+  .spotify-connect-btn{
+    width: 100px;
+    height: 32px;
+    font-size: 12px;
+    padding: 7px 10px;
+  }
+
+  .photo-pill{
+    right: -8px;
+    min-width: 140px;
+  }
+  .photo-pill-btn{
+    font-size: 13px;
+    padding: 9px 10px;
+  }
+
+  /* Mood Popup CENTER - Small phone */
+  .popup-overlay{
+    padding: 8px;
+    align-items: center;
+    justify-content: center;
+    padding-top: calc(8px + env(safe-area-inset-top));
+    padding-bottom: calc(8px + env(safe-area-inset-bottom));
+  }
+  .popup-liquid{
+    padding: 16px;
+    border-radius: 22px;
+    max-height: 82vh;
+    max-width: 360px;
+  }
+  .popup-title{
+    font-size: 17px;
+  }
+  .duration-btn,
+  .visibility-btn,
+  .suggestion-btn{
+    font-size: 12px;
+    padding: 7px 10px;
+  }
+  .mood-save-btn{
+    height: 46px;
+    font-size: 14px;
+  }
+
+  /* Preview Popup CENTER - Small phone */
+  .preview-background{
+    padding: 8px;
+    align-items: center;
+    justify-content: center;
+    padding-top: calc(8px + env(safe-area-inset-top));
+    padding-bottom: calc(8px + env(safe-area-inset-bottom));
+  }
+  .preview-popup-card{
+    padding: 14px;
+    padding-top: 8px;
+    border-radius: 22px;
+    max-height: 82vh;
+    max-width: 360px;
+  }
+  .preview-round-profile{
+    width: 105px !important;
+    height: 105px !important;
+    margin-top: 36px !important;
+  }
+  .preview-mood-border{
+    font-size: 12px;
+    padding: 7px 12px;
+  }
+  .preview-username-inside{
+    font-size: 17px;
+  }
+  .preview-actions{
+    gap: 12px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+  }
+  .preview-action-btn{
+    width: 38px;
+    height: 38px;
+    border-radius: 19px;
+  }
+  .preview-about-text{
+    font-size: 13px;
   }
 }

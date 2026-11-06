@@ -1755,49 +1755,299 @@
 </div>
 
 
+<!-- ============================================================
+     PAGE PROFILE - FULL HTML - CLEAN
+     Features:
+     1. Profile pic FULL inside round-profile (not inside small dot)
+     2. Thought + Edit = Original position, just show, no hide inside
+     3. Preview = POPUP like before (overlay + card)
+     4. Preview icons = Small 20px rounds, faint / inactive
+     5. Save ACTIVE = white, INACTIVE = grey
+     6. All scroll = custom-scroll (CSS own, not default)
+     ============================================================ -->
 
-<div  id="pageProfile">
-<div class="edit-section-profile">
-  <div class="cancel-button">
- <i data-lucide="x" class="edit-section-cancel"></i>
+<!-- ================= MAIN WRAPPER ================= -->
+<div id="pageProfile">
+
+  <!-- ========== TOP BAR: Cancel | Edit Profile | Save ========== -->
+  <div class="edit-section-profile">
+    <!-- Cancel X - Top Left -->
+    <div class="cancel-button">
+      <i data-lucide="x" class="edit-section-cancel"></i>
+    </div>
+
+    <!-- Title - Always "Edit Profile" (Preview is popup, so title no change) -->
+    <div>
+      <p class="edit-section-text" id="topBarTitle">Edit Profile</p>
+    </div>
+
+    <!-- Save Button - Starts INACTIVE (grey). When ACTIVE, white shows (CSS) -->
+    <div>
+      <div class="edit-section-save is-inactive" id="mainSaveBtn">
+        <p class="save-edit-text">Save</p>
+      </div>
+    </div>
   </div>
- <div>
-  <p class="edit-section-text">Edit Profile</p>
- </div>
-<div>
-  <div class="edit-section-save"><p class="save-edit-text">Save</p></div>
-</div>
+
+  <!-- ============================================================
+       EDIT BACKGROUND - The normal Edit Profile screen
+       Only Edit background is full background. Preview is popup.
+       ============================================================ -->
+  <div class="extrabackground-profile custom-scroll" id="editBackground">
+
+    <!-- Preview Button: Click -> Open Preview Popup -->
+    <div class="preview-profile-btn" id="openPreviewBtn">
+      <p class="preview-profile-text">Preview Profile</p>
+    </div>
+
+    <!-- ========== ROUND PROFILE - BIG CIRCLE ========== -->
+    <!-- Main profile circle. Pic will fill this FULL -->
+    <div class="round-profile" id="roundProfileBox">
+
+      <!-- Mood Pill / Thought Border - YOUR ORIGINAL POSITION -->
+      <!-- Top: -30px, Left: -18px - No change. Click -> Opens Mood Popup -->
+      <div class="thought" id="openMoodBtn">
+        <p class="mood-share-text" id="moodPillText">share your mood</p>
+      </div>
+
+      <!-- PROFILE IMAGE - FULL INSIDE ROUND PROFILE -->
+      <!-- Directly inside .round-profile, NOT inside first-circle / second-circle -->
+      <!-- Hidden until user uploads pic. JS will set src + show it -->
+      <img id="profileImage" src="" alt="Profile" hidden>
+
+      <!-- Small White Dots - Decoration Only, Leave As Is -->
+      <!-- Do NOT put profile pic inside these -->
+      <div class="first-circle"></div>
+      <div class="second-circle"></div>
+
+      <!-- Edit Button - YOUR ORIGINAL POSITION -->
+      <!-- Bottom: -10px, Right: 20px - No change. Click -> Toggle Photo Pill -->
+      <div class="edit-profile-btn" id="editPhotoBtn">
+        <i data-lucide="camera" class="edit-camera-icon"></i>
+        <p class="edit-text">Edit</p>
+      </div>
+
+      <!-- ========== PHOTO PILL POPUP (Hidden by default) ========== -->
+      <!-- Shows under Edit button. Click Edit again to close -->
+      <div class="photo-pill" id="photoPill" hidden>
+        <button class="photo-pill-btn" id="takePhotoBtn">Take Photo</button>
+        <button class="photo-pill-btn" id="uploadPhotoBtn">Upload Photo</button>
+        <button class="photo-pill-btn danger" id="removePhotoBtn">Remove Photo</button>
+        <!-- Hidden file input for Upload / Take Photo -->
+        <input type="file" id="uploadPhotoInput" accept="image/*" hidden>
+      </div>
+
+    </div>
+
+    <!-- ========== USERNAME + ID ========== -->
+    <div class="username-border">
+      <p class="username-profile">@Faith_mike</p>
+      <i data-lucide="square-pen" class="edit-username"></i>
+    </div>
+
+    <p class="id-profile">ID:<span>234567</span></p>
+
+    <div>
+      <p class="personal-information-text">Personal information</p>
+
+      <!-- ========== ABOUT ME ========== -->
+      <p class="about-me-text">About me</p>
+      <div class="input-about-border">
+        <!-- Typing here activates Save (white) -->
+        <input type="text" placeholder="description" class="input-about" id="aboutInput">
+        <i data-lucide="square-pen" class="edit-about"></i>
+      </div>
+
+      <!-- ========== CONNECT MOOD (Spotify) ========== -->
+      <p class="mood-connect-text">Connect mood</p>
+      <div class="mood-connect-display" id="spotifyConnectBox">
+        <div class="spotify-info">
+          <!-- Music bars animation - Paused until connected -->
+          <div class="music-bars" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <!-- Explanation -->
+          <p class="spotify-explain">Connect Spotify so people you chat with can see the song you are playing.</p>
+          <!-- Now Playing: Hidden until connected -->
+          <p class="spotify-now-playing" id="spotifyNowPlaying" hidden>
+            <span id="spotifySongName">Song Name</span> • <span id="spotifyArtistName">Artist</span>
+          </p>
+        </div>
+        <!-- Connect / Disconnect Toggle -->
+        <button class="spotify-connect-btn" id="spotifyConnectBtn">Connect</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       PREVIEW POPUP - LIKE BEFORE
+       Structure:
+       .preview-background = OVERLAY (dark background, centered)
+       .preview-popup-card = CARD (liquid glass, custom scroll)
+       Hidden by default. Click "Preview Profile" -> Show. Click Back -> Hide.
+       ============================================================ -->
+  <div class="preview-background" id="previewBackground" hidden>
+
+    <!-- Preview Card - Liquid Glass Popup Card -->
+    <div class="preview-popup-card custom-scroll">
+
+      <!-- Preview Top Row: Back Chevron + Title -->
+      <div class="preview-background-top">
+        <!-- Back Chevron: Click -> Close Preview Popup -->
+        <button class="preview-back-btn" id="closePreviewBtn" aria-label="Back to editing">
+          <i data-lucide="chevron-left"></i>
+        </button>
+        <p class="preview-background-title">Preview Profile</p>
+        <!-- Spacer to keep title centered -->
+        <span class="preview-background-spacer"></span>
+      </div>
+
+      <!-- ========== PREVIEW ROUND PROFILE - BIG CIRCLE ========== -->
+      <!-- Same as Edit: Pic shows FULL inside big circle -->
+      <!-- Centered inside popup (CSS: margin-left: auto, margin-right: auto) -->
+      <div class="round-profile preview-round-profile" id="previewRoundProfileBox">
+
+        <!-- Mood Border in Preview: ONLY shows if user wrote mood -->
+        <!-- Same position as Thought: Top -30, Left -18 -->
+        <!-- If no mood, this stays hidden -->
+        <div class="preview-mood-border" id="previewMoodBorder" hidden>
+          <p id="previewMoodText"></p>
+        </div>
+
+        <!-- Preview Profile Image - FULL inside circle -->
+        <img id="previewProfileImage" src="" alt="Preview Profile" hidden>
+
+        <!-- Same small white dots decoration, leave as is -->
+        <div class="first-circle"></div>
+        <div class="second-circle"></div>
+
+      </div>
+
+      <!-- Preview Username - Well placed under profile, centered -->
+      <p class="preview-username-inside">@Faith_mike</p>
+
+      <!-- ========== PREVIEW 3 ICONS: Call / Video / Message ========== -->
+      <!-- Small 20px rounds, well placed under profile, centered -->
+      <!-- Icons SHOW but INACTIVE - faint (opacity 0.35) + not-allowed -->
+      <!-- Clicking does nothing -->
+      <div class="preview-actions">
+        <div class="preview-action-btn is-inactive" title="Inactive in preview">
+          <i data-lucide="phone"></i>
+          <span class="preview-action-label">Call</span>
+        </div>
+        <div class="preview-action-btn is-inactive" title="Inactive in preview">
+          <i data-lucide="video"></i>
+          <span class="preview-action-label">Video</span>
+        </div>
+        <div class="preview-action-btn is-inactive" title="Inactive in preview">
+          <i data-lucide="message-circle"></i>
+          <span class="preview-action-label">Message</span>
+        </div>
+      </div>
+
+      <!-- ========== PREVIEW ABOUT ========== -->
+      <!-- Well placed inside popup, full width -->
+      <!-- Shows what user typed in About Me input -->
+      <div class="preview-about-border">
+        <p class="preview-about-label">About you</p>
+        <p class="preview-about-text" id="previewAboutText">No description yet</p>
+      </div>
+
+      <!-- ========== PREVIEW SPOTIFY ========== -->
+      <!-- Shows only if Spotify connected -->
+      <div class="preview-spotify" id="previewSpotify" hidden>
+        <div class="music-bars" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <div>
+          <p class="preview-spotify-label">Listening to</p>
+          <p class="preview-spotify-song"><span id="previewSongName">Song Name</span> • <span id="previewArtistName">Artist</span></p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MOOD POPUP - Center Popup
+       Opens when you click Mood Pill (Thought)
+       Uses CSS own scroll (custom-scroll), not default app scroll
+       ============================================================ -->
+  <div class="popup-overlay" id="moodPopup" hidden>
+    <div class="popup-liquid mood-popup custom-scroll">
+
+      <!-- Close X -->
+      <button class="popup-close" id="closeMoodBtn" aria-label="Close mood">
+        <i data-lucide="x"></i>
+      </button>
+
+      <h3 class="popup-title">Share your mood</h3>
+
+      <!-- 1. Input: Share what's happening -->
+      <div class="mood-input-wrap">
+        <input type="text" id="moodInput" placeholder="Share what's happening..." maxlength="80">
+      </div>
+
+      <!-- 2. Select Option -->
+      <div class="mood-select-wrap">
+        <button class="mood-select-btn" id="moodSelectBtn">
+          <span id="moodSelectLabel">Select option</span>
+          <i data-lucide="chevron-down"></i>
+        </button>
+        <div class="mood-select-list" id="moodSelectList" hidden>
+          <button class="mood-select-item" data-value="Feeling happy">Feeling happy</button>
+          <button class="mood-select-item" data-value="Feeling chill">Feeling chill</button>
+          <button class="mood-select-item" data-value="Feeling tired">Feeling tired</button>
+          <button class="mood-select-item" data-value="Feeling busy">Feeling busy</button>
+        </div>
+      </div>
+
+      <!-- 3. Set Duration -->
+      <p class="popup-label">Set duration</p>
+      <div class="duration-list">
+        <button class="duration-btn" data-duration="1 hour">1 hour</button>
+        <button class="duration-btn" data-duration="2 hours">2 hours</button>
+        <button class="duration-btn active" data-duration="24 hours">24 hours</button>
+        <button class="duration-btn" data-duration="3 days">3 days</button>
+        <button class="duration-btn" data-duration="1 week">1 week</button>
+      </div>
+
+      <!-- 4. Who can see my mood -->
+      <p class="popup-label">Who can see my mood</p>
+      <div class="visibility-list">
+        <button class="visibility-btn active" data-visibility="Contacts">Contacts</button>
+        <button class="visibility-btn" data-visibility="Everyone">Everyone</button>
+      </div>
+
+      <!-- 5. Suggestions: 7 Pills -->
+      <p class="popup-label">Suggestions</p>
+      <div class="suggestion-list">
+        <button class="suggestion-btn">At Work 💼</button>
+        <button class="suggestion-btn">At School 🎓</button>
+        <button class="suggestion-btn">Busy 🔥</button>
+        <button class="suggestion-btn">Chilling 😌</button>
+        <button class="suggestion-btn">Gym 💪</button>
+        <button class="suggestion-btn">Traveling ✈️</button>
+        <button class="suggestion-btn">In Love ❤️</button>
+      </div>
+
+      <!-- 6. Save Mood: Inactive until user edits -->
+      <button class="mood-save-btn is-inactive" id="moodSaveBtn">Save Mood</button>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       FULL IMAGE VIEWER - Click profile pic to see full
+       ============================================================ -->
+  <div class="popup-overlay" id="fullImageViewer" hidden>
+    <button class="popup-close" id="closeFullImageBtn"><i data-lucide="x"></i></button>
+    <img id="fullImage" src="" alt="Profile full image">
+  </div>
+
 </div>
 
-<div class="extrabackground-profile">
-<div class="round-profile">
-<div class="thought">
-<p  class="mood-share-text">share your mood</p>
-</div>
-<div class="first-circle"></div>
-<div class="second-circle"></div>
-
-<div class="edit-profile-btn">
-<i data-lucide="camera" class="edit-camera-icon"></i>
-<p class="edit-text">Edit</p>
-</div>
-
-</div>
-<div class="username-border">
-<p class="username-profile">@Faith_mike</p>
-<i data-lucide="square-pen" class="edit-username"></i>
-</div>
-
-
-<p class="id-profile">ID:<span>234567</span></p>
-<div>
-<p class="personal-information-text">Personal information</p>
-</div>
-
-</div>
-
-
-</div>
 
 
 <div id="pageSettings">
@@ -1836,6 +2086,7 @@
 <script src="boost-moment.js"></script>
 <script src="switching.js"></script>
 <script src="loops.js"></script>
+<script src="profile.js"></script>
 </html>
 
 
