@@ -1,3 +1,16 @@
+/* ==================================================================
+   SETTINGS PAGE - FULL CSS - CLEAN - NO CUT
+   NOTE:
+   - Your original CSS still dey - I no cut am
+   - I add all new ones for everything we talk about
+   - Profile UI = edit-section-profile - ALREADY EXISTS - I no touch am here
+   - All popup backgrounds = iPhone popup style - slide from right
+   - Variables: --bg-app, --text-main, --side-border - keep your own variables
+   ================================================================== */
+
+/* ================= SETTINGS PAGE - MAIN LAYOUT ================= */
+
+/* Settings Left - Fixed left side - where all list dey */
 .settings-page-left{
     position: fixed;
     background-color: var(--bg-app);
@@ -6,30 +19,48 @@
     bottom: 0;
     width: 450px;
     overflow-y: auto;
+    z-index: 10;
 }
+
+/* Settings Right - Fixed right side - preview side */
 .settings-page-right{
     position: fixed;
     top: 0;
     bottom: 0;
     right: 0;
     width: 875px;
-  background-color:var(--side-border);
+    background-color: var(--side-border);
+    z-index: 5;
 }
-.setting-page-icon{
-color: grey;
-width: 80px;
-height: 80px;
 
-margin-top: 260px;
-margin-left: 400px;
+/* Settings Right - Cog icon */
+.setting-page-icon{
+    color: grey;
+    width: 80px;
+    height: 80px;
+    margin-top: 260px;
+    margin-left: 400px;
 }
+
+/* Settings Right - Settings text */
 .setting-page-text{
-color: var(--text-main);
-font-size: 30px;
-font-weight: 400;
-margin-left: 390px;
-margin-top: 10px;
+    color: var(--text-main);
+    font-size: 30px;
+    font-weight: 400;
+    margin-left: 390px;
+    margin-top: 10px;
 }
+
+/* ================= SETTINGS LEFT - TOP FIXED AREA ================= */
+
+/* Top row - Settings text + QR + Mobile search icon */
+.settings-page-extra-flow{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+/* Settings text - Top left */
 .setting-page-left-text{
     color: var(--text-main);
     margin-top: 25px;
@@ -37,54 +68,158 @@ margin-top: 10px;
     font-size: 20px;
     font-weight: 500;
 }
-.search-setting-input{
-    color: var(--text-main);
-    width: 380px;
+
+/* QR Code Border - Top right - Small - Border only */
+.setting-qrcode-image{
+    width: 40px;
     height: 40px;
-    background-color: rgb(128, 128, 128,0.2);
+    border-radius: 10px;
+    background-color: rgb(128, 128, 128, 0.3);
+    margin-right: 30px;
+    margin-top: 15px;
+    cursor: pointer;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* QR image small - JS go put QR image inside */
+.qr-image-small{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* Search Icon - Mobile Top - Hidden for desktop */
+.search-icon-top-mobile{
+    display: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background-color: rgb(128, 128, 128, 0.2);
+    color: var(--text-main);
+    cursor: pointer;
+    margin-right: 15px;
+    margin-top: 15px;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-icon-top-mobile-icon{
+    width: 20px;
+    height: 20px;
+}
+
+/* ================= SETTINGS LEFT - SEARCH INPUT ================= */
+
+/* Search wrapper - to put icon inside beside "Search Settings" text */
+.search-setting-wrap{
+    position: relative;
+    width: 380px;
     margin-top: 20px;
     margin-left: 20px;
+}
+
+/* Search icon inside input - left side */
+.search-setting-icon{
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    color: rgb(128, 128, 128, 0.6);
+    pointer-events: none;
+}
+
+/* Search input - Original - Fix: width 100% inside wrapper + padding-left for icon */
+.search-setting-input{
+    color: var(--text-main);
+    width: 100%;
+    height: 40px;
+    background-color: rgb(128, 128, 128, 0.2);
     border-radius: 40px;
     border: none;
+    outline: none;
+    padding-left: 38px;
+    padding-right: 14px;
+    font-size: 15px;
 }
+
 .search-setting-input:hover{
-    background-color: rgb(128, 128, 128,0.3);
+    background-color: rgb(128, 128, 128, 0.3);
 }
+
 .search-setting-input::placeholder{
     font-size: 15px;
     font-weight: 500;
-    color:  rgb(128, 128, 128,0.6);
+    color: rgb(128, 128, 128, 0.6);
 }
+
+/* ================= SETTINGS LEFT - PROFILE BORDER ================= */
+
+/* Profile border - Outer */
 .profile-setting-border{
     margin-top: 30px;
     margin-left: 25px;
     width: 380px;
     height: 100px;
     background-color: var(--bg-app);
-    border-bottom:1px solid  rgb(128, 128, 128,0.6);
+    border-bottom: 1px solid rgb(128, 128, 128, 0.6);
 }
+
+/* Profile extra border - Inner - Clickable */
 .profile-extra-setting-border{
     width: 380px;
-height: 80px;
+    height: 80px;
     background-color: var(--bg-app);
     border-radius: 10px;
     cursor: pointer;
 }
+
 .profile-extra-setting-border:hover{
-        background-color: rgb(128, 128, 128,0.3);
+    background-color: rgb(128, 128, 128, 0.3);
 }
+
+/* Profile round + username row */
+.round-profile-setting-main{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+/* Round border - Outer wrapper - to make outer round clear */
+.round-profile-setting-main-border{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Round profile - Inner - where profile pic dey */
 .round-profile-setting{
-    background-color:rgb(128, 128, 128,0.3);
+    background-color: rgb(128, 128, 128, 0.3);
     width: 65px;
     height: 65px;
     margin-left: 10px;
     border-radius: 50%;
     transform: translateY(6px);
+    overflow: hidden;
+    flex-shrink: 0;
 }
-.round-profile-setting-main{
-    display: flex;
-    flex-direction: row;
+
+/* Profile pic image inside round */
+.round-profile-setting-img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
 }
+
+/* Username beside profile pic */
 .round-profile-setting-text{
     color: var(--text-main);
     font-size: 15px;
@@ -92,16 +227,738 @@ height: 80px;
     margin-top: 25px;
     margin-left: 5px;
 }
-.settings-page-extra-flow{
-    display: flex;
-    justify-content: space-between;
+
+/* ================= SETTINGS LEFT - LIST GROUPS ================= */
+
+/* First Group - Account, Chats, Notifications, Appearance, Privacy */
+.settings-left-group-first{
+    margin-top: 10px;
+    margin-left: 25px;
+    width: 380px;
+    background-color: var(--bg-app);
+    border-radius: 10px;
+    overflow: hidden;
 }
-.setting-qrcode-image{
+
+/* Second Group - Help, Logout, Invite */
+.settings-left-group-second{
+    margin-top: 20px;
+    margin-left: 25px;
+    margin-bottom: 30px;
+    width: 380px;
+    background-color: var(--bg-app);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Each item in left list - 1px solid bottom */
+.settings-left-item{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 16px 12px;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid rgb(128, 128, 128, 0.6);
+    color: var(--text-main);
+    font-size: 16px;
+    font-weight: 400;
+    cursor: pointer;
+    text-align: left;
+}
+
+.settings-left-item:last-child{
+    border-bottom: none;
+}
+
+.settings-left-item:hover{
+    background-color: rgb(128, 128, 128, 0.2);
+}
+
+.settings-left-item-chevron{
+    width: 18px;
+    height: 18px;
+    color: grey;
+}
+
+/* ==================================================================
+   ALL POPUP BACKGROUNDS - iPhone popup style
+   Slide from right, take over Settings background, full height
+   ================================================================== */
+
+.popup-bg{
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 60px;
+    width: 450px;
+    background-color: var(--bg-app);
+    overflow-y: auto;
+    z-index: 20;
+    padding: 20px;
+    box-sizing: border-box;
+    /* iPhone popup animation - slide from right */
+    animation: popupSlideIn 0.3s ease;
+}
+
+@keyframes popupSlideIn{
+    from{ transform: translateX(100%); opacity: 0; }
+    to{ transform: translateX(0); opacity: 1; }
+}
+
+/* Hide popup when hidden attribute dey */
+.popup-bg[hidden]{
+    display: none;
+}
+
+/* Chevron back - Top left */
+.popup-chevron{
+    background: none;
+    border: none;
+    color: var(--text-main);
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.popup-chevron svg{
+    width: 24px;
+    height: 24px;
+}
+
+/* Popup title - Top */
+.popup-title{
+    color: var(--text-main);
+    font-size: 20px;
+    font-weight: 500;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+/* Popup explanation text */
+.popup-explain{
+    color: grey;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+/* Popup small note - e.g. Campus twice / 30 days */
+.popup-small-note{
+    color: grey;
+    font-size: 13px;
+    line-height: 1.5;
+    margin-top: 15px;
+}
+
+/* Popup input - Email, Password, Phone, Campus, etc */
+.popup-input{
+    width: 100%;
+    height: 44px;
+    background-color: rgb(128, 128, 128, 0.2);
+    border: none;
+    outline: none;
+    border-radius: 12px;
+    padding: 0 14px;
+    color: var(--text-main);
+    font-size: 15px;
+    margin-bottom: 14px;
+    box-sizing: border-box;
+}
+
+.popup-input::placeholder{
+    color: rgb(128, 128, 128, 0.6);
+}
+
+/* Confirm / Continue / Send OTP buttons */
+.confirm-btn,
+.continue-btn,
+.send-otp-btn,
+.change-email-btn{
+    width: 100%;
+    height: 44px;
+    border: none;
+    border-radius: 12px;
+    background-color: rgb(0, 122, 255);
+    color: white;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 12px;
+}
+
+/* Switch Account button */
+.switch-account-btn{
+    width: 100%;
+    height: 44px;
+    border: 1px solid rgb(128, 128, 128, 0.6);
+    border-radius: 12px;
+    background-color: transparent;
+    color: var(--text-main);
+    font-size: 15px;
+    cursor: pointer;
+    margin-bottom: 12px;
+}
+
+/* Close X - for Profile UI - your existing edit-section-profile go use this style if needed */
+.popup-close-x{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background-color: rgb(128, 128, 128, 0.2);
+    color: var(--text-main);
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* ================= FULL QR BACKGROUND ================= */
+
+.full-qr-bg{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Scan button - Top right in Full QR */
+.qr-scan-btn{
+    align-self: flex-end;
+    background-color: rgb(128, 128, 128, 0.2);
+    color: var(--text-main);
+    border: none;
+    border-radius: 20px;
+    padding: 8px 18px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: -35px;
+}
+
+/* Big border - Inside na QR big */
+.qr-big-border{
+    position: relative;
+    width: 320px;
+    height: 320px;
+    background-color: white;
+    border-radius: 20px;
+    margin-top: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Round border middle top - Inside na profile pic */
+.qr-profile-round{
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 50px;
+    background-color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.qr-profile-round-inner{
     width: 40px;
     height: 40px;
-    border-radius: 10px;
-    background-color:rgb(128, 128, 128,0.3) ;
-    margin-right: 30px;
-    margin-top: 15px;
+    background-color: rgb(128, 128, 128, 0.3);
+    border-radius: 50%;
+}
+
+/* QR image big */
+.qr-image-big{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Share button */
+.qr-share-btn{
+    width: 320px;
+    height: 44px;
+    margin-top: 25px;
+    border: none;
+    border-radius: 12px;
+    background-color: rgb(0, 122, 255);
+    color: white;
+    font-size: 15px;
     cursor: pointer;
+}
+
+/* Share sheet - Copy link + apps like TikTok share */
+.qr-share-sheet{
+    width: 320px;
+    margin-top: 15px;
+    background-color: rgb(128, 128, 128, 0.2);
+    border-radius: 12px;
+    padding: 14px;
+    box-sizing: border-box;
+}
+
+.qr-share-link{
+    color: var(--text-main);
+    font-size: 13px;
+    word-break: break-all;
+    margin-bottom: 10px;
+}
+
+.qr-copy-link-btn{
+    width: 100%;
+    height: 38px;
+    border: none;
+    border-radius: 10px;
+    background-color: var(--bg-app);
+    color: var(--text-main);
+    cursor: pointer;
+}
+
+/* ================= SCANNER BACKGROUND ================= */
+
+.scanner-area{
+    width: 100%;
+    height: 320px;
+    background-color: black;
+    border-radius: 20px;
+    margin-top: 20px;
+}
+
+.scanner-gallery-btn{
+    width: 100%;
+    height: 44px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 12px;
+    background-color: rgb(128, 128, 128, 0.2);
+    color: var(--text-main);
+    font-size: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* ================= ACCOUNT BACKGROUND ================= */
+
+.account-section-text{
+    color: grey;
+    font-size: 14px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.account-border{
+    background-color: var(--bg-app);
+    border: 1px solid rgb(128, 128, 128, 0.3);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.account-item{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 16px 12px;
+    background: none;
+    border: none;
+    border-bottom: 1px solid rgb(128, 128, 128, 0.6);
+    color: var(--text-main);
+    font-size: 16px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.account-item:last-child{
+    border-bottom: none;
+}
+
+.account-item:hover{
+    background-color: rgb(128, 128, 128, 0.2);
+}
+
+/* ================= EMAIL / PASSWORD / PHONE / CAMPUS / DELETE ================= */
+
+/* Change Email Popup + Confirm Password Popup + Delete/Clear Popups */
+.change-email-popup,
+.confirm-password-popup,
+.confirm-popup{
+    background-color: rgb(128, 128, 128, 0.15);
+    border-radius: 12px;
+    padding: 14px;
+    margin-top: 12px;
+}
+
+.change-email-new-bg,
+.reset-password-area{
+    margin-top: 12px;
+}
+
+/* Delete Account - Big icon top */
+.delete-big-icon{
+    width: 80px;
+    height: 80px;
+    color: red;
+    display: block;
+    margin: 30px auto 10px auto;
+}
+
+/* Delete button - Red */
+.delete-btn{
+    width: 100%;
+    height: 44px;
+    border: none;
+    border-radius: 12px;
+    background-color: red;
+    color: white;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+/* Campus Picker - Like iPhone date picker - scroll / pick */
+.campus-picker{
+    height: 180px;
+    overflow-y: auto;
+    background-color: rgb(128, 128, 128, 0.15);
+    border-radius: 12px;
+    margin-bottom: 14px;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.campus-picker-list{
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.campus-item{
+    width: 100%;
+    padding: 12px;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid rgb(128, 128, 128, 0.3);
+    color: var(--text-main);
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.campus-item:hover,
+.campus-item.selected{
+    background-color: rgb(128, 128, 128, 0.3);
+    border-radius: 8px;
+}
+
+/* ================= PRIVACY ================= */
+
+.privacy-border{
+    border: 1px solid rgb(128, 128, 128, 0.3);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.privacy-item{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 16px 12px;
+    background: none;
+    border: none;
+    border-bottom: 1px solid rgb(128, 128, 128, 0.6);
+    color: var(--text-main);
+    font-size: 16px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.privacy-item:last-child{
+    border-bottom: none;
+}
+
+.privacy-item:hover{
+    background-color: rgb(128, 128, 128, 0.2);
+}
+
+/* Audience list - Moments / About / Profile Pic / Groups */
+.audience-list{
+    border: 1px solid rgb(128, 128, 128, 0.3);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.audience-item{
+    display: block;
+    width: 100%;
+    padding: 16px 12px;
+    background: none;
+    border: none;
+    border-bottom: 1px solid rgb(128, 128, 128, 0.6);
+    color: var(--text-main);
+    font-size: 16px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.audience-item:last-child{
+    border-bottom: none;
+}
+
+.audience-item:hover,
+.audience-item.selected{
+    background-color: rgb(128, 128, 128, 0.2);
+}
+
+/* ================= CHATS ================= */
+
+.chats-border{
+    border: 1px solid rgb(128, 128, 128, 0.3);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.chats-item{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 16px 12px;
+    background: none;
+    border: none;
+    border-bottom: 1px solid rgb(128, 128, 128, 0.6);
+    color: var(--text-main);
+    font-size: 16px;
+    cursor: pointer;
+    text-align: left;
+    box-sizing: border-box;
+}
+
+.chats-item:last-child{
+    border-bottom: none;
+}
+
+.chats-item:hover{
+    background-color: rgb(128, 128, 128, 0.2);
+}
+
+/* ================= APPEARANCE ================= */
+
+/* ... icon - Top right */
+.appearance-more-btn{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: var(--text-main);
+    font-size: 22px;
+    cursor: pointer;
+    letter-spacing: 2px;
+}
+
+/* Reset Theme Pill - Under ... icon */
+.reset-theme-pill{
+    position: absolute;
+    top: 50px;
+    right: 20px;
+    background-color: var(--bg-app);
+    border: 1px solid rgb(128, 128, 128, 0.4);
+    border-radius: 20px;
+    padding: 8px 14px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 30;
+}
+
+.reset-theme-pill button{
+    background: none;
+    border: none;
+    color: var(--text-main);
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.appearance-border{
+    border: 1px solid rgb(128, 128, 128, 0.3);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.appearance-item{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 16px 12px;
+    background: none;
+    border: none;
+    border-bottom: 1px solid rgb(128, 128, 128, 0.6);
+    color: var(--text-main);
+    font-size: 16px;
+    cursor: pointer;
+    text-align: left;
+    gap: 8px;
+}
+
+.appearance-item:last-child{
+    border-bottom: none;
+}
+
+.appearance-item:hover{
+    background-color: rgb(128, 128, 128, 0.2);
+}
+
+/* Explanation under each Appearance border */
+.appearance-item-explain{
+    display: block;
+    color: grey;
+    font-size: 12px;
+    font-weight: 400;
+}
+
+/* Color circles - 30 colors - Chat color / Bubble colors */
+.color-circle-list{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 10px;
+}
+
+.color-circle{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.color-circle.selected{
+    border-color: var(--text-main);
+    transform: scale(1.1);
+}
+
+/* App Color - White or Black */
+.app-color-list{
+    border: 1px solid rgb(128, 128, 128, 0.3);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.app-color-item{
+    display: block;
+    width: 100%;
+    padding: 16px 12px;
+    background: none;
+    border: none;
+    border-bottom: 1px solid rgb(128, 128, 128, 0.6);
+    color: var(--text-main);
+    font-size: 16px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.app-color-item:last-child{
+    border-bottom: none;
+}
+
+.app-color-item:hover,
+.app-color-item.selected{
+    background-color: rgb(128, 128, 128, 0.2);
+}
+
+/* ================= NOTIFICATIONS ================= */
+
+.notif-section-text{
+    color: grey;
+    font-size: 14px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.notif-border{
+    border: 1px solid rgb(128, 128, 128, 0.3);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.notif-item{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 16px 12px;
+    background: none;
+    border: none;
+    border-bottom: 1px solid rgb(128, 128, 128, 0.6);
+    color: var(--text-main);
+    font-size: 16px;
+    cursor: pointer;
+    text-align: left;
+    box-sizing: border-box;
+}
+
+.notif-item:last-child{
+    border-bottom: none;
+}
+
+.notif-item:hover{
+    background-color: rgb(128, 128, 128, 0.2);
+}
+
+/* ================= TOGGLE - ON / OFF ================= */
+
+/* Toggle button - Save images, Show notifications, Sounds, etc */
+.toggle-btn{
+    min-width: 52px;
+    height: 28px;
+    border: none;
+    border-radius: 20px;
+    background-color: rgb(128, 128, 128, 0.4);
+    color: white;
+    font-size: 12px;
+    cursor: pointer;
+    padding: 0 10px;
+    flex-shrink: 0;
+}
+
+.toggle-btn.on{
+    background-color: rgb(0, 122, 255);
+}
+
+/* ================= MOBILE - SETTINGS ================= */
+
+@media (max-width: 768px){
+    .settings-page-left{
+        left: 0;
+        width: 100%;
+    }
+    .settings-page-right{
+        display: none;
+    }
+    .popup-bg{
+        left: 0;
+        width: 100%;
+    }
+    .search-icon-top-mobile{
+        display: flex;
+    }
+    .setting-page-icon,
+    .setting-page-text{
+        margin-left: 0;
+        text-align: center;
+    }
 }
