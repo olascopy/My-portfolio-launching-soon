@@ -1,0 +1,107 @@
+.settings-page-left{
+    position: fixed;
+    background-color: var(--bg-app);
+    left: 60px;
+    top: 0;
+    bottom: 0;
+    width: 450px;
+    overflow-y: auto;
+}
+.settings-page-right{
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 875px;
+  background-color:var(--side-border);
+}
+.setting-page-icon{
+color: grey;
+width: 80px;
+height: 80px;
+
+margin-top: 260px;
+margin-left: 400px;
+}
+.setting-page-text{
+color: var(--text-main);
+font-size: 30px;
+font-weight: 400;
+margin-left: 390px;
+margin-top: 10px;
+}
+.setting-page-left-text{
+    color: var(--text-main);
+    margin-top: 25px;
+    margin-left: 20px;
+    font-size: 20px;
+    font-weight: 500;
+}
+.search-setting-input{
+    color: var(--text-main);
+    width: 380px;
+    height: 40px;
+    background-color: rgb(128, 128, 128,0.2);
+    margin-top: 20px;
+    margin-left: 20px;
+    border-radius: 40px;
+    border: none;
+}
+.search-setting-input:hover{
+    background-color: rgb(128, 128, 128,0.3);
+}
+.search-setting-input::placeholder{
+    font-size: 15px;
+    font-weight: 500;
+    color:  rgb(128, 128, 128,0.6);
+}
+.profile-setting-border{
+    margin-top: 30px;
+    margin-left: 25px;
+    width: 380px;
+    height: 100px;
+    background-color: var(--bg-app);
+    border-bottom:1px solid  rgb(128, 128, 128,0.6);
+}
+.profile-extra-setting-border{
+    width: 380px;
+height: 80px;
+    background-color: var(--bg-app);
+    border-radius: 10px;
+    cursor: pointer;
+}
+.profile-extra-setting-border:hover{
+        background-color: rgb(128, 128, 128,0.3);
+}
+.round-profile-setting{
+    background-color:rgb(128, 128, 128,0.3);
+    width: 65px;
+    height: 65px;
+    margin-left: 10px;
+    border-radius: 50%;
+    transform: translateY(6px);
+}
+.round-profile-setting-main{
+    display: flex;
+    flex-direction: row;
+}
+.round-profile-setting-text{
+    color: var(--text-main);
+    font-size: 15px;
+    font-weight: 300;
+    margin-top: 25px;
+    margin-left: 5px;
+}
+.settings-page-extra-flow{
+    display: flex;
+    justify-content: space-between;
+}
+.setting-qrcode-image{
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background-color:rgb(128, 128, 128,0.3) ;
+    margin-right: 30px;
+    margin-top: 15px;
+    cursor: pointer;
+}
