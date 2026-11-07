@@ -1,12 +1,4 @@
-/* ============================================================
-   PROFILE PAGE - CSS FIXED V4
-   Fixes:
-   1. Preview Profile = POPUP like before (not separate background)
-   2. Thought + Edit = YOUR ORIGINAL POSITION, no change. Just show, no hide inside
-   3. Preview 3 icons = Small 20px rounds, well placed under profile inside popup
-   4. Preview About border = Well placed inside popup
-   5. All popups scroll = CSS own, not default app scroll
-   ============================================================ */
+
 
 /* ---------- TOP BAR: Cancel | Edit Profile | Save ---------- */
 .edit-section-profile{
@@ -265,7 +257,7 @@
     margin-top: 10px;
 }
 
-/* ---------- USERNAME ---------- */
+/* ---------- USERNAME + COPY ---------- */
 .username-profile{
     color: var(--text-main);
     margin-top: 15px;
@@ -294,6 +286,46 @@
     display: flex;
     flex-direction: row;
     gap: 6px;
+    align-items: flex-start;
+}
+
+/* ---------- FIX V5: COPY BUTTON BESIDE @Faith_mike ---------- */
+/* Copies username + ID under it. Example: "@Faith_mike • 234567" */
+/* After copy, JS swaps copy icon to check icon + shows "Copied" */
+.copy-profile-btn{
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(128,128,128,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-top: 14px;
+    margin-left: 4px;
+    color: var(--text-main);
+    flex-shrink: 0;
+}
+
+.copy-profile-btn:active{
+    transform: scale(0.92);
+}
+
+.copy-profile-btn svg{
+    width: 18px;
+    height: 18px;
+    display: block;
+}
+
+.copied-text{
+    font-size: 12px;
+    font-weight: 700;
+    font-family: sans-serif;
+    color: #1db954;
+    margin-top: 20px;
+    margin-left: 2px;
+    white-space: nowrap;
 }
 
 /* ---------- PERSONAL INFORMATION ---------- */
@@ -767,7 +799,7 @@
 }
 
 /* ============================================================
-   PREVIEW POPUP - LIKE BEFORE - FIXED V4
+   PREVIEW POPUP - LIKE BEFORE - FIXED V5
    Preview is POPUP again, not separate background.
    Structure in HTML:
    <div class="preview-background" id="previewBackground" hidden> = OVERLAY
@@ -777,13 +809,14 @@
    </div>
    ============================================================ */
 
-/* Preview Overlay - Dark background, centered, like Mood Popup overlay */
+/* FIX V5: Preview Overlay - Background OUTSIDE shud be BLUR */
+/* Before: blur(4px) small. Now: blur(12px) strong + darker, so outside dey blur clearly */
 .preview-background{
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.35);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -873,24 +906,74 @@
     margin-bottom: 0;
 }
 
-/* Mood Border in Preview - Same position as Thought (outside) */
-.preview-mood-border{
+/* ============================================================
+   FIX V5: PREVIEW MOOD WRAP - ALL MOOD STUFF IN ONE WRAP
+   - If no mood: wrap hidden = bubble + small dot + thing under ALL hide
+   - If mood get text: wrap shows = bubble + dot + thing under ALL show
+   - Wrap holds position: Top -30, Left -18 (same as Thought)
+   ============================================================ */
+.preview-mood-wrap{
     position: absolute;
     top: -30px;
     left: -18px;
-    background: #fff;
-    padding: 8px 14px;
-    border-radius: 30px;
-    font-size: 13px;
-    font-weight: 600;
-    font-family: sans-serif;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-    white-space: nowrap;
     z-index: 10;
+    overflow: visible;
+}
+
+.preview-mood-wrap[hidden]{
+    display: none !important;
+}
+
+/* Mood Border in Preview - FIXED WIDTH, NO EXPAND */
+/* Before: white-space nowrap + no width = expand with text */
+/* Now: width 160px fixed, like Settings. Long text ends with ... */
+.preview-mood-border{
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 160px; /* FIX: Fixed width, NO expand */
+    height: 35px;
+    background: #fff;
+    padding: 0 14px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 .preview-mood-border[hidden]{
     display: none !important;
+}
+
+/* Text inside Preview Mood Border - Shows Settings text CLEARLY */
+/* Long text: cut + ends with ... */
+.preview-mood-text{
+    font-size: 13px;
+    font-weight: 600;
+    font-family: sans-serif;
+    color: #111;
+    text-align: center;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* FIX: Long text ends with ... */
+    max-width: 132px; /* 160px - padding */
+    width: 100%;
+}
+
+/* Small dots / tail in Preview - PART OF MOOD, hide with wrap */
+/* Same as Edit: first-circle + second-circle, but inside wrap */
+.preview-first-circle{
+    margin-left: 20px;
+    margin-top: 0;
+}
+
+.preview-second-circle{
+    margin-left: 40px;
+    margin-top: 5px;
 }
 
 /* Username inside Preview Popup - Well placed under profile, centered */
@@ -903,8 +986,11 @@
     font-family: sans-serif;
 }
 
-/* ---------- PREVIEW 3 ICONS - FIXED: Small 20px Rounds ---------- */
-/* Well placed under profile, centered inside popup */
+/* ============================================================
+   FIX V5: PREVIEW 3 ICONS - SHOW CLEARLY + 10px RADIUS
+   Before: 20px radius (too round), icon opacity 0.35 faint, label faint
+   Now: border-radius 10px (not too round), icon opacity 1 clear, label clear
+   ============================================================ */
 .preview-actions{
     display: flex;
     justify-content: center;
@@ -914,43 +1000,49 @@
     margin-bottom: 16px;
 }
 
-/* Each button: Small round - 20px radius (40px circle) */
+/* Each button: 10px radius, NOT too round */
 .preview-action-btn{
     width: 40px;
     height: 40px;
-    border-radius: 20px; /* 20px round */
-    background: rgba(255,255,255,0.9);
+    border-radius: 10px; /* FIX: 10px, not too round */
+    background: #fff;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 1px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    border: 1px solid rgba(0,0,0,0.06);
     opacity: 1;
     flex-shrink: 0;
+    cursor: default;
 }
 
-/* Icon inside: 20px, faint / invisible-like because inactive */
-.preview-action-btn i{
+/* Icon inside: 20px, SHOW CLEARLY - opacity 1, dark color */
+.preview-action-btn i,
+.preview-action-btn svg{
     width: 20px;
     height: 20px;
     display: block !important;
-    opacity: 0.35;
-    color: rgb(128,128,128);
+    opacity: 1 !important; /* FIX: Clear, not faint */
+    color: #111 !important; /* FIX: Dark, see am clearly */
+    stroke-width: 2;
 }
 
 .preview-action-label{
     font-size: 9px;
-    font-weight: 600;
+    font-weight: 700;
     font-family: sans-serif;
-    color: rgb(128,128,128,0.7);
-    opacity: 0.6;
+    color: #333; /* FIX: Dark, see am clearly */
+    opacity: 1; /* FIX: Clear, not faint */
 }
 
+/* No more faint inactive for preview icons - keep for JS if needed but clear */
 .preview-action-btn.is-inactive{
-    opacity: 0.7 !important;
-    background: rgba(255,255,255,0.9) !important;
-    cursor: not-allowed !important;
+    opacity: 1 !important;
+    background: #fff !important;
+    cursor: default !important;
+    filter: none !important;
 }
 
 /* ---------- PREVIEW ABOUT BORDER - FIXED: WELL PLACED INSIDE POPUP ---------- */

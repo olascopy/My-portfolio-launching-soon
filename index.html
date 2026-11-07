@@ -1755,26 +1755,15 @@
 </div>
 
 
-<!-- ============================================================
-     PAGE PROFILE - FULL HTML - CLEAN
-     Features:
-     1. Profile pic FULL inside round-profile (not inside small dot)
-     2. Thought + Edit = Original position, just show, no hide inside
-     3. Preview = POPUP like before (overlay + card)
-     4. Preview icons = Small 20px rounds, faint / inactive
-     5. Save ACTIVE = white, INACTIVE = grey
-     6. All scroll = custom-scroll (CSS own, not default)
-     ============================================================ -->
+
 
 <!-- ================= MAIN WRAPPER ================= -->
 <div id="pageProfile">
 
   <!-- ========== TOP BAR: Cancel | Edit Profile | Save ========== -->
   <div class="edit-section-profile">
-    <!-- Cancel X - Top Left -->
-    <div class="cancel-button">
-      <i data-lucide="x" class="edit-section-cancel"></i>
-    </div>
+
+
 
     <!-- Title - Always "Edit Profile" (Preview is popup, so title no change) -->
     <div>
@@ -1839,13 +1828,28 @@
 
     </div>
 
-    <!-- ========== USERNAME + ID ========== -->
+    <!-- ========== USERNAME + ID + COPY ========== -->
+    <!-- FIX 1: Copy icon beside @Faith_mike -->
+    <!-- Click copy -> copies username + ID under it -->
+    <!-- Example copied text: "@Faith_mike • 234567" -->
+    <!-- After copy: icon changes to MARK / CHECK + shows "Copied" -->
     <div class="username-border">
-      <p class="username-profile">@Faith_mike</p>
-      <i data-lucide="square-pen" class="edit-username"></i>
+      <p class="username-profile" id="usernameText">@Faith_mike</p>
+
+      <!-- COPY BUTTON - Beside username -->
+      <button class="copy-profile-btn" id="copyProfileBtn" aria-label="Copy username and ID">
+        <!-- Copy Icon - Shows by default -->
+        <svg id="copyIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <!-- Check / Mark Icon - Hidden until copied -->
+        <svg id="checkIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1db954" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M20 6L9 17l-5-5"/></svg>
+      </button>
+      <span class="copied-text" id="copiedText" style="display:none">Copied</span>
+
+
     </div>
 
-    <p class="id-profile">ID:<span>234567</span></p>
+    <!-- ID under username - Copy button copies this too -->
+    <p class="id-profile">ID:<span id="idText">234567</span></p>
 
     <div>
       <p class="personal-information-text">Personal information</p>
@@ -1883,9 +1887,10 @@
   <!-- ============================================================
        PREVIEW POPUP - LIKE BEFORE
        Structure:
-       .preview-background = OVERLAY (dark background, centered)
+       .preview-background = OVERLAY (blur background outside, centered)
        .preview-popup-card = CARD (liquid glass, custom scroll)
        Hidden by default. Click "Preview Profile" -> Show. Click Back -> Hide.
+       FIX: Background outside shud be BLUR - handled in CSS with backdrop-filter
        ============================================================ -->
   <div class="preview-background" id="previewBackground" hidden>
 
@@ -1908,19 +1913,28 @@
       <!-- Centered inside popup (CSS: margin-left: auto, margin-right: auto) -->
       <div class="round-profile preview-round-profile" id="previewRoundProfileBox">
 
-        <!-- Mood Border in Preview: ONLY shows if user wrote mood -->
-        <!-- Same position as Thought: Top -30, Left -18 -->
-        <!-- If no mood, this stays hidden -->
-        <div class="preview-mood-border" id="previewMoodBorder" hidden>
-          <p id="previewMoodText"></p>
+        <!-- ============================================================
+             FIX: MOOD WRAP IN PREVIEW - ALL MOOD STUFF INSIDE ONE WRAP
+             - If no mood written: whole wrap hidden = mood border + small dot + thing under ALL hide
+             - If mood written: whole wrap shows = mood border + dot + thing under ALL show
+             - Text from Settings shows clearly inside mood border
+             - Border fixed width, NO expand. Long text ends with ... (CSS ellipsis)
+             ============================================================ -->
+        <div class="preview-mood-wrap" id="previewMoodWrap" hidden>
+          <!-- Mood Border in Preview: ONLY shows if user wrote mood -->
+          <!-- Same position as Thought: Top -30, Left -18 -->
+          <div class="preview-mood-border" id="previewMoodBorder">
+            <p class="preview-mood-text" id="previewMoodText"></p>
+          </div>
+
+          <!-- Small white dots / tail - PART OF MOOD, hide with mood -->
+          <!-- If mood empty, these hide too. If mood get text, these show too -->
+          <div class="first-circle preview-first-circle"></div>
+          <div class="second-circle preview-second-circle"></div>
         </div>
 
         <!-- Preview Profile Image - FULL inside circle -->
         <img id="previewProfileImage" src="" alt="Preview Profile" hidden>
-
-        <!-- Same small white dots decoration, leave as is -->
-        <div class="first-circle"></div>
-        <div class="second-circle"></div>
 
       </div>
 
@@ -1928,21 +1942,21 @@
       <p class="preview-username-inside">@Faith_mike</p>
 
       <!-- ========== PREVIEW 3 ICONS: Call / Video / Message ========== -->
-      <!-- Small 20px rounds, well placed under profile, centered -->
-      <!-- Icons SHOW but INACTIVE - faint (opacity 0.35) + not-allowed -->
-      <!-- Clicking does nothing -->
+      <!-- FIX: Icons shud show CLEARLY - removed is-inactive / faint -->
+      <!-- FIX: Border radius shud be 10px, not too round - handled in CSS -->
+      <!-- Small rounds, well placed under profile, centered -->
       <div class="preview-actions">
-        <div class="preview-action-btn is-inactive" title="Inactive in preview">
+        <div class="preview-action-btn" title="Call">
           <i data-lucide="phone"></i>
-          <span class="preview-action-label">Call</span>
+          
         </div>
-        <div class="preview-action-btn is-inactive" title="Inactive in preview">
+        <div class="preview-action-btn" title="Video">
           <i data-lucide="video"></i>
-          <span class="preview-action-label">Video</span>
+         
         </div>
-        <div class="preview-action-btn is-inactive" title="Inactive in preview">
+        <div class="preview-action-btn" title="Message">
           <i data-lucide="message-circle"></i>
-          <span class="preview-action-label">Message</span>
+       
         </div>
       </div>
 

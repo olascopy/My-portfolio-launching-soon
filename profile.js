@@ -1,13 +1,4 @@
-/* ============================================================
-   PROFILE PAGE - JAVASCRIPT - CLEAN - FULL FILE
-   Matches HTML V4 + CSS V4:
-   1. Profile pic FULL inside #profileImage (not small dot)
-   2. Thought + Edit = Original position, JS just toggles
-   3. Preview = POPUP like before (overlay + card), not separate background
-   4. Preview icons SHOW but INACTIVE - click does nothing
-   5. Save ACTIVE = white (JS removes .is-inactive, CSS makes it white)
-   6. All scroll = CSS own (.custom-scroll) - no JS needed for scroll
-   ============================================================ */
+
 
 // Wait until page don load finish before running JS
 document.addEventListener('DOMContentLoaded', () => {
@@ -43,6 +34,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // About Me
   const aboutInput = document.getElementById('aboutInput');
 
+  // ---------- FIX V5: COPY USERNAME + ID ----------
+  // Copy button beside @Faith_mike
+  const copyProfileBtn = document.getElementById('copyProfileBtn');
+  const copyIcon = document.getElementById('copyIcon');
+  const checkIcon = document.getElementById('checkIcon');
+  const copiedText = document.getElementById('copiedText');
+  const usernameText = document.getElementById('usernameText');
+  const idText = document.getElementById('idText');
+
   // Mood
   const moodPopup = document.getElementById('moodPopup');
   const openMoodBtn = document.getElementById('openMoodBtn');
@@ -69,10 +69,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const spotifyArtistName = document.getElementById('spotifyArtistName');
 
   // Preview Popup - LIKE BEFORE
-  // .preview-background = Overlay, .preview-popup-card = Card inside it
+  // .preview-background = Overlay (blur outside), .preview-popup-card = Card inside it
   const previewBackground = document.getElementById('previewBackground');
   const openPreviewBtn = document.getElementById('openPreviewBtn');
   const closePreviewBtn = document.getElementById('closePreviewBtn');
+  // FIX V5: Mood Wrap - holds bubble + dot + tail together
+  const previewMoodWrap = document.getElementById('previewMoodWrap');
   const previewMoodBorder = document.getElementById('previewMoodBorder');
   const previewMoodText = document.getElementById('previewMoodText');
   const previewAboutText = document.getElementById('previewAboutText');
@@ -85,6 +87,47 @@ document.addEventListener('DOMContentLoaded', () => {
   const fullImageViewer = document.getElementById('fullImageViewer');
   const fullImage = document.getElementById('fullImage');
   const closeFullImageBtn = document.getElementById('closeFullImageBtn');
+
+  /* ============================================================
+     0. COPY USERNAME + ID - FIX V5
+     Rule: Click copy icon beside @Faith_mike
+     -> Copies username + ID under it
+     -> Example copied: "@Faith_mike • 234567"
+     -> Icon changes to MARK / CHECK + shows "Copied"
+     -> After 2 sec, back to copy icon
+     ============================================================ */
+  if (copyProfileBtn) {
+    copyProfileBtn.addEventListener('click', async () => {
+      // Get username + ID from HTML - so if user changes name, copy still correct
+      const username = usernameText ? usernameText.textContent.trim() : '@Faith_mike';
+      const userId = idText ? idText.textContent.trim() : '234567';
+      const textToCopy = `${username} • ${userId}`;
+
+      // Copy - try modern clipboard first, fallback for old iPhone
+      try {
+        await navigator.clipboard.writeText(textToCopy);
+      } catch (e) {
+        const ta = document.createElement('textarea');
+        ta.value = textToCopy;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+
+      // Show MARK / CHECK + Copied
+      if (copyIcon) copyIcon.style.display = 'none';
+      if (checkIcon) checkIcon.style.display = 'block';
+      if (copiedText) copiedText.style.display = 'block';
+
+      // After 2 sec, back to copy icon
+      setTimeout(() => {
+        if (copyIcon) copyIcon.style.display = 'block';
+        if (checkIcon) checkIcon.style.display = 'none';
+        if (copiedText) copiedText.style.display = 'none';
+      }, 2000);
+    });
+  }
 
   /* ============================================================
      1. SAVE BUTTON LOGIC - MAIN SAVE
@@ -137,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
       // If active, save profile
-      alert('Profile saved! ✅'); // Replace with real save / API later
+
       deactivateMainSave(); // After save, go back to inactive (grey) until next edit
     });
   }
@@ -284,10 +327,14 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ------------------------------------------------------------
-     3E. MOOD POPUP - SAVE MOOD BUTTON
+     3E. MOOD POPUP - SAVE MOOD BUTTON - FIX V5
      After save:
      - Mood Pill shows mood text
-     - Preview Mood Border will show it too
+     - Preview Mood Wrap shows/hides ALL mood stuff
+       If empty: wrap hidden = bubble + dot + tail ALL hide
+       If get text: wrap shows = bubble + dot + tail ALL show
+       Text from Settings shows clearly in preview bubble
+       Border fixed width, long text ends with ... (CSS handles am)
      - Main Save becomes ACTIVE (white)
      - Mood Popup closes
      ------------------------------------------------------------ */
@@ -306,15 +353,21 @@ document.addEventListener('DOMContentLoaded', () => {
         moodPillText.textContent = moodText === '' ? 'share your mood' : moodText;
       }
 
-      // Update Preview Mood Border
-      if (previewMoodBorder && previewMoodText) {
+      // Update Preview Mood - FIX V5: Use WRAP, not just border
+      if (previewMoodWrap && previewMoodText) {
         if (moodText === '') {
-          // If no mood, hide preview border
-          previewMoodBorder.hidden = true;
+          // If no mood, hide WHOLE wrap = bubble + dot + tail hide
+          previewMoodWrap.hidden = true;
         } else {
-          previewMoodBorder.hidden = false;
+          // If mood get text, show WHOLE wrap = bubble + dot + tail show
+          // Text from Settings shows clearly here
+          previewMoodWrap.hidden = false;
           previewMoodText.textContent = moodText;
         }
+      }
+      // Keep border in sync too (for safety)
+      if (previewMoodBorder) {
+        previewMoodBorder.hidden = (moodText === '');
       }
 
       // Activate Main Save (profile changed)
@@ -377,8 +430,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Click Preview Round Profile -> If image dey, open Full Image
   if (previewRoundProfileBox) {
     previewRoundProfileBox.addEventListener('click', (e) => {
-      // Don't open if clicked mood border
-      if (e.target.closest('#previewMoodBorder')) return;
+      // Don't open if clicked mood wrap / mood border
+      if (e.target.closest('#previewMoodWrap') || e.target.closest('#previewMoodBorder')) return;
       if (!previewProfileImage || previewProfileImage.hidden || !previewProfileImage.src) {
         return;
       }
@@ -542,16 +595,18 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ============================================================
-     7. PREVIEW POPUP - LIKE BEFORE - FIXED
+     7. PREVIEW POPUP - LIKE BEFORE - FIXED V5
      Click Preview Profile -> Open Preview Popup (overlay + card)
      Click Back Chevron -> Close Preview Popup
      Click dark background (overlay) -> Close Preview Popup
-     Rules:
-     - If mood not written, mood border HIDDEN in preview
-     - If mood written, mood border SHOWS
-     - 3 icons SHOW but INACTIVE (small 20px rounds, faint)
+     Rules V5:
+     - If mood not written, mood WRAP HIDDEN in preview = bubble + dot + tail ALL hide
+     - If mood written, mood WRAP SHOWS = bubble + dot + tail ALL show, text shows clearly
+     - Mood border fixed width, long text ends with ... (CSS)
+     - 3 icons SHOW CLEARLY, border-radius 10px, click does nothing in preview
      - About text shows what user typed
      - Spotify shows only if connected
+     - Background outside BLUR (CSS)
      ============================================================ */
 
   // Function: Open Preview Popup
@@ -561,15 +616,23 @@ document.addEventListener('DOMContentLoaded', () => {
       previewAboutText.textContent = aboutInput.value.trim() === '' ? 'No description yet' : aboutInput.value;
     }
 
-    // Sync Mood: If mood is default/empty, hide border
-    if (previewMoodBorder && previewMoodText && moodPillText) {
+    // Sync Mood: FIX V5 - Use WRAP
+    if (previewMoodWrap && previewMoodText && moodPillText) {
       const currentMood = moodPillText.textContent.trim();
       if (currentMood === '' || currentMood === 'share your mood') {
-        previewMoodBorder.hidden = true;
+        // No mood -> Hide WHOLE wrap = bubble + dot + tail hide
+        previewMoodWrap.hidden = true;
       } else {
-        previewMoodBorder.hidden = false;
+        // Mood get text -> Show WHOLE wrap = bubble + dot + tail show
+        // Text from Settings shows clearly
+        previewMoodWrap.hidden = false;
         previewMoodText.textContent = currentMood;
       }
+    }
+    // Keep border in sync too
+    if (previewMoodBorder && moodPillText) {
+      const currentMood = moodPillText.textContent.trim();
+      previewMoodBorder.hidden = (currentMood === '' || currentMood === 'share your mood');
     }
 
     // Show Preview Popup (overlay)
@@ -610,13 +673,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Preview Action Buttons (Call / Video / Message) - SHOW BUT INACTIVE
-  // They have .is-inactive in CSS + HTML, small 20px rounds, faint
-  // Clicking does nothing
+  // Preview Action Buttons (Call / Video / Message) - SHOW CLEARLY, click does nothing in preview
+  // They now have border-radius 10px + clear icons in CSS, no more faint
+  // Clicking does nothing - preview only
   previewActionBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
-      return; // Do nothing - inactive in preview, as you requested
+      return; // Do nothing - preview only
     });
   });
 

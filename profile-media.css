@@ -1,10 +1,14 @@
 /* ============================================================
-   ONLY RESPONSIVE MOBILE - CLEAN - FIXED V6
-   Fix V6:
-   1. All background height INCREASE - taller, more space
-   2. Connect btn SHORT - still short, not full width
-   3. All popup CENTER - not under
-   4. PWA iPhone Dynamic Island - bring down small
+   ONLY RESPONSIVE MOBILE - CLEAN - FIXED V8
+   Fix V8:
+   1. Extra background - CENTER + BRING DOWN SMALL
+   2. Whole back height - 630 / 560 (keep V7)
+   3. Copy button - centered
+   4. Preview mood - fixed width, ... 
+   5. Preview 3 icons - 10px, show CLEARLY
+   6. Connect btn SHORT
+   7. All popup CENTER
+   8. PWA iPhone Dynamic Island - bring down small
    ============================================================ */
 
 /* ===== ONLY RESPONSIVE MOBILE - 768px ===== */
@@ -16,7 +20,6 @@
     right: 0;
     height: 60px;
     padding: 0 10px;
-    /* PWA iPhone: Bring down small for Dynamic Island */
     padding-top: calc(6px + env(safe-area-inset-top));
     align-items: center;
     box-sizing: border-box;
@@ -59,13 +62,16 @@
     line-height: 32px;
   }
 
-  /* ---------- BACKGROUND - MOBILE - FIX: INCREASE HEIGHT ---------- */
-  /* Before: 380px too short. Now: INCREASE - taller, more space, still scroll inside */
+  /* ---------- BACKGROUND - MOBILE  ---------- */
+  
   .extrabackground-profile{
-    top: calc(74px + env(safe-area-inset-top));
+    top: calc(804px + env(safe-area-inset-top)); /* FIX V8: Bring down small - was 74px, now 84px */
     left: 12px;
     right: 12px;
-    height: 600px; /* FIX: INCREASED */
+    transform: none; 
+    width: auto; 
+    max-width: none;
+    height: 630px;
     border-radius: 18px;
     padding-bottom: env(safe-area-inset-bottom);
   }
@@ -115,7 +121,7 @@
     font-size: 14px;
   }
 
-  /* ---------- USERNAME / ID - MOBILE ---------- */
+  /* ---------- USERNAME / ID + COPY - MOBILE ---------- */
   .username-border{
     justify-content: center;
     width: 100%;
@@ -135,6 +141,17 @@
     margin-top: 20px;
     width: 15px;
     height: 15px;
+  }
+  .copy-profile-btn{
+    margin-top: 14px;
+    margin-left: 4px;
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+  }
+  .copied-text{
+    margin-top: 20px;
+    font-size: 11px;
   }
 
   /* ---------- PERSONAL INFO / ABOUT / SPOTIFY - MOBILE ---------- */
@@ -190,8 +207,8 @@
   /* ---------- MOOD POPUP - MOBILE - CENTER ---------- */
   .popup-overlay{
     padding: 12px;
-    align-items: center; /* CENTER, not under */
-    justify-content: center; /* CENTER */
+    align-items: center;
+    justify-content: center;
     padding-top: calc(12px + env(safe-area-inset-top));
     padding-bottom: calc(12px + env(safe-area-inset-bottom));
   }
@@ -205,8 +222,8 @@
   /* ---------- PREVIEW POPUP - MOBILE - CENTER ---------- */
   .preview-background{
     padding: 12px;
-    align-items: center; /* CENTER, not under */
-    justify-content: center; /* CENTER */
+    align-items: center;
+    justify-content: center;
     padding-top: calc(12px + env(safe-area-inset-top));
     padding-bottom: calc(12px + env(safe-area-inset-bottom));
   }
@@ -220,9 +237,39 @@
   .preview-round-profile{
     margin-top: 38px !important;
   }
+
+  /* Preview mood - fixed width, NO expand, ... */
+  .preview-mood-wrap{
+    top: -28px;
+    left: -22px;
+  }
+  .preview-mood-border{
+    width: 150px;
+    height: 32px;
+    padding: 0 12px;
+  }
+  .preview-mood-text{
+    font-size: 12px;
+    max-width: 126px;
+  }
+
+  /* Preview 3 icons - 10px, SHOW CLEARLY */
   .preview-actions{
     gap: 14px;
   }
+  .preview-action-btn{
+    border-radius: 10px !important;
+  }
+  .preview-action-btn i,
+  .preview-action-btn svg{
+    opacity: 1 !important;
+    color: #111 !important;
+  }
+  .preview-action-label{
+    opacity: 1 !important;
+    color: #333 !important;
+  }
+
   .preview-about-border{
     width: 100%;
   }
@@ -251,12 +298,16 @@
     padding: 0 10px;
   }
 
-  /* FIX: Background height INCREASE - Small phone */
+  /* FIX V8: Background - CENTER + BRING DOWN SMALL - Small phone */
+  /* Before V7: top 70px. Now V8: top 80px (bring down small +10px) */
   .extrabackground-profile{
     left: 10px;
     right: 10px;
-    top: calc(70px + env(safe-area-inset-top));
-    height: 520px; /* FIX: INCREASED */
+    top: calc(80px + env(safe-area-inset-top)); /* FIX V8: Bring down small - was 70px, now 80px */
+    transform: none;
+    width: auto;
+    max-width: none;
+    height: 560px; /* Keep V7 height */
   }
 
   .round-profile{
@@ -289,6 +340,19 @@
   }
   .id-profile{
     margin-left: 0;
+  }
+  .copy-profile-btn{
+    width: 28px;
+    height: 28px;
+    margin-top: 13px;
+  }
+  .copy-profile-btn svg{
+    width: 16px;
+    height: 16px;
+  }
+  .copied-text{
+    font-size: 11px;
+    margin-top: 19px;
   }
 
   .personal-information-text{
@@ -383,10 +447,23 @@
     height: 105px !important;
     margin-top: 36px !important;
   }
-  .preview-mood-border{
-    font-size: 12px;
-    padding: 7px 12px;
+
+  /* Preview mood - small phone, fixed width, ... */
+  .preview-mood-wrap{
+    top: -26px;
+    left: -12px;
   }
+  .preview-mood-border{
+    width: 135px;
+    height: 32px;
+    font-size: 12px;
+    padding: 0 10px;
+  }
+  .preview-mood-text{
+    font-size: 12px;
+    max-width: 115px;
+  }
+
   .preview-username-inside{
     font-size: 17px;
   }
@@ -395,10 +472,12 @@
     margin-top: 12px;
     margin-bottom: 12px;
   }
+
+  /* Preview 3 icons - small phone, 10px NOT 19px */
   .preview-action-btn{
     width: 38px;
     height: 38px;
-    border-radius: 19px;
+    border-radius: 10px !important;
   }
   .preview-about-text{
     font-size: 13px;
