@@ -2065,424 +2065,451 @@
 </div>
 
 
-<!-- ==================================================================
-     SETTINGS PAGE - FULL - EVERYTHING - CLEAN - NO CUT
-     NOTE IMPORTANT:
-     - Profile UI ALREADY EXISTS - DO NOT CREATE NEW ONE
-     - Profile UI name = edit-section-profile (class)
-     - When you click profile-setting-border in Settings Left,
-       JS go show your existing edit-section-profile, e go slide in by right
-       and take over Settings Right. X icon inside am go bring back Settings Right.
-     - All other backgrounds here = iPhone popup style - slide from right, chevron back
-     ================================================================== -->
+
 
 <div id="pageSettings">
 
-  <!-- ================= SETTINGS PAGE LEFT ================= -->
+  <!-- SETTINGS LEFT -->
   <div class="settings-page-left">
 
-    <!-- ---------- TOP FIXED AREA - SETTINGS LEFT ---------- -->
+    <!-- TOP FIXED - Settings + QR + Save -->
     <div class="settings-page-extra-flow">
-      <!-- Settings text - Top left -->
       <p class="setting-page-left-text">Settings</p>
-
-      <!-- QR CODE BORDER - TOP RIGHT - SMALL -->
-      <!-- Border only. JS go put QR image inside. Save to Local Storage after first generate. Reset = regenerate fresh, old link expire -->
+      <!-- Small QR - click = Full QR background -->
       <div class="setting-qrcode-image" id="openFullQR">
         <img id="qrImageSmall" class="qr-image-small" alt="QR Code" />
       </div>
-
-      <!-- SEARCH ICON - MOBILE TOP - When scroll pass input, this go show -->
+      <!-- Save for Settings Left - save only wetin change -->
+      <button type="button" class="settings-save-btn" id="saveSettingsLeft">Save <span class="save-spinner" hidden></span></button>
+      <!-- Search icon mobile - show when scroll pass search input -->
       <button type="button" class="search-icon-top-mobile" id="searchIconTopMobile" aria-label="Search settings">
         <i data-lucide="search" class="search-icon-top-mobile-icon"></i>
       </button>
     </div>
-    <!-- ---------- END TOP FIXED ---------- -->
 
-    <!-- ---------- SEARCH INPUT AREA ---------- -->
-    <!-- Search icon inside beside "Search Settings" text -->
+    <!-- SEARCH INPUT - scroll with body for mobile, deep search all Settings -->
     <div class="search-setting-wrap">
       <i data-lucide="search" class="search-setting-icon"></i>
       <input type="text" placeholder="Search Settings" class="search-setting-input" id="searchSettingsInput" />
     </div>
-    <!-- ---------- END SEARCH ---------- -->
 
-    <!-- ---------- PROFILE BORDER ---------- -->
-    <!-- Click am - JS go show YOUR EXISTING edit-section-profile -->
-    <!-- edit-section-profile go slide in by right, take over Settings Right -->
-    <!-- DO NOT CREATE NEW PROFILE UI HERE -->
+    <!-- PROFILE BORDER - click = your existing edit-section-profile -->
     <div class="profile-setting-border" id="openProfile">
       <div class="profile-extra-setting-border">
         <div class="round-profile-setting-main">
           <div class="round-profile-setting-main-border">
-            <div class="round-profile-setting">
-              <!-- <img src="" class="round-profile-setting-img" alt="Profile" /> -->
-            </div>
+            <div class="round-profile-setting"></div>
           </div>
           <p class="round-profile-setting-text">@Faith_mike</p>
         </div>
       </div>
     </div>
-    <!-- ---------- END PROFILE BORDER ---------- -->
-    <!-- YOUR EXISTING PROFILE UI IS OUTSIDE THIS FILE: <div class="edit-section-profile"> ... </div> - JS go call that one -->
 
-    <!-- ---------- SETTINGS LEFT - FIRST GROUP ---------- -->
-    <!-- Border inside - each border get 1px solid bottom -->
+    <!-- FIRST GROUP - each get icon beside -->
     <div class="settings-left-group-first">
-      <button type="button" class="settings-left-item" id="openAccount">Account <i data-lucide="chevron-right" class="settings-left-item-chevron"></i></button>
-      <button type="button" class="settings-left-item" id="openChats">Chats <i data-lucide="chevron-right" class="settings-left-item-chevron"></i></button>
-      <button type="button" class="settings-left-item" id="openNotifications">Notifications <i data-lucide="chevron-right" class="settings-left-item-chevron"></i></button>
-      <button type="button" class="settings-left-item" id="openAppearance">Appearance <i data-lucide="chevron-right" class="settings-left-item-chevron"></i></button>
-      <button type="button" class="settings-left-item" id="openPrivacy">Privacy <i data-lucide="chevron-right" class="settings-left-item-chevron"></i></button>
+      <button type="button" class="settings-left-item" id="openAccount"><i data-lucide="key" class="settings-left-icon"></i><span>Account</span><i data-lucide="chevron-right" class="settings-left-item-chevron"></i></button>
+      <button type="button" class="settings-left-item" id="openChats"><i data-lucide="message-circle" class="settings-left-icon"></i><span>Chats</span><i data-lucide="chevron-right" class="settings-left-item-chevron"></i></button>
+      <button type="button" class="settings-left-item" id="openNotifications"><i data-lucide="bell" class="settings-left-icon"></i><span>Notifications</span><i data-lucide="chevron-right" class="settings-left-item-chevron"></i></button>
+      <button type="button" class="settings-left-item" id="openAppearance"><i data-lucide="palette" class="settings-left-icon"></i><span>Appearance</span><i data-lucide="chevron-right" class="settings-left-item-chevron"></i></button>
+      <button type="button" class="settings-left-item" id="openPrivacy"><i data-lucide="lock" class="settings-left-icon"></i><span>Privacy</span><i data-lucide="chevron-right" class="settings-left-item-chevron"></i></button>
     </div>
-    <!-- ---------- END FIRST GROUP ---------- -->
 
-    <!-- ---------- SETTINGS LEFT - SECOND GROUP ---------- -->
+    <!-- SECOND GROUP -->
     <div class="settings-left-group-second">
-      <button type="button" class="settings-left-item" id="openHelp">Help and supports <i data-lucide="chevron-right" class="settings-left-item-chevron"></i></button>
-      <button type="button" class="settings-left-item" id="openLogout">Logout <i data-lucide="chevron-right" class="settings-left-item-chevron"></i></button>
-      <button type="button" class="settings-left-item" id="openInvite">Invite a contact <i data-lucide="chevron-right" class="settings-left-item-chevron"></i></button>
+      <button type="button" class="settings-left-item" id="openHelp"><i data-lucide="circle-help" class="settings-left-icon"></i><span>Help and feedback</span><i data-lucide="chevron-right" class="settings-left-item-chevron"></i></button>
+      <button type="button" class="settings-left-item" id="openLogout"><i data-lucide="log-out" class="settings-left-icon"></i><span>Logout</span><i data-lucide="chevron-right" class="settings-left-item-chevron"></i></button>
+      <button type="button" class="settings-left-item" id="openInvite"><i data-lucide="user-plus" class="settings-left-icon"></i><span>Invite a contact</span><i data-lucide="chevron-right" class="settings-left-item-chevron"></i></button>
     </div>
-    <!-- ---------- END SECOND GROUP ---------- -->
 
   </div>
-  <!-- ================= END SETTINGS PAGE LEFT ================= -->
 
-  <!-- ================= SETTINGS PAGE RIGHT ================= -->
+  <!-- SETTINGS RIGHT - desktop placeholder -->
   <div class="settings-page-right">
+
+    
     <i data-lucide="cog" class="setting-page-icon"></i>
     <p class="setting-page-text">Settings</p>
   </div>
-  <!-- ================= END SETTINGS PAGE RIGHT ================= -->
 
-  <!-- ============================================================
-       ALL POPUP BACKGROUNDS - iPhone popup style - slide from right
-       Each one take over Settings background when clicked
-       Chevron back = go back
-       PROFILE UI IS NOT HERE - IT ALREADY EXISTS AS edit-section-profile
-       ============================================================ -->
-
-  <!-- ---------- FULL QR BACKGROUND ---------- -->
+  <!-- ========== FULL QR ========== -->
   <div class="popup-bg full-qr-bg" id="fullQRBg" hidden>
-    <button type="button" class="popup-chevron" data-close="fullQRBg"><i data-lucide="chevron-left"></i></button>
-    <p class="popup-title">QR Code</p>
-    <button type="button" class="qr-scan-btn" id="openScanner">Scan</button>
-    <!-- Big border - inside na QR big -->
-    <div class="qr-big-border">
-      <!-- Round border middle top - inside na profile pic -->
-      <div class="qr-profile-round"><div class="qr-profile-round-inner"></div></div>
-      <img id="qrImageBig" class="qr-image-big" alt="QR Code" />
+    <div class="popup-header">
+      <button type="button" class="popup-chevron" data-close="fullQRBg"><i data-lucide="chevron-left"></i></button>
+      <p class="popup-title">QR Code</p>
+      <span class="popup-header-space"></span>
     </div>
-    <button type="button" class="qr-share-btn" id="qrShareBtn">Share</button>
-    <!-- Share sheet - copy link + apps like TikTok share -->
-    <div class="qr-share-sheet" id="qrShareSheet" hidden>
-      <p class="qr-share-link">https://yourapp.com/u/Faith_mike?id=234567&amp;k=...</p>
-      <button type="button" class="qr-copy-link-btn">Copy Link</button>
+    <div class="popup-body">
+      <button type="button" class="qr-scan-btn" id="openScanner">Scan</button>
+      <div class="qr-big-border">
+        <div class="qr-profile-round"><div class="qr-profile-round-inner"></div></div>
+        <img id="qrImageBig" class="qr-image-big" alt="QR Code" />
+      </div>
+      <button type="button" class="qr-share-btn" id="qrShareBtn">Share</button>
+      <div class="qr-share-sheet" id="qrShareSheet" hidden>
+        <p class="qr-share-link">https://yourapp.com/u/Faith_mike?id=234567&amp;k=...</p>
+        <button type="button" class="qr-copy-link-btn">Copy Link</button>
+      </div>
     </div>
   </div>
 
-  <!-- ---------- SCANNER BACKGROUND - FULL ---------- -->
+  <!-- ========== SCANNER - camera open to scan code ========== -->
   <div class="popup-bg scanner-bg" id="scannerBg" hidden>
-    <button type="button" class="popup-chevron" data-close="scannerBg"><i data-lucide="chevron-left"></i></button>
-    <p class="popup-title">Scan QR Code</p>
-    <div class="scanner-area"></div>
-    <button type="button" class="scanner-gallery-btn"><i data-lucide="image"></i> Pick from Gallery</button>
+    <div class="popup-header">
+      <button type="button" class="popup-chevron" data-close="scannerBg"><i data-lucide="chevron-left"></i></button>
+      <p class="popup-title">Scan QR Code</p>
+      <span class="popup-header-space"></span>
+    </div>
+    <div class="popup-body">
+      <div class="scanner-area"><video id="scannerVideo" autoplay playsinline></video><div class="scanner-frame"></div></div>
+      <p class="popup-explain">Point camera to QR code to scan</p>
+      <button type="button" class="scanner-gallery-btn"><i data-lucide="image"></i> Pick from Gallery</button>
+    </div>
   </div>
 
-  <!-- ---------- ACCOUNT BACKGROUND ---------- -->
+  <!-- ========== ACCOUNT ========== -->
   <div class="popup-bg account-bg" id="accountBg" hidden>
-    <button type="button" class="popup-chevron" data-close="accountBg"><i data-lucide="chevron-left"></i></button>
-    <p class="popup-title">Account</p>
-    <p class="account-section-text">Login and security</p>
-    <div class="account-border">
-      <button type="button" class="account-item" id="openEmail">Email addresses <i data-lucide="chevron-right"></i></button>
-      <button type="button" class="account-item" id="openPassword">Password <i data-lucide="chevron-right"></i></button>
+    <div class="popup-header">
+      <button type="button" class="popup-chevron" data-close="accountBg"><i data-lucide="chevron-left"></i></button>
+      <p class="popup-title">Account</p>
+      <button type="button" class="popup-save-btn" data-save="account">Save <span class="save-spinner" hidden></span></button>
     </div>
-    <p class="account-section-text">Your account</p>
-    <div class="account-border">
-      <button type="button" class="account-item" id="openChangePhone">Change phone number <i data-lucide="chevron-right"></i></button>
-      <button type="button" class="account-item" id="openChangeCampus">Change campus <i data-lucide="chevron-right"></i></button>
-      <button type="button" class="account-item" id="openDeleteAccount">Delete account <i data-lucide="chevron-right"></i></button>
+    <div class="popup-body">
+      <p class="account-section-text">Login and security</p>
+      <div class="account-border">
+        <button type="button" class="account-item" id="openEmail">Email addresses <i data-lucide="chevron-right"></i></button>
+        <button type="button" class="account-item" id="openPassword">Password <i data-lucide="chevron-right"></i></button>
+      </div>
+      <p class="account-section-text">Your account</p>
+      <div class="account-border">
+        <button type="button" class="account-item" id="openChangePhone">Change phone number <i data-lucide="chevron-right"></i></button>
+        <button type="button" class="account-item" id="openChangeCampus">Change campus <i data-lucide="chevron-right"></i></button>
+        <button type="button" class="account-item" id="openDeleteAccount">Delete account <i data-lucide="chevron-right"></i></button>
+      </div>
+      <button type="button" class="switch-account-btn" id="switchAccountBtn" hidden>Switch Account</button>
     </div>
   </div>
 
-  <!-- ---------- EMAIL ADDRESSES BACKGROUND ---------- -->
+  <!-- ========== EMAIL ========== -->
   <div class="popup-bg email-bg" id="emailBg" hidden>
-    <button type="button" class="popup-chevron" data-close="emailBg"><i data-lucide="chevron-left"></i></button>
-    <p class="popup-title">Email Address</p>
-    <p class="popup-explain">Email address help you to signup and have access to account.</p>
-    <button type="button" class="change-email-btn" id="openChangeEmailPopup">Change Email</button>
-    <!-- Switch Account - show after you don create new account -->
-    <button type="button" class="switch-account-btn" id="switchAccountBtn" hidden>Switch Account</button>
-    <!-- Change Email Popup - explanation + Continue -->
-    <div class="change-email-popup" id="changeEmailPopup" hidden>
-      <p class="popup-explain">Changing email means you are creating account, you fit switch account later.</p>
-      <button type="button" class="continue-btn" id="continueChangeEmail">Continue</button>
+    <div class="popup-header">
+      <button type="button" class="popup-chevron" data-close="emailBg"><i data-lucide="chevron-left"></i></button>
+      <p class="popup-title">Email Address</p>
+      <span class="popup-header-space"></span>
     </div>
-    <!-- Change Email - New Background - Input new email + Confirm - then go normal signup process -->
-    <!-- Token: JS go generate token here so app go know say na same person with 2 accounts -->
-    <div class="change-email-new-bg" id="changeEmailNewBg" hidden>
+    <div class="popup-body">
+      <p class="popup-explain">Email address help you to signup and have access to account.</p>
+      <button type="button" class="change-email-btn" id="openChangeEmailPopup">Change Email</button>
+      <div class="change-email-popup" id="changeEmailPopup" hidden>
+        <p class="popup-explain">Changing email means you are creating account, you fit switch account later.</p>
+        <button type="button" class="continue-btn" id="continueChangeEmail">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Change Email - New Email -->
+  <div class="popup-bg change-email-new-bg" id="changeEmailNewBg" hidden>
+    <div class="popup-header">
+      <button type="button" class="popup-chevron" data-close="changeEmailNewBg"><i data-lucide="chevron-left"></i></button>
+      <p class="popup-title">New Email</p>
+      <button type="button" class="popup-save-btn" data-save="newEmail">Save <span class="save-spinner" hidden></span></button>
+    </div>
+    <div class="popup-body">
       <p class="popup-explain">Type your new email</p>
       <input type="email" class="popup-input" id="newEmailInput" placeholder="New email" />
       <button type="button" class="confirm-btn" id="confirmNewEmail">Confirm</button>
     </div>
   </div>
 
-  <!-- ---------- PASSWORD BACKGROUND ---------- -->
+  <!-- ========== PASSWORD ========== -->
   <div class="popup-bg password-bg" id="passwordBg" hidden>
-    <button type="button" class="popup-chevron" data-close="passwordBg"><i data-lucide="chevron-left"></i></button>
-    <p class="popup-title">Password</p>
-    <p class="popup-explain">You reset password</p>
-    <input type="email" class="popup-input" id="resetEmailInput" placeholder="Type your email" />
-    <button type="button" class="send-otp-btn" id="sendOtpBtn">Send OTP</button>
-    <input type="text" class="popup-input" id="otpInput" placeholder="Type OTP" />
-    <button type="button" class="confirm-btn" id="confirmOtpBtn">Confirm</button>
-    <div class="reset-password-area" id="resetPasswordArea" hidden>
-      <input type="password" class="popup-input" id="newPasswordInput" placeholder="New password" />
-      <input type="password" class="popup-input" id="confirmPasswordInput" placeholder="Confirm password" />
-      <button type="button" class="confirm-btn" id="confirmNewPassword">Confirm</button>
+    <div class="popup-header">
+      <button type="button" class="popup-chevron" data-close="passwordBg"><i data-lucide="chevron-left"></i></button>
+      <p class="popup-title">Password</p>
+      <button type="button" class="popup-save-btn" data-save="password">Save <span class="save-spinner" hidden></span></button>
     </div>
-  </div>
-
-  <!-- ---------- CHANGE PHONE NUMBER BACKGROUND ---------- -->
-  <div class="popup-bg change-phone-bg" id="changePhoneBg" hidden>
-    <button type="button" class="popup-chevron" data-close="changePhoneBg"><i data-lucide="chevron-left"></i></button>
-    <p class="popup-title">Change phone number</p>
-    <p class="popup-explain">Number is only used to sync contact. It does not have any special effects or anything. You can change anytime.</p>
-    <input type="tel" class="popup-input" id="newPhoneInput" placeholder="New phone number" />
-    <button type="button" class="confirm-btn" id="changePhoneBtn">Change phone number</button>
-    <div class="confirm-password-popup" id="confirmPhonePasswordPopup" hidden>
-      <p class="popup-explain">Type password to confirm</p>
-      <input type="password" class="popup-input" id="phoneConfirmPassword" placeholder="Password" />
-      <button type="button" class="confirm-btn" id="confirmPhonePasswordBtn">Confirm</button>
-    </div>
-  </div>
-
-  <!-- ---------- CHANGE CAMPUS BACKGROUND ---------- -->
-  <div class="popup-bg change-campus-bg" id="changeCampusBg" hidden>
-    <button type="button" class="popup-chevron" data-close="changeCampusBg"><i data-lucide="chevron-left"></i></button>
-    <p class="popup-title">Change campus</p>
-    <p class="popup-explain">Campus helps you determine your feed in Loops. It is 100% anonymous. No one except you can see your campus. It can only be changed every 30 days.</p>
-    <!-- Campus selection like iPhone date picker - scroll / pick - 30 campus -->
-    <div class="campus-picker">
-      <div class="campus-picker-list" id="campusPickerList">
-        <button type="button" class="campus-item">Campus 1</button>
-        <button type="button" class="campus-item">Campus 2</button>
-        <button type="button" class="campus-item">Campus 3</button>
-        <!-- ... up to 30 campus - JS go load full list -->
+    <div class="popup-body">
+      <p class="popup-explain">You reset password</p>
+      <input type="email" class="popup-input" id="resetEmailInput" placeholder="Type your email" />
+      <button type="button" class="send-otp-btn" id="sendOtpBtn">Send OTP</button>
+      <input type="text" class="popup-input" id="otpInput" placeholder="Type OTP" />
+      <button type="button" class="confirm-btn" id="confirmOtpBtn">Confirm</button>
+      <div class="reset-password-area" id="resetPasswordArea" hidden>
+        <input type="password" class="popup-input" id="newPasswordInput" placeholder="New password" />
+        <input type="password" class="popup-input" id="confirmPasswordInput" placeholder="Confirm password" />
+        <button type="button" class="confirm-btn" id="confirmNewPassword">Confirm</button>
       </div>
     </div>
-    <input type="text" class="popup-input" id="customCampusInput" placeholder="Type name of campus" />
-    <button type="button" class="confirm-btn" id="confirmCampusBtn">Confirm</button>
-    <p class="popup-small-note">You can change campus twice. After twice, only in next 30 days you can change again.</p>
   </div>
 
-  <!-- ---------- DELETE ACCOUNT BACKGROUND ---------- -->
+  <!-- ========== CHANGE PHONE ========== -->
+  <div class="popup-bg change-phone-bg" id="changePhoneBg" hidden>
+    <div class="popup-header">
+      <button type="button" class="popup-chevron" data-close="changePhoneBg"><i data-lucide="chevron-left"></i></button>
+      <p class="popup-title">Change phone number</p>
+      <button type="button" class="popup-save-btn" data-save="phone">Save <span class="save-spinner" hidden></span></button>
+    </div>
+    <div class="popup-body">
+      <p class="popup-explain">Number is only used to sync contact. It does not have any special effects or anything. You can change anytime.</p>
+      <input type="tel" class="popup-input" id="newPhoneInput" placeholder="New phone number" />
+      <button type="button" class="confirm-btn" id="changePhoneBtn">Change phone number</button>
+      <div class="confirm-password-popup" id="confirmPhonePasswordPopup" hidden>
+        <p class="popup-explain">Type password to confirm</p>
+        <input type="password" class="popup-input" id="phoneConfirmPassword" placeholder="Password" />
+        <button type="button" class="confirm-btn" id="confirmPhonePasswordBtn">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== CHANGE CAMPUS ========== -->
+  <div class="popup-bg change-campus-bg" id="changeCampusBg" hidden>
+    <div class="popup-header">
+      <button type="button" class="popup-chevron" data-close="changeCampusBg"><i data-lucide="chevron-left"></i></button>
+      <p class="popup-title">Change campus</p>
+      <button type="button" class="popup-save-btn" data-save="campus">Save <span class="save-spinner" hidden></span></button>
+    </div>
+    <div class="popup-body">
+      <p class="popup-explain">Campus helps you determine your feed in Loops. It is 100% anonymous. No one except you can see your campus. It can only be changed every 30 days.</p>
+      <div class="campus-picker"><div class="campus-picker-list" id="campusPickerList"></div></div>
+      <input type="text" class="popup-input" id="customCampusInput" placeholder="Type name of campus" />
+      <button type="button" class="confirm-btn" id="confirmCampusBtn">Confirm</button>
+      <p class="popup-small-note">You can change campus twice. After twice, only in next 30 days you can change again.</p>
+    </div>
+  </div>
+
+  <!-- ========== DELETE ACCOUNT ========== -->
   <div class="popup-bg delete-account-bg" id="deleteAccountBg" hidden>
-    <button type="button" class="popup-chevron" data-close="deleteAccountBg"><i data-lucide="chevron-left"></i></button>
-    <i data-lucide="trash-2" class="delete-big-icon"></i>
-    <p class="popup-title">Delete account</p>
-    <p class="popup-explain">If you delete account you will lose all messages and everything. You can signup back in app later.</p>
-    <button type="button" class="delete-btn" id="deleteAccountBtn">Delete</button>
+    <div class="popup-header">
+      <button type="button" class="popup-chevron" data-close="deleteAccountBg"><i data-lucide="chevron-left"></i></button>
+      <p class="popup-title">Delete account</p>
+      <span class="popup-header-space"></span>
+    </div>
+    <div class="popup-body">
+      <i data-lucide="trash-2" class="delete-big-icon"></i>
+      <p class="popup-explain">If you delete account you will lose all messages and everything. You can signup back in app later.</p>
+      <button type="button" class="delete-btn" id="deleteAccountBtn">Delete</button>
+    </div>
   </div>
 
-  <!-- ---------- PRIVACY BACKGROUND ---------- -->
+  <!-- ========== PRIVACY ========== -->
   <div class="popup-bg privacy-bg" id="privacyBg" hidden>
-    <button type="button" class="popup-chevron" data-close="privacyBg"><i data-lucide="chevron-left"></i></button>
-    <p class="popup-title">Privacy</p>
-    <div class="privacy-border">
-      <button type="button" class="privacy-item" id="openMoments">Moments <i data-lucide="chevron-right"></i></button>
-      <button type="button" class="privacy-item" id="openProfilePicPrivacy">Profile picture <i data-lucide="chevron-right"></i></button>
-      <button type="button" class="privacy-item" id="openAboutPrivacy">About <i data-lucide="chevron-right"></i></button>
-      <button type="button" class="privacy-item" id="openGroupsPrivacy">Groups <i data-lucide="chevron-right"></i></button>
+    <div class="popup-header">
+      <button type="button" class="popup-chevron" data-close="privacyBg"><i data-lucide="chevron-left"></i></button>
+      <p class="popup-title">Privacy</p>
+      <button type="button" class="popup-save-btn" data-save="privacy">Save <span class="save-spinner" hidden></span></button>
+    </div>
+    <div class="popup-body">
+      <div class="privacy-border">
+        <button type="button" class="privacy-item" id="openMoments">Moments <i data-lucide="chevron-right"></i></button>
+        <button type="button" class="privacy-item" id="openProfilePicPrivacy">Profile picture <i data-lucide="chevron-right"></i></button>
+        <button type="button" class="privacy-item" id="openAboutPrivacy">About <i data-lucide="chevron-right"></i></button>
+        <button type="button" class="privacy-item" id="openGroupsPrivacy">Groups <i data-lucide="chevron-right"></i></button>
+      </div>
     </div>
   </div>
 
-  <!-- Moments -->
+  <!-- Privacy sub - Moments / Pic / About / Groups - each get Save -->
   <div class="popup-bg moments-bg" id="momentsBg" hidden>
-    <button type="button" class="popup-chevron" data-close="momentsBg"><i data-lucide="chevron-left"></i></button>
-    <p class="popup-title">Audience who can see my moments</p>
-    <div class="audience-list">
-      <button type="button" class="audience-item" data-value="everyone">Everyone</button>
-      <button type="button" class="audience-item" data-value="contact">Contact</button>
-      <button type="button" class="audience-item" data-value="nobody">Nobody</button>
-    </div>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="momentsBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Audience who can see my moments</p><button type="button" class="popup-save-btn" data-save="momentsPrivacy">Save <span class="save-spinner" hidden></span></button></div>
+    <div class="popup-body"><div class="audience-list"><button type="button" class="audience-item" data-value="everyone">Everyone</button><button type="button" class="audience-item" data-value="contact">Contact</button><button type="button" class="audience-item" data-value="nobody">Nobody</button></div></div>
   </div>
-
-  <!-- Profile Picture Privacy -->
   <div class="popup-bg profile-pic-privacy-bg" id="profilePicPrivacyBg" hidden>
-    <button type="button" class="popup-chevron" data-close="profilePicPrivacyBg"><i data-lucide="chevron-left"></i></button>
-    <p class="popup-title">Who can see my profile picture</p>
-    <div class="audience-list">
-      <button type="button" class="audience-item" data-value="everyone">Everyone</button>
-      <button type="button" class="audience-item" data-value="contact">Contact</button>
-      <button type="button" class="audience-item" data-value="nobody">Nobody</button>
-    </div>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="profilePicPrivacyBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Who can see my profile picture</p><button type="button" class="popup-save-btn" data-save="picPrivacy">Save <span class="save-spinner" hidden></span></button></div>
+    <div class="popup-body"><div class="audience-list"><button type="button" class="audience-item" data-value="everyone">Everyone</button><button type="button" class="audience-item" data-value="contact">Contact</button><button type="button" class="audience-item" data-value="nobody">Nobody</button></div></div>
   </div>
-
-  <!-- About Privacy -->
   <div class="popup-bg about-privacy-bg" id="aboutPrivacyBg" hidden>
-    <button type="button" class="popup-chevron" data-close="aboutPrivacyBg"><i data-lucide="chevron-left"></i></button>
-    <p class="popup-title">Who can see about me</p>
-    <div class="audience-list">
-      <button type="button" class="audience-item" data-value="contact">Contact</button>
-      <button type="button" class="audience-item" data-value="everyone">Everyone</button>
-      <button type="button" class="audience-item" data-value="nobody">Nobody</button>
-    </div>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="aboutPrivacyBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Who can see about me</p><button type="button" class="popup-save-btn" data-save="aboutPrivacy">Save <span class="save-spinner" hidden></span></button></div>
+    <div class="popup-body"><div class="audience-list"><button type="button" class="audience-item" data-value="contact">Contact</button><button type="button" class="audience-item" data-value="everyone">Everyone</button><button type="button" class="audience-item" data-value="nobody">Nobody</button></div></div>
   </div>
-
-  <!-- Groups Privacy -->
   <div class="popup-bg groups-privacy-bg" id="groupsPrivacyBg" hidden>
-    <button type="button" class="popup-chevron" data-close="groupsPrivacyBg"><i data-lucide="chevron-left"></i></button>
-    <p class="popup-title">Who can add me to groups</p>
-    <div class="audience-list">
-      <button type="button" class="audience-item" data-value="contact">Contact</button>
-      <button type="button" class="audience-item" data-value="everyone">Everyone</button>
-      <button type="button" class="audience-item" data-value="nobody">Nobody</button>
-    </div>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="groupsPrivacyBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Who can add me to groups</p><button type="button" class="popup-save-btn" data-save="groupsPrivacy">Save <span class="save-spinner" hidden></span></button></div>
+    <div class="popup-body"><div class="audience-list"><button type="button" class="audience-item" data-value="contact">Contact</button><button type="button" class="audience-item" data-value="everyone">Everyone</button><button type="button" class="audience-item" data-value="nobody">Nobody</button></div></div>
   </div>
 
-  <!-- ---------- CHATS BACKGROUND ---------- -->
+  <!-- ========== CHATS ========== -->
   <div class="popup-bg chats-bg" id="chatsBg" hidden>
-    <button type="button" class="popup-chevron" data-close="chatsBg"><i data-lucide="chevron-left"></i></button>
-    <p class="popup-title">Chats</p>
-    <div class="chats-border">
-      <div class="chats-item"><span>Save images to gallery</span><button type="button" class="toggle-btn" id="saveImagesToggle">Off</button></div>
-      <button type="button" class="chats-item" id="deleteChatsBtn"><span>Delete chats</span><i data-lucide="chevron-right"></i></button>
-      <button type="button" class="chats-item" id="clearChatsBtn"><span>Clear chats</span><i data-lucide="chevron-right"></i></button>
-    </div>
-    <div class="confirm-popup" id="deleteChatsPopup" hidden>
-      <p>Do you want to delete all chat? If you delete, everyone user chat and message will be deleted in the chat load list.</p>
-      <button type="button" class="confirm-btn" id="confirmDeleteChats">Delete</button>
-    </div>
-    <div class="confirm-popup" id="clearChatsPopup" hidden>
-      <p>If you clear chat, all messages will be deleted. Are you sure you want to delete?</p>
-      <button type="button" class="confirm-btn" id="confirmClearChats">Delete</button>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="chatsBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Chats</p><button type="button" class="popup-save-btn" data-save="chats">Save <span class="save-spinner" hidden></span></button></div>
+    <div class="popup-body">
+      <div class="chats-border">
+        <div class="chats-item"><span>Save images to gallery</span><button type="button" class="toggle-btn" id="saveImagesToggle">Off</button></div>
+        <button type="button" class="chats-item" id="deleteChatsBtn"><span>Delete chats</span><i data-lucide="chevron-right"></i></button>
+        <button type="button" class="chats-item" id="clearChatsBtn"><span>Clear chats</span><i data-lucide="chevron-right"></i></button>
+      </div>
+      <div class="confirm-popup" id="deleteChatsPopup" hidden><p>Do you want to delete all chat? If you delete, everyone user chat and message will be deleted in the chat load list.</p><button type="button" class="confirm-btn" id="confirmDeleteChats">Delete</button></div>
+      <div class="confirm-popup" id="clearChatsPopup" hidden><p>If you clear chat, all messages will be deleted. Are you sure you want to delete?</p><button type="button" class="confirm-btn" id="confirmClearChats">Delete</button></div>
     </div>
   </div>
 
-  <!-- ---------- APPEARANCE BACKGROUND ---------- -->
+  <!-- ========== APPEARANCE ========== -->
   <div class="popup-bg appearance-bg" id="appearanceBg" hidden>
-    <button type="button" class="popup-chevron" data-close="appearanceBg"><i data-lucide="chevron-left"></i></button>
-    <p class="popup-title">Appearance</p>
-    <button type="button" class="appearance-more-btn" id="appearanceMoreBtn">...</button>
-    <div class="reset-theme-pill" id="resetThemePill" hidden><button type="button" id="resetThemeBtn">Reset Theme</button></div>
-    <div class="appearance-border">
-      <button type="button" class="appearance-item" id="openChatTheme"><span>Chat theme</span><span class="appearance-item-explain">Chat color and background</span><i data-lucide="chevron-right"></i></button>
-      <button type="button" class="appearance-item" id="openAppTheme"><span>App theme</span><span class="appearance-item-explain">Theme of app</span><i data-lucide="chevron-right"></i></button>
-      <button type="button" class="appearance-item" id="openAppColor"><span>App color</span><span class="appearance-item-explain">White or Black</span><i data-lucide="chevron-right"></i></button>
-      <button type="button" class="appearance-item" id="openAppBubble"><span>App bubble</span><span class="appearance-item-explain">Sender and Receiver bubble color</span><i data-lucide="chevron-right"></i></button>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="appearanceBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Appearance</p><button type="button" class="popup-save-btn" data-save="appearance">Save <span class="save-spinner" hidden></span></button></div>
+    <div class="popup-body">
+      <button type="button" class="appearance-more-btn" id="appearanceMoreBtn">...</button>
+      <div class="reset-theme-pill" id="resetThemePill" hidden><button type="button" id="resetThemeBtn">Reset Theme</button></div>
+      <div class="appearance-border">
+        <button type="button" class="appearance-item" id="openChatTheme"><span>Chat theme</span><span class="appearance-item-explain">Chat color and background</span><i data-lucide="chevron-right"></i></button>
+        <button type="button" class="appearance-item" id="openAppColor"><span>App color</span><span class="appearance-item-explain">White or Black</span><i data-lucide="chevron-right"></i></button>
+        <button type="button" class="appearance-item" id="openAppBubble"><span>App bubble</span><span class="appearance-item-explain">Sender and Receiver bubble color</span><i data-lucide="chevron-right"></i></button>
+      </div>
     </div>
   </div>
-
-  <!-- Chat Theme -->
   <div class="popup-bg chat-theme-bg" id="chatThemeBg" hidden>
-    <button type="button" class="popup-chevron" data-close="chatThemeBg"><i data-lucide="chevron-left"></i></button>
-    <p class="popup-title">Chat theme</p>
-    <div class="appearance-border">
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="chatThemeBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Chat theme</p><button type="button" class="popup-save-btn" data-save="chatTheme">Save <span class="save-spinner" hidden></span></button></div>
+    <div class="popup-body"><div class="appearance-border">
       <button type="button" class="appearance-item" id="openChatColor"><span>Chat color</span><span class="appearance-item-explain">Pick color</span><i data-lucide="chevron-right"></i></button>
       <button type="button" class="appearance-item" id="openChatBackground"><span>Chat background</span><span class="appearance-item-explain">Pick image from gallery</span><i data-lucide="chevron-right"></i></button>
-    </div>
+    </div></div>
   </div>
-
-  <!-- Chat Color - 30 colors in circle -->
   <div class="popup-bg chat-color-bg" id="chatColorBg" hidden>
-    <button type="button" class="popup-chevron" data-close="chatColorBg"><i data-lucide="chevron-left"></i></button>
-    <p class="popup-title">Chat color</p>
-    <div class="color-circle-list" id="chatColorList">
-      <button type="button" class="color-circle" style="background:#ff0000" aria-label="Color 1"></button>
-      <button type="button" class="color-circle" style="background:#00ff00" aria-label="Color 2"></button>
-    </div>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="chatColorBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Chat color</p><button type="button" class="popup-save-btn" data-save="chatColor">Save <span class="save-spinner" hidden></span></button></div>
+    <div class="popup-body"><div class="color-circle-list" id="chatColorList"></div></div>
   </div>
-
-  <!-- App Color - White or Black -->
   <div class="popup-bg app-color-bg" id="appColorBg" hidden>
-    <button type="button" class="popup-chevron" data-close="appColorBg"><i data-lucide="chevron-left"></i></button>
-    <p class="popup-title">App color</p>
-    <div class="app-color-list">
-      <button type="button" class="app-color-item" data-value="white">White</button>
-      <button type="button" class="app-color-item" data-value="black">Black</button>
-    </div>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="appColorBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">App color</p><button type="button" class="popup-save-btn" data-save="appColor">Save <span class="save-spinner" hidden></span></button></div>
+    <div class="popup-body"><div class="app-color-list"><button type="button" class="app-color-item" data-value="white">White</button><button type="button" class="app-color-item" data-value="black">Black</button></div></div>
   </div>
-
-  <!-- App Bubble - Receiver + Sender -->
   <div class="popup-bg app-bubble-bg" id="appBubbleBg" hidden>
-    <button type="button" class="popup-chevron" data-close="appBubbleBg"><i data-lucide="chevron-left"></i></button>
-    <p class="popup-title">App bubble</p>
-    <div class="appearance-border">
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="appBubbleBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">App bubble</p><button type="button" class="popup-save-btn" data-save="bubble">Save <span class="save-spinner" hidden></span></button></div>
+    <div class="popup-body"><div class="appearance-border">
       <button type="button" class="appearance-item" id="openReceiverBubble"><span>Receiver bubble color</span><i data-lucide="chevron-right"></i></button>
       <button type="button" class="appearance-item" id="openSenderBubble"><span>Sender bubble color</span><i data-lucide="chevron-right"></i></button>
-    </div>
+    </div></div>
   </div>
-
-  <!-- Receiver Bubble Color -->
   <div class="popup-bg receiver-bubble-bg" id="receiverBubbleBg" hidden>
-    <button type="button" class="popup-chevron" data-close="receiverBubbleBg"><i data-lucide="chevron-left"></i></button>
-    <p class="popup-title">Receiver bubble color</p>
-    <div class="color-circle-list" id="receiverColorList"></div>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="receiverBubbleBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Receiver bubble color</p><button type="button" class="popup-save-btn" data-save="receiverBubble">Save <span class="save-spinner" hidden></span></button></div>
+    <div class="popup-body"><div class="color-circle-list" id="receiverColorList"></div></div>
   </div>
-
-  <!-- Sender Bubble Color -->
   <div class="popup-bg sender-bubble-bg" id="senderBubbleBg" hidden>
-    <button type="button" class="popup-chevron" data-close="senderBubbleBg"><i data-lucide="chevron-left"></i></button>
-    <p class="popup-title">Sender bubble color</p>
-    <div class="color-circle-list" id="senderColorList"></div>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="senderBubbleBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Sender bubble color</p><button type="button" class="popup-save-btn" data-save="senderBubble">Save <span class="save-spinner" hidden></span></button></div>
+    <div class="popup-body"><div class="color-circle-list" id="senderColorList"></div></div>
   </div>
 
-  <!-- ---------- NOTIFICATIONS BACKGROUND ---------- -->
+  <!-- ========== NOTIFICATIONS ========== -->
   <div class="popup-bg notifications-bg" id="notificationsBg" hidden>
-    <button type="button" class="popup-chevron" data-close="notificationsBg"><i data-lucide="chevron-left"></i></button>
-    <p class="popup-title">Notifications</p>
-    <p class="notif-section-text">Messages notifications</p>
-    <div class="notif-border">
-      <div class="notif-item"><span>Show notifications</span><button type="button" class="toggle-btn">Off</button></div>
-      <div class="notif-item"><span>Sounds</span><button type="button" class="toggle-btn">Off</button></div>
-      <div class="notif-item"><span>Reactions notifications</span><button type="button" class="toggle-btn">Off</button></div>
-    </div>
-    <p class="notif-section-text">Groups notifications</p>
-    <div class="notif-border">
-      <div class="notif-item"><span>Show notifications</span><button type="button" class="toggle-btn">Off</button></div>
-      <div class="notif-item"><span>Sounds</span><button type="button" class="toggle-btn">Off</button></div>
-      <div class="notif-item"><span>Reactions notifications</span><button type="button" class="toggle-btn">Off</button></div>
-    </div>
-    <p class="notif-section-text">Status notifications</p>
-    <div class="notif-border">
-      <div class="notif-item"><span>Show notifications</span><button type="button" class="toggle-btn">Off</button></div>
-      <div class="notif-item"><span>Sounds</span><button type="button" class="toggle-btn">Off</button></div>
-      <div class="notif-item"><span>Reactions notifications</span><button type="button" class="toggle-btn">Off</button></div>
-    </div>
-    <div class="notif-border">
-      <button type="button" class="notif-item" id="openInAppNotif"><span>In-app notifications</span><i data-lucide="chevron-right"></i></button>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="notificationsBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Notifications</p><button type="button" class="popup-save-btn" data-save="notifications">Save <span class="save-spinner" hidden></span></button></div>
+    <div class="popup-body">
+      <p class="notif-section-text">Messages notifications</p>
+      <div class="notif-border"><div class="notif-item"><span>Show notifications</span><button type="button" class="toggle-btn" data-notif="msg-show">Off</button></div><div class="notif-item"><span>Sounds</span><button type="button" class="toggle-btn" data-notif="msg-sound">Off</button></div><div class="notif-item"><span>Reactions notifications</span><button type="button" class="toggle-btn" data-notif="msg-react">Off</button></div></div>
+      <p class="notif-section-text">Groups notifications</p>
+      <div class="notif-border"><div class="notif-item"><span>Show notifications</span><button type="button" class="toggle-btn" data-notif="group-show">Off</button></div><div class="notif-item"><span>Sounds</span><button type="button" class="toggle-btn" data-notif="group-sound">Off</button></div><div class="notif-item"><span>Reactions notifications</span><button type="button" class="toggle-btn" data-notif="group-react">Off</button></div></div>
+      <p class="notif-section-text">Moments notifications</p>
+      <div class="notif-border"><div class="notif-item"><span>Show notifications</span><button type="button" class="toggle-btn" data-notif="moments-show">Off</button></div><div class="notif-item"><span>Sounds</span><button type="button" class="toggle-btn" data-notif="moments-sound">Off</button></div><div class="notif-item"><span>Reactions notifications</span><button type="button" class="toggle-btn" data-notif="moments-react">Off</button></div></div>
+      <div class="notif-border"><button type="button" class="notif-item" id="openInAppNotif"><span>In-app notifications</span><i data-lucide="chevron-right"></i></button></div>
     </div>
   </div>
-
-  <!-- In-app notifications - New background -->
   <div class="popup-bg inapp-notif-bg" id="inAppNotifBg" hidden>
-    <button type="button" class="popup-chevron" data-close="inAppNotifBg"><i data-lucide="chevron-left"></i></button>
-    <p class="popup-title">In-app notifications</p>
-    <div class="notif-border">
-      <div class="notif-item"><span>Sounds</span><button type="button" class="toggle-btn">Off</button></div>
-      <div class="notif-item"><span>Vibrate</span><button type="button" class="toggle-btn">Off</button></div>
-      <div class="notif-item"><span>Show notifications</span><button type="button" class="toggle-btn">Off</button></div>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="inAppNotifBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">In-app notifications</p><button type="button" class="popup-save-btn" data-save="inAppNotif">Save <span class="save-spinner" hidden></span></button></div>
+    <div class="popup-body"><div class="notif-border"><div class="notif-item"><span>Sounds</span><button type="button" class="toggle-btn" data-notif="inapp-sound">Off</button></div><div class="notif-item"><span>Vibrate</span><button type="button" class="toggle-btn" data-notif="inapp-vibrate">Off</button></div><div class="notif-item"><span>Show notifications</span><button type="button" class="toggle-btn" data-notif="inapp-show">Off</button></div></div></div>
+  </div>
+
+  <!-- ========== HELP AND FEEDBACK ========== -->
+  <div class="popup-bg help-bg" id="helpBg" hidden>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="helpBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Help and feedback</p><span class="popup-header-space"></span></div>
+    <div class="popup-body">
+      <p class="help-app-name">Konnekt</p>
+      <div class="help-app-icon-round"><img src="" alt="Konnekt" class="help-app-icon-img" /></div>
+      <div class="help-border">
+        <button type="button" class="help-item" id="openHelpCenter"><span><strong>Help center</strong><small>Get helps , contact us</small></span><i data-lucide="chevron-right"></i></button>
+        <button type="button" class="help-item" id="openSendFeedback"><span><strong>Send feedback</strong><small>Report technical issues</small></span><i data-lucide="chevron-right"></i></button>
+      </div>
+      <div class="help-border">
+        <button type="button" class="help-item" id="openTermsPolicy"><span><strong>Terms and policy</strong><small>How to use Konnekt correctly</small></span><i data-lucide="chevron-right"></i></button>
+        <button type="button" class="help-item" id="openAboutKonnekt"><span><strong>About konnekt</strong></span><i data-lucide="chevron-right"></i></button>
+      </div>
+      <p class="help-copy">© 2026 Konnekt</p>
     </div>
   </div>
 
-  <!-- ---------- HELP / LOGOUT / INVITE - PLACEHOLDERS ---------- -->
-  <div class="popup-bg help-bg" id="helpBg" hidden>
-    <button type="button" class="popup-chevron" data-close="helpBg"><i data-lucide="chevron-left"></i></button>
-    <p class="popup-title">Help and supports</p>
+  <!-- Help center -->
+  <div class="popup-bg help-center-bg" id="helpCenterBg" hidden>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="helpCenterBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Help center</p><span class="popup-header-space"></span></div>
+    <div class="popup-body">
+      <div class="help-app-icon-round"><img src="" alt="Konnekt" class="help-app-icon-img" /></div>
+      <p class="help-big-text">How can we help you ?</p>
+      <div class="search-setting-wrap"><i data-lucide="search" class="search-setting-icon"></i><input type="text" placeholder="Search help center" class="search-setting-input" id="searchHelpInput" /></div>
+      <p class="help-section-text">Help topics</p>
+      <div class="help-border">
+        <button type="button" class="help-item" data-help="get-started">Get started <i data-lucide="chevron-right"></i></button>
+        <button type="button" class="help-item" data-help="chats">Chats <i data-lucide="chevron-right"></i></button>
+        <button type="button" class="help-item" data-help="anonymous">Anonymous feed <i data-lucide="chevron-right"></i></button>
+        <button type="button" class="help-item" data-help="privacy">Privacy security and safety <i data-lucide="chevron-right"></i></button>
+        <button type="button" class="help-item" data-help="accounts">Accounts and accounts bans <i data-lucide="chevron-right"></i></button>
+        <button type="button" class="help-item" data-help="spotify">How can I connect Spotify to my mood in my chat <i data-lucide="chevron-right"></i></button>
+      </div>
+      <p class="help-section-text">Popular articles</p>
+      <div class="help-border">
+        <button type="button" class="help-item" data-article="call">How to make call <i data-lucide="chevron-right"></i></button>
+        <button type="button" class="help-item" data-article="safe">How to stay safe in konnekt <i data-lucide="chevron-right"></i></button>
+        <button type="button" class="help-item" data-article="anonymous-feed">How to use anonymous feed <i data-lucide="chevron-right"></i></button>
+        <button type="button" class="help-item" data-article="music-mood">What does connect music to mood mean <i data-lucide="chevron-right"></i></button>
+      </div>
+      <button type="button" class="help-contact-btn" id="openContactSupport"><i data-lucide="user" class="help-contact-icon"></i><span><strong>Need more help ?</strong><small>Contact us and we will respond to you in konnekt chat</small></span></button>
+    </div>
   </div>
-  <div class="popup-bg logout-bg" id="logoutBg" hidden>
-    <button type="button" class="popup-chevron" data-close="logoutBg"><i data-lucide="chevron-left"></i></button>
-    <p class="popup-title">Logout</p>
+
+  <!-- Get started -->
+  <div class="popup-bg get-started-bg" id="getStartedBg" hidden>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="getStartedBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Get started</p><span class="popup-header-space"></span></div>
+    <div class="popup-body"><div class="help-border">
+      <button type="button" class="help-item" data-help-detail="moments">Moments <i data-lucide="chevron-right"></i></button>
+      <button type="button" class="help-item" data-help-detail="trouble">Trouble shooting <i data-lucide="chevron-right"></i></button>
+      <button type="button" class="help-item" data-help-detail="chats">Chats <i data-lucide="chevron-right"></i></button>
+      <button type="button" class="help-item" data-help-detail="loops">Loops <i data-lucide="chevron-right"></i></button>
+      <button type="button" class="help-item" data-help-detail="profile">Profile <i data-lucide="chevron-right"></i></button>
+    </div></div>
   </div>
+
+  <!-- Generic help detail - JS go fill title + text -->
+  <div class="popup-bg help-detail-bg" id="helpDetailBg" hidden>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="helpDetailBg"><i data-lucide="chevron-left"></i></button><p class="popup-title" id="helpDetailTitle">Help</p><span class="popup-header-space"></span></div>
+    <div class="popup-body"><div id="helpDetailContent" class="help-detail-content"></div></div>
+  </div>
+
+  <!-- Send feedback -->
+  <div class="popup-bg send-feedback-bg" id="sendFeedbackBg" hidden>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="sendFeedbackBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Send feedback</p><button type="button" class="popup-save-btn" data-save="feedback">Send <span class="save-spinner" hidden></span></button></div>
+    <div class="popup-body">
+      <p class="help-big-text">Help us to build Konnekt</p>
+      <textarea class="feedback-big-input" id="feedbackInput" placeholder="Tell us how you have been using Konnekt and what other things you need or want..."></textarea>
+      <div class="feedback-image-border">
+        <button type="button" class="feedback-image-btn" id="feedbackImageBtn"><i data-lucide="image"></i></button>
+        <input type="text" class="popup-input" id="feedbackIssueInput" placeholder="Write any technical issue you are using..." />
+      </div>
+    </div>
+  </div>
+
+  <!-- Terms and policy -->
+  <div class="popup-bg terms-bg" id="termsPolicyBg" hidden>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="termsPolicyBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Terms and policy</p><span class="popup-header-space"></span></div>
+    <div class="popup-body"><div id="termsContent" class="help-detail-content"></div></div>
+  </div>
+
+  <!-- About konnekt -->
+  <div class="popup-bg about-konnekt-bg" id="aboutKonnektBg" hidden>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="aboutKonnektBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">About konnekt</p><span class="popup-header-space"></span></div>
+    <div class="popup-body"><div id="aboutKonnektContent" class="help-detail-content"></div></div>
+  </div>
+
+  <!-- ========== INVITE ========== -->
   <div class="popup-bg invite-bg" id="inviteBg" hidden>
-    <button type="button" class="popup-chevron" data-close="inviteBg"><i data-lucide="chevron-left"></i></button>
-    <p class="popup-title">Invite a contact</p>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="inviteBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Invite a contact</p><span class="popup-header-space"></span></div>
+    <div class="popup-body">
+      <div class="search-setting-wrap"><i data-lucide="search" class="search-setting-icon"></i><input type="text" placeholder="Search contact" class="search-setting-input" id="searchContactInput" /></div>
+      <button type="button" class="invite-share-link" id="inviteShareLink">Share link <span>Tap to copy link</span></button>
+      <div class="invite-list" id="inviteContactList"></div>
+    </div>
+  </div>
+
+  <!-- ========== LOGOUT ========== -->
+  <div class="popup-bg logout-bg" id="logoutBg" hidden>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="logoutBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Logout</p><span class="popup-header-space"></span></div>
+    <div class="popup-body">
+      <p class="popup-explain">Do you want to log out? You can login back with your email and password back.</p>
+      <button type="button" class="delete-btn" id="confirmLogoutBtn">Log out</button>
+      <button type="button" class="confirm-btn" data-close="logoutBg">Cancel</button>
+    </div>
   </div>
 
 </div>
-<!-- ================= END SETTINGS PAGE ================= -->
 </main>
 
 
@@ -2518,6 +2545,7 @@
 <script src="loops.js"></script>
 <script src="profile.js"></script>
 <script src="setting.js"></script>
+
 </html>
 
 

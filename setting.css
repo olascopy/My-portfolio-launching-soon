@@ -1,11 +1,12 @@
 /* ==================================================================
    SETTINGS PAGE - FULL CSS - CLEAN - NO CUT
    NOTE:
-   - Your original CSS still dey - I no cut am
+   - Structure stay the way it is - left 60px / 450px, right 875px
    - I add all new ones for everything we talk about
-   - Profile UI = edit-section-profile - ALREADY EXISTS - I no touch am here
+   - Profile UI = #pageProfile - ALREADY EXISTS - I no touch its own CSS
+   - This file only override am when e dey inside Settings
    - All popup backgrounds = iPhone popup style - slide from right
-   - Variables: --bg-app, --text-main, --side-border - keep your own variables
+   - Variables: --bg-app, --text-main, --side-border - keep your own
    ================================================================== */
 
 /* ================= SETTINGS PAGE - MAIN LAYOUT ================= */
@@ -20,7 +21,11 @@
     width: 450px;
     overflow-y: auto;
     z-index: 10;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(128,128,128,.35) transparent;
 }
+.settings-page-left::-webkit-scrollbar{width:4px}
+.settings-page-left::-webkit-scrollbar-thumb{background:rgba(128,128,128,.35);border-radius:99px}
 
 /* Settings Right - Fixed right side - preview side */
 .settings-page-right{
@@ -53,11 +58,16 @@
 
 /* ================= SETTINGS LEFT - TOP FIXED AREA ================= */
 
-/* Top row - Settings text + QR + Mobile search icon */
+/* Top row - Settings text + QR + Save + Mobile search icon - fixed */
 .settings-page-extra-flow{
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background-color: var(--bg-app);
+    padding: 6px 0 8px;
 }
 
 /* Settings text - Top left */
@@ -75,7 +85,7 @@
     height: 40px;
     border-radius: 10px;
     background-color: rgb(128, 128, 128, 0.3);
-    margin-right: 30px;
+    margin-right: 12px;
     margin-top: 15px;
     cursor: pointer;
     overflow: hidden;
@@ -93,7 +103,35 @@
     border-radius: 10px;
 }
 
-/* Search Icon - Mobile Top - Hidden for desktop */
+/* Save - Top right - Settings Left + every background wey get change */
+.settings-save-btn,
+.popup-save-btn{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    color: rgb(0,122,255);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 8px 4px;
+    flex-shrink: 0;
+}
+/* Rolls circle - when click Save, spinner go roll, frontend send backend */
+.save-spinner{
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(0,122,255,.25);
+    border-top-color: rgb(0,122,255);
+    border-radius: 50%;
+    display: inline-block;
+    animation: spin .7s linear infinite;
+}
+.save-spinner[hidden]{display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Search Icon - Mobile Top - Hidden for desktop, show when scroll pass input */
 .search-icon-top-mobile{
     display: none;
     width: 40px;
@@ -108,7 +146,7 @@
     align-items: center;
     justify-content: center;
 }
-
+.search-icon-top-mobile.show{display:flex}
 .search-icon-top-mobile-icon{
     width: 20px;
     height: 20px;
@@ -149,11 +187,9 @@
     padding-right: 14px;
     font-size: 15px;
 }
-
 .search-setting-input:hover{
     background-color: rgb(128, 128, 128, 0.3);
 }
-
 .search-setting-input::placeholder{
     font-size: 15px;
     font-weight: 500;
@@ -169,7 +205,7 @@
     width: 380px;
     height: 100px;
     background-color: var(--bg-app);
-    border-bottom: 1px solid rgb(128, 128, 128, 0.6);
+    border-bottom: 1px solid rgb(128, 128, 128, 0.25);
 }
 
 /* Profile extra border - Inner - Clickable */
@@ -180,7 +216,6 @@
     border-radius: 10px;
     cursor: pointer;
 }
-
 .profile-extra-setting-border:hover{
     background-color: rgb(128, 128, 128, 0.3);
 }
@@ -251,7 +286,7 @@
     overflow: hidden;
 }
 
-/* Each item in left list - 1px solid bottom */
+/* Each item in left list - 1px solid bottom, soft opacity so rounding go show */
 .settings-left-item{
     display: flex;
     align-items: center;
@@ -260,26 +295,123 @@
     padding: 16px 12px;
     background-color: transparent;
     border: none;
-    border-bottom: 1px solid rgb(128, 128, 128, 0.6);
+    border-bottom: 1px solid rgb(128, 128, 128, 0.25);
     color: var(--text-main);
     font-size: 16px;
     font-weight: 400;
     cursor: pointer;
     text-align: left;
 }
-
 .settings-left-item:last-child{
     border-bottom: none;
 }
-
 .settings-left-item:hover{
     background-color: rgb(128, 128, 128, 0.2);
 }
-
+.settings-left-icon{width:20px;height:20px;color:grey;flex-shrink:0}
+.settings-left-item span{flex:1}
 .settings-left-item-chevron{
     width: 18px;
     height: 18px;
     color: grey;
+}
+
+/* ==================================================================
+   PROFILE UI INSIDE SETTINGS - TAKE OVER SETTINGS RIGHT / LEFT
+   - JS add .profile-in-settings when you click profile border
+   - JS remove am when you click X / swipe down
+   - This no touch Profile main page - only when class dey
+   ================================================================== */
+
+/* FORCE - Profile inside Settings must show */
+#pageProfile.profile-in-settings{
+  display: block !important;
+  visibility: visible !important;
+  position: fixed !important;
+  top: 0 !important; bottom: 0 !important;
+  left: 510px !important; right: 0 !important;
+  width: auto !important;
+  z-index: 999 !important;
+  background: var(--bg-app) !important;
+}
+#pageProfile.profile-in-settings .edit-section-profile{
+  display: flex !important;
+  visibility: visible !important;
+  position: fixed !important;
+  left: 510px !important; right: 0 !important;
+  top: 0 !important;
+  z-index: 1000 !important;
+}
+#pageProfile.profile-in-settings .extrabackground-profile{
+  display: block !important;
+  visibility: visible !important;
+  position: absolute !important;
+  top: 85px !important; left: 24px !important;
+  right: 24px !important; bottom: 20px !important;
+  height: auto !important; width: auto !important;
+  z-index: 999 !important;
+}
+@media (max-width: 768px){
+  #pageProfile.profile-in-settings{ left: 0 !important; right: 0 !important; }
+  #pageProfile.profile-in-settings .edit-section-profile{ left: 0 !important; right: 0 !important; }
+}
+#pageProfile.profile-in-settings[hidden]{display:none !important}
+
+
+/* Cancel X - show for Settings, JS create am if HTML no get am */
+#pageProfile.profile-in-settings .cancel-button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 12px;
+    margin-left: 14px;
+    background-color: rgb(128,128,128,.15);
+    flex-shrink: 0;
+}
+/* Title centre for Settings Right, Save stay right */
+#pageProfile.profile-in-settings .edit-section-text{margin-right:0}
+
+
+/* Inside body - centre the things wey get fixed left margin for main page */
+#pageProfile.profile-in-settings .round-profile{
+    margin-left: auto;
+    margin-right: auto;
+}
+#pageProfile.profile-in-settings .username-border{
+    justify-content: center;
+}
+#pageProfile.profile-in-settings .username-profile{
+    margin-left: 0;
+}
+#pageProfile.profile-in-settings .id-profile{
+    margin-left: 0;
+    text-align: center;
+}
+#pageProfile.profile-in-settings .personal-information-text,
+#pageProfile.profile-in-settings .about-me-text,
+#pageProfile.profile-in-settings .mood-connect-text{
+    margin-left: 24px;
+}
+#pageProfile.profile-in-settings .input-about-border{
+    margin: 0 24px;
+}
+#pageProfile.profile-in-settings .input-about{
+    margin-left: 0;
+    width: 100%;
+}
+#pageProfile.profile-in-settings .mood-connect-display{
+    margin-left: 24px;
+    margin-right: 24px;
+    width: auto;
+}
+#pageProfile.profile-in-settings .preview-profile-btn{
+    margin-left: auto;
+    margin-right: 24px;
+}
+/* Preview / Mood / Full Image popups - stay on top of Settings Right */
+#pageProfile.profile-in-settings .preview-background,
+#pageProfile.profile-in-settings .popup-overlay{
+    z-index: 80;
 }
 
 /* ==================================================================
@@ -298,10 +430,12 @@
     z-index: 20;
     padding: 20px;
     box-sizing: border-box;
-    /* iPhone popup animation - slide from right */
     animation: popupSlideIn 0.3s ease;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(128,128,128,.35) transparent;
 }
-
+.popup-bg::-webkit-scrollbar{width:4px}
+.popup-bg::-webkit-scrollbar-thumb{background:rgba(128,128,128,.35);border-radius:99px}
 @keyframes popupSlideIn{
     from{ transform: translateX(100%); opacity: 0; }
     to{ transform: translateX(0); opacity: 1; }
@@ -310,6 +444,28 @@
 /* Hide popup when hidden attribute dey */
 .popup-bg[hidden]{
     display: none;
+}
+
+/* Header - chevron + title + Save - fixed top for each background */
+.popup-header{
+    position: sticky;
+    top: -20px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: -20px -20px 10px;
+    padding: 14px 14px 10px;
+    background-color: var(--bg-app);
+    border-bottom: 1px solid rgb(128,128,128,.25);
+}
+.popup-header-space{width:52px;flex-shrink:0}
+
+/* Body - scroll, header no scroll */
+.popup-body{
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* Chevron back - Top left */
@@ -322,7 +478,6 @@
     display: flex;
     align-items: center;
 }
-
 .popup-chevron svg{
     width: 24px;
     height: 24px;
@@ -336,6 +491,7 @@
     margin-top: 15px;
     margin-bottom: 15px;
 }
+.popup-header .popup-title{margin:0;flex:1;text-align:center;font-size:17px;font-weight:700}
 
 /* Popup explanation text */
 .popup-explain{
@@ -367,10 +523,10 @@
     margin-bottom: 14px;
     box-sizing: border-box;
 }
-
 .popup-input::placeholder{
     color: rgb(128, 128, 128, 0.6);
 }
+.popup-input:focus{outline:1px solid rgb(0,122,255)}
 
 /* Confirm / Continue / Send OTP buttons */
 .confirm-btn,
@@ -393,7 +549,7 @@
 .switch-account-btn{
     width: 100%;
     height: 44px;
-    border: 1px solid rgb(128, 128, 128, 0.6);
+    border: 1px solid rgb(128, 128, 128, 0.25);
     border-radius: 12px;
     background-color: transparent;
     color: var(--text-main);
@@ -467,7 +623,6 @@
     align-items: center;
     justify-content: center;
 }
-
 .qr-profile-round-inner{
     width: 40px;
     height: 40px;
@@ -504,14 +659,12 @@
     padding: 14px;
     box-sizing: border-box;
 }
-
 .qr-share-link{
     color: var(--text-main);
     font-size: 13px;
     word-break: break-all;
     margin-bottom: 10px;
 }
-
 .qr-copy-link-btn{
     width: 100%;
     height: 38px;
@@ -522,16 +675,19 @@
     cursor: pointer;
 }
 
-/* ================= SCANNER BACKGROUND ================= */
+/* ================= SCANNER BACKGROUND - CAMERA OPEN ================= */
 
 .scanner-area{
+    position: relative;
     width: 100%;
     height: 320px;
     background-color: black;
     border-radius: 20px;
     margin-top: 20px;
+    overflow: hidden;
 }
-
+#scannerVideo{width:100%;height:100%;object-fit:cover;display:block}
+.scanner-frame{position:absolute;inset:18%;border:2px solid #fff;border-radius:18px;pointer-events:none}
 .scanner-gallery-btn{
     width: 100%;
     height: 44px;
@@ -556,14 +712,12 @@
     margin-top: 20px;
     margin-bottom: 10px;
 }
-
 .account-border{
     background-color: var(--bg-app);
-    border: 1px solid rgb(128, 128, 128, 0.3);
+    border: 1px solid rgb(128, 128, 128, 0.25);
     border-radius: 12px;
     overflow: hidden;
 }
-
 .account-item{
     display: flex;
     align-items: center;
@@ -572,17 +726,15 @@
     padding: 16px 12px;
     background: none;
     border: none;
-    border-bottom: 1px solid rgb(128, 128, 128, 0.6);
+    border-bottom: 1px solid rgb(128, 128, 128, 0.25);
     color: var(--text-main);
     font-size: 16px;
     cursor: pointer;
     text-align: left;
 }
-
 .account-item:last-child{
     border-bottom: none;
 }
-
 .account-item:hover{
     background-color: rgb(128, 128, 128, 0.2);
 }
@@ -598,7 +750,9 @@
     padding: 14px;
     margin-top: 12px;
 }
-
+.change-email-popup .popup-explain,
+.confirm-password-popup .popup-explain,
+.confirm-popup p{margin-bottom:12px}
 .change-email-new-bg,
 .reset-password-area{
     margin-top: 12px;
@@ -636,26 +790,24 @@
     margin-bottom: 14px;
     padding: 10px;
     box-sizing: border-box;
+    scrollbar-width: thin;
 }
-
 .campus-picker-list{
     display: flex;
     flex-direction: column;
     gap: 6px;
 }
-
 .campus-item{
     width: 100%;
     padding: 12px;
     background-color: transparent;
     border: none;
-    border-bottom: 1px solid rgb(128, 128, 128, 0.3);
+    border-bottom: 1px solid rgb(128, 128, 128, 0.25);
     color: var(--text-main);
     font-size: 16px;
     cursor: pointer;
     text-align: center;
 }
-
 .campus-item:hover,
 .campus-item.selected{
     background-color: rgb(128, 128, 128, 0.3);
@@ -665,11 +817,10 @@
 /* ================= PRIVACY ================= */
 
 .privacy-border{
-    border: 1px solid rgb(128, 128, 128, 0.3);
+    border: 1px solid rgb(128, 128, 128, 0.25);
     border-radius: 12px;
     overflow: hidden;
 }
-
 .privacy-item{
     display: flex;
     align-items: center;
@@ -678,58 +829,53 @@
     padding: 16px 12px;
     background: none;
     border: none;
-    border-bottom: 1px solid rgb(128, 128, 128, 0.6);
+    border-bottom: 1px solid rgb(128, 128, 128, 0.25);
     color: var(--text-main);
     font-size: 16px;
     cursor: pointer;
     text-align: left;
 }
-
 .privacy-item:last-child{
     border-bottom: none;
 }
-
 .privacy-item:hover{
     background-color: rgb(128, 128, 128, 0.2);
 }
 
 /* Audience list - Moments / About / Profile Pic / Groups */
 .audience-list{
-    border: 1px solid rgb(128, 128, 128, 0.3);
+    border: 1px solid rgb(128, 128, 128, 0.25);
     border-radius: 12px;
     overflow: hidden;
 }
-
 .audience-item{
     display: block;
     width: 100%;
     padding: 16px 12px;
     background: none;
     border: none;
-    border-bottom: 1px solid rgb(128, 128, 128, 0.6);
+    border-bottom: 1px solid rgb(128, 128, 128, 0.25);
     color: var(--text-main);
     font-size: 16px;
     cursor: pointer;
     text-align: left;
 }
-
 .audience-item:last-child{
     border-bottom: none;
 }
-
 .audience-item:hover,
 .audience-item.selected{
     background-color: rgb(128, 128, 128, 0.2);
+    color: rgb(0,122,255);
 }
 
 /* ================= CHATS ================= */
 
 .chats-border{
-    border: 1px solid rgb(128, 128, 128, 0.3);
+    border: 1px solid rgb(128, 128, 128, 0.25);
     border-radius: 12px;
     overflow: hidden;
 }
-
 .chats-item{
     display: flex;
     align-items: center;
@@ -738,18 +884,16 @@
     padding: 16px 12px;
     background: none;
     border: none;
-    border-bottom: 1px solid rgb(128, 128, 128, 0.6);
+    border-bottom: 1px solid rgb(128, 128, 128, 0.25);
     color: var(--text-main);
     font-size: 16px;
     cursor: pointer;
     text-align: left;
     box-sizing: border-box;
 }
-
 .chats-item:last-child{
     border-bottom: none;
 }
-
 .chats-item:hover{
     background-color: rgb(128, 128, 128, 0.2);
 }
@@ -781,7 +925,7 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     z-index: 30;
 }
-
+.reset-theme-pill[hidden]{display:none}
 .reset-theme-pill button{
     background: none;
     border: none;
@@ -789,13 +933,11 @@
     font-size: 14px;
     cursor: pointer;
 }
-
 .appearance-border{
-    border: 1px solid rgb(128, 128, 128, 0.3);
+    border: 1px solid rgb(128, 128, 128, 0.25);
     border-radius: 12px;
     overflow: hidden;
 }
-
 .appearance-item{
     display: flex;
     align-items: center;
@@ -804,18 +946,16 @@
     padding: 16px 12px;
     background: none;
     border: none;
-    border-bottom: 1px solid rgb(128, 128, 128, 0.6);
+    border-bottom: 1px solid rgb(128, 128, 128, 0.25);
     color: var(--text-main);
     font-size: 16px;
     cursor: pointer;
     text-align: left;
     gap: 8px;
 }
-
 .appearance-item:last-child{
     border-bottom: none;
 }
-
 .appearance-item:hover{
     background-color: rgb(128, 128, 128, 0.2);
 }
@@ -835,7 +975,6 @@
     gap: 14px;
     margin-top: 10px;
 }
-
 .color-circle{
     width: 40px;
     height: 40px;
@@ -844,7 +983,6 @@
     cursor: pointer;
     flex-shrink: 0;
 }
-
 .color-circle.selected{
     border-color: var(--text-main);
     transform: scale(1.1);
@@ -852,31 +990,29 @@
 
 /* App Color - White or Black */
 .app-color-list{
-    border: 1px solid rgb(128, 128, 128, 0.3);
+    border: 1px solid rgb(128, 128, 128, 0.25);
     border-radius: 12px;
     overflow: hidden;
 }
-
 .app-color-item{
     display: block;
     width: 100%;
     padding: 16px 12px;
     background: none;
     border: none;
-    border-bottom: 1px solid rgb(128, 128, 128, 0.6);
+    border-bottom: 1px solid rgb(128, 128, 128, 0.25);
     color: var(--text-main);
     font-size: 16px;
     cursor: pointer;
     text-align: left;
 }
-
 .app-color-item:last-child{
     border-bottom: none;
 }
-
 .app-color-item:hover,
 .app-color-item.selected{
     background-color: rgb(128, 128, 128, 0.2);
+    color: rgb(0,122,255);
 }
 
 /* ================= NOTIFICATIONS ================= */
@@ -887,14 +1023,12 @@
     margin-top: 20px;
     margin-bottom: 10px;
 }
-
 .notif-border{
-    border: 1px solid rgb(128, 128, 128, 0.3);
+    border: 1px solid rgb(128, 128, 128, 0.25);
     border-radius: 12px;
     overflow: hidden;
     margin-bottom: 10px;
 }
-
 .notif-item{
     display: flex;
     align-items: center;
@@ -903,18 +1037,16 @@
     padding: 16px 12px;
     background: none;
     border: none;
-    border-bottom: 1px solid rgb(128, 128, 128, 0.6);
+    border-bottom: 1px solid rgb(128, 128, 128, 0.25);
     color: var(--text-main);
     font-size: 16px;
     cursor: pointer;
     text-align: left;
     box-sizing: border-box;
 }
-
 .notif-item:last-child{
     border-bottom: none;
 }
-
 .notif-item:hover{
     background-color: rgb(128, 128, 128, 0.2);
 }
@@ -934,10 +1066,72 @@
     padding: 0 10px;
     flex-shrink: 0;
 }
-
 .toggle-btn.on{
     background-color: rgb(0, 122, 255);
 }
+
+/* ================= HELP AND FEEDBACK ================= */
+
+/* Help - Konnekt name + icon + borders */
+.help-app-name{text-align:center;font-weight:800;font-size:20px;color:var(--text-main);margin:6px 0 12px}
+.help-app-icon-round{width:76px;height:76px;border-radius:22px;border:1px solid rgb(128,128,128,.25);margin:0 auto 14px;overflow:hidden;background:rgb(128,128,128,.15)}
+.help-app-icon-img{width:100%;height:100%;object-fit:cover}
+.help-section-text{color:grey;font-size:14px;margin-top:20px;margin-bottom:10px}
+.help-border{border:1px solid rgb(128,128,128,.25);border-radius:12px;overflow:hidden;margin-bottom:12px}
+.help-item{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    width:100%;padding:16px 12px;background:none;border:none;
+    border-bottom:1px solid rgb(128,128,128,.25);
+    color:var(--text-main);font-size:16px;cursor:pointer;text-align:left;
+}
+.help-item:last-child{border-bottom:none}
+.help-item:hover{background-color:rgb(128,128,128,.2)}
+.help-item span{flex:1;display:flex;flex-direction:column;gap:2px}
+.help-item small{color:grey;font-size:12px}
+.help-big-text{font-size:22px;font-weight:800;text-align:center;color:var(--text-main);margin:10px 0 14px}
+.help-copy{text-align:center;color:grey;font-size:12px;margin-top:20px}
+.help-contact-btn{
+    width:100%;display:flex;gap:12px;align-items:center;text-align:left;
+    border:1px solid rgb(128,128,128,.25);border-radius:12px;padding:14px;margin-top:14px;
+    background:none;color:var(--text-main);cursor:pointer;
+}
+.help-contact-btn span{display:flex;flex-direction:column;gap:2px}
+.help-contact-btn small{color:grey;font-size:12px}
+.help-contact-icon{color:grey}
+.help-detail-content{font-size:14px;line-height:1.7;color:grey}
+.help-detail-content h3{font-size:16px;color:var(--text-main);margin:16px 0 6px}
+.help-detail-content h3:first-child{margin-top:0}
+.help-detail-content p{margin:0 0 10px}
+.help-detail-content ul{margin:0 0 12px;padding-left:18px}
+
+/* ================= SEND FEEDBACK ================= */
+
+.feedback-big-input{
+    width:100%;min-height:150px;border:none;outline:none;border-radius:12px;
+    padding:14px;font:inherit;font-size:15px;resize:vertical;
+    background-color:rgb(128,128,128,.2);color:var(--text-main);margin-bottom:14px;box-sizing:border-box;
+}
+.feedback-image-border{display:flex;gap:10px;align-items:center;border:1px solid rgb(128,128,128,.25);border-radius:12px;padding:10px}
+.feedback-image-border .popup-input{margin:0}
+.feedback-image-btn{
+    width:44px;height:44px;flex:none;border:1px solid rgb(128,128,128,.25);
+    border-radius:12px;display:flex;align-items:center;justify-content:center;
+    background:none;color:var(--text-main);cursor:pointer;
+}
+
+/* ================= INVITE / LOGOUT ================= */
+
+.invite-share-link{
+    width:100%;display:flex;justify-content:space-between;align-items:center;
+    border:1px solid rgb(128,128,128,.25);border-radius:12px;padding:14px;
+    font-weight:700;background:none;color:var(--text-main);cursor:pointer;margin-bottom:14px;
+}
+.invite-share-link span{color:grey;font-weight:400;font-size:13px}
+.invite-list{display:flex;flex-direction:column}
+.invite-contact-item{display:flex;align-items:center;gap:10px;padding:11px 4px;border-bottom:1px solid rgb(128,128,128,.25);color:var(--text-main)}
+
+/* App Black - when JS add .app-black to #pageSettings */
+#pageSettings.app-black{--bg-app:#000;--text-main:#fff;--side-border:#111}
 
 /* ================= MOBILE - SETTINGS ================= */
 
@@ -953,8 +1147,52 @@
         left: 0;
         width: 100%;
     }
+    /* Profile in Settings - Mobile: take over Settings Left, full width */
+    #pageProfile.profile-in-settings,
+    #pageProfile.profile-in-settings-mobile{
+        left: 0;
+        right: 0;
+        width: 100%;
+    }
+    #pageProfile.profile-in-settings .edit-section-profile,
+    #pageProfile.profile-in-settings-mobile .edit-section-profile{
+        left: 0;
+        right: 0;
+        width: 100%;
+    }
+    #pageProfile.profile-in-settings .extrabackground-profile,
+    #pageProfile.profile-in-settings-mobile .extrabackground-profile{
+        left: 12px;
+        right: 12px;
+        top: 80px;
+        bottom: 12px;
+        border-radius: 16px;
+    }
+    #pageProfile.profile-in-settings .personal-information-text,
+    #pageProfile.profile-in-settings .about-me-text,
+    #pageProfile.profile-in-settings .mood-connect-text{
+        margin-left: 12px;
+    }
+    #pageProfile.profile-in-settings .input-about-border{
+        margin: 0 12px;
+    }
+    #pageProfile.profile-in-settings .mood-connect-display{
+        margin-left: 12px;
+        margin-right: 12px;
+    }
+    #pageProfile.profile-in-settings .preview-profile-btn{
+        margin-right: 12px;
+    }
     .search-icon-top-mobile{
         display: flex;
+    }
+    .search-setting-wrap,
+    .profile-setting-border,
+    .profile-extra-setting-border,
+    .settings-left-group-first,
+    .settings-left-group-second{
+        width: calc(100% - 40px);
+        margin-left: 20px;
     }
     .setting-page-icon,
     .setting-page-text{
