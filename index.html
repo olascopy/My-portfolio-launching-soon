@@ -2064,48 +2064,51 @@
 
 </div>
 
-
-
-
 <div id="pageSettings">
 
-  <!-- SETTINGS LEFT -->
+  <!-- ================= SETTINGS LEFT ================= -->
   <div class="settings-page-left">
 
-    <!-- TOP FIXED - Settings + QR + Save -->
+    <!-- TOP FIXED - Settings + QR + Save + Search icon -->
+    <!-- Search icon is hidden by default. It only appears after you scroll past the Search Settings input. -->
     <div class="settings-page-extra-flow">
       <p class="setting-page-left-text">Settings</p>
-      <!-- Small QR - click = Full QR background -->
-      <div class="setting-qrcode-image" id="openFullQR">
-        <img id="qrImageSmall" class="qr-image-small" alt="QR Code" />
+      <div class="settings-top-actions">
+        <!-- Small QR - tap = Full QR background -->
+        <button type="button" class="setting-qrcode-image" id="openFullQR" aria-label="Open QR code">
+          <img id="qrImageSmall" class="qr-image-small" alt="Your QR Code" />
+        </button>
+        <!-- Save for Settings Left - saves only what changed -->
+        <button type="button" class="settings-save-btn" id="saveSettingsLeft">Save <span class="save-spinner" hidden></span></button>
+        <!-- Search icon - hidden until you scroll past the search input -->
+        <button type="button" class="search-icon-top-mobile" id="searchIconTopMobile" aria-label="Back to search" hidden>
+          <i data-lucide="search" class="search-icon-top-mobile-icon"></i>
+        </button>
       </div>
-      <!-- Save for Settings Left - save only wetin change -->
-      <button type="button" class="settings-save-btn" id="saveSettingsLeft">Save <span class="save-spinner" hidden></span></button>
-      <!-- Search icon mobile - show when scroll pass search input -->
-      <button type="button" class="search-icon-top-mobile" id="searchIconTopMobile" aria-label="Search settings">
-        <i data-lucide="search" class="search-icon-top-mobile-icon"></i>
-      </button>
     </div>
 
-    <!-- SEARCH INPUT - scroll with body for mobile, deep search all Settings -->
-    <div class="search-setting-wrap">
+    <!-- SEARCH INPUT - scrolls with the page. Deep search across all Settings. -->
+    <div class="search-setting-wrap" id="searchSettingsWrap">
       <i data-lucide="search" class="search-setting-icon"></i>
-      <input type="text" placeholder="Search Settings" class="search-setting-input" id="searchSettingsInput" />
+      <input type="text" placeholder="Search Settings" class="search-setting-input" id="searchSettingsInput" autocomplete="off" />
     </div>
 
-    <!-- PROFILE BORDER - click = your existing edit-section-profile -->
-    <div class="profile-setting-border" id="openProfile">
-      <div class="profile-extra-setting-border">
-        <div class="round-profile-setting-main">
-          <div class="round-profile-setting-main-border">
-            <div class="round-profile-setting"></div>
-          </div>
-          <p class="round-profile-setting-text">@Faith_mike</p>
-        </div>
-      </div>
-    </div>
+    <!-- PROFILE CARD - tap = opens the SAME Profile UI, as a separate copy -->
+    <!-- The Profile UI inside Settings looks exactly like the main Profile page, -->
+    <!-- but it is a separate instance. It does not affect the main Profile page, -->
+    <!-- and the main Profile page does not affect it. -->
+    <button type="button" class="profile-setting-border" id="openProfile">
+      <span class="profile-extra-setting-border">
+        <span class="round-profile-setting-main">
+          <span class="round-profile-setting-main-border">
+            <span class="round-profile-setting"><img src="" alt="" class="round-profile-setting-img" id="settingsProfileThumb" /></span>
+          </span>
+          <span class="round-profile-setting-text">@Faith_mike</span>
+        </span>
+      </span>
+    </button>
 
-    <!-- FIRST GROUP - each get icon beside -->
+    <!-- FIRST GROUP -->
     <div class="settings-left-group-first">
       <button type="button" class="settings-left-item" id="openAccount"><i data-lucide="key" class="settings-left-icon"></i><span>Account</span><i data-lucide="chevron-right" class="settings-left-item-chevron"></i></button>
       <button type="button" class="settings-left-item" id="openChats"><i data-lucide="message-circle" class="settings-left-icon"></i><span>Chats</span><i data-lucide="chevron-right" class="settings-left-item-chevron"></i></button>
@@ -2116,22 +2119,43 @@
 
     <!-- SECOND GROUP -->
     <div class="settings-left-group-second">
-      <button type="button" class="settings-left-item" id="openHelp"><i data-lucide="circle-help" class="settings-left-icon"></i><span>Help and feedback</span><i data-lucide="chevron-right" class="settings-left-item-chevron"></i></button>
+      <button type="button" class="settings-left-item" id="openHelp"><i data-lucide="circle-help" class="settings-left-icon"></i><span>Help and Feedback</span><i data-lucide="chevron-right" class="settings-left-item-chevron"></i></button>
       <button type="button" class="settings-left-item" id="openLogout"><i data-lucide="log-out" class="settings-left-icon"></i><span>Logout</span><i data-lucide="chevron-right" class="settings-left-item-chevron"></i></button>
-      <button type="button" class="settings-left-item" id="openInvite"><i data-lucide="user-plus" class="settings-left-icon"></i><span>Invite a contact</span><i data-lucide="chevron-right" class="settings-left-item-chevron"></i></button>
+      <button type="button" class="settings-left-item" id="openInvite"><i data-lucide="user-plus" class="settings-left-icon"></i><span>Invite a Contact</span><i data-lucide="chevron-right" class="settings-left-item-chevron"></i></button>
     </div>
 
+    <p class="settings-version-text">Konnekt &bull; Version V1.0.0.0 &bull; First Version</p>
+
   </div>
 
-  <!-- SETTINGS RIGHT - desktop placeholder -->
+  <!-- ================= SETTINGS RIGHT - DESKTOP PLACEHOLDER ================= -->
   <div class="settings-page-right">
-
-    
     <i data-lucide="cog" class="setting-page-icon"></i>
     <p class="setting-page-text">Settings</p>
+    <p class="setting-page-subtext">Select an option on the left to view it here.</p>
   </div>
 
-  <!-- ========== FULL QR ========== -->
+  <!-- ================= PROFILE INSIDE SETTINGS - SAME UI, SEPARATE COPY ================= -->
+  <!-- The full Profile UI is loaded here when you tap the profile card. -->
+  <!-- It uses the same design as the main Profile page, but with its own IDs and its own JavaScript, -->
+  <!-- so nothing you do here changes the main Profile page. -->
+  <div id="pageProfileSettings" hidden></div>
+
+  <!-- ================= UNIVERSAL POPUP - REPLACES ALL ALERTS ================= -->
+  <!-- Every error, success, and confirmation in Settings uses this popup. No alert() anywhere. -->
+  <!-- Style: iPhone popup with iPhone 17 wiggle animation. OK button closes it. -->
+  <div class="app-popup-overlay" id="appPopupOverlay" hidden>
+    <div class="app-popup-card" id="appPopupCard" role="dialog" aria-modal="true">
+      <p class="app-popup-title" id="appPopupTitle">Notice</p>
+      <p class="app-popup-message" id="appPopupMessage"></p>
+      <div class="app-popup-actions">
+        <button type="button" class="app-popup-ok-btn" id="appPopupOkBtn">OK</button>
+        <button type="button" class="app-popup-cancel-btn" id="appPopupCancelBtn" hidden>Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= FULL QR ================= -->
   <div class="popup-bg full-qr-bg" id="fullQRBg" hidden>
     <div class="popup-header">
       <button type="button" class="popup-chevron" data-close="fullQRBg"><i data-lucide="chevron-left"></i></button>
@@ -2142,17 +2166,20 @@
       <button type="button" class="qr-scan-btn" id="openScanner">Scan</button>
       <div class="qr-big-border">
         <div class="qr-profile-round"><div class="qr-profile-round-inner"></div></div>
-        <img id="qrImageBig" class="qr-image-big" alt="QR Code" />
+        <img id="qrImageBig" class="qr-image-big" alt="Your QR Code" />
       </div>
+      <p class="popup-explain qr-explain">This is your personal QR code. Anyone who scans it can start a chat with you, unless you have turned off discovery in Account. Your link is unique and secure.</p>
       <button type="button" class="qr-share-btn" id="qrShareBtn">Share</button>
       <div class="qr-share-sheet" id="qrShareSheet" hidden>
-        <p class="qr-share-link">https://yourapp.com/u/Faith_mike?id=234567&amp;k=...</p>
+        <p class="qr-share-link">https://konnekt.app/u/Faith_mike?id=234567&amp;k=...</p>
         <button type="button" class="qr-copy-link-btn">Copy Link</button>
       </div>
+      <button type="button" class="qr-reset-btn" id="qrResetBtn">Reset QR Code</button>
+      <p class="popup-small-note">If you reset your QR code, your old link and old QR code will stop working immediately. You will get a brand new link.</p>
     </div>
   </div>
 
-  <!-- ========== SCANNER - camera open to scan code ========== -->
+  <!-- ================= SCANNER ================= -->
   <div class="popup-bg scanner-bg" id="scannerBg" hidden>
     <div class="popup-header">
       <button type="button" class="popup-chevron" data-close="scannerBg"><i data-lucide="chevron-left"></i></button>
@@ -2161,12 +2188,12 @@
     </div>
     <div class="popup-body">
       <div class="scanner-area"><video id="scannerVideo" autoplay playsinline></video><div class="scanner-frame"></div></div>
-      <p class="popup-explain">Point camera to QR code to scan</p>
+      <p class="popup-explain">Point your camera at a Konnekt QR code to scan it. Once it is recognised, you will be able to start a chat with that person.</p>
       <button type="button" class="scanner-gallery-btn"><i data-lucide="image"></i> Pick from Gallery</button>
     </div>
   </div>
 
-  <!-- ========== ACCOUNT ========== -->
+  <!-- ================= ACCOUNT ================= -->
   <div class="popup-bg account-bg" id="accountBg" hidden>
     <div class="popup-header">
       <button type="button" class="popup-chevron" data-close="accountBg"><i data-lucide="chevron-left"></i></button>
@@ -2174,22 +2201,39 @@
       <button type="button" class="popup-save-btn" data-save="account">Save <span class="save-spinner" hidden></span></button>
     </div>
     <div class="popup-body">
-      <p class="account-section-text">Login and security</p>
+      <p class="account-section-text">Login and Security</p>
       <div class="account-border">
-        <button type="button" class="account-item" id="openEmail">Email addresses <i data-lucide="chevron-right"></i></button>
+        <button type="button" class="account-item" id="openEmail">Email Address <i data-lucide="chevron-right"></i></button>
         <button type="button" class="account-item" id="openPassword">Password <i data-lucide="chevron-right"></i></button>
       </div>
-      <p class="account-section-text">Your account</p>
+
+      <p class="account-section-text">Your Account</p>
       <div class="account-border">
-        <button type="button" class="account-item" id="openChangePhone">Change phone number <i data-lucide="chevron-right"></i></button>
-        <button type="button" class="account-item" id="openChangeCampus">Change campus <i data-lucide="chevron-right"></i></button>
-        <button type="button" class="account-item" id="openDeleteAccount">Delete account <i data-lucide="chevron-right"></i></button>
+        <button type="button" class="account-item" id="openChangePhone">Change Phone Number <i data-lucide="chevron-right"></i></button>
+        <button type="button" class="account-item" id="openChangeCampus">Change Campus <i data-lucide="chevron-right"></i></button>
+        <button type="button" class="account-item" id="openDeleteAccount">Delete Account <i data-lucide="chevron-right"></i></button>
       </div>
+
+      <!-- HOW CAN PEOPLE FIND ME -->
+      <p class="account-section-text">How Can People Find Me on Konnekt</p>
+      <p class="popup-explain">Choose how other people can find you and start a chat with you. Your ID is private. Your username is public. You can turn either one on or off at any time.</p>
+      <div class="account-border">
+        <div class="account-find-item">
+          <span><strong>With ID Only</strong><small>If this is on, people must know your exact ID to find you. If it is off, they cannot find you with your ID.</small></span>
+          <button type="button" class="toggle-btn on" id="findByIdToggle" aria-label="Find me with ID only">On</button>
+        </div>
+        <div class="account-find-item">
+          <span><strong>With Username Only</strong><small>If this is on, anyone can search your username and find you. If it is off, people can search your username but they will not find you.</small></span>
+          <button type="button" class="toggle-btn on" id="findByUsernameToggle" aria-label="Find me with username only">On</button>
+        </div>
+      </div>
+      <p class="popup-small-note">If your ID is turned off, people can still find you with your username if your username is turned on. If both are turned off, nobody can find you by searching. They can only chat with you if you start the chat or if they scan your QR code.</p>
+
       <button type="button" class="switch-account-btn" id="switchAccountBtn" hidden>Switch Account</button>
     </div>
   </div>
 
-  <!-- ========== EMAIL ========== -->
+  <!-- ================= EMAIL - STEP 1: CURRENT EMAIL ================= -->
   <div class="popup-bg email-bg" id="emailBg" hidden>
     <div class="popup-header">
       <button type="button" class="popup-chevron" data-close="emailBg"><i data-lucide="chevron-left"></i></button>
@@ -2197,16 +2241,18 @@
       <span class="popup-header-space"></span>
     </div>
     <div class="popup-body">
-      <p class="popup-explain">Email address help you to signup and have access to account.</p>
+      <p class="popup-explain">Your email address helps you sign up, sign in, and recover your account. It is private and it is never shown to other users.</p>
+      <p class="popup-label">Current Email</p>
+      <p class="popup-current-value" id="currentEmailText">faith.mike@example.com</p>
       <button type="button" class="change-email-btn" id="openChangeEmailPopup">Change Email</button>
       <div class="change-email-popup" id="changeEmailPopup" hidden>
-        <p class="popup-explain">Changing email means you are creating account, you fit switch account later.</p>
+        <p class="popup-explain">Changing your email means you are creating a new account linked to that email. You will be able to switch between your accounts later.</p>
         <button type="button" class="continue-btn" id="continueChangeEmail">Continue</button>
       </div>
     </div>
   </div>
 
-  <!-- Change Email - New Email -->
+  <!-- EMAIL - STEP 2: NEW EMAIL - SEPARATE BACKGROUND -->
   <div class="popup-bg change-email-new-bg" id="changeEmailNewBg" hidden>
     <div class="popup-header">
       <button type="button" class="popup-chevron" data-close="changeEmailNewBg"><i data-lucide="chevron-left"></i></button>
@@ -2214,83 +2260,167 @@
       <button type="button" class="popup-save-btn" data-save="newEmail">Save <span class="save-spinner" hidden></span></button>
     </div>
     <div class="popup-body">
-      <p class="popup-explain">Type your new email</p>
-      <input type="email" class="popup-input" id="newEmailInput" placeholder="New email" />
+      <p class="popup-explain">Type your new email address. It must be a complete and valid email address, for example name@example.com.</p>
+      <label class="popup-label" for="newEmailInput">New Email Address</label>
+      <input type="email" class="popup-input" id="newEmailInput" placeholder="New email address" autocomplete="email" />
+      <p class="popup-field-error" id="newEmailError" hidden></p>
       <button type="button" class="confirm-btn" id="confirmNewEmail">Confirm</button>
     </div>
   </div>
 
-  <!-- ========== PASSWORD ========== -->
+  <!-- EMAIL - STEP 3: VERIFY NEW EMAIL - SEPARATE BACKGROUND -->
+  <div class="popup-bg email-verify-bg" id="emailVerifyBg" hidden>
+    <div class="popup-header">
+      <button type="button" class="popup-chevron" data-close="emailVerifyBg"><i data-lucide="chevron-left"></i></button>
+      <p class="popup-title">Verify New Email</p>
+      <span class="popup-header-space"></span>
+    </div>
+    <div class="popup-body">
+      <p class="popup-explain">We sent a 6-digit verification code to your new email address. Type the code below to confirm that the email belongs to you.</p>
+      <label class="popup-label" for="emailOtpInput">Verification Code</label>
+      <input type="text" class="popup-input" id="emailOtpInput" placeholder="Enter 6-digit code" inputmode="numeric" maxlength="6" />
+      <p class="popup-field-error" id="emailOtpError" hidden></p>
+      <button type="button" class="confirm-btn" id="confirmEmailOtpBtn">Verify and Save</button>
+      <button type="button" class="link-btn" id="resendEmailOtpBtn">Resend Code</button>
+    </div>
+  </div>
+
+  <!-- ================= PASSWORD - STEP 1: EMAIL ================= -->
   <div class="popup-bg password-bg" id="passwordBg" hidden>
     <div class="popup-header">
       <button type="button" class="popup-chevron" data-close="passwordBg"><i data-lucide="chevron-left"></i></button>
       <p class="popup-title">Password</p>
+      <span class="popup-header-space"></span>
+    </div>
+    <div class="popup-body">
+      <p class="popup-explain">To change your password, we first need to confirm your email address. We will send a verification code to that email.</p>
+      <label class="popup-label" for="resetEmailInput">Email Address</label>
+      <input type="email" class="popup-input" id="resetEmailInput" placeholder="Type your email address" autocomplete="email" />
+      <p class="popup-field-error" id="resetEmailError" hidden></p>
+      <button type="button" class="send-otp-btn" id="sendOtpBtn">Send Verification Code</button>
+    </div>
+  </div>
+
+  <!-- PASSWORD - STEP 2: OTP - SEPARATE BACKGROUND -->
+  <div class="popup-bg password-otp-bg" id="passwordOtpBg" hidden>
+    <div class="popup-header">
+      <button type="button" class="popup-chevron" data-close="passwordOtpBg"><i data-lucide="chevron-left"></i></button>
+      <p class="popup-title">Enter Verification Code</p>
+      <span class="popup-header-space"></span>
+    </div>
+    <div class="popup-body">
+      <p class="popup-explain">We sent a 6-digit verification code to your email address. Type the code below to continue.</p>
+      <label class="popup-label" for="otpInput">Verification Code</label>
+      <input type="text" class="popup-input" id="otpInput" placeholder="Enter 6-digit code" inputmode="numeric" maxlength="6" />
+      <p class="popup-field-error" id="otpError" hidden></p>
+      <button type="button" class="confirm-btn" id="confirmOtpBtn">Confirm Code</button>
+      <button type="button" class="link-btn" id="resendPasswordOtpBtn">Resend Code</button>
+    </div>
+  </div>
+
+  <!-- PASSWORD - STEP 3: NEW PASSWORD - SEPARATE BACKGROUND -->
+  <div class="popup-bg password-new-bg" id="passwordNewBg" hidden>
+    <div class="popup-header">
+      <button type="button" class="popup-chevron" data-close="passwordNewBg"><i data-lucide="chevron-left"></i></button>
+      <p class="popup-title">New Password</p>
       <button type="button" class="popup-save-btn" data-save="password">Save <span class="save-spinner" hidden></span></button>
     </div>
     <div class="popup-body">
-      <p class="popup-explain">You reset password</p>
-      <input type="email" class="popup-input" id="resetEmailInput" placeholder="Type your email" />
-      <button type="button" class="send-otp-btn" id="sendOtpBtn">Send OTP</button>
-      <input type="text" class="popup-input" id="otpInput" placeholder="Type OTP" />
-      <button type="button" class="confirm-btn" id="confirmOtpBtn">Confirm</button>
-      <div class="reset-password-area" id="resetPasswordArea" hidden>
-        <input type="password" class="popup-input" id="newPasswordInput" placeholder="New password" />
-        <input type="password" class="popup-input" id="confirmPasswordInput" placeholder="Confirm password" />
-        <button type="button" class="confirm-btn" id="confirmNewPassword">Confirm</button>
-      </div>
+      <p class="popup-explain">Choose a strong new password. It must be at least 8 characters long and it must include at least one letter and one number.</p>
+      <label class="popup-label" for="newPasswordInput">New Password</label>
+      <input type="password" class="popup-input" id="newPasswordInput" placeholder="New password" autocomplete="new-password" />
+      <label class="popup-label" for="confirmPasswordInput">Confirm New Password</label>
+      <input type="password" class="popup-input" id="confirmPasswordInput" placeholder="Confirm new password" autocomplete="new-password" />
+      <p class="popup-field-error" id="newPasswordError" hidden></p>
+      <button type="button" class="confirm-btn" id="confirmNewPassword">Confirm New Password</button>
     </div>
   </div>
 
-  <!-- ========== CHANGE PHONE ========== -->
+  <!-- ================= CHANGE PHONE - STEP 1: NEW NUMBER ================= -->
   <div class="popup-bg change-phone-bg" id="changePhoneBg" hidden>
     <div class="popup-header">
       <button type="button" class="popup-chevron" data-close="changePhoneBg"><i data-lucide="chevron-left"></i></button>
-      <p class="popup-title">Change phone number</p>
+      <p class="popup-title">Change Phone Number</p>
+      <span class="popup-header-space"></span>
+    </div>
+    <div class="popup-body">
+      <p class="popup-explain">Your phone number is only used to sync your contacts so you can find people you already know. It is never shown to other users, and it does not have any other effect on your account. You can change it at any time.</p>
+      <label class="popup-label" for="newPhoneInput">New Phone Number</label>
+      <input type="tel" class="popup-input" id="newPhoneInput" placeholder="Enter new phone number" inputmode="tel" autocomplete="tel" />
+      <p class="popup-field-error" id="newPhoneError" hidden></p>
+      <button type="button" class="confirm-btn" id="changePhoneBtn">Continue</button>
+    </div>
+  </div>
+
+  <!-- CHANGE PHONE - STEP 2: OTP - SEPARATE BACKGROUND -->
+  <div class="popup-bg phone-otp-bg" id="phoneOtpBg" hidden>
+    <div class="popup-header">
+      <button type="button" class="popup-chevron" data-close="phoneOtpBg"><i data-lucide="chevron-left"></i></button>
+      <p class="popup-title">Verify Phone Number</p>
+      <span class="popup-header-space"></span>
+    </div>
+    <div class="popup-body">
+      <p class="popup-explain">We sent a 6-digit verification code to your new phone number. Type the code below to confirm that the number belongs to you.</p>
+      <label class="popup-label" for="phoneOtpInput">Verification Code</label>
+      <input type="text" class="popup-input" id="phoneOtpInput" placeholder="Enter 6-digit code" inputmode="numeric" maxlength="6" />
+      <p class="popup-field-error" id="phoneOtpError" hidden></p>
+      <button type="button" class="confirm-btn" id="confirmPhoneOtpBtn">Verify Code</button>
+      <button type="button" class="link-btn" id="resendPhoneOtpBtn">Resend Code</button>
+    </div>
+  </div>
+
+  <!-- CHANGE PHONE - STEP 3: PASSWORD CONFIRM - SEPARATE BACKGROUND -->
+  <div class="popup-bg phone-password-bg" id="phonePasswordBg" hidden>
+    <div class="popup-header">
+      <button type="button" class="popup-chevron" data-close="phonePasswordBg"><i data-lucide="chevron-left"></i></button>
+      <p class="popup-title">Confirm With Password</p>
       <button type="button" class="popup-save-btn" data-save="phone">Save <span class="save-spinner" hidden></span></button>
     </div>
     <div class="popup-body">
-      <p class="popup-explain">Number is only used to sync contact. It does not have any special effects or anything. You can change anytime.</p>
-      <input type="tel" class="popup-input" id="newPhoneInput" placeholder="New phone number" />
-      <button type="button" class="confirm-btn" id="changePhoneBtn">Change phone number</button>
-      <div class="confirm-password-popup" id="confirmPhonePasswordPopup" hidden>
-        <p class="popup-explain">Type password to confirm</p>
-        <input type="password" class="popup-input" id="phoneConfirmPassword" placeholder="Password" />
-        <button type="button" class="confirm-btn" id="confirmPhonePasswordBtn">Confirm</button>
-      </div>
+      <p class="popup-explain">For your security, please type your current password to confirm that you want to change your phone number.</p>
+      <label class="popup-label" for="phoneConfirmPassword">Current Password</label>
+      <input type="password" class="popup-input" id="phoneConfirmPassword" placeholder="Type your password" autocomplete="current-password" />
+      <p class="popup-field-error" id="phonePasswordError" hidden></p>
+      <button type="button" class="confirm-btn" id="confirmPhonePasswordBtn">Confirm Change</button>
     </div>
   </div>
 
-  <!-- ========== CHANGE CAMPUS ========== -->
+  <!-- ================= CHANGE CAMPUS ================= -->
   <div class="popup-bg change-campus-bg" id="changeCampusBg" hidden>
     <div class="popup-header">
       <button type="button" class="popup-chevron" data-close="changeCampusBg"><i data-lucide="chevron-left"></i></button>
-      <p class="popup-title">Change campus</p>
+      <p class="popup-title">Change Campus</p>
       <button type="button" class="popup-save-btn" data-save="campus">Save <span class="save-spinner" hidden></span></button>
     </div>
     <div class="popup-body">
-      <p class="popup-explain">Campus helps you determine your feed in Loops. It is 100% anonymous. No one except you can see your campus. It can only be changed every 30 days.</p>
+      <p class="popup-explain">Your campus determines which Campus Feed you see in Loops. It is 100 percent anonymous. Nobody except you can see your campus. You can only change your campus every 30 days, and you can only change it twice before you must wait for the next 30-day period.</p>
+      <p class="popup-label">Select Your Campus</p>
+      <!-- JavaScript fills this list with 50 real universities: 30 most popular + 20 less popular, mixed together. -->
       <div class="campus-picker"><div class="campus-picker-list" id="campusPickerList"></div></div>
-      <input type="text" class="popup-input" id="customCampusInput" placeholder="Type name of campus" />
-      <button type="button" class="confirm-btn" id="confirmCampusBtn">Confirm</button>
-      <p class="popup-small-note">You can change campus twice. After twice, only in next 30 days you can change again.</p>
+      <p class="popup-label">Or Type Your Campus Name</p>
+      <input type="text" class="popup-input" id="customCampusInput" placeholder="Type the name of your campus" />
+      <p class="popup-field-error" id="campusError" hidden></p>
+      <button type="button" class="confirm-btn" id="confirmCampusBtn">Confirm Campus</button>
+      <p class="popup-small-note">You can change your campus twice. After you have changed it twice, you must wait until the next 30 days before you can change it again. If you skipped choosing a campus during signup, you can add it here.</p>
     </div>
   </div>
 
-  <!-- ========== DELETE ACCOUNT ========== -->
+  <!-- ================= DELETE ACCOUNT ================= -->
   <div class="popup-bg delete-account-bg" id="deleteAccountBg" hidden>
     <div class="popup-header">
       <button type="button" class="popup-chevron" data-close="deleteAccountBg"><i data-lucide="chevron-left"></i></button>
-      <p class="popup-title">Delete account</p>
+      <p class="popup-title">Delete Account</p>
       <span class="popup-header-space"></span>
     </div>
     <div class="popup-body">
       <i data-lucide="trash-2" class="delete-big-icon"></i>
-      <p class="popup-explain">If you delete account you will lose all messages and everything. You can signup back in app later.</p>
-      <button type="button" class="delete-btn" id="deleteAccountBtn">Delete</button>
+      <p class="popup-explain">If you delete your account, you will lose all of your messages, your Moments, your Loops posts, your contacts, and everything connected to your account. This action cannot be undone. You can sign up again later with a new account if you wish.</p>
+      <button type="button" class="delete-btn" id="deleteAccountBtn">Delete My Account</button>
+      <button type="button" class="confirm-btn" data-close="deleteAccountBg">Keep My Account</button>
     </div>
   </div>
 
-  <!-- ========== PRIVACY ========== -->
+  <!-- ================= PRIVACY ================= -->
   <div class="popup-bg privacy-bg" id="privacyBg" hidden>
     <div class="popup-header">
       <button type="button" class="popup-chevron" data-close="privacyBg"><i data-lucide="chevron-left"></i></button>
@@ -2298,221 +2428,306 @@
       <button type="button" class="popup-save-btn" data-save="privacy">Save <span class="save-spinner" hidden></span></button>
     </div>
     <div class="popup-body">
+      <p class="popup-explain">Control who can see your Moments, your profile picture, your About, and who can add you to groups. For each one, you can choose Everyone, Contacts Only, or Nobody.</p>
       <div class="privacy-border">
         <button type="button" class="privacy-item" id="openMoments">Moments <i data-lucide="chevron-right"></i></button>
-        <button type="button" class="privacy-item" id="openProfilePicPrivacy">Profile picture <i data-lucide="chevron-right"></i></button>
+        <button type="button" class="privacy-item" id="openProfilePicPrivacy">Profile Picture <i data-lucide="chevron-right"></i></button>
         <button type="button" class="privacy-item" id="openAboutPrivacy">About <i data-lucide="chevron-right"></i></button>
         <button type="button" class="privacy-item" id="openGroupsPrivacy">Groups <i data-lucide="chevron-right"></i></button>
       </div>
     </div>
   </div>
 
-  <!-- Privacy sub - Moments / Pic / About / Groups - each get Save -->
+  <!-- Privacy sub-pages -->
   <div class="popup-bg moments-bg" id="momentsBg" hidden>
-    <div class="popup-header"><button type="button" class="popup-chevron" data-close="momentsBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Audience who can see my moments</p><button type="button" class="popup-save-btn" data-save="momentsPrivacy">Save <span class="save-spinner" hidden></span></button></div>
-    <div class="popup-body"><div class="audience-list"><button type="button" class="audience-item" data-value="everyone">Everyone</button><button type="button" class="audience-item" data-value="contact">Contact</button><button type="button" class="audience-item" data-value="nobody">Nobody</button></div></div>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="momentsBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Who Can See My Moments</p><button type="button" class="popup-save-btn" data-save="momentsPrivacy">Save <span class="save-spinner" hidden></span></button></div>
+    <div class="popup-body"><p class="popup-explain">Choose who can see the Moments you post. Moments disappear after 24 hours.</p><div class="audience-list"><button type="button" class="audience-item" data-value="everyone">Everyone</button><button type="button" class="audience-item" data-value="contact">Contacts Only</button><button type="button" class="audience-item" data-value="nobody">Nobody</button></div></div>
   </div>
   <div class="popup-bg profile-pic-privacy-bg" id="profilePicPrivacyBg" hidden>
-    <div class="popup-header"><button type="button" class="popup-chevron" data-close="profilePicPrivacyBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Who can see my profile picture</p><button type="button" class="popup-save-btn" data-save="picPrivacy">Save <span class="save-spinner" hidden></span></button></div>
-    <div class="popup-body"><div class="audience-list"><button type="button" class="audience-item" data-value="everyone">Everyone</button><button type="button" class="audience-item" data-value="contact">Contact</button><button type="button" class="audience-item" data-value="nobody">Nobody</button></div></div>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="profilePicPrivacyBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Who Can See My Profile Picture</p><button type="button" class="popup-save-btn" data-save="picPrivacy">Save <span class="save-spinner" hidden></span></button></div>
+    <div class="popup-body"><div class="audience-list"><button type="button" class="audience-item" data-value="everyone">Everyone</button><button type="button" class="audience-item" data-value="contact">Contacts Only</button><button type="button" class="audience-item" data-value="nobody">Nobody</button></div></div>
   </div>
   <div class="popup-bg about-privacy-bg" id="aboutPrivacyBg" hidden>
-    <div class="popup-header"><button type="button" class="popup-chevron" data-close="aboutPrivacyBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Who can see about me</p><button type="button" class="popup-save-btn" data-save="aboutPrivacy">Save <span class="save-spinner" hidden></span></button></div>
-    <div class="popup-body"><div class="audience-list"><button type="button" class="audience-item" data-value="contact">Contact</button><button type="button" class="audience-item" data-value="everyone">Everyone</button><button type="button" class="audience-item" data-value="nobody">Nobody</button></div></div>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="aboutPrivacyBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Who Can See My About</p><button type="button" class="popup-save-btn" data-save="aboutPrivacy">Save <span class="save-spinner" hidden></span></button></div>
+    <div class="popup-body"><div class="audience-list"><button type="button" class="audience-item" data-value="everyone">Everyone</button><button type="button" class="audience-item" data-value="contact">Contacts Only</button><button type="button" class="audience-item" data-value="nobody">Nobody</button></div></div>
   </div>
   <div class="popup-bg groups-privacy-bg" id="groupsPrivacyBg" hidden>
-    <div class="popup-header"><button type="button" class="popup-chevron" data-close="groupsPrivacyBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Who can add me to groups</p><button type="button" class="popup-save-btn" data-save="groupsPrivacy">Save <span class="save-spinner" hidden></span></button></div>
-    <div class="popup-body"><div class="audience-list"><button type="button" class="audience-item" data-value="contact">Contact</button><button type="button" class="audience-item" data-value="everyone">Everyone</button><button type="button" class="audience-item" data-value="nobody">Nobody</button></div></div>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="groupsPrivacyBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Who Can Add Me to Groups</p><button type="button" class="popup-save-btn" data-save="groupsPrivacy">Save <span class="save-spinner" hidden></span></button></div>
+    <div class="popup-body"><div class="audience-list"><button type="button" class="audience-item" data-value="everyone">Everyone</button><button type="button" class="audience-item" data-value="contact">Contacts Only</button><button type="button" class="audience-item" data-value="nobody">Nobody</button></div></div>
   </div>
 
-  <!-- ========== CHATS ========== -->
+  <!-- ================= CHATS ================= -->
   <div class="popup-bg chats-bg" id="chatsBg" hidden>
     <div class="popup-header"><button type="button" class="popup-chevron" data-close="chatsBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Chats</p><button type="button" class="popup-save-btn" data-save="chats">Save <span class="save-spinner" hidden></span></button></div>
     <div class="popup-body">
       <div class="chats-border">
-        <div class="chats-item"><span>Save images to gallery</span><button type="button" class="toggle-btn" id="saveImagesToggle">Off</button></div>
-        <button type="button" class="chats-item" id="deleteChatsBtn"><span>Delete chats</span><i data-lucide="chevron-right"></i></button>
-        <button type="button" class="chats-item" id="clearChatsBtn"><span>Clear chats</span><i data-lucide="chevron-right"></i></button>
+        <div class="chats-item"><span>Save Images to Gallery Automatically</span><button type="button" class="toggle-btn" id="saveImagesToggle">Off</button></div>
+        <button type="button" class="chats-item" id="deleteChatsBtn"><span>Delete All Chats</span><i data-lucide="chevron-right"></i></button>
+        <button type="button" class="chats-item" id="clearChatsBtn"><span>Clear All Messages</span><i data-lucide="chevron-right"></i></button>
       </div>
-      <div class="confirm-popup" id="deleteChatsPopup" hidden><p>Do you want to delete all chat? If you delete, everyone user chat and message will be deleted in the chat load list.</p><button type="button" class="confirm-btn" id="confirmDeleteChats">Delete</button></div>
-      <div class="confirm-popup" id="clearChatsPopup" hidden><p>If you clear chat, all messages will be deleted. Are you sure you want to delete?</p><button type="button" class="confirm-btn" id="confirmClearChats">Delete</button></div>
+      <p class="popup-small-note">If you delete all chats, your chat list will become empty. If you clear all messages, your messages will be deleted but your chat list will remain.</p>
     </div>
   </div>
 
-  <!-- ========== APPEARANCE ========== -->
+  <!-- Chats - Delete confirm - separate popup -->
+  <div class="popup-bg chats-confirm-bg" id="deleteChatsBg" hidden>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="deleteChatsBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Delete All Chats</p><span class="popup-header-space"></span></div>
+    <div class="popup-body"><p class="popup-explain">Do you want to delete all chats? If you delete them, every chat and every message in your chat list will be permanently deleted.</p><button type="button" class="delete-btn" id="confirmDeleteChats">Delete All Chats</button><button type="button" class="confirm-btn" data-close="deleteChatsBg">Cancel</button></div>
+  </div>
+  <div class="popup-bg chats-confirm-bg" id="clearChatsBg" hidden>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="clearChatsBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Clear All Messages</p><span class="popup-header-space"></span></div>
+    <div class="popup-body"><p class="popup-explain">If you clear all chats, all messages will be deleted, but your chat list will still remain. Are you sure you want to continue?</p><button type="button" class="delete-btn" id="confirmClearChats">Clear All Messages</button><button type="button" class="confirm-btn" data-close="clearChatsBg">Cancel</button></div>
+  </div>
+
+  <!-- ================= APPEARANCE ================= -->
   <div class="popup-bg appearance-bg" id="appearanceBg" hidden>
     <div class="popup-header"><button type="button" class="popup-chevron" data-close="appearanceBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Appearance</p><button type="button" class="popup-save-btn" data-save="appearance">Save <span class="save-spinner" hidden></span></button></div>
     <div class="popup-body">
-      <button type="button" class="appearance-more-btn" id="appearanceMoreBtn">...</button>
+      <button type="button" class="appearance-more-btn" id="appearanceMoreBtn" aria-label="More options">...</button>
       <div class="reset-theme-pill" id="resetThemePill" hidden><button type="button" id="resetThemeBtn">Reset Theme</button></div>
       <div class="appearance-border">
-        <button type="button" class="appearance-item" id="openChatTheme"><span>Chat theme</span><span class="appearance-item-explain">Chat color and background</span><i data-lucide="chevron-right"></i></button>
-        <button type="button" class="appearance-item" id="openAppColor"><span>App color</span><span class="appearance-item-explain">White or Black</span><i data-lucide="chevron-right"></i></button>
-        <button type="button" class="appearance-item" id="openAppBubble"><span>App bubble</span><span class="appearance-item-explain">Sender and Receiver bubble color</span><i data-lucide="chevron-right"></i></button>
+        <button type="button" class="appearance-item" id="openChatTheme"><span>Chat Theme</span><span class="appearance-item-explain">Chat colour and background</span><i data-lucide="chevron-right"></i></button>
+        <button type="button" class="appearance-item" id="openAppColor"><span>App Colour</span><span class="appearance-item-explain">White or Black</span><i data-lucide="chevron-right"></i></button>
+        <button type="button" class="appearance-item" id="openAppBubble"><span>App Bubble</span><span class="appearance-item-explain">Sender and receiver bubble colour</span><i data-lucide="chevron-right"></i></button>
       </div>
     </div>
   </div>
   <div class="popup-bg chat-theme-bg" id="chatThemeBg" hidden>
-    <div class="popup-header"><button type="button" class="popup-chevron" data-close="chatThemeBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Chat theme</p><button type="button" class="popup-save-btn" data-save="chatTheme">Save <span class="save-spinner" hidden></span></button></div>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="chatThemeBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Chat Theme</p><button type="button" class="popup-save-btn" data-save="chatTheme">Save <span class="save-spinner" hidden></span></button></div>
     <div class="popup-body"><div class="appearance-border">
-      <button type="button" class="appearance-item" id="openChatColor"><span>Chat color</span><span class="appearance-item-explain">Pick color</span><i data-lucide="chevron-right"></i></button>
-      <button type="button" class="appearance-item" id="openChatBackground"><span>Chat background</span><span class="appearance-item-explain">Pick image from gallery</span><i data-lucide="chevron-right"></i></button>
+      <button type="button" class="appearance-item" id="openChatColor"><span>Chat Colour</span><span class="appearance-item-explain">Pick a colour</span><i data-lucide="chevron-right"></i></button>
+      <button type="button" class="appearance-item" id="openChatBackground"><span>Chat Background</span><span class="appearance-item-explain">Pick an image from your gallery</span><i data-lucide="chevron-right"></i></button>
     </div></div>
   </div>
   <div class="popup-bg chat-color-bg" id="chatColorBg" hidden>
-    <div class="popup-header"><button type="button" class="popup-chevron" data-close="chatColorBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Chat color</p><button type="button" class="popup-save-btn" data-save="chatColor">Save <span class="save-spinner" hidden></span></button></div>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="chatColorBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Chat Colour</p><button type="button" class="popup-save-btn" data-save="chatColor">Save <span class="save-spinner" hidden></span></button></div>
     <div class="popup-body"><div class="color-circle-list" id="chatColorList"></div></div>
   </div>
   <div class="popup-bg app-color-bg" id="appColorBg" hidden>
-    <div class="popup-header"><button type="button" class="popup-chevron" data-close="appColorBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">App color</p><button type="button" class="popup-save-btn" data-save="appColor">Save <span class="save-spinner" hidden></span></button></div>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="appColorBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">App Colour</p><button type="button" class="popup-save-btn" data-save="appColor">Save <span class="save-spinner" hidden></span></button></div>
     <div class="popup-body"><div class="app-color-list"><button type="button" class="app-color-item" data-value="white">White</button><button type="button" class="app-color-item" data-value="black">Black</button></div></div>
   </div>
   <div class="popup-bg app-bubble-bg" id="appBubbleBg" hidden>
-    <div class="popup-header"><button type="button" class="popup-chevron" data-close="appBubbleBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">App bubble</p><button type="button" class="popup-save-btn" data-save="bubble">Save <span class="save-spinner" hidden></span></button></div>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="appBubbleBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">App Bubble</p><button type="button" class="popup-save-btn" data-save="bubble">Save <span class="save-spinner" hidden></span></button></div>
     <div class="popup-body"><div class="appearance-border">
-      <button type="button" class="appearance-item" id="openReceiverBubble"><span>Receiver bubble color</span><i data-lucide="chevron-right"></i></button>
-      <button type="button" class="appearance-item" id="openSenderBubble"><span>Sender bubble color</span><i data-lucide="chevron-right"></i></button>
+      <button type="button" class="appearance-item" id="openReceiverBubble"><span>Receiver Bubble Colour</span><i data-lucide="chevron-right"></i></button>
+      <button type="button" class="appearance-item" id="openSenderBubble"><span>Sender Bubble Colour</span><i data-lucide="chevron-right"></i></button>
     </div></div>
   </div>
   <div class="popup-bg receiver-bubble-bg" id="receiverBubbleBg" hidden>
-    <div class="popup-header"><button type="button" class="popup-chevron" data-close="receiverBubbleBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Receiver bubble color</p><button type="button" class="popup-save-btn" data-save="receiverBubble">Save <span class="save-spinner" hidden></span></button></div>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="receiverBubbleBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Receiver Bubble Colour</p><button type="button" class="popup-save-btn" data-save="receiverBubble">Save <span class="save-spinner" hidden></span></button></div>
     <div class="popup-body"><div class="color-circle-list" id="receiverColorList"></div></div>
   </div>
   <div class="popup-bg sender-bubble-bg" id="senderBubbleBg" hidden>
-    <div class="popup-header"><button type="button" class="popup-chevron" data-close="senderBubbleBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Sender bubble color</p><button type="button" class="popup-save-btn" data-save="senderBubble">Save <span class="save-spinner" hidden></span></button></div>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="senderBubbleBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Sender Bubble Colour</p><button type="button" class="popup-save-btn" data-save="senderBubble">Save <span class="save-spinner" hidden></span></button></div>
     <div class="popup-body"><div class="color-circle-list" id="senderColorList"></div></div>
   </div>
 
-  <!-- ========== NOTIFICATIONS ========== -->
+  <!-- ================= NOTIFICATIONS ================= -->
   <div class="popup-bg notifications-bg" id="notificationsBg" hidden>
     <div class="popup-header"><button type="button" class="popup-chevron" data-close="notificationsBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Notifications</p><button type="button" class="popup-save-btn" data-save="notifications">Save <span class="save-spinner" hidden></span></button></div>
     <div class="popup-body">
-      <p class="notif-section-text">Messages notifications</p>
-      <div class="notif-border"><div class="notif-item"><span>Show notifications</span><button type="button" class="toggle-btn" data-notif="msg-show">Off</button></div><div class="notif-item"><span>Sounds</span><button type="button" class="toggle-btn" data-notif="msg-sound">Off</button></div><div class="notif-item"><span>Reactions notifications</span><button type="button" class="toggle-btn" data-notif="msg-react">Off</button></div></div>
-      <p class="notif-section-text">Groups notifications</p>
-      <div class="notif-border"><div class="notif-item"><span>Show notifications</span><button type="button" class="toggle-btn" data-notif="group-show">Off</button></div><div class="notif-item"><span>Sounds</span><button type="button" class="toggle-btn" data-notif="group-sound">Off</button></div><div class="notif-item"><span>Reactions notifications</span><button type="button" class="toggle-btn" data-notif="group-react">Off</button></div></div>
-      <p class="notif-section-text">Moments notifications</p>
-      <div class="notif-border"><div class="notif-item"><span>Show notifications</span><button type="button" class="toggle-btn" data-notif="moments-show">Off</button></div><div class="notif-item"><span>Sounds</span><button type="button" class="toggle-btn" data-notif="moments-sound">Off</button></div><div class="notif-item"><span>Reactions notifications</span><button type="button" class="toggle-btn" data-notif="moments-react">Off</button></div></div>
-      <div class="notif-border"><button type="button" class="notif-item" id="openInAppNotif"><span>In-app notifications</span><i data-lucide="chevron-right"></i></button></div>
+      <p class="notif-section-text">Messages Notifications</p>
+      <div class="notif-border"><div class="notif-item"><span>Show Notifications</span><button type="button" class="toggle-btn" data-notif="msg-show">Off</button></div><div class="notif-item"><span>Sounds</span><button type="button" class="toggle-btn" data-notif="msg-sound">Off</button></div><div class="notif-item"><span>Reaction Notifications</span><button type="button" class="toggle-btn" data-notif="msg-react">Off</button></div></div>
+      <p class="notif-section-text">Groups Notifications</p>
+      <div class="notif-border"><div class="notif-item"><span>Show Notifications</span><button type="button" class="toggle-btn" data-notif="group-show">Off</button></div><div class="notif-item"><span>Sounds</span><button type="button" class="toggle-btn" data-notif="group-sound">Off</button></div><div class="notif-item"><span>Reaction Notifications</span><button type="button" class="toggle-btn" data-notif="group-react">Off</button></div></div>
+      <p class="notif-section-text">Moments Notifications</p>
+      <div class="notif-border"><div class="notif-item"><span>Show Notifications</span><button type="button" class="toggle-btn" data-notif="moments-show">Off</button></div><div class="notif-item"><span>Sounds</span><button type="button" class="toggle-btn" data-notif="moments-sound">Off</button></div></div>
+      <p class="notif-section-text">Moments Read Receipts</p>
+      <div class="notif-border"><div class="notif-item"><span>Read Receipts</span><button type="button" class="toggle-btn" data-notif="moments-read-receipt">Off</button></div></div>
+      <p class="popup-small-note">When Read Receipts is turned on, other people can see that you viewed their Moment. When it is turned off, other people will not know that you viewed their Moment. This setting only affects Moments, not chats.</p>
+      <div class="notif-border"><button type="button" class="notif-item" id="openInAppNotif"><span>In-App Notifications</span><i data-lucide="chevron-right"></i></button></div>
     </div>
   </div>
   <div class="popup-bg inapp-notif-bg" id="inAppNotifBg" hidden>
-    <div class="popup-header"><button type="button" class="popup-chevron" data-close="inAppNotifBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">In-app notifications</p><button type="button" class="popup-save-btn" data-save="inAppNotif">Save <span class="save-spinner" hidden></span></button></div>
-    <div class="popup-body"><div class="notif-border"><div class="notif-item"><span>Sounds</span><button type="button" class="toggle-btn" data-notif="inapp-sound">Off</button></div><div class="notif-item"><span>Vibrate</span><button type="button" class="toggle-btn" data-notif="inapp-vibrate">Off</button></div><div class="notif-item"><span>Show notifications</span><button type="button" class="toggle-btn" data-notif="inapp-show">Off</button></div></div></div>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="inAppNotifBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">In-App Notifications</p><button type="button" class="popup-save-btn" data-save="inAppNotif">Save <span class="save-spinner" hidden></span></button></div>
+    <div class="popup-body"><div class="notif-border"><div class="notif-item"><span>Sounds</span><button type="button" class="toggle-btn" data-notif="inapp-sound">Off</button></div><div class="notif-item"><span>Vibrate</span><button type="button" class="toggle-btn" data-notif="inapp-vibrate">Off</button></div><div class="notif-item"><span>Show Notifications</span><button type="button" class="toggle-btn" data-notif="inapp-show">Off</button></div></div></div>
   </div>
 
-  <!-- ========== HELP AND FEEDBACK ========== -->
+  <!-- ================= HELP AND FEEDBACK ================= -->
   <div class="popup-bg help-bg" id="helpBg" hidden>
-    <div class="popup-header"><button type="button" class="popup-chevron" data-close="helpBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Help and feedback</p><span class="popup-header-space"></span></div>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="helpBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Help and Feedback</p><span class="popup-header-space"></span></div>
     <div class="popup-body">
       <p class="help-app-name">Konnekt</p>
       <div class="help-app-icon-round"><img src="" alt="Konnekt" class="help-app-icon-img" /></div>
       <div class="help-border">
-        <button type="button" class="help-item" id="openHelpCenter"><span><strong>Help center</strong><small>Get helps , contact us</small></span><i data-lucide="chevron-right"></i></button>
-        <button type="button" class="help-item" id="openSendFeedback"><span><strong>Send feedback</strong><small>Report technical issues</small></span><i data-lucide="chevron-right"></i></button>
+        <button type="button" class="help-item" id="openHelpCenter"><span><strong>Help Center</strong><small>Get help and contact us</small></span><i data-lucide="chevron-right"></i></button>
+        <button type="button" class="help-item" id="openSendFeedback"><span><strong>Send Feedback</strong><small>Report a technical issue</small></span><i data-lucide="chevron-right"></i></button>
       </div>
       <div class="help-border">
-        <button type="button" class="help-item" id="openTermsPolicy"><span><strong>Terms and policy</strong><small>How to use Konnekt correctly</small></span><i data-lucide="chevron-right"></i></button>
-        <button type="button" class="help-item" id="openAboutKonnekt"><span><strong>About konnekt</strong></span><i data-lucide="chevron-right"></i></button>
+        <button type="button" class="help-item" id="openTermsPolicy"><span><strong>Terms and Policy</strong><small>How to use Konnekt correctly</small></span><i data-lucide="chevron-right"></i></button>
+        <button type="button" class="help-item" id="openAboutKonnekt"><span><strong>About Konnekt</strong><small>What Konnekt is and how it works</small></span><i data-lucide="chevron-right"></i></button>
       </div>
-      <p class="help-copy">© 2026 Konnekt</p>
+      <p class="help-copy">&copy; 2026 Konnekt &bull; Version V1.0.0.0 &bull; First Version</p>
     </div>
   </div>
 
-  <!-- Help center -->
+  <!-- Help Center -->
   <div class="popup-bg help-center-bg" id="helpCenterBg" hidden>
-    <div class="popup-header"><button type="button" class="popup-chevron" data-close="helpCenterBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Help center</p><span class="popup-header-space"></span></div>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="helpCenterBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Help Center</p><span class="popup-header-space"></span></div>
     <div class="popup-body">
       <div class="help-app-icon-round"><img src="" alt="Konnekt" class="help-app-icon-img" /></div>
-      <p class="help-big-text">How can we help you ?</p>
-      <div class="search-setting-wrap"><i data-lucide="search" class="search-setting-icon"></i><input type="text" placeholder="Search help center" class="search-setting-input" id="searchHelpInput" /></div>
-      <p class="help-section-text">Help topics</p>
+      <p class="help-big-text">How can we help you?</p>
+      <div class="search-setting-wrap"><i data-lucide="search" class="search-setting-icon"></i><input type="text" placeholder="Search Help Center" class="search-setting-input" id="searchHelpInput" /></div>
+      <p class="help-section-text">Help Topics</p>
       <div class="help-border">
-        <button type="button" class="help-item" data-help="get-started">Get started <i data-lucide="chevron-right"></i></button>
+        <button type="button" class="help-item" data-help="get-started">Get Started <i data-lucide="chevron-right"></i></button>
         <button type="button" class="help-item" data-help="chats">Chats <i data-lucide="chevron-right"></i></button>
-        <button type="button" class="help-item" data-help="anonymous">Anonymous feed <i data-lucide="chevron-right"></i></button>
-        <button type="button" class="help-item" data-help="privacy">Privacy security and safety <i data-lucide="chevron-right"></i></button>
-        <button type="button" class="help-item" data-help="accounts">Accounts and accounts bans <i data-lucide="chevron-right"></i></button>
-        <button type="button" class="help-item" data-help="spotify">How can I connect Spotify to my mood in my chat <i data-lucide="chevron-right"></i></button>
+        <button type="button" class="help-item" data-help="anonymous">Anonymous Feed <i data-lucide="chevron-right"></i></button>
+        <button type="button" class="help-item" data-help="privacy">Privacy, Security and Safety <i data-lucide="chevron-right"></i></button>
+        <button type="button" class="help-item" data-help="accounts">Accounts and Account Bans <i data-lucide="chevron-right"></i></button>
+        <button type="button" class="help-item" data-help="spotify">How Can I Connect Spotify to My Mood in My Chat <i data-lucide="chevron-right"></i></button>
+        <button type="button" class="help-item" data-help="reply">How to Reply to Messages <i data-lucide="chevron-right"></i></button>
+        <button type="button" class="help-item" data-help="sticker">How to Create a Sticker <i data-lucide="chevron-right"></i></button>
       </div>
-      <p class="help-section-text">Popular articles</p>
+      <p class="help-section-text">Popular Articles</p>
       <div class="help-border">
-        <button type="button" class="help-item" data-article="call">How to make call <i data-lucide="chevron-right"></i></button>
-        <button type="button" class="help-item" data-article="safe">How to stay safe in konnekt <i data-lucide="chevron-right"></i></button>
-        <button type="button" class="help-item" data-article="anonymous-feed">How to use anonymous feed <i data-lucide="chevron-right"></i></button>
-        <button type="button" class="help-item" data-article="music-mood">What does connect music to mood mean <i data-lucide="chevron-right"></i></button>
+        <button type="button" class="help-item" data-article="call">How to Make a Call <i data-lucide="chevron-right"></i></button>
+        <button type="button" class="help-item" data-article="safe">How to Stay Safe in Konnekt <i data-lucide="chevron-right"></i></button>
+        <button type="button" class="help-item" data-article="anonymous-feed">How to Use the Anonymous Feed <i data-lucide="chevron-right"></i></button>
+        <button type="button" class="help-item" data-article="music-mood">What Does Connecting Music to Mood Mean <i data-lucide="chevron-right"></i></button>
       </div>
-      <button type="button" class="help-contact-btn" id="openContactSupport"><i data-lucide="user" class="help-contact-icon"></i><span><strong>Need more help ?</strong><small>Contact us and we will respond to you in konnekt chat</small></span></button>
+      <button type="button" class="help-contact-btn" id="openContactSupport"><i data-lucide="user" class="help-contact-icon"></i><span><strong>Need More Help?</strong><small>Contact us and we will respond to you in a Konnekt chat</small></span></button>
     </div>
   </div>
 
-  <!-- Get started -->
+  <!-- Get Started -->
   <div class="popup-bg get-started-bg" id="getStartedBg" hidden>
-    <div class="popup-header"><button type="button" class="popup-chevron" data-close="getStartedBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Get started</p><span class="popup-header-space"></span></div>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="getStartedBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Get Started</p><span class="popup-header-space"></span></div>
     <div class="popup-body"><div class="help-border">
       <button type="button" class="help-item" data-help-detail="moments">Moments <i data-lucide="chevron-right"></i></button>
-      <button type="button" class="help-item" data-help-detail="trouble">Trouble shooting <i data-lucide="chevron-right"></i></button>
+      <button type="button" class="help-item" data-help-detail="trouble">Troubleshooting <i data-lucide="chevron-right"></i></button>
       <button type="button" class="help-item" data-help-detail="chats">Chats <i data-lucide="chevron-right"></i></button>
       <button type="button" class="help-item" data-help-detail="loops">Loops <i data-lucide="chevron-right"></i></button>
       <button type="button" class="help-item" data-help-detail="profile">Profile <i data-lucide="chevron-right"></i></button>
     </div></div>
   </div>
 
-  <!-- Generic help detail - JS go fill title + text -->
+  <!-- Generic Help Detail - JavaScript fills title and text -->
   <div class="popup-bg help-detail-bg" id="helpDetailBg" hidden>
     <div class="popup-header"><button type="button" class="popup-chevron" data-close="helpDetailBg"><i data-lucide="chevron-left"></i></button><p class="popup-title" id="helpDetailTitle">Help</p><span class="popup-header-space"></span></div>
     <div class="popup-body"><div id="helpDetailContent" class="help-detail-content"></div></div>
   </div>
 
-  <!-- Send feedback -->
+  <!-- Send Feedback -->
   <div class="popup-bg send-feedback-bg" id="sendFeedbackBg" hidden>
-    <div class="popup-header"><button type="button" class="popup-chevron" data-close="sendFeedbackBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Send feedback</p><button type="button" class="popup-save-btn" data-save="feedback">Send <span class="save-spinner" hidden></span></button></div>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="sendFeedbackBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Send Feedback</p><button type="button" class="popup-save-btn" data-save="feedback">Send <span class="save-spinner" hidden></span></button></div>
     <div class="popup-body">
-      <p class="help-big-text">Help us to build Konnekt</p>
-      <textarea class="feedback-big-input" id="feedbackInput" placeholder="Tell us how you have been using Konnekt and what other things you need or want..."></textarea>
+      <p class="help-big-text">Help Us Build Konnekt</p>
+      <p class="popup-explain">Tell us how you have been using Konnekt, what you love, and what you would like us to improve. Your feedback helps us make Konnekt better for everyone.</p>
+      <textarea class="feedback-big-input" id="feedbackInput" placeholder="Tell us how you have been using Konnekt and what else you need or want..."></textarea>
       <div class="feedback-image-border">
         <button type="button" class="feedback-image-btn" id="feedbackImageBtn"><i data-lucide="image"></i></button>
-        <input type="text" class="popup-input" id="feedbackIssueInput" placeholder="Write any technical issue you are using..." />
+        <input type="text" class="popup-input" id="feedbackIssueInput" placeholder="Write any technical issue you are experiencing..." />
       </div>
     </div>
   </div>
 
-  <!-- Terms and policy -->
+  <!-- ================= TERMS AND POLICY - FULL PARAGRAPHS ================= -->
   <div class="popup-bg terms-bg" id="termsPolicyBg" hidden>
-    <div class="popup-header"><button type="button" class="popup-chevron" data-close="termsPolicyBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Terms and policy</p><span class="popup-header-space"></span></div>
-    <div class="popup-body"><div id="termsContent" class="help-detail-content"></div></div>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="termsPolicyBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Terms and Policy</p><span class="popup-header-space"></span></div>
+    <div class="popup-body"><div class="help-detail-content">
+      <h3>Welcome to Konnekt</h3>
+      <p>Welcome to Konnekt. Konnekt is a social app for students and young people to chat, share Moments, and post anonymously in Loops. By creating an account and using Konnekt, you agree to these Terms and Policy. Please read them carefully. If you do not agree with them, please do not use Konnekt.</p>
+      <h3>How to Use Konnekt Correctly</h3>
+      <p>Konnekt is built for honest conversation, friendship, support, and community. You must respect other users at all times. You must not harass, bully, threaten, insult, or harm anyone. You must not post spam, false information, hateful content, sexual content involving minors, or content that encourages violence or self-harm. Loops is anonymous, but anonymity does not give you permission to hurt others. If you post something harmful in Loops, your post can be downvoted, hidden, reported, and your account can be warned or banned.</p>
+      <p>Moments last for 24 hours and then they disappear. Loops posts are completely anonymous. No name, no profile picture, and no campus is shown to other users. Chats are private between you and the people you chat with. Voice calls are currently available in Konnekt. Video calls are not available yet. Stickers you create are 6 seconds long. You can add text and edit them the way you want. Images you receive in chats are saved automatically unless you turn this off in Settings.</p>
+      <h3>Your Account</h3>
+      <p>You must be a real person to use Konnekt. You must keep your password safe and you must never share your password, your verification code, or your one-time password with anyone, including people who claim to work for Konnekt. Konnekt will never ask you for your password. You are responsible for everything that happens on your account. You can change your email, password, phone number, and campus in Settings. Your phone number is only used to sync your contacts. It is never shown to other users.</p>
+      <p>Your campus determines which Campus Feed you see in Loops. You can skip choosing a campus during signup. If you skip it, you can add it back later in Settings, under Account, then Change Campus. You can only change your campus twice, and you can only change it every 30 days. This rule exists to keep Campus Feeds honest and local.</p>
+      <h3>How People Can Find You</h3>
+      <p>You control how people can find you. Your ID is private. If you turn on “With ID Only,” people must know your exact ID to find you. Your username is public. If you turn on “With Username Only,” anyone can search for your username and find you. If you turn either one off, people cannot find you with that method. If both are turned off, nobody can find you by searching. They can only chat with you if you start the chat or if they scan your QR code. You can change these settings at any time in Settings, under Account.</p>
+      <h3>What We Collect From You</h3>
+      <p>To make Konnekt work, we collect your email address, your username, your profile picture, your About text, your campus, and your phone number. Your phone number is only used to sync your contacts. Your campus is only used to show you the correct Campus Feed in Loops. It is 100 percent anonymous and it is never shown to other users. If you connect Spotify, we only see your current song and artist, which we show as your mood. We never see your full playlist, your listening history, or your private Spotify data. If you turn on Moments Read Receipts, other people can see that you viewed their Moment. If you turn it off, they will not know.</p>
+      <h3>Privacy, Safety, and Reporting</h3>
+      <p>Your safety matters to us. You can control who can see your Moments, your profile picture, and your About. You can choose Everyone, Contacts Only, or Nobody. You can control who can add you to groups. You can block and report any user, Moment, or Loops post that makes you feel unsafe. When you report something, our team reviews it. Do not share your location, your password, your verification code, or any private information with strangers. If someone makes you feel uncomfortable, block them and report them immediately.</p>
+      <h3>Account Bans</h3>
+      <p>If you break these rules, we may warn you, temporarily restrict your account, or permanently ban your account. Common reasons for a ban include spam, harassment, bullying, posting harmful or illegal content, creating fake accounts to abuse Loops, or trying to expose other users’ identities. If you believe your account was banned unfairly, you can appeal through the Help Center by contacting support. We will review your appeal fairly.</p>
+      <h3>Deleting Your Account</h3>
+      <p>If you delete your account, you will lose all of your messages, Moments, Loops posts, contacts, and everything connected to your account. This action cannot be undone. You can sign up again later with a new account if you wish, but your old data will not be restored.</p>
+      <h3>Changes to These Terms</h3>
+      <p>Konnekt may update these Terms and Policy at any time to reflect new features, new laws, or improvements to safety. When we make an important change, we will let you know inside the app. By continuing to use Konnekt after a change, you agree to the updated Terms.</p>
+      <p><strong>Konnekt &bull; Version V1.0.0.0 &bull; First Version &bull; &copy; 2026 Konnekt</strong></p>
+    </div></div>
   </div>
 
-  <!-- About konnekt -->
+  <!-- ================= ABOUT KONNEKT - FULL PARAGRAPHS ================= -->
   <div class="popup-bg about-konnekt-bg" id="aboutKonnektBg" hidden>
-    <div class="popup-header"><button type="button" class="popup-chevron" data-close="aboutKonnektBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">About konnekt</p><span class="popup-header-space"></span></div>
-    <div class="popup-body"><div id="aboutKonnektContent" class="help-detail-content"></div></div>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="aboutKonnektBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">About Konnekt</p><span class="popup-header-space"></span></div>
+    <div class="popup-body"><div class="help-detail-content">
+      <h3>What Is Konnekt?</h3>
+      <p>Konnekt is a social app built for real people, real conversations, and real communities. It brings together chats, Moments, and an anonymous feed called Loops, all in one simple and beautiful app. Konnekt was created for students and young people who want to talk freely, share their day, find support, make friends, and feel connected to their campus and to the wider world, without losing control of their privacy.</p>
+      <h3>Loops - Speak Freely, Stay Anonymous</h3>
+      <p>Loops is the anonymous heart of Konnekt. In Loops, you can post honestly without anyone knowing who you are. No name, no profile picture, and no campus is shown to other users. You can choose between the General Anonymous Feed, where everyone on Konnekt can see your post, and the Campus Anonymous Feed, which shows you posts only from people in your own campus. You can upvote posts you support, downvote posts you disagree with, comment anonymously, like comments, and add hashtags to help people find posts about a topic they care about. If a post receives three downvotes, it is hidden to protect the community, and the author can appeal it from the Loops page. Loops is a safe space for honesty, confession, advice, humour, and real campus conversations.</p>
+      <h3>Chats - Connect With People You Know</h3>
+      <p>Chats is where you connect directly with people. You can send messages, photos, videos, voice notes, and stickers. You can create groups, reply to a specific message by pressing and holding it, react to messages, delete messages, and select multiple messages to delete at once. You can make voice calls with the people you chat with. You can find people with their ID or with their username, and you control exactly how people can find you in Settings. You can create 6-second stickers with text, video, or images, and you can save your favourite stickers to use again. Images you receive are saved automatically unless you turn this off.</p>
+      <h3>Moments - Share Your Day For 24 Hours</h3>
+      <p>Moments are short posts that last for 24 hours and then disappear. You can post a photo, a video, or a text Moment with a colour of your choice. You can control who sees your Moments, and you can report and block from Moments. In Settings, you can turn Moments Read Receipts on or off. When it is on, people can see that you viewed their Moment. When it is off, they will not know. Moments are for quick, real, and temporary sharing.</p>
+      <h3>Profile - Show Who You Are Through Mood And Music</h3>
+      <p>Your profile is how other people see you. You can edit your profile picture, your username, and your About. You can share your thought in a small bubble above your profile picture. You can connect your mood to Spotify. When you are playing music, people will see the name of the song and the artist you are playing. When you stop playing, they will see the last song you played. If you have not played anything, they will see your mood thought. Your mood appears as a mood pill in chats and on your profile. You can preview your profile to see exactly how other people see it.</p>
+      <h3>Built For Privacy, Safety, And Real People</h3>
+      <p>Konnekt is built for real people. Your phone number is only used to sync contacts. Your campus is only used to show you the correct Campus Feed. Your Spotify connection only shows your current song. Everything else stays private unless you choose to share it. You can block, report, and control your privacy at any time. Konnekt is a community where everyone deserves respect, safety, and a voice.</p>
+      <p><strong>Konnekt &bull; Version V1.0.0.0 &bull; First Version &bull; &copy; 2026 Konnekt</strong></p>
+      <p>Thank you for being part of Konnekt. We are just getting started, and we are building this app with you, for you.</p>
+    </div></div>
   </div>
 
-  <!-- ========== INVITE ========== -->
+  <!-- ================= INVITE - REAL CONTACTS ================= -->
   <div class="popup-bg invite-bg" id="inviteBg" hidden>
-    <div class="popup-header"><button type="button" class="popup-chevron" data-close="inviteBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Invite a contact</p><span class="popup-header-space"></span></div>
+    <div class="popup-header"><button type="button" class="popup-chevron" data-close="inviteBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Invite a Contact</p><span class="popup-header-space"></span></div>
     <div class="popup-body">
-      <div class="search-setting-wrap"><i data-lucide="search" class="search-setting-icon"></i><input type="text" placeholder="Search contact" class="search-setting-input" id="searchContactInput" /></div>
-      <button type="button" class="invite-share-link" id="inviteShareLink">Share link <span>Tap to copy link</span></button>
-      <div class="invite-list" id="inviteContactList"></div>
+      <p class="popup-explain">Invite your friends and contacts to join Konnekt. Share your personal invite link, or invite people directly from your contacts.</p>
+
+      <!-- STEP 1: PERMISSION - app asks for permission before showing contacts -->
+      <div class="invite-permission-box" id="invitePermissionBox">
+        <i data-lucide="contact" class="invite-permission-icon"></i>
+        <p class="invite-permission-title">Allow Access to Your Contacts</p>
+        <p class="invite-permission-text">Konnekt needs permission to access your contacts so it can show you the people you already know. Your contacts are never uploaded without your permission, and they are never shared with other users.</p>
+        <button type="button" class="confirm-btn" id="inviteAllowContactsBtn">Allow Access to Contacts</button>
+        <button type="button" class="link-btn" id="inviteSkipContactsBtn">Skip For Now</button>
+      </div>
+
+      <!-- STEP 2: LOADING - shows while contacts are loading -->
+      <div class="invite-loading-box" id="inviteLoadingBox" hidden>
+        <span class="invite-loading-spinner"></span>
+        <p class="invite-loading-text">Loading your contacts...</p>
+        <p class="invite-loading-subtext">Please wait a moment while we load the people you know.</p>
+      </div>
+
+      <!-- STEP 3: DENIED - shows if permission is denied -->
+      <div class="invite-denied-box" id="inviteDeniedBox" hidden>
+        <p class="invite-denied-title">Permission Not Granted</p>
+        <p class="invite-denied-text">You did not allow access to your contacts, so we cannot show your contact list. You can still share your invite link with anyone. If you change your mind, tap Try Again and allow access.</p>
+        <button type="button" class="confirm-btn" id="inviteTryAgainBtn">Try Again</button>
+      </div>
+
+      <!-- STEP 4: CONTACT LIST - real contacts with search + invite buttons -->
+      <div class="invite-contacts-wrap" id="inviteContactsWrap" hidden>
+        <div class="search-setting-wrap"><i data-lucide="search" class="search-setting-icon"></i><input type="text" placeholder="Search contact" class="search-setting-input" id="searchContactInput" /></div>
+        <button type="button" class="invite-share-link" id="inviteShareLink">Share Invite Link <span>Tap to copy link</span></button>
+        <p class="invite-list-title">Your Contacts</p>
+        <div class="invite-list" id="inviteContactList"></div>
+        <div class="invite-empty-box" id="inviteEmptyBox" hidden>
+          <p class="invite-empty-title">No Contacts Found</p>
+          <p class="invite-empty-text">We could not find any contacts on your device. You can still share your invite link with anyone.</p>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- ========== LOGOUT ========== -->
+  <!-- ================= LOGOUT ================= -->
   <div class="popup-bg logout-bg" id="logoutBg" hidden>
     <div class="popup-header"><button type="button" class="popup-chevron" data-close="logoutBg"><i data-lucide="chevron-left"></i></button><p class="popup-title">Logout</p><span class="popup-header-space"></span></div>
     <div class="popup-body">
-      <p class="popup-explain">Do you want to log out? You can login back with your email and password back.</p>
-      <button type="button" class="delete-btn" id="confirmLogoutBtn">Log out</button>
+      <p class="popup-explain">Do you want to log out? You can log back in at any time with your email address and password. Your messages and account will still be there when you return.</p>
+      <button type="button" class="delete-btn" id="confirmLogoutBtn">Log Out</button>
       <button type="button" class="confirm-btn" data-close="logoutBg">Cancel</button>
     </div>
   </div>
 
 </div>
+
 </main>
-
-
 
 
 
