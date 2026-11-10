@@ -44,6 +44,7 @@
 <link rel="stylesheet" href="profile-media.css">
 <link rel="stylesheet" href="setting.css">
 <link rel="stylesheet" href="setting-media.css">
+<link rel="stylesheet" href="connect.css">
     <title>KONNEKT</title>
 </head>
 <body>
@@ -2790,9 +2791,461 @@
 </main>
 
 
+ <div class="sign-flow-border no-copy" id="firstSplash">
+    <img src="knnockt4.jfif" alt="Konnekt" class="konnekt-image no-copy-img" width="180" height="180" draggable="false" />
+    <p class="konnekt-name no-copy-text">Konnekt</p>
+  </div>
 
+  <!-- 2. WELCOME -->
+  <div class="signup-bg welcome-bg" id="welcomeBg" hidden>
+    <div class="signup-body welcome-body">
+      <img src="knnockt4.jfif" alt="Konnekt" class="konnekt-image-small" width="76" height="76" draggable="false" />
+      <p class="konnekt-name-small">Konnekt</p>
+      <p class="welcome-text">Chat, Moments, and Anonymous Loops for your campus.</p>
+      <div class="terms-row">
+        <button type="button" class="terms-box" id="termsBox" aria-label="Agree to Terms">
+          <span class="terms-tick" id="termsTick" hidden>✓</span>
+        </button>
+        <p class="terms-text">I agree to <button type="button" class="terms-link" id="openTermsBg">Terms and Conditions</button> and <button type="button" class="terms-link" id="openPrivacyBg">Privacy Policy</button></p>
+      </div>
+      <p class="terms-age-note">You must be 13 years or older to use Konnekt.</p>
+      <button type="button" class="signup-big-btn" id="getStartedBtn">Get Started</button>
+      <button type="button" class="link-btn" id="goLoginBtn">Already have an account? Log In</button>
+    </div>
+  </div>
 
+  <!-- 2A. TERMS - NEW BACKGROUND -->
+  <div class="signup-bg terms-full-bg" id="termsBg" hidden>
+    <div class="popup-header">
+      <button type="button" class="popup-chevron" data-close="termsBg" aria-label="Back">
+        <svg class="chevron-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <p class="popup-title">Terms and Conditions</p>
+      <span class="popup-header-space"></span>
+    </div>
+    <div class="popup-body">
+      <div class="help-detail-content">
+        <h3>Welcome to Konnekt</h3>
+        <p>Welcome to Konnekt. Konnekt is a social app for students and young people to chat, share Moments, and post anonymously in Loops. By creating an account and using Konnekt, you agree to these Terms and Conditions. Please read them carefully. If you do not agree with them, please do not use Konnekt.</p>
+        <h3>You Must Be 13+ To Use Konnekt</h3>
+        <p>You must be 13 years or older to use Konnekt. By ticking the box in Welcome, you are saying: "I am 13 years or older and I agree to these Terms." If you are under 13, do not tick the box and do not use Konnekt. We do not ask for your date of birth separately. This rule inside Terms is your agreement.</p>
+        <h3>How to Use Konnekt Correctly</h3>
+        <p>Konnekt is built for honest conversation, friendship, support, and community. You must respect other users at all times. You must not harass, bully, threaten, insult, or harm anyone. You must not post spam, false information, hateful content, sexual content involving minors, or content that encourages violence or self-harm. Loops is anonymous, but anonymity does not give you permission to hurt others.</p>
+        <p>Moments last for 24 hours and then they disappear. Loops posts are completely anonymous. No name, no profile picture, and no campus is shown to other users. Chats are private between you and the people you chat with. Voice calls are currently available. Video calls are not available yet.</p>
+        <h3>Your Account</h3>
+        <p>You must be a real person to use Konnekt. You must keep your password safe and you must never share your password, your verification code, or your one-time password with anyone, including people who claim to work for Konnekt. Konnekt will never ask you for your password. You are responsible for everything that happens on your account.</p>
+        <h3>How People Can Find You</h3>
+        <p>You control how people can find you. Your ID is private. Your username is public. If both are turned off, nobody can find you by searching. They can only chat with you if you start the chat or if they scan your QR code.</p>
+        <h3>Privacy, Safety, and Reporting</h3>
+        <p>Your safety matters to us. You can block and report any user, Moment, or Loops post that makes you feel unsafe. Do not share your location, your password, your verification code, or any private information with strangers.</p>
+        <h3>Account Bans</h3>
+        <p>If you break these rules, we may warn you, temporarily restrict your account, or permanently ban your account. If you believe your account was banned unfairly, you can appeal through Help Center by contacting support.</p>
+        <h3>Deleting Your Account</h3>
+        <p>If you delete your account, you will lose all of your messages, Moments, Loops posts, contacts, and everything connected to your account. This action cannot be undone. You can sign up again later with same email as a brand new account, but your old data will not be restored.</p>
+        <p><strong>Konnekt • Version V1.0.0.0 • First Version • © 2026 Konnekt</strong></p>
+      </div>
+      <button type="button" class="confirm-btn" data-close="termsBg">Back</button>
+    </div>
+  </div>
 
+  <!-- 2B. PRIVACY POLICY - NEW BACKGROUND -->
+  <div class="signup-bg privacy-full-bg" id="privacyBg" hidden>
+    <div class="popup-header">
+      <button type="button" class="popup-chevron" data-close="privacyBg" aria-label="Back">
+        <svg class="chevron-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <p class="popup-title">Privacy Policy</p>
+      <span class="popup-header-space"></span>
+    </div>
+    <div class="popup-body">
+      <div class="help-detail-content">
+        <h3>What We Collect From You</h3>
+        <p>To make Konnekt work, we collect your email address, your username, your profile picture, your About text, your campus, and your phone number. Your phone number is only used to sync your contacts. Your campus is only used to show you the correct Campus Feed in Loops. It is 100 percent anonymous and it is never shown to other users.</p>
+        <h3>Spotify</h3>
+        <p>If you connect Spotify, we only see your current song and artist, which we show as your mood. We never see your full playlist, your listening history, or your private Spotify data.</p>
+        <h3>Your Choices</h3>
+        <p>You can control who can see your Moments, your profile picture, and your About. You can choose Everyone, Contacts Only, or Nobody. You can control who can add you to groups. You can turn Moments Read Receipts on or off.</p>
+        <h3>Your Safety</h3>
+        <p>Never share your password, verification code, or location with strangers. Block and report anyone who makes you feel unsafe. Our team reviews reports.</p>
+        <p><strong>Konnekt • Version V1.0.0.0 • First Version • © 2026 Konnekt</strong></p>
+      </div>
+      <button type="button" class="confirm-btn" data-close="privacyBg">Back</button>
+    </div>
+  </div>
+
+  <!-- 3. SIGN PLACE - Email UP, Or middle, Google UNDER -->
+  <div class="signup-bg sign-place-bg" id="signPlaceBg" hidden>
+    <div class="popup-header">
+      <button type="button" class="popup-chevron" data-close="signPlaceBg" aria-label="Back">
+        <svg class="chevron-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <p class="popup-title">Sign Up</p>
+      <span class="popup-header-space"></span>
+    </div>
+    <div class="popup-body">
+      <img src="knnockt4.jfif" alt="Konnekt" class="konnekt-image-small" width="64" height="64" draggable="false" />
+      <p class="konnekt-name-small">Konnekt</p>
+      <p class="popup-explain">Create your account to chat, share Moments, and post in Loops.</p>
+      <label class="popup-label" for="signupEmailInput">Email Address</label>
+      <input type="email" class="popup-input" id="signupEmailInput" placeholder="Enter your email address" autocomplete="email" />
+      <p class="popup-field-error" id="signupEmailError" hidden></p>
+      <button type="button" class="confirm-btn" id="continueEmailBtn">Continue with Email</button>
+      <div class="or-divider">
+        <span class="or-line"></span>
+        <span class="or-text">Or</span>
+        <span class="or-line"></span>
+      </div>
+      <button type="button" class="google-btn" id="googleSignupBtn">
+        <span class="google-g">G</span>
+        Signup with Google
+      </button>
+      <button type="button" class="link-btn" id="goLoginFromSignBtn">Already have an account? Log In</button>
+    </div>
+  </div>
+
+  <!-- 4A. OTP - 6 SEPARATE BOXES -->
+  <div class="signup-bg otp-bg" id="otpBg" hidden>
+    <div class="popup-header">
+      <button type="button" class="popup-chevron" data-close="otpBg" aria-label="Back">
+        <svg class="chevron-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <p class="popup-title">Enter Verification Code</p>
+      <span class="popup-header-space"></span>
+    </div>
+    <div class="popup-body">
+      <p class="popup-explain">We sent a 6-digit verification code to your email. Type the code below. Code expires in 10 minutes.</p>
+      <p class="test-otp-display" id="testOtpDisplay">Code: 123456</p>
+      <div class="otp-boxes" id="otpBoxes">
+        <input type="text" class="otp-box" inputmode="numeric" maxlength="1" aria-label="Digit 1" />
+        <input type="text" class="otp-box" inputmode="numeric" maxlength="1" aria-label="Digit 2" />
+        <input type="text" class="otp-box" inputmode="numeric" maxlength="1" aria-label="Digit 3" />
+        <input type="text" class="otp-box" inputmode="numeric" maxlength="1" aria-label="Digit 4" />
+        <input type="text" class="otp-box" inputmode="numeric" maxlength="1" aria-label="Digit 5" />
+        <input type="text" class="otp-box" inputmode="numeric" maxlength="1" aria-label="Digit 6" />
+      </div>
+      <p class="popup-field-error" id="otpError" hidden></p>
+      <button type="button" class="confirm-btn" id="confirmOtpBtn">Verify Code</button>
+      <button type="button" class="link-btn" id="resendOtpBtn">Resend Code <span id="otpTimer">60s</span></button>
+      <button type="button" class="link-btn" id="changeEmailBtn">Change Email</button>
+    </div>
+  </div>
+
+  <!-- 4B. PASSWORD -->
+  <div class="signup-bg password-bg" id="passwordBg" hidden>
+    <div class="popup-header">
+      <button type="button" class="popup-chevron" data-close="passwordBg" aria-label="Back">
+        <svg class="chevron-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <p class="popup-title">Create Password</p>
+      <span class="popup-header-space"></span>
+    </div>
+    <div class="popup-body">
+      <p class="popup-explain">Choose a strong password. It must be at least 8 characters long and it must include at least one letter and one number.</p>
+      <label class="popup-label" for="signupPasswordInput">Password</label>
+      <input type="password" class="popup-input" id="signupPasswordInput" placeholder="Password" autocomplete="new-password" />
+      <label class="popup-label" for="signupConfirmPasswordInput">Confirm Password</label>
+      <input type="password" class="popup-input" id="signupConfirmPasswordInput" placeholder="Confirm password" autocomplete="new-password" />
+      <p class="popup-field-error" id="passwordError" hidden></p>
+      <button type="button" class="confirm-btn" id="confirmPasswordBtn">Continue</button>
+    </div>
+  </div>
+
+  <!-- 5. USERNAME -->
+  <div class="signup-bg username-bg" id="usernameBg" hidden>
+    <div class="popup-header">
+      <button type="button" class="popup-chevron" data-close="usernameBg" aria-label="Back">
+        <svg class="chevron-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <p class="popup-title">Choose Your Username</p>
+      <span class="popup-header-space"></span>
+    </div>
+    <div class="popup-body">
+      <p class="popup-explain">This is how people will find you on Konnekt. Must start with capital letter. You can use _ . No space, no special characters like @ # $ % !</p>
+      <label class="popup-label" for="usernameInput">Username</label>
+      <div class="username-wrap">
+        <input type="text" class="popup-input" id="usernameInput" placeholder="Faith_mike" autocomplete="off" />
+        <span class="username-tick" id="usernameTick" hidden>✓</span>
+      </div>
+      <p class="popup-field-error" id="usernameError" hidden></p>
+      <p class="popup-small-note" id="usernameSuggest" hidden></p>
+      <button type="button" class="confirm-btn" id="continueUsernameBtn">Continue</button>
+    </div>
+  </div>
+
+  <!-- 6. ONBOARDING - Real Human Image UP, Explanation DOWN -->
+  <div class="signup-bg onboarding-bg" id="onboardingBg" hidden>
+    <div class="onboarding-top">
+      <button type="button" class="link-btn onboarding-skip" id="onboardingSkipBtn">Skip</button>
+    </div>
+    <div class="onboarding-slide" data-slide="0">
+      <!-- PUT YOUR IMAGE HERE: onboarding-moments.jpg -->
+      <div class="onboarding-image-wrap">
+        <img src="onboarding-moments.jpg" alt="Moments - Real person sharing Moment" class="onboarding-image" draggable="false" />
+      </div>
+      <div class="onboarding-explain">
+        <h3 class="onboarding-title">Moments</h3>
+        <p class="onboarding-text">Share your day in 24 hours. Post photo, video, or text. It disappears after 24 hours.</p>
+      </div>
+    </div>
+    <div class="onboarding-slide" data-slide="1" hidden>
+      <!-- PUT YOUR IMAGE HERE: onboarding-chats.jpg -->
+      <div class="onboarding-image-wrap">
+        <img src="onboarding-chats.jpg" alt="Chats - Real friends chatting" class="onboarding-image" draggable="false" />
+      </div>
+      <div class="onboarding-explain">
+        <h3 class="onboarding-title">Chats</h3>
+        <p class="onboarding-text">Chat with ID, username, or QR code. Send messages, photos, voice notes, and make voice calls.</p>
+      </div>
+    </div>
+    <div class="onboarding-slide" data-slide="2" hidden>
+      <!-- PUT YOUR IMAGE HERE: onboarding-loops.jpg -->
+      <div class="onboarding-image-wrap">
+        <img src="onboarding-loops.jpg" alt="Loops - Real person speaking freely" class="onboarding-image" draggable="false" />
+      </div>
+      <div class="onboarding-explain">
+        <h3 class="onboarding-title">Loops</h3>
+        <p class="onboarding-text">Speak freely, stay anonymous. No name, no picture, no campus. General Feed and Campus Feed.</p>
+      </div>
+    </div>
+    <div class="onboarding-slide" data-slide="3" hidden>
+      <!-- PUT YOUR IMAGE HERE: onboarding-profile.jpg -->
+      <div class="onboarding-image-wrap">
+        <img src="onboarding-profile.jpg" alt="Profile - Real person listening to music" class="onboarding-image" draggable="false" />
+      </div>
+      <div class="onboarding-explain">
+        <h3 class="onboarding-title">Profile + Mood</h3>
+        <p class="onboarding-text">Show who you are. Add your picture, About, thought, and connect your mood to Spotify.</p>
+      </div>
+    </div>
+    <div class="onboarding-bottom">
+      <div class="onboarding-dots" id="onboardingDots">
+        <span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      </div>
+      <button type="button" class="confirm-btn" id="onboardingNextBtn">Next</button>
+    </div>
+  </div>
+
+  <!-- 7. PROFILE SETUP - CALLS REAL PROFILE UI LIKE SETTINGS -->
+  <div class="signup-bg profile-setup-bg" id="profileSetupBg" hidden>
+    <div class="popup-header">
+      <button type="button" class="popup-chevron" data-close="profileSetupBg" aria-label="Back">
+        <svg class="chevron-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <p class="popup-title">Set Up Your Profile</p>
+      <span class="popup-header-space"></span>
+    </div>
+    <div class="popup-body">
+      <div class="profile-ui" id="realProfileUI">
+        <p class="popup-explain">Add your picture, About, and thought. All optional. You can do it later. Username already done.</p>
+        <div class="profile-setup-pic-wrap">
+          <div class="profile-setup-pic" id="profileSetupPic">+</div>
+          <button type="button" class="link-btn" id="pickProfilePicBtn">Add Profile Picture</button>
+          <input type="file" id="profilePicInput" accept="image/*" hidden />
+        </div>
+        <label class="popup-label" for="profileAboutInput">About</label>
+        <input type="text" class="popup-input" id="profileAboutInput" placeholder="Write something about you..." />
+        <label class="popup-label" for="profileThoughtInput">Thought / Mood</label>
+        <input type="text" class="popup-input" id="profileThoughtInput" placeholder="Share your thought..." />
+        <button type="button" class="google-btn" id="connectSpotifyBtn">Connect Mood to Spotify (Optional)</button>
+      </div>
+      <button type="button" class="confirm-btn" id="continueProfileBtn">Continue</button>
+      <button type="button" class="link-btn" id="skipProfileBtn">Skip</button>
+    </div>
+  </div>
+
+  <!-- 8. CAMPUS SETUP -->
+  <div class="signup-bg campus-setup-bg" id="campusSetupBg" hidden>
+    <div class="popup-header">
+      <button type="button" class="popup-chevron" data-close="campusSetupBg" aria-label="Back">
+        <svg class="chevron-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <p class="popup-title">Pick Your Campus</p>
+      <span class="popup-header-space"></span>
+    </div>
+    <div class="popup-body">
+      <p class="popup-explain">Your campus decides your Campus Feed in Loops. It is 100% anonymous. Nobody will see your campus.</p>
+      <p class="popup-label">Select Your Campus</p>
+      <div class="campus-picker"><div class="campus-picker-list" id="campusSetupList"></div></div>
+      <p class="popup-label">Or Type Your Campus Name</p>
+      <input type="text" class="popup-input" id="customCampusSetupInput" placeholder="Type the name of your campus" />
+      <p class="popup-field-error" id="campusSetupError" hidden></p>
+      <button type="button" class="confirm-btn" id="continueCampusBtn">Continue</button>
+      <button type="button" class="link-btn" id="skipCampusBtn">Skip</button>
+      <p class="popup-small-note">If you skip Campus, Loops will show General Feed only until you add campus in Settings.</p>
+    </div>
+  </div>
+
+  <!-- 9. LOGIN -->
+  <div class="signup-bg login-bg" id="loginBg" hidden>
+    <div class="popup-header">
+      <button type="button" class="popup-chevron" data-close="loginBg" aria-label="Back">
+        <svg class="chevron-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <p class="popup-title">Log In</p>
+      <span class="popup-header-space"></span>
+    </div>
+    <div class="popup-body">
+      <img src="knnockt4.jfif" alt="Konnekt" class="konnekt-image-small" width="64" height="64" draggable="false" />
+      <p class="konnekt-name-small">Konnekt</p>
+      <label class="popup-label" for="loginEmailInput">Email Address</label>
+      <input type="email" class="popup-input" id="loginEmailInput" placeholder="Enter your email address" autocomplete="email" />
+      <label class="popup-label" for="loginPasswordInput">Password</label>
+      <input type="password" class="popup-input" id="loginPasswordInput" placeholder="Password" autocomplete="current-password" />
+      <p class="popup-field-error" id="loginError" hidden></p>
+      <button type="button" class="confirm-btn" id="loginBtn">Log In</button>
+      <button type="button" class="link-btn" id="forgotPasswordBtn">Forgot Password?</button>
+      <div class="or-divider">
+        <span class="or-line"></span>
+        <span class="or-text">Or</span>
+        <span class="or-line"></span>
+      </div>
+      <button type="button" class="google-btn" id="googleLoginBtn"><span class="google-g">G</span> Login with Google</button>
+      <button type="button" class="link-btn" id="goSignupFromLoginBtn">New here? Sign Up</button>
+    </div>
+  </div>
+
+  <!-- 9A. FORGOT PASSWORD - Email -->
+  <div class="signup-bg forgot-bg" id="forgotBg" hidden>
+    <div class="popup-header">
+      <button type="button" class="popup-chevron" data-close="forgotBg" aria-label="Back">
+        <svg class="chevron-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <p class="popup-title">Forgot Password</p>
+      <span class="popup-header-space"></span>
+    </div>
+    <div class="popup-body">
+      <p class="popup-explain">Type your email. We will send a 6-digit code to reset your password.</p>
+      <label class="popup-label" for="forgotEmailInput">Email Address</label>
+      <input type="email" class="popup-input" id="forgotEmailInput" placeholder="Enter your email address" autocomplete="email" />
+      <p class="popup-field-error" id="forgotEmailError" hidden></p>
+      <button type="button" class="confirm-btn" id="sendForgotOtpBtn">Send Code</button>
+    </div>
+  </div>
+
+  <!-- 9B. FORGOT PASSWORD - OTP 6 BOXES -->
+  <div class="signup-bg forgot-otp-bg" id="forgotOtpBg" hidden>
+    <div class="popup-header">
+      <button type="button" class="popup-chevron" data-close="forgotOtpBg" aria-label="Back">
+        <svg class="chevron-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <p class="popup-title">Enter Verification Code</p>
+      <span class="popup-header-space"></span>
+    </div>
+    <div class="popup-body">
+      <p class="popup-explain">We sent a 6-digit code to your email. Type it below.</p>
+      <p class="test-otp-display" id="testForgotOtpDisplay">Code: 123456</p>
+      <div class="otp-boxes" id="forgotOtpBoxes">
+        <input type="text" class="otp-box" inputmode="numeric" maxlength="1" aria-label="Digit 1" />
+        <input type="text" class="otp-box" inputmode="numeric" maxlength="1" aria-label="Digit 2" />
+        <input type="text" class="otp-box" inputmode="numeric" maxlength="1" aria-label="Digit 3" />
+        <input type="text" class="otp-box" inputmode="numeric" maxlength="1" aria-label="Digit 4" />
+        <input type="text" class="otp-box" inputmode="numeric" maxlength="1" aria-label="Digit 5" />
+        <input type="text" class="otp-box" inputmode="numeric" maxlength="1" aria-label="Digit 6" />
+      </div>
+      <p class="popup-field-error" id="forgotOtpError" hidden></p>
+      <button type="button" class="confirm-btn" id="confirmForgotOtpBtn">Verify Code</button>
+    </div>
+  </div>
+
+  <!-- 9C. FORGOT PASSWORD - NEW PASSWORD -->
+  <div class="signup-bg forgot-new-bg" id="forgotNewBg" hidden>
+    <div class="popup-header">
+      <button type="button" class="popup-chevron" data-close="forgotNewBg" aria-label="Back">
+        <svg class="chevron-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <p class="popup-title">New Password</p>
+      <span class="popup-header-space"></span>
+    </div>
+    <div class="popup-body">
+      <label class="popup-label" for="forgotNewPasswordInput">New Password</label>
+      <input type="password" class="popup-input" id="forgotNewPasswordInput" placeholder="New password" autocomplete="new-password" />
+      <label class="popup-label" for="forgotConfirmPasswordInput">Confirm New Password</label>
+      <input type="password" class="popup-input" id="forgotConfirmPasswordInput" placeholder="Confirm new password" autocomplete="new-password" />
+      <p class="popup-field-error" id="forgotNewError" hidden></p>
+      <button type="button" class="confirm-btn" id="confirmForgotNewBtn">Save New Password</button>
+    </div>
+  </div>
+
+  <!-- UNIVERSAL POPUP - Replaces alert() -->
+  <div class="app-popup-overlay" id="appPopupOverlay" hidden>
+    <div class="app-popup-card" id="appPopupCard" role="dialog" aria-modal="true">
+      <p class="app-popup-title" id="appPopupTitle">Notice</p>
+      <p class="app-popup-message" id="appPopupMessage"></p>
+      <div class="app-popup-actions">
+        <button type="button" class="app-popup-ok-btn" id="appPopupOkBtn">OK</button>
+        <button type="button" class="app-popup-cancel-btn" id="appPopupCancelBtn" hidden>Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AFTER EVERYTHING: OPEN index.html -->
+
+</body>
+
+<!-- ============ PUT THIS AT TOP OF <body> IN index.html - FIRST THING ============ -->
+<!-- index.html - MAIN APP ONLY - NO signup code here, signup is in sign.html -->
+<!-- This splash shows FIRST, before anything, before check. Cannot copy. -->
+
+<!-- 1. FIRST SPLASH - LOGO STUFF FIRST - CANNOT COPY TEXT OR IMAGE -->
+<div class="index-splash no-copy" id="indexFirstSplash">
+  <img src="knnockt4.jfif" alt="Konnekt" class="index-splash-image no-copy-img" width="180" height="180" draggable="false" />
+  <p class="index-splash-name no-copy-text">Konnekt</p>
+</div>
+
+<!-- ============ YOUR MAIN APP STAYS HERE - DO NOT DELETE ============ -->
+<!-- Your Home / Chats / Moments / Loops / Profile code stays here -->
+<!-- Example: <div id="mainApp"> ... your main app ... </div> -->
+<!-- JS will hide main app until splash finishes + signup check passes -->
+
+<!-- ============ PUT THIS AT BOTTOM OF <body> IN index.html - BEFORE </body> ============ -->
+
+<!-- 2. PWA SLIDE UP BACKGROUND - AFTER 30s - BEST EXPERIENCE EXPLANATION -->
+<!-- Shows ONLY if: signup finished + NOT installed yet + user never tapped Not Now in last 2 days -->
+<!-- Does NOT show immediately. Waits 30s after landing in index.html. -->
+<div class="pwa-overlay" id="pwaOverlay" hidden>
+  <div class="pwa-sheet" id="pwaSheet" role="dialog" aria-modal="true">
+
+    <!-- Slide handle - drag down to close -->
+    <div class="pwa-handle"></div>
+
+    <!-- PWA Icon + Title -->
+    <img src="knnockt4.jfif" alt="Konnekt" class="pwa-icon" width="64" height="64" draggable="false" />
+    <p class="pwa-title">Install Konnekt</p>
+    <p class="pwa-subtitle">For best experience of Konnekt</p>
+
+    <!-- Backend + Best Experience Explanation -->
+    <p class="pwa-explain">
+      Install Konnekt to Home Screen for best experience.
+      If not installed, Notifications in Settings will stay inactive.
+      You will still be able to use Konnekt in browser, but you will miss notifications.
+    </p>
+
+    <!-- iPhone Steps - Show on iPhone -->
+    <div class="pwa-steps" id="pwaIphoneSteps">
+      <p class="pwa-steps-title">iPhone - How to Install:</p>
+      <p class="pwa-step">1. Tap <strong>Share</strong> button at bottom of Safari</p>
+      <p class="pwa-step">2. Scroll down, tap <strong>Add to Home Screen</strong></p>
+      <p class="pwa-step">3. Tap <strong>Add</strong></p>
+    </div>
+
+    <!-- Android Steps - Show on Android -->
+    <div class="pwa-steps" id="pwaAndroidSteps" hidden>
+      <p class="pwa-steps-title">Android - How to Install:</p>
+      <p class="pwa-step">Tap <strong>Install</strong> button below.</p>
+    </div>
+
+    <!-- Buttons -->
+    <button type="button" class="pwa-install-btn" id="pwaInstallBtn">Install</button>
+    <button type="button" class="pwa-notnow-btn" id="pwaNotNowBtn">Not Now</button>
+    <p class="pwa-small-note">You can install later from Settings.</p>
+
+  </div>
+</div>
+
+<!-- 3. CONNECT SCRIPT - Checks signup + connects sign.html to index.html -->
+<!-- Put this line before </body>, after your main app JS -->
+<!-- <script src="index-gate.js"></script> -->
+<!-- index-gate.js = checks localStorage konnekt_signup_progress, if loggedIn = false -> go sign.html, if true -> stay, after 30s show PWA -->
 
 
 
@@ -2820,7 +3273,7 @@
 <script src="loops.js"></script>
 <script src="profile.js"></script>
 <script src="setting.js"></script>
-
+<script src="index-gate.js"></script>
 </html>
 
 

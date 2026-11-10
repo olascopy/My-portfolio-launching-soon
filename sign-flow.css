@@ -1,0 +1,813 @@
+/* ==================================================================
+   SIGN-FLOW.CSS - FULL CSS - CLEAN - NO CUT
+   File: sign-flow.css - for sign.html only, NOT index.html
+   After everything, sign.html opens index.html - main app
+   First Splash: background = body = rgb(0,0,0) - DON'T CHANGE
+   Blue: soft blue, reduced opacity - NOT too bright
+   Image: object-fit contain, no stretch, no zoom
+   Responsive: Desktop / Tablet / Mobile - everything fits
+   PWA iPhone: safe-area for dynamic island + bottom nav
+   ================================================================== */
+
+/* ================= RESET + BODY ================= */
+/* Reset: remove default margin/padding, keep box-sizing clean */
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent; /* No blue highlight when tap */
+}
+html{
+  /* No pinch zoom stretch */
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+}
+body{
+  /* FIRST SCREEN BACKGROUND - DON'T CHANGE - Same as icon background */
+  background-color: rgb(0,0,0);
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden; /* No horizontal stretch */
+  width: 100%;
+}
+button{font-family: inherit;cursor: pointer;}
+input, textarea{font-family: inherit;}
+img{
+  -webkit-user-drag: none; /* No drag image */
+  user-select: none; /* No select image */
+}
+
+/* ================= NO COPY - FIRST SPLASH IMAGE + TEXT ================= */
+/* User cannot copy, cannot long-press, cannot highlight splash logo */
+.no-copy,
+.no-copy-img,
+.no-copy-text{
+  user-select: none; /* No copy text */
+  -webkit-user-select: none;
+  -webkit-touch-callout: none; /* No iPhone long-press menu */
+  -webkit-tap-highlight-color: transparent; /* No highlight on tap */
+}
+.no-copy-img{
+  pointer-events: none; /* Image cannot be touched / dragged */
+}
+
+/* ================= SOFT BLUE - REDUCED OPACITY - NOT TOO BRIGHT ================= */
+/* Before blue was rgb(0,122,255) - too bright. Now soft, reduced opacity. */
+:root{
+  --blue-btn: rgba(0,122,255,0.72); /* Main button - soft, not bright */
+  --blue-btn-hover: rgba(0,122,255,0.85); /* Button on hover - still soft */
+  --blue-link: rgba(0,122,255,0.65); /* Links / chevron text - softer */
+  --blue-focus: rgba(0,122,255,0.55); /* Input focus outline - soft */
+  --blue-dot: rgba(0,122,255,0.70); /* Onboarding active dot - soft */
+  --blue-tick-bg: rgba(0,122,255,0.72); /* Terms tick box - soft */
+  --grey-text: rgb(170,170,170); /* Grey explanation text */
+  --grey-line: rgba(255,255,255,.25); /* Grey line for Or divider */
+  --card-bg: rgb(28,28,30); /* Popup card background */
+}
+
+/* ================= FIRST SPLASH - BIG ICON - NO LOADING ================= */
+/* Background = body = rgb(0,0,0). DON'T CHANGE. No loading. */
+.sign-flow-border,
+.sign-flow-broder{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+  /* Same as body - black */
+  background-color: rgb(0,0,0);
+  padding: 20px;
+  /* Safe-area for iPhone island top + bottom nav */
+  padding-top: calc(20px + env(safe-area-inset-top));
+  padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  overflow: hidden;
+  touch-action: none; /* No zoom stretch on splash */
+}
+.Konnekt-image,
+.konnekt-image{
+  /* Your size - 150 x 170 - NO STRETCH */
+  width: 150px;
+  height: 170px;
+  max-width: 150px;
+  max-height: 170px;
+  /* FIX - Contain, not cover, so image no stretch, no zoom, no crop */
+  object-fit: contain;
+  object-position: center;
+  display: block;
+  flex-shrink: 0;
+  aspect-ratio: 150 / 170; /* Keep ratio, no distort */
+}
+.konnekt-name{
+  color: #fff;
+  font-size: 30px;
+  font-weight: 400;
+  margin-top: 18px; /* Gap under image - clean, not 180px jump */
+  text-align: center;
+  line-height: 1.2;
+  letter-spacing: .3px;
+}
+
+/* ================= SMALL ICON - WELCOME / SIGN PLACE / LOGIN ================= */
+.konnekt-image-small{
+  width: 76px;
+  height: 76px;
+  max-width: 76px;
+  max-height: 76px;
+  object-fit: contain; /* No stretch */
+  object-position: center;
+  display: block;
+  margin: 0 auto 10px;
+  aspect-ratio: 1 / 1;
+}
+.konnekt-name-small{
+  color: #fff;
+  font-size: 22px;
+  font-weight: 600;
+  text-align: center;
+  margin: 0 0 12px;
+}
+
+/* ================= ALL SIGNUP BACKGROUNDS - SHARED ================= */
+.signup-bg{
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  max-width: 480px; /* Center on desktop, full on mobile */
+  margin: 0 auto;
+  background-color: rgb(0,0,0);
+  color: #fff;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 20;
+  padding: 20px;
+  padding-top: calc(20px + env(safe-area-inset-top));
+  padding-bottom: calc(24px + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  animation: popupSlideIn .3s ease; /* Slide from right, like iPhone */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,.25) transparent;
+}
+.signup-bg::-webkit-scrollbar{width: 4px}
+.signup-bg::-webkit-scrollbar-thumb{background: rgba(255,255,255,.25);border-radius: 99px}
+.signup-bg[hidden]{display: none !important}
+@keyframes popupSlideIn{from{transform: translateX(100%);opacity: 0}to{transform: translateX(0);opacity: 1}}
+.popup-body{
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  padding-bottom: 20px;
+}
+
+/* ================= POPUP HEADER - REAL CHEVRON ================= */
+/* Chevron = real iOS chevron SVG, thin, clean, not AI arrow */
+.popup-header{
+  position: sticky;
+  top: calc(-20px - env(safe-area-inset-top));
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: calc(-20px - env(safe-area-inset-top)) -20px 14px;
+  padding: calc(14px + env(safe-area-inset-top)) 14px 10px;
+  background-color: rgb(0,0,0);
+  border-bottom: 1px solid rgba(255,255,255,.15);
+}
+.popup-header-space{width: 52px;flex-shrink: 0} /* Balances chevron, keeps title centered */
+.popup-chevron{
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  font-size: 22px;
+  line-height: 1;
+}
+/* Real chevron icon - SVG */
+.chevron-icon{
+  width: 20px;
+  height: 20px;
+  display: block;
+  flex-shrink: 0;
+}
+.popup-title{
+  color: #fff;
+  font-size: 17px;
+  font-weight: 700;
+  margin: 0;
+  flex: 1;
+  text-align: center;
+}
+.popup-explain{
+  color: var(--grey-text);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 0 20px;
+  text-align: center;
+}
+.popup-small-note{
+  color: var(--grey-text);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 8px 0 14px;
+  text-align: center;
+}
+.popup-label{
+  display: block;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 14px 0 8px;
+}
+.popup-input{
+  width: 100%;
+  height: 48px;
+  background-color: rgba(255,255,255,.12);
+  border: none;
+  outline: none;
+  border-radius: 12px;
+  padding: 0 14px;
+  color: #fff;
+  font-size: 15px;
+  margin-bottom: 8px;
+  box-sizing: border-box;
+}
+.popup-input::placeholder{color: rgba(255,255,255,.5)}
+/* Focus = soft blue, reduced opacity, not bright */
+.popup-input:focus{outline: 1px solid var(--blue-focus)}
+.popup-input.is-invalid{outline: 1.5px solid red}
+.popup-field-error{
+  color: #ff453a;
+  font-size: 13px;
+  line-height: 1.4;
+  margin: 2px 0 12px;
+  text-align: left;
+}
+.popup-field-error[hidden]{display: none}
+
+/* ================= BUTTONS - SHARED - SOFT BLUE ================= */
+.confirm-btn,
+.signup-big-btn{
+  width: 100%;
+  height: 48px;
+  border: none;
+  border-radius: 12px;
+  /* Soft blue, reduced opacity - NOT too bright */
+  background-color: var(--blue-btn);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 10px 0 12px;
+}
+.confirm-btn:hover,
+.signup-big-btn:hover{
+  background-color: var(--blue-btn-hover); /* Slightly stronger on hover, still soft */
+}
+.confirm-btn:disabled,
+.signup-big-btn:disabled{opacity: .5;cursor: not-allowed}
+.link-btn{
+  width: 100%;
+  background: none;
+  border: none;
+  /* Soft blue link, reduced opacity */
+  color: var(--blue-link);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 10px 0;
+  text-align: center;
+}
+
+/* ================= WELCOME ================= */
+.welcome-bg{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.welcome-body{
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.welcome-text{
+  color: var(--grey-text);
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 0 0 28px;
+  max-width: 320px;
+}
+.terms-row{
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  max-width: 360px;
+  margin: 20px 0 6px;
+  text-align: left;
+}
+.terms-box{
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  min-height: 24px;
+  border: 1.5px solid rgba(255,255,255,.5);
+  border-radius: 6px;
+  background: transparent;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.terms-box.checked{
+  /* Soft blue tick box, reduced opacity */
+  background: var(--blue-tick-bg);
+  border-color: var(--blue-tick-bg);
+}
+.terms-tick{font-size: 15px;font-weight: 700;line-height: 1}
+.terms-tick[hidden]{display: none}
+.terms-text{
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.5;
+  flex: 1;
+}
+.terms-link{
+  background: none;
+  border: none;
+  /* Soft blue link */
+  color: var(--blue-link);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.terms-age-note{
+  color: var(--grey-text);
+  font-size: 12px;
+  line-height: 1.4;
+  margin: 6px 0 18px;
+  text-align: center;
+}
+
+/* ================= TERMS + PRIVACY FULL PARAGRAPHS ================= */
+.help-detail-content{
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--grey-text);
+  text-align: left;
+}
+.help-detail-content h3{
+  font-size: 16px;
+  color: #fff;
+  margin: 16px 0 6px;
+}
+.help-detail-content h3:first-child{margin-top: 0}
+.help-detail-content p{margin: 0 0 10px}
+.help-detail-content strong{color: #fff}
+
+/* ================= SIGN PLACE - Email UP, Or middle, Google UNDER ================= */
+.sign-place-bg .popup-body{
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+/* Or divider - Line, Or in middle cutting it */
+.or-divider{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin: 18px 0;
+}
+.or-line{
+  flex: 1;
+  height: 1px;
+  background: var(--grey-line);
+  display: block;
+}
+.or-text{
+  /* Circle background cutting the line */
+  background: rgb(0,0,0);
+  color: var(--grey-text);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border: 1px solid var(--grey-line);
+  border-radius: 99px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+/* Google button - UNDER Or line - white, black text */
+.google-btn{
+  width: 100%;
+  height: 48px;
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 12px;
+  background: #fff;
+  color: #000;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 4px 0 12px;
+  box-sizing: border-box;
+}
+.google-g{
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #000;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+/* ================= OTP - 6 SEPARATE BOXES ================= */
+/* Test display - Before backend takes over, so you can see flow. Delete when backend comes. */
+.test-otp-display{
+  text-align: center;
+  color: var(--blue-link); /* Soft blue, not bright */
+  font-weight: 700;
+  font-size: 16px;
+  margin: 8px 0 4px;
+}
+.otp-boxes{
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  width: 100%;
+  margin: 18px 0 12px;
+}
+.otp-box{
+  width: 48px;
+  height: 52px;
+  max-width: calc((100% - 50px) / 6);
+  background: rgba(255,255,255,.12);
+  border: none;
+  outline: none;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+  flex: 1;
+  box-sizing: border-box;
+}
+/* OTP focus = soft blue, not bright */
+.otp-box:focus{outline: 1.5px solid var(--blue-focus)}
+.otp-box.is-invalid{outline: 1.5px solid red}
+
+/* ================= USERNAME ================= */
+.username-wrap{position: relative;width: 100%}
+.username-wrap .popup-input{padding-right: 42px}
+.username-tick{
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgb(52,199,89); /* Green tick - keep green, not blue */
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+}
+.username-tick[hidden]{display: none}
+
+/* ================= ONBOARDING - Real Human Image UP, Explanation DOWN ================= */
+.onboarding-bg{
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+}
+.onboarding-top{
+  display: flex;
+  justify-content: flex-end;
+  padding: 14px 16px 0;
+  padding-top: calc(14px + env(safe-area-inset-top));
+}
+.onboarding-skip{
+  width: auto;
+  padding: 8px 12px;
+  color: var(--grey-text);
+}
+.onboarding-slide{
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+}
+.onboarding-slide[hidden]{display: none !important}
+/* IMAGE UP - Real human image, no stretch */
+.onboarding-image-wrap{
+  width: 100%;
+  height: 52%;
+  min-height: 280px;
+  flex-shrink: 0;
+  overflow: hidden;
+  background: rgb(20,20,20);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.onboarding-image{
+  width: 100%;
+  height: 100%;
+  /* Cover for full-bleed, centered, no distort */
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  background: rgb(20,20,20);
+}
+/* EXPLANATION DOWN */
+.onboarding-explain{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  padding: 22px 24px 10px;
+  gap: 8px;
+}
+.onboarding-title{
+  color: #fff;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+.onboarding-text{
+  color: var(--grey-text);
+  font-size: 15px;
+  line-height: 1.5;
+  max-width: 340px;
+}
+.onboarding-bottom{
+  padding: 10px 20px 20px;
+  padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+.onboarding-dots{
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+}
+.dot{
+  width: 8px;
+  height: 8px;
+  border-radius: 99px;
+  background: rgba(255,255,255,.3);
+  transition: all .25s ease;
+}
+.dot.active{
+  width: 24px;
+  /* Soft blue dot, reduced opacity */
+  background: var(--blue-dot);
+}
+.onboarding-bottom .confirm-btn{margin: 0}
+
+/* ================= PROFILE SETUP - REAL PROFILE UI LIKE SETTINGS ================= */
+/* Same as Settings > Profile - same avatar, same About, same Thought, same Spotify */
+.profile-ui{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.profile-setup-pic-wrap{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin: 10px 0 14px;
+}
+.profile-setup-pic{
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.15);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.profile-setup-pic img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ================= CAMPUS SETUP ================= */
+.campus-picker{
+  height: 260px;
+  overflow-y: auto;
+  background: rgba(255,255,255,.08);
+  border-radius: 12px;
+  margin-bottom: 14px;
+  padding: 10px;
+  box-sizing: border-box;
+  scrollbar-width: thin;
+}
+.campus-picker-list{display: flex;flex-direction: column;gap: 6px}
+.campus-item{
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255,255,255,.15);
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+  text-align: center;
+  box-sizing: border-box;
+}
+.campus-item:hover,
+.campus-item.selected{background: rgba(255,255,255,.15);border-radius: 8px}
+/* Selected campus = soft blue, not bright */
+.campus-item.selected{color: var(--blue-link);font-weight: 600}
+
+/* ================= UNIVERSAL POPUP ================= */
+.app-popup-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 500;
+  padding: 20px;
+  padding-top: calc(20px + env(safe-area-inset-top));
+  padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+}
+.app-popup-overlay[hidden]{display: none !important}
+.app-popup-card{
+  width: 100%;
+  max-width: 340px;
+  background: var(--card-bg);
+  border-radius: 18px;
+  padding: 22px 20px 14px;
+  box-sizing: border-box;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0,0,0,.5);
+  animation: iphoneWiggle .45s ease; /* iPhone wiggle */
+}
+@keyframes iphoneWiggle{
+  0%{transform: scale(.85) translateY(10px);opacity: 0}
+  30%{transform: scale(1.03) translateY(-2px);opacity: 1}
+  55%{transform: scale(.98) rotate(-.6deg)}
+  75%{transform: scale(1.01) rotate(.5deg)}
+  100%{transform: scale(1) rotate(0)}
+}
+.app-popup-title{font-size: 17px;font-weight: 700;color: #fff;margin: 0 0 8px}
+.app-popup-message{font-size: 14px;line-height: 1.5;color: var(--grey-text);margin: 0 0 16px}
+.app-popup-actions{
+  display: flex;
+  border-top: 1px solid rgba(255,255,255,.15);
+  margin: 0 -20px -14px;
+}
+.app-popup-ok-btn,
+.app-popup-cancel-btn{
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 14px 8px;
+  font-size: 16px;
+  font-weight: 600;
+  /* Soft blue OK, not bright */
+  color: var(--blue-link);
+  cursor: pointer;
+}
+.app-popup-cancel-btn{border-right: 1px solid rgba(255,255,255,.15);color: #fff}
+
+/* ================= RESPONSIVE - EVERYTHING ================= */
+
+/* Tablet - 769px to 1024px - Medium */
+@media (max-width: 1024px){
+  .signup-bg{max-width: 520px}
+  .Konnekt-image,
+  .konekt-image{width: 140px;height: 160px;max-width: 140px;max-height: 160px}
+  .konnekt-name{font-size: 28px}
+  .onboarding-image-wrap{min-height: 300px}
+}
+
+/* Mobile - 768px and below - SMALL, NO STRETCH */
+@media (max-width: 768px){
+  .sign-flow-border,
+  .sign-flow-broder{
+    min-height: 100dvh;
+    padding: 16px;
+    padding-top: calc(16px + env(safe-area-inset-top));
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  }
+  /* Splash image reduce small on mobile */
+  .Konnekt-image,
+  .konekt-image{
+    width: 120px;
+    height: 136px;
+    max-width: 120px;
+    max-height: 136px;
+  }
+  /* Splash name reduce small on mobile */
+  .konnekt-name{
+    font-size: 24px;
+    margin-top: 14px;
+  }
+  .konnekt-image-small{width: 64px;height: 64px;max-width: 64px;max-height: 64px}
+  .konnekt-name-small{font-size: 20px}
+
+  .signup-bg{
+    max-width: 100%;
+    left: 0;
+    right: 0;
+    padding: 16px;
+    padding-top: calc(16px + env(safe-area-inset-top));
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  }
+  .popup-body{max-width: 100%}
+  .popup-header{margin-left: -16px;margin-right: -16px}
+
+  .otp-boxes{gap: 8px}
+  .otp-box{
+    height: 48px;
+    font-size: 20px;
+    max-width: calc((100% - 40px) / 6);
+  }
+  .onboarding-image-wrap{
+    height: 48%;
+    min-height: 240px;
+  }
+  .onboarding-title{font-size: 22px}
+  .onboarding-text{font-size: 14px}
+  .welcome-text{font-size: 14px}
+  .terms-text{font-size: 13px}
+}
+
+/* Small phones - 380px and below - Extra small, no overflow */
+@media (max-width: 380px){
+  .Konnekt-image,
+  .konekt-image{
+    width: 100px;
+    height: 114px;
+    max-width: 100px;
+    max-height: 114px;
+  }
+  .konnekt-name{font-size: 22px;margin-top: 12px}
+  .konnekt-image-small{width: 56px;height: 56px;max-width: 56px;max-height: 56px}
+  .otp-box{height: 44px;font-size: 18px}
+  .onboarding-image-wrap{min-height: 200px}
+  .onboarding-explain{padding: 16px 16px 8px}
+  .confirm-btn,
+  .signup-big-btn,
+  .google-btn{height: 46px;font-size: 14px}
+  .popup-input{height: 46px}
+}
+
+/* Landscape - short height - no cut */
+@media (max-height: 500px) and (orientation: landscape){
+  .sign-flow-border,
+  .sign-flow-broder{min-height: 100vh;justify-content: center}
+  .Konnekt-image,
+  .konekt-image{width: 90px;height: 102px;max-width: 90px;max-height: 102px}
+  .konnekt-name{font-size: 20px;margin-top: 10px}
+  .onboarding-image-wrap{min-height: 180px;height: 45%}
+}

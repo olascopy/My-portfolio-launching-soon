@@ -1,0 +1,358 @@
+/* ==================================================================
+   CONNECT.CSS - FOR index.html ONLY - NOT sign.html
+   File: connect.css
+   Inside index.html, only 3 things:
+   1. First Splash - logo stuff first - cannot copy
+   2. PWA Slide Up Background - after 30s - best experience
+   3. Sidebar-section - HIDDEN first, show only after gate pass
+   No signup CSS here. Signup CSS is in sign-flow.css - separate file.
+   Blue: soft blue, reduced opacity - NOT too bright
+   Image: object-fit contain, no stretch, no zoom
+   Responsive: Desktop / Tablet / Mobile - everything fits
+   ================================================================== */
+
+/* ================= RESET + BODY - index.html ================= */
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent; /* No blue highlight when tap */
+}
+html{
+  touch-action: manipulation; /* No pinch zoom stretch */
+  -webkit-text-size-adjust: 100%;
+}
+body{
+  /* FIRST SCREEN BACKGROUND - DON'T CHANGE - Same as icon background */
+  background-color: rgb(0,0,0);
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden; /* No horizontal stretch */
+  width: 100%;
+}
+button{font-family: inherit;cursor: pointer;}
+input, textarea{font-family: inherit;}
+img{
+  -webkit-user-drag: none; /* No drag image */
+  user-select: none; /* No select image */
+}
+
+/* ================= NO COPY - FIRST SPLASH IMAGE + TEXT ================= */
+/* User cannot copy, cannot long-press, cannot highlight splash logo */
+.no-copy,
+.no-copy-img,
+.no-copy-text{
+  user-select: none; /* No copy text */
+  -webkit-user-select: none;
+  -webkit-touch-callout: none; /* No iPhone long-press menu */
+  -webkit-tap-highlight-color: transparent; /* No highlight on tap */
+}
+.no-copy-img{
+  pointer-events: none; /* Image cannot be touched / dragged */
+}
+
+/* ================= SOFT BLUE - REDUCED OPACITY - NOT TOO BRIGHT ================= */
+/* Before blue was rgb(0,122,255) - too bright. Now soft, reduced opacity. */
+:root{
+  --blue-btn: rgba(0,122,255,0.72); /* Main Install button - soft, not bright */
+  --blue-btn-hover: rgba(0,122,255,0.85); /* Button on hover - still soft */
+  --blue-link: rgba(0,122,255,0.65); /* Links / small text - softer */
+  --grey-text: rgb(170,170,170); /* Grey explanation text */
+  --grey-line: rgba(255,255,255,.25); /* Grey line */
+  --sheet-bg: rgb(28,28,30); /* PWA sheet background */
+}
+
+/* ================= SIDEBAR-SECTION - HIDDEN FIRST ================= */
+/* This is your sidebar in index.html. It must NOT show during splash + check. */
+/* It shows ONLY after gate passes - JS adds class gate-passed to <body> */
+/* While splash is showing, sidebar is hidden, no flash, no jump. */
+.sidebar-section{
+  display: none !important; /* Hidden by default - no show */
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* After gate passes - JS adds gate-passed to body - sidebar shows normal */
+/* If your sidebar was flex before, it goes back to flex. If it was block, it goes back to block. */
+body.gate-passed .sidebar-section{
+  display: flex !important; /* Change to block if your sidebar was block before */
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* While splash is showing, hide main app too - no flash behind splash */
+/* If you have #mainApp, hide it until gate passes */
+#mainApp{
+  display: none !important;
+  visibility: hidden;
+}
+body.gate-passed #mainApp{
+  display: block !important;
+  visibility: visible;
+}
+
+/* ================= 1. FIRST SPLASH - LOGO STUFF FIRST - index.html ================= */
+/* Shows FIRST, before main app, before signup check. */
+/* Background = body = rgb(0,0,0). DON'T CHANGE. No loading, no spinner. */
+.index-splash{
+  position: fixed;
+  inset: 0;
+  z-index: 1000; /* On top of everything - above sidebar + main app */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  /* Same as body - black */
+  background-color: rgb(0,0,0);
+  padding: 20px;
+  /* Safe-area for iPhone island top + bottom nav */
+  padding-top: calc(20px + env(safe-area-inset-top));
+  padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  overflow: hidden;
+  touch-action: none; /* No zoom stretch on splash */
+}
+.index-splash[hidden]{display: none !important}
+.index-splash-image{
+  /* Your size - 150 x 170 - NO STRETCH */
+  width: 150px;
+  height: 170px;
+  max-width: 150px;
+  max-height: 170px;
+  /* FIX - Contain, not cover, so image no stretch, no zoom, no crop */
+  object-fit: contain;
+  object-position: center;
+  display: block;
+  flex-shrink: 0;
+  aspect-ratio: 150 / 170; /* Keep ratio, no distort */
+}
+.index-splash-name{
+  color: #fff;
+  font-size: 30px;
+  font-weight: 400;
+  margin-top: 18px; /* Gap under image - clean, not 180px jump */
+  text-align: center;
+  line-height: 1.2;
+  letter-spacing: .3px;
+}
+
+/* ================= 2. PWA SLIDE UP BACKGROUND - AFTER 30s ================= */
+/* Overlay - dark background behind sheet */
+.pwa-overlay{
+  position: fixed;
+  inset: 0;
+  z-index: 900; /* Below splash, above main app + sidebar */
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: flex-end; /* Sheet slides up from bottom */
+  justify-content: center;
+  padding: 0;
+  padding-bottom: env(safe-area-inset-bottom);
+  box-sizing: border-box;
+}
+.pwa-overlay[hidden]{display: none !important}
+
+/* Sheet - slides up from bottom, like iPhone share sheet */
+.pwa-sheet{
+  width: 100%;
+  max-width: 480px; /* Center on desktop, full on mobile */
+  background: var(--sheet-bg);
+  border-radius: 22px 22px 0 0; /* Rounded top only, flat bottom */
+  padding: 12px 20px 22px;
+  padding-bottom: calc(22px + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 -10px 40px rgba(0,0,0,.5);
+  animation: pwaSlideUp .35s ease; /* Slide up animation */
+  max-height: 85vh;
+  max-height: 85dvh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,.25) transparent;
+}
+.pwa-sheet::-webkit-scrollbar{width: 4px}
+.pwa-sheet::-webkit-scrollbar-thumb{background: rgba(255,255,255,.25);border-radius: 99px}
+@keyframes pwaSlideUp{
+  from{transform: translateY(100%);opacity: 0}
+  to{transform: translateY(0);opacity: 1}
+}
+
+/* Drag handle - top small grey bar - drag down to close */
+.pwa-handle{
+  width: 36px;
+  height: 5px;
+  border-radius: 99px;
+  background: rgba(255,255,255,.35);
+  margin: 0 auto 14px;
+  flex-shrink: 0;
+}
+
+/* PWA Icon - small, no stretch */
+.pwa-icon{
+  width: 64px;
+  height: 64px;
+  max-width: 64px;
+  max-height: 64px;
+  object-fit: contain; /* No stretch */
+  object-position: center;
+  display: block;
+  margin: 0 auto 10px;
+  aspect-ratio: 1 / 1;
+  border-radius: 14px;
+}
+.pwa-title{
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 4px;
+  text-align: center;
+}
+.pwa-subtitle{
+  color: var(--grey-text);
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 14px;
+  text-align: center;
+}
+.pwa-explain{
+  color: var(--grey-text);
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0 0 16px;
+  text-align: center;
+  max-width: 360px;
+}
+
+/* Steps - iPhone / Android */
+.pwa-steps{
+  width: 100%;
+  max-width: 360px;
+  background: rgba(255,255,255,.08);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin: 0 0 16px;
+  text-align: left;
+  box-sizing: border-box;
+}
+.pwa-steps[hidden]{display: none !important}
+.pwa-steps-title{
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+.pwa-step{
+  color: var(--grey-text);
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0 0 4px;
+}
+.pwa-step strong{color: #fff}
+
+/* Buttons - Install = soft blue, Not Now = grey */
+.pwa-install-btn{
+  width: 100%;
+  max-width: 360px;
+  height: 48px;
+  border: none;
+  border-radius: 12px;
+  /* Soft blue, reduced opacity - NOT too bright */
+  background-color: var(--blue-btn);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 4px 0 8px;
+}
+.pwa-install-btn:hover{background-color: var(--blue-btn-hover)}
+.pwa-install-btn:disabled{opacity: .5;cursor: not-allowed}
+.pwa-notnow-btn{
+  width: 100%;
+  max-width: 360px;
+  background: none;
+  border: none;
+  /* Soft blue link, reduced opacity */
+  color: var(--blue-link);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 10px 0;
+  text-align: center;
+}
+.pwa-small-note{
+  color: var(--grey-text);
+  font-size: 12px;
+  line-height: 1.4;
+  margin: 6px 0 0;
+  text-align: center;
+}
+
+/* ================= RESPONSIVE - EVERYTHING ================= */
+
+/* Tablet - 769px to 1024px - Medium */
+@media (max-width: 1024px){
+  .index-splash-image{width: 140px;height: 160px;max-width: 140px;max-height: 160px}
+  .index-splash-name{font-size: 28px}
+}
+
+/* Mobile - 768px and below - SMALL, NO STRETCH */
+@media (max-width: 768px){
+  .index-splash{
+    min-height: 100dvh;
+    padding: 16px;
+    padding-top: calc(16px + env(safe-area-inset-top));
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  }
+  /* Splash image reduce small on mobile */
+  .index-splash-image{
+    width: 120px;
+    height: 136px;
+    max-width: 120px;
+    max-height: 136px;
+  }
+  /* Splash name reduce small on mobile */
+  .index-splash-name{
+    font-size: 24px;
+    margin-top: 14px;
+  }
+  .pwa-sheet{
+    max-width: 100%;
+    border-radius: 22px 22px 0 0;
+    padding: 12px 16px 20px;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  }
+  .pwa-title{font-size: 18px}
+  .pwa-explain{font-size: 13px}
+}
+
+/* Small phones - 380px and below - Extra small, no overflow */
+@media (max-width: 380px){
+  .index-splash-image{
+    width: 100px;
+    height: 114px;
+    max-width: 100px;
+    max-height: 114px;
+  }
+  .index-splash-name{font-size: 22px;margin-top: 12px}
+  .pwa-icon{width: 56px;height: 56px;max-width: 56px;max-height: 56px}
+  .pwa-install-btn{height: 46px;font-size: 14px}
+}
+
+/* Landscape - short height - no cut */
+@media (max-height: 500px) and (orientation: landscape){
+  .index-splash{min-height: 100vh;justify-content: center}
+  .index-splash-image{width: 90px;height: 102px;max-width: 90px;max-height: 102px}
+  .index-splash-name{font-size: 20px;margin-top: 10px}
+  .pwa-sheet{max-height: 90vh;max-height: 90dvh}
+}
