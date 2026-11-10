@@ -8,8 +8,13 @@
    - Profile inside Settings = SAME #pageProfile, NOT a separate copy.
      BEFORE WAY: JS shows whole #pageProfile, adds .profile-in-settings.
      It never creates a new profile. It never touches main profile logic.
+     Blur: #profileSettingsBlur covers Settings for back.
+     When Preview / Mood / Display opens inside Profile, Profile blurs behind it.
    - Desktop: Profile takes over Settings Right
    - Mobile: Profile takes over Settings Left, swipe down = back
+   - How Can People Find Me = new background findMeBg, with ID + Username borders,
+     each with On/Off + Explanation + Value + Copy icon = Copied
+   - Help Center: new topic How Can People Find Me on Konnekt
    - No alert() anywhere. All errors / success use iPhone popup with wiggle.
    ============================================================ */
 document.addEventListener("DOMContentLoaded", () => {
@@ -165,13 +170,19 @@ document.addEventListener("DOMContentLoaded", () => {
      top bar + #editBackground + Preview + Mood + Full Image viewer.
      Desktop: profile takes over Settings Right, X brings back Settings Right.
      Mobile: profile takes over Settings Left, X / swipe down brings back Settings Left.
+     Blur: #profileSettingsBlur covers Settings for back.
+     When Preview / Mood / Display opens inside Profile, Profile itself blurs.
      This never touches main Profile logic - profile.js still controls
      everything inside #pageProfile. Settings only opens / closes it.
      ============================================================ */
   const pageProfile = byId("pageProfile");
   const settingsRight = $(".settings-page-right");
   const settingsLeftEl = $(".settings-page-left");
+  const profileBlur = byId("profileSettingsBlur");
   const isMobileProfile = () => window.innerWidth <= 768;
+
+  function showProfileBlur() { if (profileBlur) profileBlur.hidden = false; }
+  function hideProfileBlur() { if (profileBlur) profileBlur.hidden = true; }
 
   // Create Cancel (X) if HTML no get am - CSS already has .cancel-button
   function ensureCancelBtn() {
@@ -203,7 +214,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (body) { body.hidden = false; body.removeAttribute("hidden"); body.style.display = "block"; }
 
     pageProfile.classList.add("profile-in-settings");
+    pageProfile.classList.remove("is-blurred-behind");
     pageProfile.classList.toggle("profile-in-settings-mobile", isMobileProfile());
+    // FIX - Blur Settings for back, Profile stays clear on top
+    showProfileBlur();
     if (isMobileProfile()) { if (settingsLeftEl) settingsLeftEl.style.display = "none"; }
     else { if (settingsRight) settingsRight.style.visibility = "hidden"; }
     document.body.style.overflow = "hidden";
@@ -214,7 +228,8 @@ document.addEventListener("DOMContentLoaded", () => {
   function closeProfileInSettings() {
     if (!pageProfile) return;
     pageProfile.hidden = true;
-    pageProfile.classList.remove("profile-in-settings", "profile-in-settings-mobile");
+    pageProfile.classList.remove("profile-in-settings", "profile-in-settings-mobile", "is-blurred-behind");
+    hideProfileBlur();
     // Bring back wetin we hide
     if (settingsLeftEl) settingsLeftEl.style.display = "";
     if (settingsRight) settingsRight.style.visibility = "";
@@ -232,6 +247,21 @@ document.addEventListener("DOMContentLoaded", () => {
       closeProfileInSettings();
     }
   });
+
+  // FIX - When Preview / Mood / Display / Full Image opens inside Profile, Profile blurs behind it.
+  // profile.js opens those as .preview-background / .popup-overlay inside #pageProfile.
+  // We watch for them and add .is-blurred-behind. When they close, we remove it.
+  function updateProfileInnerBlur() {
+    if (!pageProfile || !pageProfile.classList.contains("profile-in-settings")) return;
+    const inner = pageProfile.querySelector(".preview-background:not([hidden]), .popup-overlay:not([hidden]), .full-image-viewer:not([hidden])");
+    pageProfile.classList.toggle("is-blurred-behind", !!inner);
+  }
+  if (pageProfile) {
+    const profileObserver = new MutationObserver(() => updateProfileInnerBlur());
+    profileObserver.observe(pageProfile, { attributes: true, childList: true, subtree: true, attributeFilter: ["hidden", "style", "class"] });
+    // Also check on any click inside Profile - in case profile.js toggles with style, not hidden
+    pageProfile.addEventListener("click", () => setTimeout(updateProfileInnerBlur, 50));
+  }
 
   // Mobile: swipe down on profile top bar = bring back Settings Left
   let profileTouchY = null;
@@ -276,6 +306,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   function renderQR() {
     const link = qrLink();
+    const q = getOrCreateQR();
     const url = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(link)}`;
     const small = byId("qrImageSmall");
     const big = byId("qrImageBig");
@@ -283,6 +314,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (big) big.src = url;
     const linkEl = $(".qr-share-link");
     if (linkEl) linkEl.textContent = link;
+    // FIX - Sync Find Me texts with same QR data, so ID / Username always match
+    const idText = byId("myIdText");
+    if (idText) idText.textContent = q.id;
+    const userText = byId("myUsernameText");
+    if (userText) userText.textContent = "@" + q.username;
   }
   renderQR();
 
@@ -340,13 +376,15 @@ document.addEventListener("DOMContentLoaded", () => {
     openChangePhone: "changePhoneBg",
     openChangeCampus: "changeCampusBg",
     openDeleteAccount: "deleteAccountBg",
+    openFindMe: "findMeBg",
   };
   Object.entries(accountMap).forEach(([btnId, popupId]) => {
     const b = byId(btnId);
     if (b) b.addEventListener("click", () => openPopup(popupId));
   });
 
-  /* ---------- HOW CAN PEOPLE FIND ME ---------- */
+  /* ---------- HOW CAN PEOPLE FIND ME - NEW BACKGROUND ---------- */
+  // Border 1 = ID, Border 2 = Username. Each: Top = Title + On/Off, Under = Explain, Under = Value + Copy
   function setupFindToggle(btnId, groupKey) {
     const btn = byId(btnId);
     if (!btn) return;
@@ -354,11 +392,40 @@ document.addEventListener("DOMContentLoaded", () => {
       const isOn = btn.textContent.trim() === "Off";
       btn.textContent = isOn ? "On" : "Off";
       btn.classList.toggle("on", isOn);
-      markChanged("account", groupKey, isOn);
+      markChanged("findMe", groupKey, isOn);
     });
   }
   setupFindToggle("findByIdToggle", "findById");
   setupFindToggle("findByUsernameToggle", "findByUsername");
+
+  // Helper - copy text + show Copied for 1.2s
+  async function copyWithFeedback(text, copiedEl) {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      // Fallback for older browsers - create temp textarea
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand("copy"); } catch {}
+      ta.remove();
+    }
+    if (copiedEl) {
+      copiedEl.hidden = false;
+      setTimeout(() => { copiedEl.hidden = true; }, 1200);
+    }
+  }
+  // Copy ID - copies "356356", shows Copied
+  byId("copyIdBtn")?.addEventListener("click", () => {
+    const id = byId("myIdText")?.textContent.trim() || "356356";
+    copyWithFeedback(id, byId("idCopiedText"));
+  });
+  // Copy Username - copies "@Faith_mike", shows Copied
+  byId("copyUsernameBtn")?.addEventListener("click", () => {
+    const name = byId("myUsernameText")?.textContent.trim() || "@Faith_mike";
+    copyWithFeedback(name, byId("usernameCopiedText"));
+  });
 
   /* ---------- EMAIL - STEP 1 + 2 + 3 - SEPARATE BACKGROUNDS ---------- */
   byId("openChangeEmailPopup")?.addEventListener("click", () => show(byId("changeEmailPopup")));
@@ -658,6 +725,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "anonymous-feed": `<h3>How to Use the Anonymous Feed</h3><p>Go to Loops. Choose the General Feed to see posts from everyone, or choose the Campus Feed to see posts only from your campus. Post anonymously, comment anonymously, upvote posts you support, and report posts that are harmful. Add hashtags to help people find posts about a topic they care about.</p>`,
     "music-mood": `<h3>What Does Connecting Music to Mood Mean</h3><p>Connecting music to mood means your current song becomes your mood. When you play a song on Spotify, people will see the name of the song and the artist. When you stop playing, they will see the last song you played. If you have not played anything, they will see your mood thought. People will only see your current song and mood. They will never see your full playlist or your listening history. You can turn this off at any time.</p>`,
     "get-started": `<h3>Get Started</h3><p>Welcome to Konnekt. Start with Moments, Chats, Loops, and Profile. Tap each topic for a full explanation of how it works.</p>`,
+    "find-me": `<h3>How Can People Find Me on Konnekt</h3><p>You control how people can find you on Konnekt. There are 3 ways: with your ID, with your Username, or by scanning your QR code.</p><p><strong>1. With ID Only:</strong> Your ID is private. Go to Settings, then Account, then How Can People Find Me on Konnekt, then turn With ID Only On or Off. If it is On, people must know your exact ID to find you.  Tap the Copy icon beside it to copy it. If it is Off, nobody can find you with your ID.</p><p><strong>2. With Username Only:</strong> Your username is public. In the same place, turn With Username Only On or Off. If it is On, anyone can search your  and find you. Tap the Copy icon beside it to copy it. If it is Off, people can search your username but they will not find you.</p><p><strong>3. With QR Code:</strong> Anyone can scan your QR code to start a chat with you, even if ID and Username are Off. Go to Settings, tap your QR code at the top to see your full QR code.</p><p><strong>If both ID and Username are Off:</strong> Nobody can find you by searching. They can only chat with you if you start the chat or if they scan your QR code. You can change this at any time.</p>`,
   };
   // Terms and About are already full paragraphs in the HTML. JS does not overwrite them with short text.
   function openHelpDetail(title, html) {
@@ -681,7 +749,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (helpBtn) {
       const k = helpBtn.dataset.help;
       if (k === "get-started") { openPopup("getStartedBg"); return; }
-      const titles = { chats: "Chats", anonymous: "Anonymous Feed", privacy: "Privacy, Security and Safety", accounts: "Accounts and Account Bans", spotify: "How Can I Connect Spotify to My Mood in My Chat", reply: "How to Reply to Messages", sticker: "How to Create a Sticker" };
+      const titles = { chats: "Chats", anonymous: "Anonymous Feed", privacy: "Privacy, Security and Safety", accounts: "Accounts and Account Bans", spotify: "How Can I Connect Spotify to My Mood in My Chat", reply: "How to Reply to Messages", sticker: "How to Create a Sticker", "find-me": "How Can People Find Me on Konnekt" };
       openHelpDetail(titles[k] || "Help", HELP_TEXTS[k] || "");
       return;
     }

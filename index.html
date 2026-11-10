@@ -2093,10 +2093,9 @@
       <input type="text" placeholder="Search Settings" class="search-setting-input" id="searchSettingsInput" autocomplete="off" />
     </div>
 
-    <!-- PROFILE CARD - tap = opens the SAME Profile UI, as a separate copy -->
-    <!-- The Profile UI inside Settings looks exactly like the main Profile page, -->
-    <!-- but it is a separate instance. It does not affect the main Profile page, -->
-    <!-- and the main Profile page does not affect it. -->
+    <!-- PROFILE CARD - tap = opens the SAME #pageProfile, BEFORE WAY -->
+    <!-- NO separate copy. Settings only shows the main Profile UI. -->
+    <!-- Profile JS still controls everything inside #pageProfile. -->
     <button type="button" class="profile-setting-border" id="openProfile">
       <span class="profile-extra-setting-border">
         <span class="round-profile-setting-main">
@@ -2135,11 +2134,17 @@
     <p class="setting-page-subtext">Select an option on the left to view it here.</p>
   </div>
 
-  <!-- ================= PROFILE INSIDE SETTINGS - SAME UI, SEPARATE COPY ================= -->
-  <!-- The full Profile UI is loaded here when you tap the profile card. -->
-  <!-- It uses the same design as the main Profile page, but with its own IDs and its own JavaScript, -->
-  <!-- so nothing you do here changes the main Profile page. -->
-  <div id="pageProfileSettings" hidden></div>
+  <!-- ================= PROFILE INSIDE SETTINGS - BLUR LAYER ================= -->
+  <!-- When Profile UI comes up inside Settings, this blur covers Settings for back. -->
+  <!-- Desktop: Settings Left blurs. Mobile: Settings Left blurs. Profile stays clear on top. -->
+  <!-- When you open Preview / Mood / Display inside Profile, Profile itself blurs behind that small popup. -->
+  <!-- JS shows / hides this with #pageProfile.profile-in-settings -->
+  <div class="profile-settings-blur" id="profileSettingsBlur" hidden aria-hidden="true"></div>
+
+  <!-- ================= PROFILE INSIDE SETTINGS - SAME #pageProfile, NO COPY ================= -->
+  <!-- DO NOT create #pageProfileSettings. The real #pageProfile lives in your main app. -->
+  <!-- Settings JS only adds .profile-in-settings to it to show it here, and removes it to hide it. -->
+  <!-- Nothing is duplicated here. -->
 
   <!-- ================= UNIVERSAL POPUP - REPLACES ALL ALERTS ================= -->
   <!-- Every error, success, and confirmation in Settings uses this popup. No alert() anywhere. -->
@@ -2155,7 +2160,7 @@
     </div>
   </div>
 
-  <!-- ================= FULL QR ================= -->
+  <!-- ================= FULL QR - CENTERED ================= -->
   <div class="popup-bg full-qr-bg" id="fullQRBg" hidden>
     <div class="popup-header">
       <button type="button" class="popup-chevron" data-close="fullQRBg"><i data-lucide="chevron-left"></i></button>
@@ -2163,19 +2168,24 @@
       <span class="popup-header-space"></span>
     </div>
     <div class="popup-body">
-      <button type="button" class="qr-scan-btn" id="openScanner">Scan</button>
-      <div class="qr-big-border">
-        <div class="qr-profile-round"><div class="qr-profile-round-inner"></div></div>
-        <img id="qrImageBig" class="qr-image-big" alt="Your QR Code" />
+      <!-- FIX: One centered column - everything inside has same width 320px, centered -->
+      <div class="qr-center-wrap">
+        <button type="button" class="qr-scan-btn" id="openScanner">Scan</button>
+        <div class="qr-big-border">
+          <div class="qr-profile-round"><div class="qr-profile-round-inner"></div></div>
+          <img id="qrImageBig" class="qr-image-big" alt="Your QR Code" />
+        </div>
+        <!-- FIX: Text under QR - stacked, centered, no distortion -->
+        <p class="qr-username-text">@Faith_mike</p>
+        <p class="popup-explain qr-explain">This is your personal QR code. Anyone who scans it can start a chat with you, unless you have turned off discovery in Account. Your link is unique and secure.</p>
+        <button type="button" class="qr-share-btn" id="qrShareBtn">Share</button>
+        <div class="qr-share-sheet" id="qrShareSheet" hidden>
+          <p class="qr-share-link">https://konnekt.app/u/Faith_mike?id=234567&amp;k=...</p>
+          <button type="button" class="qr-copy-link-btn">Copy Link</button>
+        </div>
+        <button type="button" class="qr-reset-btn" id="qrResetBtn">Reset QR Code</button>
+        <p class="popup-small-note qr-note">If you reset your QR code, your old link and old QR code will stop working immediately. You will get a brand new link.</p>
       </div>
-      <p class="popup-explain qr-explain">This is your personal QR code. Anyone who scans it can start a chat with you, unless you have turned off discovery in Account. Your link is unique and secure.</p>
-      <button type="button" class="qr-share-btn" id="qrShareBtn">Share</button>
-      <div class="qr-share-sheet" id="qrShareSheet" hidden>
-        <p class="qr-share-link">https://konnekt.app/u/Faith_mike?id=234567&amp;k=...</p>
-        <button type="button" class="qr-copy-link-btn">Copy Link</button>
-      </div>
-      <button type="button" class="qr-reset-btn" id="qrResetBtn">Reset QR Code</button>
-      <p class="popup-small-note">If you reset your QR code, your old link and old QR code will stop working immediately. You will get a brand new link.</p>
     </div>
   </div>
 
@@ -2214,22 +2224,71 @@
         <button type="button" class="account-item" id="openDeleteAccount">Delete Account <i data-lucide="chevron-right"></i></button>
       </div>
 
-      <!-- HOW CAN PEOPLE FIND ME -->
+      <!-- HOW CAN PEOPLE FIND ME - BORDER + TEXT ON TOP, CLICK = NEW BACKGROUND -->
+      <!-- In Account place. Click this border = opens findMeBg. No toggles here, toggles are inside findMeBg. -->
       <p class="account-section-text">How Can People Find Me on Konnekt</p>
-      <p class="popup-explain">Choose how other people can find you and start a chat with you. Your ID is private. Your username is public. You can turn either one on or off at any time.</p>
       <div class="account-border">
-        <div class="account-find-item">
-          <span><strong>With ID Only</strong><small>If this is on, people must know your exact ID to find you. If it is off, they cannot find you with your ID.</small></span>
-          <button type="button" class="toggle-btn on" id="findByIdToggle" aria-label="Find me with ID only">On</button>
-        </div>
-        <div class="account-find-item">
-          <span><strong>With Username Only</strong><small>If this is on, anyone can search your username and find you. If it is off, people can search your username but they will not find you.</small></span>
-          <button type="button" class="toggle-btn on" id="findByUsernameToggle" aria-label="Find me with username only">On</button>
-        </div>
+        <button type="button" class="account-item find-me-row" id="openFindMe">
+          <span><strong>How Can People Find Me on Konnekt</strong><small>Control how people find you with ID or Username</small></span>
+          <i data-lucide="chevron-right"></i>
+        </button>
       </div>
-      <p class="popup-small-note">If your ID is turned off, people can still find you with your username if your username is turned on. If both are turned off, nobody can find you by searching. They can only chat with you if you start the chat or if they scan your QR code.</p>
 
       <button type="button" class="switch-account-btn" id="switchAccountBtn" hidden>Switch Account</button>
+    </div>
+  </div>
+
+  <!-- ================= HOW CAN PEOPLE FIND ME - NEW BACKGROUND ================= -->
+  <!-- This is the new background inside Account. -->
+  <!-- Border 1 = ID, Border 2 = Username. Each border: Top = Title + On/Off, Under = Explanation, Under explanation = ID/Username + Copy icon -->
+  <div class="popup-bg find-me-bg" id="findMeBg" hidden>
+    <div class="popup-header">
+      <button type="button" class="popup-chevron" data-close="findMeBg"><i data-lucide="chevron-left"></i></button>
+      <p class="popup-title">How Can People Find Me</p>
+      <button type="button" class="popup-save-btn" data-save="findMe">Save <span class="save-spinner" hidden></span></button>
+    </div>
+    <div class="popup-body">
+      <p class="popup-explain">Choose how other people can find you and start a chat with you. Your ID is private. Your username is public. You can turn either one on or off at any time.</p>
+
+      <!-- BORDER 1 - ID -->
+      <div class="find-me-border">
+        <!-- Top row: Title + On/Off -->
+        <div class="find-me-top">
+          <span class="find-me-title">With ID Only</span>
+          <button type="button" class="toggle-btn on" id="findByIdToggle" aria-label="Find me with ID only">On</button>
+        </div>
+        <!-- Under: Explanation -->
+        <p class="find-me-explain">If this is on, people must know your exact ID to find you. If it is off, they cannot find you with your ID.</p>
+        <!-- Under explanation: ID value + Copy icon -->
+        <div class="find-me-value-row">
+          <span class="find-me-value">ID: <strong id="myIdText">356356</strong></span>
+          <button type="button" class="find-me-copy-btn" id="copyIdBtn" aria-label="Copy ID">
+            <i data-lucide="copy"></i>
+            <span class="find-me-copied" id="idCopiedText" hidden>Copied</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- BORDER 2 - USERNAME -->
+      <div class="find-me-border">
+        <!-- Top row: Title + On/Off -->
+        <div class="find-me-top">
+          <span class="find-me-title">With Username Only</span>
+          <button type="button" class="toggle-btn on" id="findByUsernameToggle" aria-label="Find me with username only">On</button>
+        </div>
+        <!-- Under: Explanation -->
+        <p class="find-me-explain">If this is on, anyone can search your username and find you. If it is off, people can search your username but they will not find you.</p>
+        <!-- Under explanation: Username value + Copy icon -->
+        <div class="find-me-value-row">
+          <span class="find-me-value">Username: <strong id="myUsernameText">@Faith_mike</strong></span>
+          <button type="button" class="find-me-copy-btn" id="copyUsernameBtn" aria-label="Copy username">
+            <i data-lucide="copy"></i>
+            <span class="find-me-copied" id="usernameCopiedText" hidden>Copied</span>
+          </button>
+        </div>
+      </div>
+
+      <p class="popup-small-note">If your ID is turned off, people can still find you with your username if your username is turned on. If both are turned off, nobody can find you by searching. They can only chat with you if you start the chat or if they scan your QR code.</p>
     </div>
   </div>
 
@@ -2395,7 +2454,6 @@
     <div class="popup-body">
       <p class="popup-explain">Your campus determines which Campus Feed you see in Loops. It is 100 percent anonymous. Nobody except you can see your campus. You can only change your campus every 30 days, and you can only change it twice before you must wait for the next 30-day period.</p>
       <p class="popup-label">Select Your Campus</p>
-      <!-- JavaScript fills this list with 50 real universities: 30 most popular + 20 less popular, mixed together. -->
       <div class="campus-picker"><div class="campus-picker-list" id="campusPickerList"></div></div>
       <p class="popup-label">Or Type Your Campus Name</p>
       <input type="text" class="popup-input" id="customCampusInput" placeholder="Type the name of your campus" />
@@ -2579,6 +2637,8 @@
         <button type="button" class="help-item" data-help="spotify">How Can I Connect Spotify to My Mood in My Chat <i data-lucide="chevron-right"></i></button>
         <button type="button" class="help-item" data-help="reply">How to Reply to Messages <i data-lucide="chevron-right"></i></button>
         <button type="button" class="help-item" data-help="sticker">How to Create a Sticker <i data-lucide="chevron-right"></i></button>
+        <!-- NEW - How can people find me on Konnekt -->
+        <button type="button" class="help-item" data-help="find-me">How Can People Find Me on Konnekt <i data-lucide="chevron-right"></i></button>
       </div>
       <p class="help-section-text">Popular Articles</p>
       <div class="help-border">
