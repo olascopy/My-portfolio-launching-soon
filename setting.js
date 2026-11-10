@@ -5,10 +5,11 @@
    - Save = spinner, frontend sends only what changed
    - QR generated once, saved to Local Storage, Reset = new QR, old link expires
    - Scanner = camera opens to scan code
-   - Profile inside Settings = SAME UI as main Profile, but a SEPARATE copy
-     in #pageProfileSettings. It never touches #pageProfile.
-   - Desktop: Settings Profile takes over Settings Right
-   - Mobile: Settings Profile takes over Settings Left, swipe down = back
+   - Profile inside Settings = SAME #pageProfile, NOT a separate copy.
+     BEFORE WAY: JS shows whole #pageProfile, adds .profile-in-settings.
+     It never creates a new profile. It never touches main profile logic.
+   - Desktop: Profile takes over Settings Right
+   - Mobile: Profile takes over Settings Left, swipe down = back
    - No alert() anywhere. All errors / success use iPhone popup with wiggle.
    ============================================================ */
 document.addEventListener("DOMContentLoaded", () => {
@@ -158,55 +159,97 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ============================================================
-     PROFILE INSIDE SETTINGS - SAME UI, SEPARATE COPY
-     #pageProfileSettings is a separate copy of the Profile UI.
-     It looks exactly like #pageProfile, but it has its own IDs
-     and its own JavaScript. Nothing here touches #pageProfile.
-     The Profile UI itself lives in profile.js (Settings copy).
-     This file only opens and closes the container.
+     PROFILE INSIDE SETTINGS - BEFORE WAY - SAME #pageProfile
+     DO NOT create new profile. Show existing one.
+     .edit-section-profile na top bar only, so we show whole #pageProfile:
+     top bar + #editBackground + Preview + Mood + Full Image viewer.
+     Desktop: profile takes over Settings Right, X brings back Settings Right.
+     Mobile: profile takes over Settings Left, X / swipe down brings back Settings Left.
+     This never touches main Profile logic - profile.js still controls
+     everything inside #pageProfile. Settings only opens / closes it.
      ============================================================ */
-  const profileSettingsRoot = byId("pageProfileSettings");
+  const pageProfile = byId("pageProfile");
   const settingsRight = $(".settings-page-right");
   const settingsLeftEl = $(".settings-page-left");
   const isMobileProfile = () => window.innerWidth <= 768;
 
+  // Create Cancel (X) if HTML no get am - CSS already has .cancel-button
+  function ensureCancelBtn() {
+    if (!pageProfile) return null;
+    let btn = pageProfile.querySelector(".cancel-button");
+    if (btn) return btn;
+    btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "cancel-button";
+    btn.id = "cancelProfileBtn";
+    btn.setAttribute("aria-label", "Back to Settings");
+    btn.innerHTML = '<i data-lucide="x" class="edit-section-cancel"></i>';
+    const topBar = pageProfile.querySelector(".edit-section-profile");
+    if (topBar) topBar.prepend(btn);
+    return btn;
+  }
+
   function openProfileInSettings() {
-    if (!profileSettingsRoot) return;
+    if (!pageProfile) { console.log("pageProfile NO DEY for this page"); openPopup("accountBg"); return; }
     closeAllPopups();
-    profileSettingsRoot.hidden = false;
+    ensureCancelBtn();
+    // FORCE SHOW - remove hidden from parent + children
+    pageProfile.hidden = false;
+    pageProfile.removeAttribute("hidden");
+    pageProfile.style.display = "block";
+    const topBar = pageProfile.querySelector(".edit-section-profile");
+    if (topBar) { topBar.hidden = false; topBar.removeAttribute("hidden"); topBar.style.display = "flex"; }
+    const body = pageProfile.querySelector("#editBackground");
+    if (body) { body.hidden = false; body.removeAttribute("hidden"); body.style.display = "block"; }
+
+    pageProfile.classList.add("profile-in-settings");
+    pageProfile.classList.toggle("profile-in-settings-mobile", isMobileProfile());
     if (isMobileProfile()) { if (settingsLeftEl) settingsLeftEl.style.display = "none"; }
     else { if (settingsRight) settingsRight.style.visibility = "hidden"; }
     document.body.style.overflow = "hidden";
-    // Tell the Settings Profile JS to refresh itself
-    window.dispatchEvent(new CustomEvent("konnekt:openSettingsProfile"));
+    console.log("PROFILE OPEN - check if you see am now");
     if (window.lucide) lucide.createIcons();
   }
+
   function closeProfileInSettings() {
-    if (!profileSettingsRoot) return;
-    profileSettingsRoot.hidden = true;
+    if (!pageProfile) return;
+    pageProfile.hidden = true;
+    pageProfile.classList.remove("profile-in-settings", "profile-in-settings-mobile");
+    // Bring back wetin we hide
     if (settingsLeftEl) settingsLeftEl.style.display = "";
     if (settingsRight) settingsRight.style.visibility = "";
     document.body.style.overflow = "";
   }
-  // The X button inside the Settings Profile is handled in profile.js (Settings copy).
-  // We listen for its custom event here.
-  window.addEventListener("konnekt:closeSettingsProfile", closeProfileInSettings);
 
+  // Click profile border in Settings Left -> open profile
   byId("openProfile")?.addEventListener("click", openProfileInSettings);
 
-  // Mobile: swipe down on Settings Profile top bar = back to Settings
+  // Click X (Cancel) inside profile top bar -> back to Settings
+  document.addEventListener("click", (e) => {
+    const cancel = e.target.closest(".cancel-button, #cancelProfileBtn");
+    if (cancel && pageProfile && !pageProfile.hidden && pageProfile.classList.contains("profile-in-settings")) {
+      e.preventDefault();
+      closeProfileInSettings();
+    }
+  });
+
+  // Mobile: swipe down on profile top bar = bring back Settings Left
   let profileTouchY = null;
-  if (profileSettingsRoot) {
-    profileSettingsRoot.addEventListener("touchstart", (e) => { profileTouchY = e.touches[0].clientY; }, { passive: true });
-    profileSettingsRoot.addEventListener("touchend", (e) => {
+  if (pageProfile) {
+    pageProfile.addEventListener("touchstart", (e) => { profileTouchY = e.touches[0].clientY; }, { passive: true });
+    pageProfile.addEventListener("touchend", (e) => {
       if (profileTouchY === null) return;
       const dy = e.changedTouches[0].clientY - profileTouchY;
-      if (isMobileProfile() && dy > 80 && e.changedTouches[0].clientY < 220) closeProfileInSettings();
+      // Swipe down more than 80px, from top area, and na mobile, and profile is in Settings
+      if (isMobileProfile() && pageProfile.classList.contains("profile-in-settings") && dy > 80 && e.changedTouches[0].clientY < 220) closeProfileInSettings();
       profileTouchY = null;
     }, { passive: true });
   }
+
+  // If user resize from mobile to desktop while profile open, fix am
   window.addEventListener("resize", () => {
-    if (!profileSettingsRoot || profileSettingsRoot.hidden) return;
+    if (!pageProfile || pageProfile.hidden || !pageProfile.classList.contains("profile-in-settings")) return;
+    pageProfile.classList.toggle("profile-in-settings-mobile", isMobileProfile());
     if (isMobileProfile()) { if (settingsLeftEl) settingsLeftEl.style.display = "none"; if (settingsRight) settingsRight.style.visibility = ""; }
     else { if (settingsLeftEl) settingsLeftEl.style.display = ""; if (settingsRight) settingsRight.style.visibility = "hidden"; }
   });

@@ -1,11 +1,14 @@
 /* ==================================================================
    SETTINGS PAGE - FULL CSS - CLEAN - NO CUT
    Structure: Left 60px / 450px, Right 875px
-   Profile inside Settings = SAME UI as main Profile, but a separate copy.
-   It uses #pageProfileSettings, so it never affects #pageProfile.
+   Profile inside Settings = SAME #pageProfile, NOT a separate copy.
+   JS adds .profile-in-settings when you click profile border.
+   JS removes am when you click X / swipe down.
+   This never touches main #pageProfile page.
    All popups = iPhone popup style - slide from right.
    All errors / success / confirm = iPhone popup with wiggle, no alert().
    Variables: --bg-app, --text-main, --side-border
+   PWA iPhone: safe-area for dynamic island + bottom nav bar padding.
    ================================================================== */
 
 /* ================= SETTINGS PAGE - MAIN LAYOUT ================= */
@@ -21,6 +24,8 @@
   z-index: 10;
   scrollbar-width: thin;
   scrollbar-color: rgba(128,128,128,.35) transparent;
+  padding-bottom: 24px;
+  box-sizing: border-box;
 }
 .settings-page-left::-webkit-scrollbar{width:4px}
 .settings-page-left::-webkit-scrollbar-thumb{background:rgba(128,128,128,.35);border-radius:99px}
@@ -273,106 +278,153 @@
 .settings-left-item:last-child{border-bottom:none}
 .settings-left-item:hover{background-color:rgb(128,128,128,.2)}
 .settings-left-icon{width:20px;height:20px;color:grey;flex-shrink:0}
-.settings-left-item span{flex:1}
+/* FIX - Text placement: label on top, small under it, never side by side */
+.settings-left-item span{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  min-width: 0;
+}
+.settings-left-item span small{
+  color: grey;
+  font-size: 12px;
+  line-height: 1.4;
+}
 .settings-left-item-chevron{width:18px;height:18px;color:grey;flex-shrink:0}
 
 /* ==================================================================
-   PROFILE INSIDE SETTINGS - SAME UI, SEPARATE COPY
-   #pageProfileSettings = Settings copy
-   #pageProfile = Main copy - NEVER touched here
-   Takes over Settings Right on desktop, full screen on mobile.
+   PROFILE INSIDE SETTINGS - BEFORE WAY - SAME #pageProfile
+   JS adds .profile-in-settings when you click profile border.
+   JS removes am when you click X / swipe down.
+   This never touches main Profile page - only when class dey.
+   Desktop: takes over Settings Right.
+   Mobile: takes over Settings Left, full screen.
    ================================================================== */
 
-#pageProfileSettings{
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 510px;
-  right: 0;
-  width: auto;
-  background: var(--bg-app);
-  z-index: 60;
-  overflow: hidden;
+/* FORCE - Profile inside Settings must show - whole page, not top bar only */
+#pageProfile.profile-in-settings{
+  display: block !important;
+  visibility: visible !important;
+  position: fixed !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  left: 510px !important;
+  right: 0 !important;
+  width: auto !important;
+  z-index: 999 !important;
+  background: var(--bg-app) !important;
+  overflow: hidden !important;
 }
-#pageProfileSettings[hidden]{display:none !important}
-
-/* Inside the Settings copy, every Profile class is scoped to #pageProfileSettings, */
-/* so the main Profile CSS can never leak in and this CSS can never leak out. */
-#pageProfileSettings .edit-section-profile{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  position: fixed;
-  left: 510px;
-  right: 0;
-  top: 0;
-  height: 65px;
-  background: var(--bg-app);
-  border-bottom: 1px solid rgb(128,128,128,.25);
-  z-index: 62;
-  padding: 0 16px;
-  box-sizing: border-box;
+#pageProfile.profile-in-settings[hidden]{display:none !important}
+#pageProfile.profile-in-settings .edit-section-profile{
+  display: flex !important;
+  visibility: visible !important;
+  position: fixed !important;
+  left: 510px !important;
+  right: 0 !important;
+  top: 0 !important;
+  height: 65px !important;
+  z-index: 1000 !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  padding: 0 16px !important;
+  box-sizing: border-box !important;
+  background: var(--bg-app) !important;
+  border-bottom: 1px solid rgb(128,128,128,.25) !important;
 }
-#pageProfileSettings .edit-section-text{
-  flex: 1;
-  text-align: center;
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--text-main);
-  margin: 0;
+#pageProfile.profile-in-settings .extrabackground-profile{
+  display: block !important;
+  visibility: visible !important;
+  position: absolute !important;
+  top: 85px !important;
+  left: 24px !important;
+  right: 24px !important;
+  bottom: 20px !important;
+  height: auto !important;
+  width: auto !important;
+  z-index: 999 !important;
+  overflow-y: auto !important;
+  padding-bottom: 24px !important;
+  box-sizing: border-box !important;
 }
-#pageProfileSettings .cancel-button{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border: none;
-  border-radius: 50%;
-  background-color: rgb(128,128,128,.15);
-  color: var(--text-main);
-  cursor: pointer;
-  flex-shrink: 0;
+/* Cancel X - show for Settings, JS creates am if HTML no get am */
+#pageProfile.profile-in-settings .cancel-button{
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 36px !important;
+  height: 36px !important;
+  border: none !important;
+  border-radius: 50% !important;
+  background-color: rgb(128,128,128,.15) !important;
+  color: var(--text-main) !important;
+  cursor: pointer !important;
+  flex-shrink: 0 !important;
+  margin-top: 0 !important;
+  margin-left: 0 !important;
 }
-#pageProfileSettings .edit-section-save{
-  min-width: 52px;
-  text-align: right;
-  color: rgb(0,122,255);
-  font-weight: 700;
-  cursor: pointer;
+/* Title centre for Settings Right, Save stay right */
+#pageProfile.profile-in-settings .edit-section-text{
+  flex: 1 !important;
+  text-align: center !important;
+  margin: 0 !important;
+  font-size: 17px !important;
+  font-weight: 700 !important;
 }
-#pageProfileSettings .edit-section-save.is-inactive{opacity:.35;pointer-events:none}
-#pageProfileSettings .extrabackground-profile{
-  position: absolute;
-  top: 85px;
-  left: 24px;
-  right: 24px;
-  bottom: 20px;
-  background: rgb(128,128,128,.3);
-  border-radius: 20px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  z-index: 61;
-  padding-bottom: 24px;
-  box-sizing: border-box;
+#pageProfile.profile-in-settings .edit-section-save{
+  min-width: 52px !important;
+  text-align: right !important;
 }
-#pageProfileSettings .round-profile{
-  margin-left: auto;
-  margin-right: auto;
+/* Inside body - centre the things wey get fixed left margin for main page */
+#pageProfile.profile-in-settings .round-profile{
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
-#pageProfileSettings .username-border{justify-content:center}
-#pageProfileSettings .username-profile{margin-left:0}
-#pageProfileSettings .id-profile{margin-left:0;text-align:center}
-#pageProfileSettings .personal-information-text,
-#pageProfileSettings .about-me-text,
-#pageProfileSettings .mood-connect-text{margin-left:24px}
-#pageProfileSettings .input-about-border{margin:0 24px}
-#pageProfileSettings .input-about{margin-left:0;width:100%}
-#pageProfileSettings .mood-connect-display{margin-left:24px;margin-right:24px;width:auto}
-#pageProfileSettings .preview-profile-btn{margin-left:auto;margin-right:24px}
-#pageProfileSettings .preview-background,
-#pageProfileSettings .popup-overlay{z-index:80}
+#pageProfile.profile-in-settings .username-border{justify-content:center !important}
+#pageProfile.profile-in-settings .username-profile{margin-left:0 !important}
+#pageProfile.profile-in-settings .id-profile{margin-left:0 !important;text-align:center !important}
+/* FIX - Text placement under each: label on top, input / value under it */
+#pageProfile.profile-in-settings .personal-information-text,
+#pageProfile.profile-in-settings .about-me-text,
+#pageProfile.profile-in-settings .mood-connect-text{
+  display: block !important;
+  margin-left: 24px !important;
+  margin-right: 24px !important;
+  margin-top: 18px !important;
+  margin-bottom: 8px !important;
+}
+#pageProfile.profile-in-settings .input-about-border{
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  margin: 0 24px 14px !important;
+}
+#pageProfile.profile-in-settings .input-about{
+  margin-left: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+#pageProfile.profile-in-settings .mood-connect-display{
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 4px !important;
+  margin-left: 24px !important;
+  margin-right: 24px !important;
+  width: auto !important;
+}
+#pageProfile.profile-in-settings .preview-profile-btn{
+  margin-left: auto !important;
+  margin-right: 24px !important;
+}
+/* Preview / Mood / Full Image popups - stay on top of Settings Right */
+#pageProfile.profile-in-settings .preview-background,
+#pageProfile.profile-in-settings .popup-overlay{
+  z-index: 80 !important;
+}
 
 /* ==================================================================
    UNIVERSAL POPUP - REPLACES ALL alert()
@@ -390,6 +442,8 @@
   justify-content: center;
   z-index: 500;
   padding: 20px;
+  padding-top: calc(20px + env(safe-area-inset-top));
+  padding-bottom: calc(20px + env(safe-area-inset-bottom));
   box-sizing: border-box;
 }
 .app-popup-overlay[hidden]{display:none}
@@ -434,6 +488,8 @@
   overflow-y: auto;
   z-index: 20;
   padding: 20px;
+  padding-top: calc(20px + env(safe-area-inset-top));
+  padding-bottom: calc(20px + env(safe-area-inset-bottom));
   box-sizing: border-box;
   animation: popupSlideIn .3s ease;
   scrollbar-width: thin;
@@ -445,13 +501,13 @@
 .popup-bg[hidden]{display:none}
 .popup-header{
   position: sticky;
-  top: -20px;
+  top: calc(-20px - env(safe-area-inset-top));
   z-index: 10;
   display: flex;
   align-items: center;
   gap: 8px;
-  margin: -20px -20px 10px;
-  padding: 14px 14px 10px;
+  margin: calc(-20px - env(safe-area-inset-top)) -20px 10px;
+  padding: calc(14px + env(safe-area-inset-top)) 14px 10px;
   background-color: var(--bg-app);
   border-bottom: 1px solid rgb(128,128,128,.25);
 }
@@ -459,10 +515,11 @@
 .popup-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .popup-chevron{background:none;border:none;color:var(--text-main);cursor:pointer;padding:0;display:flex;align-items:center;flex-shrink:0}
 .popup-chevron svg{width:24px;height:24px}
-.popup-title{color:var(--text-main);font-size:20px;font-weight:500;margin-top:15px;margin-bottom:15px}
+/* FIX - Title on top, explain under it, input under explain - never side by side */
+.popup-title{color:var(--text-main);font-size:20px;font-weight:500;margin-top:15px;margin-bottom:6px}
 .popup-header .popup-title{margin:0;flex:1;text-align:center;font-size:17px;font-weight:700}
 .popup-explain{color:grey;font-size:14px;line-height:1.5;margin-bottom:20px}
-.popup-small-note{color:grey;font-size:13px;line-height:1.5;margin-top:15px}
+.popup-small-note{color:grey;font-size:13px;line-height:1.5;margin-top:8px;margin-bottom:14px}
 .popup-label{display:block;color:var(--text-main);font-size:14px;font-weight:600;margin:14px 0 8px}
 .popup-current-value{color:grey;font-size:15px;margin:0 0 18px}
 .popup-input{
@@ -530,7 +587,7 @@
 }
 .popup-close-x{
   position: absolute;
-  top: 20px;
+  top: calc(20px + env(safe-area-inset-top));
   right: 20px;
   width: 32px;
   height: 32px;
@@ -656,6 +713,20 @@
 .account-item:last-child{border-bottom:none}
 .account-item:hover{background-color:rgb(128,128,128,.2)}
 .account-item svg{flex-shrink:0}
+/* FIX - Text under each: label top, value / small under it */
+.account-item span{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  min-width: 0;
+}
+.account-item span small{
+  color: grey;
+  font-size: 12px;
+  line-height: 1.4;
+}
 
 /* How can people find me - ID + Username rows */
 .account-find-item{
@@ -735,6 +806,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
   width: 100%;
   padding: 16px 12px;
   background: none;
@@ -748,9 +820,22 @@
 }
 .privacy-item:last-child{border-bottom:none}
 .privacy-item:hover{background-color:rgb(128,128,128,.2)}
+/* FIX - Privacy: label top, small under it */
+.privacy-item span{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  min-width: 0;
+}
+.privacy-item span small{color:grey;font-size:12px;line-height:1.4}
 .audience-list{border:1px solid rgb(128,128,128,.25);border-radius:12px;overflow:hidden}
 .audience-item{
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
   width: 100%;
   padding: 16px 12px;
   background: none;
@@ -765,6 +850,7 @@
 .audience-item:last-child{border-bottom:none}
 .audience-item:hover,
 .audience-item.selected{background-color:rgb(128,128,128,.2);color:rgb(0,122,255)}
+.audience-item small{color:grey;font-size:12px;line-height:1.4}
 
 /* ================= CHATS ================= */
 
@@ -787,12 +873,22 @@
 }
 .chats-item:last-child{border-bottom:none}
 .chats-item:hover{background-color:rgb(128,128,128,.2)}
+/* FIX - Chats: label top, small under it */
+.chats-item span{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  min-width: 0;
+}
+.chats-item span small{color:grey;font-size:12px;line-height:1.4}
 
 /* ================= APPEARANCE ================= */
 
 .appearance-more-btn{
   position: absolute;
-  top: 20px;
+  top: calc(20px + env(safe-area-inset-top));
   right: 20px;
   background: none;
   border: none;
@@ -803,7 +899,7 @@
 }
 .reset-theme-pill{
   position: absolute;
-  top: 50px;
+  top: calc(50px + env(safe-area-inset-top));
   right: 20px;
   background-color: var(--bg-app);
   border: 1px solid rgb(128,128,128,.4);
@@ -833,13 +929,25 @@
 }
 .appearance-item:last-child{border-bottom:none}
 .appearance-item:hover{background-color:rgb(128,128,128,.2)}
-.appearance-item-explain{display:block;color:grey;font-size:12px;font-weight:400}
+/* FIX - Appearance: label top, explain under it */
+.appearance-item span{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  min-width: 0;
+}
+.appearance-item-explain{display:block;color:grey;font-size:12px;font-weight:400;line-height:1.4}
 .color-circle-list{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px}
 .color-circle{width:40px;height:40px;border-radius:50%;border:2px solid transparent;cursor:pointer;flex-shrink:0}
 .color-circle.selected{border-color:var(--text-main);transform:scale(1.1)}
 .app-color-list{border:1px solid rgb(128,128,128,.25);border-radius:12px;overflow:hidden}
 .app-color-item{
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
   width: 100%;
   padding: 16px 12px;
   background: none;
@@ -854,6 +962,7 @@
 .app-color-item:last-child{border-bottom:none}
 .app-color-item:hover,
 .app-color-item.selected{background-color:rgb(128,128,128,.2);color:rgb(0,122,255)}
+.app-color-item small{color:grey;font-size:12px;line-height:1.4}
 
 /* ================= NOTIFICATIONS ================= */
 
@@ -877,6 +986,16 @@
 }
 .notif-item:last-child{border-bottom:none}
 .notif-item:hover{background-color:rgb(128,128,128,.2)}
+/* FIX - Notifications: label top, small under it */
+.notif-item span{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  min-width: 0;
+}
+.notif-item span small{color:grey;font-size:12px;line-height:1.4}
 
 /* ================= TOGGLE ================= */
 
@@ -1075,23 +1194,63 @@
 #pageSettings.app-black{--bg-app:#000;--text-main:#fff;--side-border:#111}
 
 /* ================= MOBILE - SETTINGS ================= */
+/* PWA iPhone: bring down small from dynamic island, add bottom padding so nav bar no hide anything */
 
 @media (max-width: 768px){
-  .settings-page-left{left:0;width:100%}
+  .settings-page-left{
+    left: 0;
+    width: 100%;
+    /* Bottom nav bar + iPhone home indicator */
+    padding-bottom: calc(110px + env(safe-area-inset-bottom));
+    padding-top: env(safe-area-inset-top);
+  }
   .settings-page-right{display:none}
-  .popup-bg{left:0;width:100%}
-  .app-popup-overlay{padding:16px}
+  .popup-bg{
+    left: 0;
+    width: 100%;
+    padding-top: calc(20px + env(safe-area-inset-top));
+    /* Nav bar padding so last button no hide */
+    padding-bottom: calc(110px + env(safe-area-inset-bottom));
+  }
+  .app-popup-overlay{
+    padding: 16px;
+    padding-top: calc(16px + env(safe-area-inset-top));
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  }
 
-  /* Profile inside Settings - Mobile: full screen, takes over Settings Left */
-  #pageProfileSettings{left:0;right:0;width:100%}
-  #pageProfileSettings .edit-section-profile{left:0;right:0;width:100%}
-  #pageProfileSettings .extrabackground-profile{left:12px;right:12px;top:80px;bottom:12px;border-radius:16px}
-  #pageProfileSettings .personal-information-text,
-  #pageProfileSettings .about-me-text,
-  #pageProfileSettings .mood-connect-text{margin-left:12px}
-  #pageProfileSettings .input-about-border{margin:0 12px}
-  #pageProfileSettings .mood-connect-display{margin-left:12px;margin-right:12px}
-  #pageProfileSettings .preview-profile-btn{margin-right:12px}
+  /* Profile inside Settings - Mobile: full screen, takes over Settings Left - BEFORE WAY */
+  #pageProfile.profile-in-settings{
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    /* Bring down small from dynamic island */
+    padding-top: env(safe-area-inset-top) !important;
+  }
+  #pageProfile.profile-in-settings .edit-section-profile{
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    /* Bring down small from dynamic island */
+    padding-top: env(safe-area-inset-top) !important;
+    height: calc(65px + env(safe-area-inset-top)) !important;
+  }
+  #pageProfile.profile-in-settings .extrabackground-profile{
+    left: 12px !important;
+    right: 12px !important;
+    top: calc(80px + env(safe-area-inset-top)) !important;
+    /* Bottom nav bar + home indicator - last item must show */
+    bottom: calc(110px + env(safe-area-inset-bottom)) !important;
+    border-radius: 16px !important;
+    padding-bottom: calc(24px + env(safe-area-inset-bottom)) !important;
+  }
+  #pageProfile.profile-in-settings .personal-information-text,
+  #pageProfile.profile-in-settings .about-me-text,
+  #pageProfile.profile-in-settings .mood-connect-text{margin-left:12px !important}
+  #pageProfile.profile-in-settings .input-about-border{margin:0 12px !important}
+  #pageProfile.profile-in-settings .mood-connect-display{margin-left:12px !important;margin-right:12px !important}
+  #pageProfile.profile-in-settings .preview-profile-btn{margin-right:12px !important}
 
   .search-icon-top-mobile{display:flex}
   /* Only show the top search icon when JS adds .show. Otherwise it stays hidden. */
