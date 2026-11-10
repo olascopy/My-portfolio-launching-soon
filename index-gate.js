@@ -20,6 +20,7 @@
   const $$ = (sel) => Array.from(document.querySelectorAll(sel));
 
   // What page are we on? index.html or signup.html?
+  // FILE NAME IS signup.html - as it is here. No sign-up.html.
   const currentPage = window.location.pathname.split("/").pop().toLowerCase() || "index.html";
   const isIndexPage = currentPage === "" || currentPage === "index.html" || currentPage === "index.htm";
   const isSignupPage = currentPage === "signup.html" || currentPage === "sign.html" || currentPage === "sign-up.html";
@@ -44,8 +45,9 @@
   }, { passive: false });
   document.addEventListener("dblclick", function (e) { e.preventDefault(); }, { passive: false });
 
-  /* ================= 2. FIRST SPLASH - CANNOT COPY TEXT OR IMAGE ================= */
+  /* ================= 2. FIRST SPLASH + ALL IMAGES - CANNOT COPY - FIX 5 ================= */
   // Works for BOTH: #indexFirstSplash in index.html + #firstSplash in signup.html
+  // FIX 5: No image can be copied - iPhone long-press / Android long-press / right-click / drag / copy all blocked
   function lockSplash(splashId) {
     const splash = $(splashId);
     if (!splash) return;
@@ -63,6 +65,7 @@
         el.draggable = false;
         el.style.pointerEvents = "none"; // Image cannot be touched / dragged
         el.style.webkitUserDrag = "none";
+        el.setAttribute("oncontextmenu", "return false");
       }
     });
     ["copy", "cut", "paste"].forEach(function (type) {
@@ -86,28 +89,52 @@
     }, { passive: true });
     splash.addEventListener("mousedown", function (e) { e.preventDefault(); });
   }
+
   function lockAllSplashes() {
-    lockSplash("indexFirstSplash"); // index.html splash
+    lockSplash("indexFirstSplash"); // index.html splash - FIX 2: shows FIRST
     lockSplash("firstSplash"); // signup.html splash
   }
+
+  // FIX 5: Global - any image, any page, no copy menu
   document.addEventListener("contextmenu", function (e) {
-    if (e.target && e.target.tagName === "IMG") { e.preventDefault(); }
+    if (e.target && (e.target.tagName === "IMG" || e.target.closest(".no-copy"))) { e.preventDefault(); return false; }
   });
   document.addEventListener("dragstart", function (e) {
-    if (e.target && e.target.tagName === "IMG") { e.preventDefault(); }
+    if (e.target && e.target.tagName === "IMG") { e.preventDefault(); return false; }
   });
+  document.addEventListener("copy", function (e) {
+    const sel = window.getSelection();
+    if (sel && sel.anchorNode && sel.anchorNode.parentElement && sel.anchorNode.parentElement.closest(".no-copy")) {
+      e.preventDefault();
+    }
+  });
+
   function fixImagesNoStretch() {
     document.querySelectorAll("img").forEach(function (img) {
       img.draggable = false;
       img.style.userSelect = "none";
       img.style.webkitUserDrag = "none";
-      if (img.classList.contains("index-splash-image") || img.classList.contains("pwa-icon") || img.classList.contains("konnekt-image") || img.classList.contains("konnekt-image-small")) {
+      img.style.webkitTouchCallout = "none";
+      // Logo / splash / PWA / profile logo - contain, no stretch, no crop
+      // FIX 2: Profile logo in index.html fixed here too
+      if (
+        img.classList.contains("index-splash-image") ||
+        img.classList.contains("pwa-icon") ||
+        img.classList.contains("konnekt-image") ||
+        img.classList.contains("konnekt-image-small") ||
+        img.classList.contains("profile-logo") ||
+        img.classList.contains("app-logo") ||
+        img.classList.contains("no-copy-img")
+      ) {
         img.style.objectFit = "contain";
         img.style.objectPosition = "center";
+        img.style.pointerEvents = "none"; // FIX 5: viewing only
       }
     });
   }
   fixImagesNoStretch();
+  const imgObserver = new MutationObserver(fixImagesNoStretch);
+  if (document.body) imgObserver.observe(document.body, { childList: true, subtree: true });
 
   /* ================= 3. SIDEBAR + MAIN APP - HIDDEN FIRST - index.html ONLY ================= */
   function hideGate() {
@@ -234,7 +261,7 @@
     }, { passive: true });
   }
 
-  /* ================= 6. GATE - CONNECTED FLOW ================= */
+  /* ================= 6. GATE - CONNECTED FLOW - FIX 2 ================= */
   let pwaTimer = null;
   let gateStarted = false;
   function startGate() {
@@ -243,7 +270,7 @@
     lockAllSplashes();
     fixImagesNoStretch();
 
-    // ----- CASE A: WE ARE IN index.html -----
+    // ----- CASE A: WE ARE IN index.html - FIX 2 -----
     if (isIndexPage) {
       hideGate(); // Hide sidebar + main app first - no flash
       hidePwa(); // Hide PWA first - shows only after 30s
@@ -253,7 +280,7 @@
         splash.style.display = "flex";
         lockSplash("indexFirstSplash");
       }
-      // Splash 1.5s, then check signup
+      // Splash 1.5s, then check signup - index gate shows FIRST before anything
       setTimeout(function () {
         // If user have NOT signup -> take them to signup.html
         if (!hasFinishedSignup()) {
@@ -261,6 +288,7 @@
           return;
         }
         // If user HAVE signup already -> stay in index.html, show main app
+        // No signup splash again - only index gate splash, then main app
         if (splash) {
           splash.style.display = "none";
           splash.hidden = true;
@@ -278,13 +306,13 @@
     // ----- CASE B: WE ARE IN signup.html -----
     if (isSignupPage) {
       // If user HAVE signup already -> return to index.html, don't show signup again
+      // FIX 2: After signup, no signup splash again
       if (hasFinishedSignup()) {
         window.location.href = "index.html";
         return;
       }
       // If user have NOT signup -> stay in signup.html, let signup flow run
-      // signup flow is in sign-flow.js - this gate does NOT block it, it just lets it run
-      // Lock splash for signup.html
+      // signup flow is in signup.js / sign-up.js - this gate does NOT block it, it just lets it run
       const splash2 = $("firstSplash");
       if (splash2) lockSplash("firstSplash");
       return;
