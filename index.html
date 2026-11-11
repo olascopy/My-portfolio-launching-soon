@@ -1670,7 +1670,7 @@
       <div class="h-mid">
         <!-- Anonymous badge -->
         <div class="sentence"><i data-lucide="shield-check" style="width:14px"></i> <b>Anonymous</b> • No names</div>
-        <!-- Herd pill / Campus or General -->
+        <!-- Herd pill / Campus or General - rendered by switch.js -->
         <div class="pill"><span class="dot" id="dotType"></span><span id="herdLabel">My Herd • Campus</span></div>
       </div>
       <!-- Tabs inside header - Campus / General switch -->
@@ -1681,46 +1681,76 @@
     <div class="desktop-nav glass"><button class="active"><i data-lucide="house"></i> Home</button><button id="goProfileDesk"><i data-lucide="user-round"></i> My Loops • <span id="deskCount">0</span></button><button id="deskNew" class="newLoopDesk"><i data-lucide="plus"></i> New Loop</button></div>
 
     <div class="feed-column">
-      <!-- STICKY TOP AREA - this area now SCROLLS with posts except refresh pill -->
+      <!-- STICKY TOP AREA -->
       <div class="sticky-top">
         <div class="mobile-stack">
           <!-- My Loops button mobile - link to profile -->
           <div class="myloops-border mobile-only" id="myLoopsBtn"><b><i data-lucide="user-round" style="width:16px"></i> My Loops • <span id="topCount">0</span></b><span class="right"><small>Check yours</small><i data-lucide="chevron-right" style="width:16px"></i></span></div>
           
           <!-- ROTATING WRAP - 4 CARDS: LIVE NOW, QUESTION, POLL, TOP 7 DAYS WINNER -->
-          <!-- Hidden until 5 posts - becomes 4 cards interactive - SCROLLS WITH POST -->
           <div class="rot-wrap glass hidden" id="mobileRotWrap">
             <div class="rot-inner" id="mobileRot"></div>
             <div class="rot-controls"><button class="arrow-btn" id="prevBtn"><i data-lucide="chevron-left" style="width:18px"></i></button><div class="rot-dots" id="mobileDots"></div><button class="arrow-btn" id="nextBtn"><i data-lucide="chevron-right" style="width:18px"></i></button></div>
           </div>
         </div>
 
-        <!-- REFRESH PILL - ONLY THIS STAYS STICKY TOP, DOES NOT SCROLL -->
+        <!-- REFRESH PILL - ONLY THIS STAYS STICKY TOP -->
         <div class="new-pill-wrap">
           <div class="new-pill hidden" id="newPill"><span class="red-dot"></span><span id="newCount">3 new loops</span><i data-lucide="chevron-up" style="width:14px"></i></div>
         </div>
       </div>
 
+      <!-- CAMPUS HEADER - rendered by switch.js : e.g. Kwara State University • Campus -->
+      <div class="campus-header-wrap">
+        <h1 id="campusHeader">Kwara State University • Campus</h1>
+      </div>
+
       <!-- FEED POSTS SCROLL AREA - main loops list -->
       <main id="feed">
-        <!-- Empty state when no posts -->
-        <div id="emptyState" class="empty">
+        <!-- EMPTY STATE - CAMPUS ONLY -->
+        <div id="emptyCampus" class="empty">
           <div class="ghost"><i data-lucide="ghost" style="width:44px;height:44px"></i></div>
-          <b id="emptyTitle">Your herd is quiet</b>
-          <p id="emptyText">No loops yet in Campus.<br>Be first to break the silence.</p>
-          <button id="emptyPostBtn" class="empty-btn"><i data-lucide="plus" style="width:16px"></i> Post your first Loop</button>
-          <button id="emptyExplore" class="empty-link"><i data-lucide="compass" style="width:16px"></i> Explore General</button>
+          <b>Your herd is quiet</b>
+          <p>No loops yet in Campus.<br>Be first to break the silence.</p>
+          <button id="emptyPostBtnCampus" class="empty-btn"><i data-lucide="plus" style="width:16px"></i> Post your first Loop</button>
+          <button id="emptyExploreCampus" class="empty-link"><i data-lucide="compass" style="width:16px"></i> Explore General</button>
         </div>
+
+        <!-- EMPTY STATE - GENERAL ONLY -->
+        <div id="emptyGeneral" class="empty hidden">
+          <div class="ghost"><i data-lucide="globe" style="width:44px;height:44px"></i></div>
+          <b>General is quiet</b>
+          <p>No loops yet in General.<br>Be first to post for everyone.</p>
+          <button id="emptyPostBtnGeneral" class="empty-btn"><i data-lucide="plus" style="width:16px"></i> Post in General</button>
+          <button id="emptyExploreGeneral" class="empty-link"><i data-lucide="compass" style="width:16px"></i> Explore Campus</button>
+        </div>
+
+        <!-- POSTS CONTAINER - switch.js renders 3 first, then rest on scroll -->
+        <div id="postsList"></div>
+
+        <!-- LOADING MORE POSTS - shows on scroll when more posts dey -->
+        <div id="loadMore" class="load-more hidden">
+          <div class="loader-bar"><div></div></div>
+          <p>Loading more posts...</p>
+        </div>
+
+        <!-- NO INTERNET - shows when scroll fails, swipe up to retry -->
+        <div id="noInternet" class="no-internet hidden">
+          <i data-lucide="wifi-off" style="width:24px"></i>
+          <b>No internet connection</b>
+          <p>Swipe up to try again</p>
+          <button id="retryLoadBtn" class="empty-btn">Try Again</button>
+        </div>
+
+        <!-- END OF FEED -->
+        <div id="endOfFeed" class="end-feed hidden"><p>You're all caught up</p></div>
       </main>
     </div>
 
     <!-- DESKTOP RIGHT PANEL - only desktop -->
     <div class="right-panel">
-      <!-- My Loops card desktop -->
       <div class="panel-card glass desktop-only"><div style="display:flex;justify-content:space-between"><h4>My Loops</h4><b id="rightCount">0</b></div><p>Only you see • 100% anon</p></div>
-      <!-- Desktop rotating - same 4 cards - SCROLLS? no, right panel sticky -->
       <div class="rot-wrap glass hidden" id="deskWrap"><div class="rot-inner" id="deskRot"></div><div class="rot-controls"><button class="arrow-btn" id="dPrev"><i data-lucide="chevron-left" style="width:18px"></i></button><div class="rot-dots" id="deskDots"></div><button class="arrow-btn" id="dNext"><i data-lucide="chevron-right" style="width:18px"></i></button></div></div>
-      <!-- Desktop refresh sticky too - ONLY STICKY ITEM -->
       <div class="new-pill-wrap">
         <div class="new-pill hidden" id="newPillDesk"><span class="red-dot"></span><span id="newCountDesk">3 new loops • tap to refresh</span><i data-lucide="refresh-cw" style="width:14px"></i></div>
       </div>
@@ -1736,9 +1766,7 @@
     <div class="desktop-nav glass" style="display:flex;"><button id="goFeedDesk"><i data-lucide="house"></i> Home</button><button class="active"><i data-lucide="user-round"></i> My Loops</button><button id="deskNew2" class="newLoopDesk"><i data-lucide="plus"></i> New Loop</button></div>
     <div class="feed-column">
       <div class="mobile-stack">
-        <!-- Back button mobile -->
         <div class="myloops-border mobile-only" id="backBtn"><b><i data-lucide="chevron-left" style="width:18px"></i> Back to Feed</b><span class="right"><i data-lucide="x" style="width:16px"></i></span></div>
-        <!-- Mobile stats top - up/down/comment counts with icons -->
         <div class="my-stats-top mobile-only glass" id="myStatsTop">
           <span><i data-lucide="arrow-up" style="width:12px"></i> <b id="statUp">0</b></span>
           <span><i data-lucide="arrow-down" style="width:12px"></i> <b id="statDown">0</b></span>
@@ -1755,7 +1783,6 @@
     <div class="new-top"><button id="closeNew"><i data-lucide="x" style="width:20px"></i></button><span style="font-weight:800" id="newTitle">New Loop</span><button id="openSelector" class="postBtn" disabled>Post</button></div>
     <textarea id="postInput" maxlength="200" placeholder="What's happening? Share anonymously..."></textarea>
     <div class="char"><span id="char">0</span>/200 • 100% anon</div>
-    <!-- Tag picker optional -->
     <div class="tag-picker" id="tagPicker">
       <small>Add tag (optional)</small>
       <div class="tag-options">
@@ -1775,24 +1802,21 @@
   </div>
 
   <!-- ================= COMMENTS OVERLAY ================= -->
-  <!-- Heart icon will be added by JS inside commentList - white default, red when clicked -->
   <div id="commentOverlay" class="comment-overlay">
     <div class="comment-card" id="commentCard">
       <div class="comment-top"><h3 id="commentTitle"><i data-lucide="message-circle" style="width:18px"></i> Comments • 0</h3><button id="closeComment"><i data-lucide="x" style="width:18px"></i></button></div>
-      <!-- comment list rendered by JS - each comment will have heart button -->
       <div id="commentList" class="comment-list custom-scroll"></div>
       <div class="comment-input-wrap" id="inputWrap"><div class="comment-input"><input id="commentInput" placeholder="Add anonymous comment..." maxlength="120"><button id="sendComment"><i data-lucide="send" style="width:18px"></i></button></div></div>
     </div>
   </div>
 
-  <!-- ================= SHARE AS IMAGE OVERLAY - WITH APP ICON ================= -->
+  <!-- ================= SHARE AS IMAGE OVERLAY ================= -->
   <div id="shareOverlay" class="share-overlay">
     <div class="share-card-wrap">
       <div class="share-top-bar">
         <button id="closeShare"><i data-lucide="x" style="width:18px"></i></button>
         <button id="saveShareImage" class="save-img-btn"><i data-lucide="download" style="width:18px"></i></button>
       </div>
-      <!-- This div becomes image - includes your app icon -->
       <div id="shareImageCard" class="share-image-card">
         <div class="share-border-inner">
           <div class="share-header">
@@ -1821,7 +1845,6 @@
     </div>
   </div>
 </div>
-
 
 
 
@@ -2887,6 +2910,7 @@
 <script src="profile.js"></script>
 <script src="setting.js"></script>
 <script src="index-gate.js"></script>
+<script src="switch.js"></script>
 </html>
 
 

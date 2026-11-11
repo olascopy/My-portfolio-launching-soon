@@ -1422,3 +1422,27 @@
   .setting-page-icon,
   .setting-page-text{margin-left:0;text-align:center}
 }
+/* ===== CAMPUS PICKER - BACKEND RULES ===== */
+/* Backend reads: [data-campus] + [data-selected="true"] */
+/* Never use .selected alone for backend, always data-selected */
+
+.campus-picker-list{ display:flex; flex-direction:column; gap:8px; width:100%; }
+.campus-picker-item{
+  display:flex; justify-content:space-between; align-items:center;
+  width:100%; padding:14px 16px; border-radius:16px;
+  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08);
+  color:#fff; font-size:14px; font-weight:600; cursor:pointer; text-align:left;
+}
+.campus-picker-item[data-selected="true"],
+.campus-picker-item.selected{
+  background:#fff; color:#000; border-color:#fff;
+}
+.campus-picker-item[data-selected="true"]::after{ content:"✓"; font-weight:900; }
+
+/* Campus Setup Page - Signup + Settings share same rule */
+#campusSetupBg, #changeCampusBg{ /* your existing popup-bg styles stay */ }
+#campusSetupBg[data-state="skipped"] #tabCampus{ display:none; }
+#changeCampusBg[data-state="locked"] #confirmCampusBtn{ opacity:.4; pointer-events:none; }
+
+/* Error - backend will also send same message */
+#campusError, #campusSetupError{ color:#FF453A; font-size:12px; font-weight:600; }

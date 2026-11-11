@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', ()=>{
   // ===== STORAGE =====
   let campus = JSON.parse(localStorage.getItem('loop_campus')||'[]');
@@ -12,14 +13,48 @@ document.addEventListener('DOMContentLoaded', ()=>{
   let selectedTag = null;
   let firstTestPostId = JSON.parse(localStorage.getItem('loop_first_test')||'null');
 
+  // ===== PAGINATION + LOADING + NO INTERNET =====
+  const PAGE_SIZE = 3; // show 3 first, scroll to load rest
+  let visibleCount = PAGE_SIZE;
+  let isLoadingMore = false;
+  let hasOfflineError = false;
+
   const $ = id => document.getElementById(id);
-  const feedEl = $('feed'), myEl = $('myPosts'), emptyState = $('emptyState');
+  const feedEl = $('feed'), myEl = $('myPosts');
+  const postsListEl = $('postsList');
+  const emptyCampusEl = $('emptyCampus'), emptyGeneralEl = $('emptyGeneral'), emptyState = $('emptyState');
+  const loadMoreEl = $('loadMore'), noInternetEl = $('noInternet'), endOfFeedEl = $('endOfFeed');
   const viewFeed = $('viewFeed'), viewProf = $('viewProfile'), viewNew = $('viewNew');
   const popOverlay = $('popOverlay'), commentOverlay = $('commentOverlay'), loader = $('loader');
   const shareOverlay = $('shareOverlay'), appealOverlay = $('appealOverlay');
 
+  const showEl = el => { if(el) el.classList.remove('hidden'); if(el) el.style.display='flex'; };
+  const hideEl = el => { if(el) el.classList.add('hidden'); if(el) el.style.display='none'; };
+
+  function showEmpty(){
+    if(emptyCampusEl || emptyGeneralEl){
+      if(activeType==='campus'){ showEl(emptyCampusEl); hideEl(emptyGeneralEl); }
+      else { hideEl(emptyCampusEl); showEl(emptyGeneralEl); }
+      if(emptyState) hideEl(emptyState);
+    } else if(emptyState){ showEl(emptyState); }
+  }
+  function hideEmpty(){
+    hideEl(emptyCampusEl); hideEl(emptyGeneralEl); hideEl(emptyState);
+  }
+  function showLoading(){ showEl(loadMoreEl); hideEl(noInternetEl); hideEl(endOfFeedEl); }
+  function hideLoading(){ hideEl(loadMoreEl); }
+  function showNoInternet(){ hideEl(loadMoreEl); showEl(noInternetEl); hideEl(endOfFeedEl); hasOfflineError = true; }
+  function hideNoInternet(){ hideEl(noInternetEl); hasOfflineError = false; }
+  function showEnd(){ hideEl(loadMoreEl); hideEl(noInternetEl); showEl(endOfFeedEl); }
+  function hideEnd(){ hideEl(endOfFeedEl); }
+
+  // For UI test: set window.__forceOffline = true in console to test no-internet
+  function isOffline(){ return window.__forceOffline === true || !navigator.onLine; }
+
+  function resetPagination(){ visibleCount = PAGE_SIZE; isLoadingMore = false; hideLoading(); hideNoInternet(); hideEnd(); }
+
   // save all
-  const save = ()=>{ 
+  const save = ()=>{
     localStorage.setItem('loop_campus',JSON.stringify(campus));
     localStorage.setItem('loop_general',JSON.stringify(general));
     localStorage.setItem('loop_my',JSON.stringify(myLoops));
@@ -43,8 +78,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
   });
 
   // ===== TOP 7 DAYS WINNER =====
-  function getTopWinner(list){ 
-    if(list.length===0) return null; 
+  function getTopWinner(list){
+    if(list.length===0) return null;
     let cands = list.filter(p=> (p.down||0)===0 && (p.up||0)>=1);
     if(cands.length===0) return null;
     let max=cands[0]; cands.forEach(p=>{ if(p.up>max.up) max=p; });
@@ -93,8 +128,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
     else{ if(mW) mW.classList.add('hidden'); if(dW) dW.classList.add('hidden'); }
   }
 
-  function setActiveType(type){
+  function setActiveType(type, resetPage=true){
     activeType=type; save();
+    if(resetPage) resetPagination();
     const isCampus=type==='campus';
     $('tabCampus')?.classList.toggle('active',isCampus);
     $('tabGeneral')?.classList.toggle('active',!isCampus);
@@ -106,24 +142,40 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
   function isOwner(postId){ return myLoops.some(m=>m.id===postId); }
 
-  // ===== FEED =====
+  // ===== FEED - WITH PAGINATION (3 first) =====
+  function getVisibleList(){
+    const list = activeType==='campus'?campus:general;
+    // filter hidden posts first, then slice for pagination
+    const filtered = list.filter(p=>{
+      const isTestHide = firstTestPostId && p.id===firstTestPostId && (p.down||0)>=1;
+      if(((p.down||0)>=5 || isTestHide) && !isOwner(p.id)) return false;
+      if((p.down||0)>=5 && isOwner(p.id) && !isTestHide){ return false; }
+      return true;
+    });
+    return { filtered, total: filtered.length };
+  }
+
   function renderFeed(){
     if(!feedEl) return;
-    const list = activeType==='campus'?campus:general;
-    const topWinner = getTopWinner(list);
+    const container = postsListEl || feedEl;
+    // clear only posts, keep empty / loading / no-internet elements
+    container.querySelectorAll('.post').forEach(p=>p.remove());
+    // also clear old posts directly under feedEl for backward compat
+    if(postsListEl) feedEl.querySelectorAll(':scope > .post').forEach(p=>p.remove());
+
+    const { filtered } = getVisibleList();
+    const topWinner = getTopWinner(activeType==='campus'?campus:general);
     const topId = topWinner ? topWinner.id : null;
-    feedEl.querySelectorAll('.post').forEach(p=>p.remove());
-    if(list.length===0){
-      if(emptyState) emptyState.style.display='flex';
-    }else{
-      if(emptyState) emptyState.style.display='none';
-      list.forEach(p=>{
-        const isTestHide = firstTestPostId && p.id===firstTestPostId && (p.down||0)>=1;
-        if(((p.down||0)>=5 || isTestHide) && !isOwner(p.id)) return;
-        if((p.down||0)>=5 && isOwner(p.id) && !isTestHide){ return; }
+
+    if(filtered.length===0){
+      showEmpty(); hideLoading(); hideNoInternet(); hideEnd();
+    } else {
+      hideEmpty();
+      const toShow = filtered.slice(0, visibleCount);
+      toShow.forEach(p=>{
         let v=myVotes[p.id]; let cCount=(commentsData[p.id]||[]).length;
         let isTop = p.id===topId;
-        let d=document.createElement('div'); 
+        let d=document.createElement('div');
         d.className='post '+(activeType==='campus'?'campus':'general') + (isTop ? ' top-winner-border':'');
         d.setAttribute('data-post-id', p.id);
         const tagHtml = p.tag ? `<span class="loop-tag">#${esc(p.tag)}</span>` : '';
@@ -137,25 +189,81 @@ document.addEventListener('DOMContentLoaded', ()=>{
             <button data-down="${p.id}" class="${v==='down'?'downvoted':''}"><i data-lucide="arrow-down" style="width:16px"></i> ${p.down||0}</button>
             <button data-comment="${p.id}" style="margin-left:auto"><i data-lucide="message-circle" style="width:16px"></i> ${cCount}</button>
           </div>`;
-        feedEl.appendChild(d);
+        container.appendChild(d);
       });
+      // footer states
+      if(!hasOfflineError){
+        if(visibleCount >= filtered.length){ hideLoading(); hideNoInternet(); showEnd(); }
+        else { hideNoInternet(); hideEnd(); hideLoading(); }
+      }
     }
-    feedEl.querySelectorAll('[data-up]').forEach(b=>{ b.onclick=()=>{ let id=parseInt(b.dataset.up); let p=[...campus,...general].find(x=>x.id===id); if(!p) return; let cur=myVotes[id]; if(cur==='up'){ p.up--; delete myVotes[id]; } else { if(cur==='down') p.down--; p.up++; myVotes[id]='up'; } save(); renderFeed(); renderMy(); renderRot(); }; });
-    feedEl.querySelectorAll('[data-down]').forEach(b=>{ b.onclick=()=>{ let id=parseInt(b.dataset.down); let p=[...campus,...general].find(x=>x.id===id); if(!p) return; let cur=myVotes[id]; if(cur==='down'){ p.down--; delete myVotes[id]; } else { if(cur==='up') p.up--; p.down=(p.down||0)+1; myVotes[id]='down'; } save(); renderFeed(); renderMy(); renderRot(); }; });
-    feedEl.querySelectorAll('[data-comment]').forEach(b=>{ b.onclick=()=>openComments(parseInt(b.dataset.comment)); });
-    feedEl.querySelectorAll('[data-share]').forEach(b=>{ b.onclick=()=>openShare(parseInt(b.dataset.share)); });
+    // bind actions inside container
+    container.querySelectorAll('[data-up]').forEach(b=>{ b.onclick=()=>{ let id=parseInt(b.dataset.up); let p=[...campus,...general].find(x=>x.id===id); if(!p) return; let cur=myVotes[id]; if(cur==='up'){ p.up--; delete myVotes[id]; } else { if(cur==='down') p.down--; p.up++; myVotes[id]='up'; } save(); renderFeed(); renderMy(); renderRot(); }; });
+    container.querySelectorAll('[data-down]').forEach(b=>{ b.onclick=()=>{ let id=parseInt(b.dataset.down); let p=[...campus,...general].find(x=>x.id===id); if(!p) return; let cur=myVotes[id]; if(cur==='down'){ p.down--; delete myVotes[id]; } else { if(cur==='up') p.up--; p.down=(p.down||0)+1; myVotes[id]='down'; } save(); renderFeed(); renderMy(); renderRot(); }; });
+    container.querySelectorAll('[data-comment]').forEach(b=>{ b.onclick=()=>openComments(parseInt(b.dataset.comment)); });
+    container.querySelectorAll('[data-share]').forEach(b=>{ b.onclick=()=>openShare(parseInt(b.dataset.share)); });
     if($('topCount')) $('topCount').textContent=String(myLoops.length);
     if($('deskCount')) $('deskCount').textContent=String(myLoops.length);
     if($('rightCount')) $('rightCount').textContent=String(myLoops.length);
     checkUnlock(); icon();
   }
 
+  // ===== LOAD MORE ON SCROLL =====
+  function loadMorePosts(){
+    if(isLoadingMore) return;
+    const { filtered } = getVisibleList();
+    if(visibleCount >= filtered.length) return;
+    if(isOffline()){
+      showNoInternet();
+      return;
+    }
+    isLoadingMore = true;
+    showLoading();
+    setTimeout(()=>{
+      visibleCount += PAGE_SIZE;
+      isLoadingMore = false;
+      hideLoading(); hideNoInternet();
+      renderFeed();
+    }, 800);
+  }
+
+  function retryLoad(){
+    if(isOffline()){ showNoInternet(); return; }
+    hideNoInternet();
+    loadMorePosts();
+    // if nothing left to load, just re-render
+    const { filtered } = getVisibleList();
+    if(visibleCount >= filtered.length) renderFeed();
+  }
+
+  // scroll listener on feed view
+  if(viewFeed){
+    viewFeed.addEventListener('scroll', ()=>{
+      if(!viewFeed.classList.contains('active')) return;
+      const nearBottom = viewFeed.scrollTop + viewFeed.clientHeight >= viewFeed.scrollHeight - 120;
+      if(nearBottom) loadMorePosts();
+    }, { passive:true });
+  }
+  // swipe up / pull to retry when no internet - touch + button
+  bind('retryLoadBtn', retryLoad);
+  let touchStartY = 0;
+  if(viewFeed){
+    viewFeed.addEventListener('touchstart', e=>{ touchStartY = e.touches[0].clientY; }, { passive:true });
+    viewFeed.addEventListener('touchend', e=>{
+      const dy = e.changedTouches[0].clientY - touchStartY;
+      if(hasOfflineError && dy < -40){ retryLoad(); } // swipe up
+      if(hasOfflineError && dy > 40){ retryLoad(); } // pull down also retries
+    }, { passive:true });
+  }
+  window.addEventListener('online', ()=>{ if(hasOfflineError) retryLoad(); });
+  window.addEventListener('offline', ()=>{ if(visibleCount < getVisibleList().filtered.length) showNoInternet(); });
+
   // ===== MY LOOPS =====
   function renderMy(){
     if(!myEl) return;
     if(myLoops.length===0){ myEl.innerHTML=`<div style="padding:40px;text-align:center;opacity:.4">No loops</div>`; updateTopStats(); return; }
-    myEl.innerHTML=''; 
-    myLoops.forEach((p,i)=>{ 
+    myEl.innerHTML='';
+    myLoops.forEach((p,i)=>{
       let full = [...campus,...general].find(x=>x.id===p.id) || {up:0,down:0};
       let cCount=(commentsData[p.id]||[]).length;
       let isTestHidden = firstTestPostId && p.id===firstTestPostId && (full.down||0)>=1;
@@ -173,7 +281,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
           <span data-mycomment="${p.id}" style="cursor:pointer"><i data-lucide="message-circle" style="width:12px"></i> ${cCount}</span>
         </div>
         ${hiddenHtml}`;
-      myEl.appendChild(d); 
+      myEl.appendChild(d);
     });
     if($('count')) $('count').textContent=`${myLoops.length} posts`;
     myEl.querySelectorAll('[data-del]').forEach(b=>{ b.onclick=()=>{ let idx=parseInt(b.dataset.del); let t=myLoops[idx]; if(firstTestPostId===t.id) firstTestPostId=null; myLoops.splice(idx,1); if(t.target==='Campus') campus=campus.filter(x=>x.id!==t.id); else general=general.filter(x=>x.id!==t.id); save(); renderMy(); renderFeed(); renderRot(); }; });
@@ -234,8 +342,11 @@ document.addEventListener('DOMContentLoaded', ()=>{
   // ===== NEW POST =====
   function openNew(){ viewFeed?.classList.remove('active'); viewProf?.classList.remove('active'); viewNew?.classList.add('active'); setTimeout(()=>$('postInput')?.focus(),80); }
   function closeNew(){ viewNew?.classList.remove('active'); viewFeed?.classList.add('active'); popOverlay?.classList.remove('show'); }
-  bind('mobNew',openNew); bind('deskNew',openNew); bind('deskNew2',openNew); bind('emptyPostBtn',openNew);
+  bind('mobNew',openNew); bind('deskNew',openNew); bind('deskNew2',openNew);
+  bind('emptyPostBtn',openNew); bind('emptyPostBtnCampus',openNew); bind('emptyPostBtnGeneral',openNew);
   bind('emptyExplore',()=>{ setActiveType('general'); renderFeed(); });
+  bind('emptyExploreCampus',()=>{ setActiveType('general'); renderFeed(); });
+  bind('emptyExploreGeneral',()=>{ setActiveType('campus'); renderFeed(); });
   bind('closeNew',closeNew); bind('closePop',()=>popOverlay?.classList.remove('show'));
   bind('closeShare',closeShare); bind('saveShareImage',saveShareImage);
   bind('closeAppeal',closeAppeal); bind('sendAppeal',sendAppeal);
@@ -248,7 +359,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     if(!arr || arr.length===0) return -1;
     let max = -1, idx = -1;
     arr.forEach((c,i)=>{ if((c.likes||0) > max){ max=c.likes; idx=i; } });
-    return max >= 1 ? idx : -1; // show TOP once someone likes, or set to 3 if you want threshold
+    return max >= 1 ? idx : -1;
   }
 
   function openComments(id){
@@ -262,10 +373,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
     const arr=commentsData[currentCommentPostId]||[];
     if(arr.length===0){ list.innerHTML=`<div style="padding:30px;text-align:center;opacity:.4">No comments</div>`; return; }
     const topIdx = getTopCommentIdx(arr);
-    arr.forEach((c,i)=>{ 
-      let d=document.createElement('div'); 
+    arr.forEach((c,i)=>{
+      let d=document.createElement('div');
       const isTop = i===topIdx && (c.likes||0) > 0;
-      d.className='comment-item ' + (isTop ? 'top-comment' : ''); 
+      d.className='comment-item ' + (isTop ? 'top-comment' : '');
       const opHtml = c.isOwner ? `<span class="op-badge">OP</span>` : '';
       const topHtml = isTop ? `<span class="top-badge">TOP</span>` : '';
       const likedClass = c.likedByMe ? 'liked' : '';
@@ -277,10 +388,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
           <button class="c-heart ${likedClass}" data-cidx="${i}">
             <i data-lucide="heart" style="width:14px"></i> <span>${likes}</span>
           </button>
-        </div>`; 
-      list.appendChild(d); 
+        </div>`;
+      list.appendChild(d);
     });
-    // bind heart clicks
     list.querySelectorAll('.c-heart').forEach(btn=>{
       btn.onclick=()=>{
         const idx = parseInt(btn.dataset.cidx);
@@ -298,7 +408,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     const inp=$('commentInput'); if(!inp) return; let txt=inp.value.trim(); if(!txt||!currentCommentPostId) return;
     if(!commentsData[currentCommentPostId]) commentsData[currentCommentPostId]=[];
     const isOwnerComment = isOwner(currentCommentPostId);
-    commentsData[currentCommentPostId].push({text:txt,time:'now', isOwner:isOwnerComment, likes:0, likedByMe:false}); 
+    commentsData[currentCommentPostId].push({text:txt,time:'now', isOwner:isOwnerComment, likes:0, likedByMe:false});
     inp.value=''; save(); renderComments(); renderFeed(); renderMy();
   }
   bind('closeComment',()=>{ commentOverlay?.classList.remove('show'); });
@@ -335,6 +445,15 @@ document.addEventListener('DOMContentLoaded', ()=>{
   if(tabC) tabC.onclick=()=>{ setActiveType('campus'); renderFeed(); };
   if(tabG) tabG.onclick=()=>{ setActiveType('general'); renderFeed(); };
 
+  // ===== HOOK FOR switch.js (Skip / Add Campus) =====
+  // switch.js will use this, loops.js will NOT handle skip/add itself
+  window.LoopFeed = {
+    setActiveType: (t)=>{ setActiveType(t); renderFeed(); },
+    renderFeed,
+    getActiveType: ()=> activeType,
+    resetPagination
+  };
+
   // ===== INIT =====
-  setActiveType(activeType); renderFeed(); renderMy(); renderRot(); icon();
+  setActiveType(activeType, false); resetPagination(); renderFeed(); renderMy(); renderRot(); icon();
 });
