@@ -1,4 +1,5 @@
-// reaction-and-other.js - No blank link + iPhone sticker fix + fake cut online play
+// reaction-and-other.js - Hold Pill + Sticker + Image Preview + Voice + Delete + Copy/Save
+// NO FORWARD in pill. Text = Copy, Image = Save. Delete for everyone = placeholder.
 (function() {
   // ================= DOM ELEMENTS =================
   const chatMessages = document.getElementById('chatMessages');
@@ -85,7 +86,7 @@
   let selectedMessages = new Set();
   let stickers = JSON.parse(localStorage.getItem('my_stickers') || '[]');
   stickers = stickers.map(s => typeof s === 'string' ? {src:s, type:'image'} : s);
-  let memoryVideoStickers = []; // video stickers dey memory, not localStorage
+  let memoryVideoStickers = [];
   let voiceInterval = null, voiceSec = 0, voiceStartTime = 0;
   let previewType = 'image', previewObjectUrl = '';
   let cropScale = 1, cropX = 0, cropY = 0, lastDist = 0, lastX = 0, lastY = 0;
@@ -94,7 +95,7 @@
   let isCropped = false;
   let ffmpegInstance = null, ffmpegLoaded = false, ffmpegLoading = false;
 
-  // ================= TOAST =================
+  // ================= HELPERS =================
   function showToast(msg="Added"){
     if(!toast) return;
     const span = toast.querySelector('span');
@@ -102,6 +103,32 @@
     toast.classList.add('show');
     setTimeout(()=> toast.classList.remove('show'), 2000);
     if(window.lucide) lucide.createIcons();
+  }
+
+  // Update sidebar last message - NEVER wipe sidebar or background
+  function updateListLastMessage(text, time) {
+    const activeItem = document.querySelector('#chatContainer .chat-item.active') || document.querySelector('#chatContainer .chat-item');
+    if (!activeItem) return;
+    const lastEl = activeItem.querySelector('.chat-last-message');
+    const dateEl = activeItem.querySelector('.chat-date');
+    if (lastEl) lastEl.textContent = text;
+    if (dateEl) dateEl.textContent = time || new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    // Move to top
+    const container = document.getElementById('chatContainer');
+    if (container && activeItem.parentNode === container) container.prepend(activeItem);
+  }
+
+  // Delete for everyone -> placeholder, NOT just remove
+  function makeDeletedPlaceholder(row, isMine) {
+    const bubble = row.querySelector('.bubble');
+    if (!bubble) { row.remove(); return; }
+    const time = bubble.querySelector('.msg-time')?.textContent || '';
+    bubble.className = 'bubble deleted-bubble';
+    bubble.innerHTML = `<i data-lucide="trash-2"></i><p>${isMine ? 'You deleted this message' : 'This message was deleted'}</p><span class="msg-meta right-meta"><span class="msg-time">${time}</span></span>`;
+    row.classList.add('deleted-row');
+    row.classList.remove('select-mode', 'selected');
+    updateListLastMessage('🚫 This message was deleted', time);
+    if (window.lucide) lucide.createIcons();
   }
 
   // ================= iOS 18 NOTIFY + AUTO PREVIEW EVERY 4S =================
@@ -126,7 +153,6 @@
       }
     }, 3200);
   };
-
   const previewMessages = [
     {avatar:'JD', name:'Joshua dayo', message:'Yo bro check that new code'},
     {avatar:'ola', name:'ola', message:'Omo that border clean die'},
@@ -147,6 +173,7 @@
   // ================= FOCUS MODE (HOLD MESSAGE) =================
   function enterFocusMode(row) {
     if(row.classList.contains('no-actions')) return;
+    if(row.classList.contains('deleted-row')) return; // Deleted bubble not clickable
     currentRow = row; currentId = row.dataset.messageId;
     const mediaEl = row.querySelector('.sticker-bubble img,.sticker-bubble video,.image-bubble img,.video-bubble video');
     if(mediaEl && favText && favIcon){
@@ -166,13 +193,16 @@
     if(row.querySelector('.sticker-bubble')) poppedContainer.classList.add('is-sticker'); else poppedContainer.classList.remove('is-sticker');
     chatBackground.classList.add('focus-mode');
     if(actionPill) actionPill.style.display = 'flex'; if(emojiBar) emojiBar.classList.remove('show');
+    // Sync Copy/Save with Main JS - Text = Copy, Image = Save
+    const isImage = !!row.querySelector('.image-bubble, .video-bubble');
+    if (window.setCurrentPillRow) window.setCurrentPillRow(row, isImage);
     if(navigator.vibrate) navigator.vibrate(25); if(window.lucide) lucide.createIcons();
   }
   function resetFocus(){ overlay.classList.remove('active'); poppedContainer.classList.remove('active'); chatBackground.classList.remove('focus-mode'); if(actionPill) actionPill.style.display='flex'; if(emojiBar) emojiBar.classList.remove('show'); currentRow=null; }
 
   // ================= SELECT MODE =================
   function enterSelectMode(){
-    document.querySelectorAll('.msg-row').forEach(r=>{ if(r.classList.contains('no-actions')) return; r.classList.add('select-mode'); });
+    document.querySelectorAll('.msg-row').forEach(r=>{ if(r.classList.contains('no-actions')) return; if(r.classList.contains('deleted-row')) return; r.classList.add('select-mode'); });
     chatBackground.classList.add('select-mode','select-mode-active'); chatMessages.style.overflowY='auto'; chatMessages.style.pointerEvents='auto';
     if(callsWrap) callsWrap.classList.add('hide-calls'); if(selectedGroup) selectedGroup.classList.add('show');
     if(selectedCount){ selectedCount.textContent='0'; selectedCount.classList.add('show'); }
@@ -196,7 +226,6 @@
   }
 
   // ================= STICKER HELPERS - FIXED FOR IPHONE =================
-  // iPhone needs explicit play after touch
   function forcePlayStickerVideos(){
     document.querySelectorAll('.sticker-item video,.sticker-bubble video').forEach(v=>{
       if(v.paused){
@@ -205,21 +234,15 @@
       }
     });
   }
-
-  // Fake cut - no #t fragment, just loop between start and end online
   function applyFakeCut(video, start, end){
     if(start == null || end == null) return;
     const s = parseFloat(start) || 0;
     const e = parseFloat(end) || 6;
     video.addEventListener('loadedmetadata', ()=>{ try{ video.currentTime = s; }catch{} }, {once:true});
     video.ontimeupdate = ()=>{
-      if(video.currentTime >= e){
-        video.currentTime = s;
-      }
+      if(video.currentTime >= e){ video.currentTime = s; }
     };
   }
-
-  // Render stickers - clean src, no #t, iPhone border fix, fake cut support
   function renderStickers(){
     if(!stickerGrid ||!stickerAddBox) return;
     stickerGrid.querySelectorAll('.sticker-item').forEach(e=>e.remove());
@@ -228,11 +251,10 @@
     all.forEach(item=>{
       const src=item.src; if(!src) return;
       const type=item.type||'image';
-      const clean=src.split('#')[0]; // remove old #t if exists
+      const clean=src.split('#')[0];
       if(seen.has(clean)) return; seen.add(clean);
       const div=document.createElement('div');
       div.className='sticker-item'+(type==='video'?' is-video':'');
-      // iPhone border fix
       div.style.position='relative'; div.style.overflow='hidden'; div.style.background='#000'; div.style.borderRadius='12px';
       div.style.webkitMaskImage='-webkit-radial-gradient(white, black)';
       if(type==='video'){
@@ -240,12 +262,9 @@
         video.muted=true; video.playsInline=true; video.preload='auto';
         video.setAttribute('playsinline',''); video.setAttribute('webkit-playsinline',''); video.setAttribute('muted','');
         video.style.width='100%'; video.style.height='100%'; video.style.objectFit='cover'; video.style.borderRadius='12px'; video.style.position='relative'; video.style.zIndex='2';
-        video.src=clean; // clean, no #t
-        if(item.start != null && item.end != null){
-          applyFakeCut(video, item.start, item.end);
-        } else {
-          video.loop=true; video.autoplay=true; video.setAttribute('loop',''); video.setAttribute('autoplay','');
-        }
+        video.src=clean;
+        if(item.start != null && item.end != null){ applyFakeCut(video, item.start, item.end); }
+        else { video.loop=true; video.autoplay=true; video.setAttribute('loop',''); video.setAttribute('autoplay',''); }
         const tryPlay=()=> video.play().catch(()=>{});
         video.addEventListener('canplay', tryPlay, {once:true});
         video.addEventListener('loadeddata', tryPlay, {once:true});
@@ -261,38 +280,32 @@
     if(window.lucide) lucide.createIcons();
     setTimeout(forcePlayStickerVideos, 400);
   }
-
-  // Send sticker - no blank link, support fake cut
   function sendSticker(src,type='image', start=null, end=null){
     const id='msg_'+Date.now();
     const row=document.createElement('div'); row.className='msg-row sender'; row.dataset.messageId=id;
     const cleanSrc = src.split('#')[0];
+    const timeStr = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
     if(type==='video'){
-      row.innerHTML=`<div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble sticker-bubble"><span class="msg-meta sticker-meta right-meta"><span class="msg-time">${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span><i data-lucide="check-check" class="tick-icon blue"></i></span><span class="msg-reaction-badge" id="reaction-${id}"></span></div>`;
+      row.innerHTML=`<div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble sticker-bubble"><span class="msg-meta sticker-meta right-meta"><span class="msg-time">${timeStr}</span><i data-lucide="check-check" class="tick-icon blue"></i></span><span class="msg-reaction-badge" id="reaction-${id}"></span></div>`;
       const bubble=row.querySelector('.sticker-bubble');
       const video=document.createElement('video');
       video.src=cleanSrc; video.muted=true; video.playsInline=true; video.preload='auto';
       video.setAttribute('playsinline',''); video.setAttribute('webkit-playsinline',''); video.setAttribute('muted','');
       video.style.borderRadius='12px';
-      if(start != null && end != null){
-        video.dataset.start = start; video.dataset.end = end;
-        applyFakeCut(video, start, end);
-      } else {
-        video.loop=true; video.autoplay=true; video.setAttribute('loop',''); video.setAttribute('autoplay','');
-      }
+      if(start != null && end != null){ video.dataset.start = start; video.dataset.end = end; applyFakeCut(video, start, end); }
+      else { video.loop=true; video.autoplay=true; video.setAttribute('loop',''); video.setAttribute('autoplay',''); }
       bubble.prepend(video);
       video.addEventListener('canplay', ()=> video.play().catch(()=>{}), {once:true});
       setTimeout(()=> video.play().catch(()=>{}), 150);
     }else{
-      row.innerHTML=`<div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble sticker-bubble"><img src="${cleanSrc}"><span class="msg-meta sticker-meta right-meta"><span class="msg-time">${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span><i data-lucide="check-check" class="tick-icon blue"></i></span><span class="msg-reaction-badge" id="reaction-${id}"></span></div>`;
+      row.innerHTML=`<div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble sticker-bubble"><img src="${cleanSrc}"><span class="msg-meta sticker-meta right-meta"><span class="msg-time">${timeStr}</span><i data-lucide="check-check" class="tick-icon blue"></i></span><span class="msg-reaction-badge" id="reaction-${id}"></span></div>`;
     }
     chatMessages.insertBefore(row, document.getElementById('typingIndicator'));
     bindRow(row); if(window.lucide) lucide.createIcons();
     chatMessages.scrollTo({top:chatMessages.scrollHeight, behavior:'smooth'});
+    updateListLastMessage('Sticker', timeStr);
     stickerPanel.classList.remove('show'); chatBackground.classList.remove('sticker-open');
   }
-
-  // Chat stickers select - for adding fav
   function renderChatStickersSelect(){
     if(!stickerSelectGrid) return;
     stickerSelectGrid.innerHTML='';
@@ -318,27 +331,21 @@
     row.addEventListener('mouseup', ()=> clearTimeout(pressTimer)); row.addEventListener('mouseleave', ()=> clearTimeout(pressTimer));
     const circle=row.querySelector('.select-circle');
     if(circle&&!circle.dataset.bound){ circle.dataset.bound="1"; circle.addEventListener('click', e=>{ e.stopPropagation(); row.classList.toggle('selected'); const id=row.dataset.messageId; if(row.classList.contains('selected')) selectedMessages.add(id); else selectedMessages.delete(id); updateSelectedCount(); }); }
-    // Sticker video in chat
     const stickerVideo=row.querySelector('.sticker-bubble video');
     if(stickerVideo &&!stickerVideo.dataset.boundSticker){
       stickerVideo.dataset.boundSticker="1"; stickerVideo.muted=true; stickerVideo.playsInline=true; stickerVideo.preload='auto';
       stickerVideo.setAttribute('muted',''); stickerVideo.setAttribute('playsinline',''); stickerVideo.setAttribute('webkit-playsinline','');
-      if(stickerVideo.dataset.start && stickerVideo.dataset.end){
-        applyFakeCut(stickerVideo, stickerVideo.dataset.start, stickerVideo.dataset.end);
-      } else {
-        stickerVideo.loop=true; stickerVideo.autoplay=true; stickerVideo.setAttribute('loop',''); stickerVideo.setAttribute('autoplay','');
-      }
+      if(stickerVideo.dataset.start && stickerVideo.dataset.end){ applyFakeCut(stickerVideo, stickerVideo.dataset.start, stickerVideo.dataset.end); }
+      else { stickerVideo.loop=true; stickerVideo.autoplay=true; stickerVideo.setAttribute('loop',''); stickerVideo.setAttribute('autoplay',''); }
       stickerVideo.addEventListener('canplay', ()=> stickerVideo.play().catch(()=>{}), {once:true}); setTimeout(()=> stickerVideo.play().catch(()=>{}), 200);
       stickerVideo.addEventListener('click', ()=> openVideoFull(stickerVideo.src, ''));
     }
-    // Normal video bubble
     const normalVideo=row.querySelector('.video-bubble video,.video-wrap video');
     if(normalVideo &&!normalVideo.dataset.boundNormal){
       normalVideo.dataset.boundNormal="1"; normalVideo.loop=false; normalVideo.autoplay=false;
       normalVideo.addEventListener('click', ()=> openVideoFull(normalVideo.src, row.querySelector('.img-caption-text')?.innerText||''));
       row.querySelector('.video-play-center')?.addEventListener('click', (e)=>{ e.stopPropagation(); openVideoFull(normalVideo.src, row.querySelector('.img-caption-text')?.innerText||''); });
     }
-    // Voice bubble
     const voiceBubble=row.querySelector('.voice-bubble');
     if(voiceBubble &&!voiceBubble.dataset.voiceBound){
       voiceBubble.dataset.voiceBound="1"; const btn=voiceBubble.querySelector('.voice-play-btn'); const audio=voiceBubble.querySelector('audio'); if(!btn||!audio) return;
@@ -356,7 +363,6 @@
       audio.addEventListener('ended', showPlay); audio.addEventListener('pause', showPlay);
     }
   }
-
   document.querySelectorAll('.msg-row').forEach(bindRow);
   new MutationObserver(muts=>{ muts.forEach(m=> m.addedNodes.forEach(n=>{ if(n.nodeType===1&&n.classList.contains('msg-row')) bindRow(n); })); }).observe(chatMessages,{childList:true});
   setInterval(forcePlayStickerVideos, 2500);
@@ -377,12 +383,18 @@
     closeVideoFull();
   });
 
-  // ================= REPLY / ACTIONS =================
+  // ================= REPLY / ACTIONS - NO FORWARD =================
   function doReplyFromPill(){ if(!currentRow) return; const r=currentRow; resetFocus(); setTimeout(()=>{ if(window.triggerSwipeReply) window.triggerSwipeReply(r); },150); }
   if(actionPill){
     actionPill.addEventListener('click', e=>{
       const btn=e.target.closest('button'); if(!btn||!currentId) return; const act=btn.dataset.action;
-      if(act==='delete'){
+      if(act==='copy'){
+        const text = currentRow?.querySelector('p')?.innerText || currentRow?.querySelector('.img-caption-text')?.innerText || '';
+        if(text && navigator.clipboard) navigator.clipboard.writeText(text);
+        showToast('Copied'); resetFocus();
+      } else if(act==='save'){
+        showToast('Saved to gallery'); resetFocus();
+      } else if(act==='delete'){
         if(currentRow&&currentRow.classList.contains('receiver')){ currentRow.style.transition='opacity 0.25s'; currentRow.style.opacity='0'; setTimeout(()=> currentRow.remove(),250); resetFocus(); showToast('Deleted for me'); }
         else{ enterSelectMode(); if(currentRow){ currentRow.classList.add('selected'); selectedMessages.add(currentId); updateSelectedCount(); } }
       }else if(act==='select'){ enterSelectMode(); if(currentRow){ currentRow.classList.add('selected'); selectedMessages.add(currentId); updateSelectedCount(); } }
@@ -435,9 +447,12 @@
     const caption=captionInput.value.trim(); const replyData=window.getCurrentReplyData? window.getCurrentReplyData():null; let quotedHtml=''; if(replyData){ quotedHtml=`<div class="quoted-reply">${replyData.thumb? `<img class="quoted-thumb" src="${replyData.thumb}">`:''}<div class="quoted-content"><span class="quoted-name">${replyData.name}</span><span class="quoted-text">${replyData.text}</span></div></div>`; }
     const id='msg_'+Date.now(); const row=document.createElement('div'); row.className='msg-row sender'; row.dataset.messageId=id;
     const cleanUrl = previewObjectUrl.split('#')[0];
-    if(previewType==='video'){ row.innerHTML=`<div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble video-bubble with-caption">${quotedHtml}<div class="video-wrap"><video src="${cleanUrl}"></video><button class="video-play-center"><i data-lucide="play"></i></button><span class="video-duration">00:10</span><span class="msg-meta over-image right-meta"><span class="msg-time">${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span><i data-lucide="check-check" class="tick-icon blue"></i></span></div>${caption? `<div class="img-caption-wrap"><p class="img-caption-text">${caption}</p></div>`:''}<span class="msg-reaction-badge" id="reaction-${id}"></span></div>`; }
-    else{ if(caption){ row.innerHTML=`<div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble image-bubble with-caption">${quotedHtml}<div class="img-wrap"><img src="${cleanUrl}"><span class="msg-meta over-image right-meta"><span class="msg-time">${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span><i data-lucide="check-check" class="tick-icon blue"></i></span></div><div class="img-caption-wrap"><p class="img-caption-text">${caption}</p></div><span class="msg-reaction-badge" id="reaction-${id}"></span></div>`; } else{ row.innerHTML=`<div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble image-bubble">${quotedHtml}<div class="img-wrap"><img src="${cleanUrl}"><span class="msg-meta over-image right-meta"><span class="msg-time">${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span><i data-lucide="check-check" class="tick-icon blue"></i></span></div><span class="msg-reaction-badge" id="reaction-${id}"></span></div>`; } }
+    const timeStr = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    if(previewType==='video'){ row.innerHTML=`<div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble video-bubble with-caption">${quotedHtml}<div class="video-wrap"><video src="${cleanUrl}"></video><button class="video-play-center"><i data-lucide="play"></i></button><span class="video-duration">00:10</span><span class="msg-meta over-image right-meta"><span class="msg-time">${timeStr}</span><i data-lucide="check-check" class="tick-icon blue"></i></span></div>${caption? `<div class="img-caption-wrap"><p class="img-caption-text">${caption}</p></div>`:''}<span class="msg-reaction-badge" id="reaction-${id}"></span></div>`; }
+    else{ if(caption){ row.innerHTML=`<div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble image-bubble with-caption">${quotedHtml}<div class="img-wrap"><img src="${cleanUrl}"><span class="msg-meta over-image right-meta"><span class="msg-time">${timeStr}</span><i data-lucide="check-check" class="tick-icon blue"></i></span></div><div class="img-caption-wrap"><p class="img-caption-text">${caption}</p></div><span class="msg-reaction-badge" id="reaction-${id}"></span></div>`; } else{ row.innerHTML=`<div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble image-bubble">${quotedHtml}<div class="img-wrap"><img src="${cleanUrl}"><span class="msg-meta over-image right-meta"><span class="msg-time">${timeStr}</span><i data-lucide="check-check" class="tick-icon blue"></i></span></div><span class="msg-reaction-badge" id="reaction-${id}"></span></div>`; } }
     chatMessages.insertBefore(row, document.getElementById('typingIndicator')); bindRow(row); if(window.lucide) lucide.createIcons(); closePreview(); if(galleryInput) galleryInput.value=''; if(cameraInput) cameraInput.value=''; if(window.clearReplyData) window.clearReplyData(); chatMessages.scrollTo({top:chatMessages.scrollHeight, behavior:'smooth'});
+    // Sidebar NEVER disappears - just update last message to Photo
+    updateListLastMessage(previewType === 'video' ? '🎥 Video' : '📷 Photo', timeStr);
   });
 
   // ================= STICKER PANEL TOGGLE =================
@@ -492,10 +507,9 @@
     finally{ ffmpegLoading=false; if(loader){ loader.classList.remove('show'); loader.style.display='none'; } }
     return ffmpegInstance;
   }
-  // Real cut only if ffmpeg loaded, else return clean URL (no #t)
   async function cutVideoWithFFmpeg(file,start,end){
-    const ffmpeg=await ensureFFmpegLoaded(); 
-    if(!ffmpeg||!ffmpegLoaded){ return URL.createObjectURL(file); } // no #t, clean
+    const ffmpeg=await ensureFFmpegLoaded();
+    if(!ffmpeg||!ffmpegLoaded){ return URL.createObjectURL(file); }
     const input='input.mp4', output='output.mp4';
     ffmpeg.FS('writeFile', input, await window.FFmpeg.fetchFile(file));
     await ffmpeg.run('-ss', `${start}`, '-to', `${end}`, '-i', input, '-c:v', 'libx264', '-preset', 'ultrafast', '-c:a', 'aac', '-t', `${end-start}`, output);
@@ -546,7 +560,6 @@
   }
   function updateCropTransform(){ const t=`translate(${cropX}px, ${cropY}px) scale(${cropScale})`; if(createImage&&createImage.style.display!=='none') createImage.style.transform=t; if(createVideo&&createVideo.style.display!=='none') createVideo.style.transform=t; }
   initIphoneCrop();
-
   createPlaceholder?.addEventListener('click', ()=> stickerFileInput?.click());
   stickerFileInput?.addEventListener('change', e=>{
     const file=e.target.files[0]; if(!file) return; originalVideoFile=file.type.startsWith('video/')? file : null;
@@ -580,14 +593,11 @@
   boldTextBtn?.addEventListener('click', ()=>{ if(!textOverlay) return; textOverlay.classList.toggle('bold'); textOverlay.focus(); });
   zoomTextBtn?.addEventListener('click', ()=>{ textScale=textScale>=1.8?1:textScale+0.2; if(textOverlay) textOverlay.style.transform=`scale(${textScale})`; });
   cropBtn?.addEventListener('click', ()=>{ isCropped=!isCropped; showToast(isCropped? 'Crop mode: drag & pinch image' : 'Crop reset'); if(!isCropped){ cropScale=1; cropX=0; cropY=0; updateCropTransform(); } });
-
-  // Bake image - fixed ratio for iPhone drag
   function bakeImageWithTextAndCrop(src, cb){
     const canvas=document.createElement('canvas'); canvas.width=512; canvas.height=512; const ctx=canvas.getContext('2d');
     const img=new Image(); img.src=src;
     img.onload=()=>{
       ctx.clearRect(0,0,512,512); ctx.save();
-      // Convert screen drag to canvas ratio - fix overshoot for iPhone
       const rect = createCanvasEl.getBoundingClientRect();
       const ratio = 512 / rect.width;
       const adjX = cropX * ratio;
@@ -604,8 +614,6 @@
       cb(canvas.toDataURL('image/png'));
     }; img.onerror=()=> cb(src);
   }
-
-  // Add sticker button - no #t, fake cut save start/end
   createAddBtn?.addEventListener('click', async ()=>{
     const hasImage=createImage && createImage.src&&createImage.style.display!=='none'&&createImage.src!=='';
     const hasVideo=createVideo&&createVideo.src&&createVideo.style.display!=='none'&&createVideo.src!=='';
@@ -618,8 +626,7 @@
         if((end-start)>6.1){ showToast('Max 6 seconds'); createAddBtn.disabled=false; createAddBtn.textContent='Add'; return; }
         let finalSrc;
         if(originalVideoFile){ finalSrc=await cutVideoWithFFmpeg(originalVideoFile,start,end); }
-        else{ finalSrc=createVideo.src.split('#')[0]; } // clean, no #t
-        // Save with start/end for fake cut online play - no blank link
+        else{ finalSrc=createVideo.src.split('#')[0]; }
         memoryVideoStickers.push({src:finalSrc.split('#')[0], type:'video', start:start, end:end});
         renderStickers(); closeCreatePage(); showToast('Video sticker added - 6s');
       }else if(hasImage){
@@ -632,7 +639,6 @@
     }catch(err){ console.error(err); showToast('Error adding'); }
     finally{ createAddBtn.disabled=false; createAddBtn.textContent='Add'; if(cuttingLoader){ cuttingLoader.classList.remove('show'); cuttingLoader.style.display='none'; } setTimeout(()=>{ if(stickerPanel){ stickerPanel.classList.add('show'); chatBackground.classList.add('sticker-open'); } if(window.lucide) lucide.createIcons(); setTimeout(forcePlayStickerVideos, 400); },150); }
   });
-
   createClose?.addEventListener('click', closeCreatePage); createBack?.addEventListener('click', closeCreatePage); createCancelBtn?.addEventListener('click', closeCreatePage);
   createPage?.addEventListener('click', (e)=>{ if(e.target===createPage) closeCreatePage(); });
 
@@ -657,6 +663,7 @@
     const row=document.createElement('div'); row.className='msg-row sender'; row.dataset.messageId=id;
     row.innerHTML=`<div class="select-circle"><i data-lucide="check"></i></div><div class="bubble voice-bubble"><button class="voice-play-btn"><i data-lucide="play"></i></button><div class="voice-wave"><span></span><span></span><span></span><span></span></div><span class="voice-duration">${timeStr}</span><span class="msg-meta right-meta"><span class="msg-time">${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span><i data-lucide="check-check" class="tick-icon blue"></i></span><audio src="${url}"></audio></div>`;
     chatMessages.insertBefore(row, document.getElementById('typingIndicator')); bindRow(row); if(window.lucide) lucide.createIcons(); chatMessages.scrollTo({top:chatMessages.scrollHeight, behavior:'smooth'}); cleanupStream(); audioChunks=[];
+    updateListLastMessage('🎤 Voice message', new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));
   }
   function stopVoice(send){ shouldSend=send; if(!mediaRecorder||mediaRecorder.state==='inactive'){ voiceOverlay?.classList.remove('show'); chatBackground.classList.remove('voice-open'); cleanupStream(); isRecording=false; return; } mediaRecorder.onstop=()=>{ if(shouldSend&&voiceSec>=1) sendVoiceMessage(); else{ cleanupStream(); audioChunks=[]; } voiceOverlay?.classList.remove('show'); chatBackground.classList.remove('voice-open'); isRecording=false; voiceSec=0; }; mediaRecorder.stop(); }
   let micPressTimer=null;
@@ -666,15 +673,30 @@
     if(msgInput && msgInput.value.trim().length>0){
       const txt=msgInput.value.trim(); if(!txt) return; const replyData=window.getCurrentReplyData? window.getCurrentReplyData():null; let quotedHtml=''; if(replyData){ quotedHtml=`<div class="quoted-reply">${replyData.thumb? `<img class="quoted-thumb" src="${replyData.thumb}">`:''}<div class="quoted-content"><span class="quoted-name">${replyData.name}</span><span class="quoted-text">${replyData.text}</span></div></div>`; }
       const id='msg_'+Date.now(); const row=document.createElement('div'); row.className='msg-row sender'; row.dataset.messageId=id;
-      row.innerHTML=`<div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble sender-bubble">${quotedHtml}<p>${txt}</p><span class="msg-meta right-meta"><span class="msg-time">${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span><i data-lucide="check-check" class="tick-icon blue"></i></span><span class="msg-reaction-badge" id="reaction-${id}"></span></div>`;
+      const timeStr = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+      row.innerHTML=`<div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble sender-bubble">${quotedHtml}<p>${txt}</p><span class="msg-meta right-meta"><span class="msg-time">${timeStr}</span><i data-lucide="check-check" class="tick-icon blue"></i></span><span class="msg-reaction-badge" id="reaction-${id}"></span></div>`;
       chatMessages.insertBefore(row, document.getElementById('typingIndicator')); bindRow(row); msgInput.value=''; msgInput.style.height='auto'; micBtn.classList.remove('sending'); if(window.clearReplyData) window.clearReplyData(); if(window.lucide) lucide.createIcons(); chatMessages.scrollTo({top:chatMessages.scrollHeight, behavior:'smooth'});
+      updateListLastMessage(txt, timeStr);
     }
   });
   micBtn?.addEventListener('pointerleave', ()=> clearTimeout(micPressTimer));
   voiceCancelBtn?.addEventListener('click', ()=> stopVoice(false)); voiceStopBtn?.addEventListener('click', ()=> stopVoice(false)); voiceSendBtn?.addEventListener('click', ()=> stopVoice(true));
 
-  // ================= DELETE =================
-  function doDelete(type){ selectedMessages.forEach(id=>{ const row=document.querySelector(`[data-message-id="${id}"]`); if(row){ row.style.transition='opacity 0.25s'; row.style.opacity='0'; setTimeout(()=> row.remove(),250); } }); exitSelectMode(); if(type==='everyone') showToast('Deleted for everyone'); else showToast('Deleted for me'); }
+  // ================= DELETE - Select mode + Pill =================
+  function doDelete(type){
+    if(type === 'everyone'){
+      selectedMessages.forEach(id=>{
+        const row=document.querySelector(`[data-message-id="${id}"]`);
+        if(row && row.classList.contains('sender')) makeDeletedPlaceholder(row, true);
+        else if(row) { row.style.transition='opacity 0.25s'; row.style.opacity='0'; setTimeout(()=> row.remove(),250); }
+      });
+      showToast('Deleted for everyone');
+    } else {
+      selectedMessages.forEach(id=>{ const row=document.querySelector(`[data-message-id="${id}"]`); if(row){ row.style.transition='opacity 0.25s'; row.style.opacity='0'; setTimeout(()=> row.remove(),250); } });
+      showToast('Deleted for me');
+    }
+    exitSelectMode();
+  }
   deleteActionBar?.addEventListener('click', e=>{ const btn=e.target.closest('[data-delete]'); if(!btn) return; doDelete(btn.dataset.delete); });
   headerCancelBtn?.addEventListener('click', ()=> exitSelectMode());
   overlay?.addEventListener('click', ()=>{ if(deleteActionBar?.classList.contains('show')) exitSelectMode(); else resetFocus(); });
@@ -687,7 +709,10 @@
   // ================= TYPING INDICATORS =================
   window.showTyping=function(){ const t=document.getElementById('typingIndicator'); if(t){ t.classList.add('show','always-show'); t.style.display='flex'; chatMessages.scrollTo({top:chatMessages.scrollHeight, behavior:'smooth'}); } }
   window.hideTyping=function(){ const t=document.getElementById('typingIndicator'); if(t){ t.classList.add('show','always-show'); t.style.display='flex'; } }
-  window.showGroupTyping=function(){ const gt=document.getElementById('groupTypingIndicator'); if(gt){ gt.classList.add('show'); gt.style.display='flex'; } }
+  window.showGroupTyping=function(names){
+    const gt=document.getElementById('groupTypingIndicator'); if(gt){ gt.classList.add('show'); gt.style.display='flex'; }
+    if(window.setGroupTyping && names) window.setGroupTyping(names);
+  }
   setTimeout(()=>{ window.showTyping(); },200);
   renderChatStickersSelect(); renderStickers();
   setTimeout(forcePlayStickerVideos, 700);

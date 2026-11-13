@@ -931,5 +931,20 @@ body.text-open .moments-page-left{
   .privacy-body{ padding:20px 16px; }
   .nav-arrow{
     display: none !important;
+
+     .moments-page-right{
+        display: none !important;
+    }
+    .moments-page-left{
+    background-color:var(--bg-app);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width:100%;
+    left: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
   }
 }

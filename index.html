@@ -173,434 +173,54 @@
 <main>
 <div id="pageChats">
 
-
-    <!---------  chatloadlist header---------->
+  <!-- ================= CHAT LOAD LIST (SIDEBAR) ================= -->
+  <!-- FIX: Sidebar is separate from chat background. Sending image NEVER touches this. -->
+  <!-- Desktop: sidebar always visible left. Mobile: sidebar full screen until chat opens. -->
   <div class="chat-load-list" id="chatLoadList">
+
     <div class="start-up" id="mobileTopBar">
       <p class="app-name">KONNEKT</p>
       <p class="app-chats-mid" id="midChatsText">Chats</p>
-      <button class="start-chat-btn">
+      <button class="start-chat-btn" id="openNewChatBtn">
         <i data-lucide="plus" class="start-chat-icon"></i>
         <div class="new-chat-text"><p>New Chat</p></div>
       </button>
     </div>
 
-    
-    <!--------- search list of chat on chatloadlist---------->
+    <!-- Search list -->
     <div class="search-wrap">
       <input type="text" placeholder=" search @username or start new chat" class="search-chat" id="searchChatInput">
       <i data-lucide="search" class="search-chat-icon"></i>
     </div>
 
-
-    
-<!--------- incoming calls ui preview---------->
- <div class="konnekt-incoming-tile" id="incomingTileList">
-    <img class="konnekt-incoming-ava" id="incomingAvaList" src="https://i.pravatar.cc/300?img=12" />
-    <div class="konnekt-incoming-info">
-      <p class="konnekt-incoming-name" id="incomingNameList">Joshua dayo</p>
-      <p class="konnekt-incoming-sub">Incoming voice call...</p>
+    <!-- Incoming calls tile -->
+    <div class="konnekt-incoming-tile" id="incomingTileList">
+      <img class="konnekt-incoming-ava" id="incomingAvaList" src="https://i.pravatar.cc/300?img=12" />
+      <div class="konnekt-incoming-info">
+        <p class="konnekt-incoming-name" id="incomingNameList">Joshua dayo</p>
+        <p class="konnekt-incoming-sub">Incoming voice call...</p>
+      </div>
+      <div class="konnekt-incoming-actions">
+        <button class="konnekt-call-mini accept" id="acceptCallList"><i data-lucide="phone"></i></button>
+        <button class="konnekt-call-mini decline" id="declineCallList"><i data-lucide="phone"></i></button>
+      </div>
     </div>
-    <div class="konnekt-incoming-actions">
-      <button class="konnekt-call-mini accept" id="acceptCallList"><i data-lucide="phone"></i></button>
-      <button class="konnekt-call-mini decline" id="declineCallList"><i data-lucide="phone"></i></button>
-    </div>
-  </div>
 
+    <!-- TABS: ONLY Chats + Groups. Random removed. All removed. -->
     <div class="chat-tabs">
-      <button class="tab-btn active" data-tab="all">All</button>
-      <button class="tab-btn" data-tab="chats">Chats</button>
+      <button class="tab-btn active" data-tab="chats">Chats</button>
       <button class="tab-btn" data-tab="groups">Groups</button>
-      <button class="tab-btn" data-tab="random">Random</button>
     </div>
 
-    <p class="chat-list" id="chatListTitle">All Chats</p>
+    <p class="chat-list" id="chatListTitle">Chats</p>
 
     <div class="chat-items-list" id="chatContainer">
+      <!-- NORMAL CHATS - No anon, no dot in list. Dot only in chat background. -->
       <div class="chat-item" data-type="chat" data-user-id="1" data-username="johndoe">
         <div class="chat-avatar" data-name="John Doe"></div>
         <div class="chat-info">
           <div class="chat-top-row"><p class="chat-name">Joshua dayo</p><span class="chat-date">10:42 AM</span></div>
           <div class="chat-bottom-row"><p class="chat-last-message">Hey, are you free today? Let's link</p><span class="chat-unread">3</span></div>
-        </div>
-      </div>
-
-
-<!-- ---------- POPUP OVERLAY ALERT - VALIDATION ---------- -->
-
-
-<div id="nkPopupOverlay" class="nk-popup-overlay hidden">
-  <div class="nk-popup-box">
-    <div class="nk-popup-icon-wrap">
-      <i data-lucide="alert-circle" class="nk-popup-icon"></i>
-    </div>
-    <p id="nkPopupTitle" class="nk-popup-title">Enter ID</p>
-    <p id="nkPopupDesc" class="nk-popup-desc">Please enter 6 digit ID</p>
-    <button id="nkPopupBtn" class="nk-popup-btn">OK</button>
-  </div>
-</div>
-
-<!-- ---------- 1. PLUS SCREEN OVERLAY - MAIN WHEN CLICK PLUS ICON ---------- -->
-
-<!-- Down section: Chatted people + search results -->
-<div id="nkNewChatOverlay" class="nk-newchat-overlay">
-  <div class="nk-newchat-sheet nk-plus-sheet">
-    <!-- Fixed header with glassy blur - stays on top when scroll -->
-
-    <div class="nk-newchat-header nk-glass-fixed">
-      <button id="nkNewChatBackDesktop" class="nk-back-btn nk-desktop-only" aria-label="Back">
-        <i data-lucide="arrow-left" style="width:20px;height:20px;"></i>
-      </button>
-      <p class="nk-newchat-title">New Chat</p>
-      <button id="nkNewChatClose" class="nk-close-btn" aria-label="Close">
-        <i data-lucide="x" style="width:18px;height:18px;"></i>
-      </button>
-    </div>
-
-
-    <!--  Search @username or name. @ -> global, name -> local chatted -->
-    <div class="nk-search-wrap nk-glass-fixed-search">
-      <div class="nk-search-box nk-line-only">
-        <i data-lucide="search" class="nk-search-icon"></i>
-        <input id="nkMainSearchInput" type="text" placeholder="Search @username, name" autocomplete="off" />
-      </div>
-    </div>
-
-    <!-- New ID + New Group + chatted list-->
-   
-    <div class="nk-plus-scroll-area">
-
-      <div class="nk-up-section">
-        <button id="nkNewIdRow" class="nk-newchat-row">
-          <div class="nk-row-icon nk-round-icon">
-            <div class="nk-icon-stack">
-              <i data-lucide="user" class="nk-main-icon"></i>
-              <i data-lucide="plus" class="nk-plus-small"></i>
-            </div>
-          </div>
-          <div class="nk-row-info">
-            <p class="nk-row-title">New ID</p>
-            <p class="nk-row-sub">Add new contact with 6 digit ID</p>
-          </div>
-          <i data-lucide="chevron-right" class="nk-chevron"></i>
-        </button>
-
-        <div class="nk-straight-line"></div>
-
-        <button id="nkNewGroupRow" class="nk-newchat-row">
-          <div class="nk-row-icon nk-round-icon">
-            <div class="nk-icon-stack">
-              <i data-lucide="users" class="nk-main-icon"></i>
-              <i data-lucide="plus" class="nk-plus-small"></i>
-            </div>
-          </div>
-          <div class="nk-row-info">
-            <p class="nk-row-title">New Group</p>
-            <p class="nk-row-sub">Create group with your contacts</p>
-          </div>
-          <i data-lucide="chevron-right" class="nk-chevron"></i>
-        </button>
-
-        <div class="nk-straight-line"></div>
-      </div>
-
-      <!-- Down section: Chatted people + search results for name and @username -->
-      <div class="nk-down-section">
-        <p class="nk-section-label">Recent Chats</p>
-        <!-- This list shows chatted people OR search results -->
-        <!-- JS will inject results here: local name search OR global @username search -->
-        <div id="nkChattedPeopleList" class="nk-results">
-          <!--  JS will render real -->
-        
-        </div>
-        <div id="nkMainSearchResults" class="nk-results hidden"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ----------  NEW ID OVERLAY - ENTER FIRST NAME, LAST NAME, ID ---------- -->
-<!-- Second overlay when click New ID row -->
-<!-- Contains: Header, form with straight line inputs, konnekting 10 leaves -->
-<div id="nkNewIdOverlay" class="nk-newchat-overlay nk-second">
-  <div class="nk-newchat-sheet">
-    <div class="nk-newchat-header">
-      <button id="nkNewIdBack" class="nk-back-btn" aria-label="Back">
-        <i data-lucide="arrow-left" style="width:20px;height:20px;"></i>
-      </button>
-      <p class="nk-newchat-title">New ID</p>
-      <button id="nkNewIdMark" class="nk-mark-btn" aria-label="Done">
-        <i data-lucide="check" style="width:18px;height:18px;"></i>
-      </button>
-    </div>
-
-    <div class="nk-form-wrap">
-      <div class="nk-input-group">
-        <label class="nk-input-label">First Name</label>
-        <div class="nk-input-line-box">
-          <input id="nkFirstName" type="text" placeholder="ben" />
-        </div>
-      </div>
-
-      <div class="nk-input-group">
-        <label class="nk-input-label">Last Name</label>
-        <div class="nk-input-line-box">
-          <input id="nkLastName" type="text" placeholder="saint" />
-        </div>
-      </div>
-
-      <div class="nk-input-group">
-        <label class="nk-input-label">6 Digit ID</label>
-        <div class="nk-input-line-box">
-          <span class="nk-id-prefix">ID</span>
-          <input id="nkIdInput" type="text" inputmode="numeric" maxlength="6" placeholder="123456" />
-        </div>
-      </div>
-
-      <!-- Konnekting - 10 tiny leaves rotating circle  -->
-      <div id="nkKonnektingWrap" class="nk-konnekting-wrap hidden">
-        <div class="nk-leaves-circle">
-          <i data-lucide="leaf" class="nk-leaf-tiny"></i>
-          <i data-lucide="leaf" class="nk-leaf-tiny"></i>
-          <i data-lucide="leaf" class="nk-leaf-tiny"></i>
-          <i data-lucide="leaf" class="nk-leaf-tiny"></i>
-          <i data-lucide="leaf" class="nk-leaf-tiny"></i>
-          <i data-lucide="leaf" class="nk-leaf-tiny"></i>
-          <i data-lucide="leaf" class="nk-leaf-tiny"></i>
-          <i data-lucide="leaf" class="nk-leaf-tiny"></i>
-          <i data-lucide="leaf" class="nk-leaf-tiny"></i>
-          <i data-lucide="leaf" class="nk-leaf-tiny"></i>
-        </div>
-        <p class="nk-konnekting-text">Konnekting...</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ----------  USER PROFILE ID REQUIRED OVERLAY - NEW FOR @USERNAME FLOW ---------- -->
-<!-- This shows when you search @username that requires ID -->
-<!--  Backend will return requiresId true/false. If true show this -->
-<!-- Fake demo: mock users with requiresId true need this screen -->
-<div id="nkUserProfileOverlay" class="nk-newchat-overlay nk-second">
-  <div class="nk-newchat-sheet">
-    <!-- Header: New @username with X cancel -->
-    <div class="nk-newchat-header">
-      <button id="nkUserProfileBack" class="nk-back-btn" aria-label="Back">
-        <i data-lucide="arrow-left" style="width:20px;height:20px;"></i>
-      </button>
-      <p id="nkUserProfileHeaderTitle" class="nk-newchat-title">New @username</p>
-      <button id="nkUserProfileClose" class="nk-close-btn" aria-label="Close">
-        <i data-lucide="x" style="width:18px;height:18px;"></i>
-      </button>
-    </div>
-
-    <!-- Profile content - scrollable -->
-    <div class="nk-profile-wrap">
-      <!-- Big circle avatar -->
-      <div class="nk-profile-image-wrap">
-        <div id="nkProfileBigCircle" class="nk-big-circle nk-profile-circle">
-          <span id="nkProfileInitial" style="font-size:36px;font-weight:700;color:#fff;">K</span>
-          <img id="nkProfileImagePreview" src="" alt="" style="display:none;" />
-        </div>
-      </div>
-
-      <!-- Name and username -->
-      <div class="nk-profile-info">
-        <p id="nkProfileName" class="nk-profile-name">King David</p>
-        <p id="nkProfileUsername" class="nk-profile-username">@king</p>
-        <p class="nk-profile-require-text">This user requires 6 digit ID to chat</p>
-      </div>
-
-      <!-- ID input  -->
-      <div class="nk-form-wrap" style="padding-top:10px;">
-        <div class="nk-input-group">
-          <label class="nk-input-label">Enter 6 Digit ID</label>
-          <div class="nk-input-line-box">
-            <span class="nk-id-prefix">ID</span>
-            <input id="nkProfileIdInput" type="text" inputmode="numeric" maxlength="6" placeholder="123456" />
-          </div>
-        </div>
-
-        <!-- Konnekting for profile ID flow -->
-        <div id="nkProfileKonnektingWrap" class="nk-konnekting-wrap hidden">
-          <div class="nk-leaves-circle">
-            <i data-lucide="leaf" class="nk-leaf-tiny"></i>
-            <i data-lucide="leaf" class="nk-leaf-tiny"></i>
-            <i data-lucide="leaf" class="nk-leaf-tiny"></i>
-            <i data-lucide="leaf" class="nk-leaf-tiny"></i>
-            <i data-lucide="leaf" class="nk-leaf-tiny"></i>
-            <i data-lucide="leaf" class="nk-leaf-tiny"></i>
-            <i data-lucide="leaf" class="nk-leaf-tiny"></i>
-            <i data-lucide="leaf" class="nk-leaf-tiny"></i>
-            <i data-lucide="leaf" class="nk-leaf-tiny"></i>
-            <i data-lucide="leaf" class="nk-leaf-tiny"></i>
-          </div>
-          <p class="nk-konnekting-text">Konnekting...</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Bottom Next border  -->
-    <div class="nk-bottom-next-wrap">
-      <button id="nkProfileNextBtn" class="nk-next-border">
-        <span>Next</span>
-        <i data-lucide="arrow-right"></i>
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- ---------- 4. NEW GROUP SEARCH OVERLAY - SEARCH PEOPLE YOU CHATTED ---------- -->
-<!-- Third overlay when click New Group row - search and select members -->
-<div id="nkNewGroupOverlay" class="nk-newchat-overlay nk-third">
-  <div class="nk-newchat-sheet">
-    <div class="nk-newchat-header">
-      <button id="nkNewGroupBack" class="nk-back-btn" aria-label="Back">
-        <i data-lucide="arrow-left" style="width:20px;height:20px;"></i>
-      </button>
-      <p class="nk-newchat-title">Add Members</p>
-      <button id="nkNewGroupBackDesktop" class="nk-back-btn nk-desktop-only" style="left:auto;right:14px;" aria-label="Close">
-        <i data-lucide="x" style="width:18px;height:18px;"></i>
-      </button>
-    </div>
-
-    <!-- Search people you have chatted with -->
-    <div class="nk-search-wrap">
-      <div class="nk-search-box nk-line-only">
-        <i data-lucide="search" class="nk-search-icon"></i>
-        <input id="nkGroupSearchInput" type="text" placeholder="Search people you have chatted with" />
-      </div>
-    </div>
-
-    <div id="nkGroupPeopleResults" class="nk-newchat-list">
-
-    </div>
-
-    <!-- Bottom Next border -->
-    <div class="nk-bottom-next-wrap">
-      <button id="nkGroupNextBtn" class="nk-next-border">
-        <span>Next</span>
-        <i data-lucide="arrow-right"></i>
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- ---------- 5. GROUP CREATE OVERLAY - IMAGE + NAME + PERMISSIONS ---------- -->
-<div id="nkGroupCreateOverlay" class="nk-newchat-overlay nk-fourth">
-  <div class="nk-newchat-sheet">
-    <div class="nk-newchat-header">
-      <button id="nkGroupCreateBack" class="nk-back-btn" aria-label="Back">
-        <i data-lucide="arrow-left" style="width:20px;height:20px;"></i>
-      </button>
-      <p class="nk-newchat-title">New Group</p>
-    </div>
-
-    <!-- Big circle for group image  -->
-    <div class="nk-group-image-wrap">
-      <div id="nkGroupImageBtn" class="nk-big-circle">
-        <i data-lucide="camera" class="nk-camera-icon"></i>
-        <span class="nk-add-photo-text">Add Photo</span>
-        <img id="nkGroupImagePreview" src="" alt="" style="display:none;" />
-      </div>
-      <input id="nkGroupImageInput" type="file" accept="image/*" hidden />
-    </div>
-
-    <div class="nk-form-wrap">
-      <div class="nk-input-group">
-        <label class="nk-input-label">Group Name</label>
-        <div class="nk-input-line-box">
-          <input id="nkGroupNameInput" type="text" placeholder="My Group" />
-        </div>
-      </div>
-
-      <!-- Permissions border - click to open permissions overlay -->
-      <button id="nkGroupPermissionRow" class="nk-newchat-row">
-        <div class="nk-row-icon nk-round-icon">
-          <i data-lucide="shield" class="nk-main-icon"></i>
-        </div>
-        <div class="nk-row-info">
-          <p class="nk-row-title">Permissions</p>
-          <p class="nk-row-sub">Members permissions, disappearing etc</p>
-        </div>
-        <i data-lucide="chevron-right" class="nk-chevron"></i>
-      </button>
-    </div>
-
-    <div class="nk-bottom-next-wrap">
-      <button id="nkGroupFinalCreateBtn" class="nk-next-border">
-        <span>Create Group</span>
-        <i data-lucide="check"></i>
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- ---------- 6. NEW KONNEKT  PERMISSIONS OVERLAY - LIST OF TOGGLES ---------- -->
-<div id="nkGroupPermissionOverlay" class="nk-newchat-overlay nk-fourth">
-  <div class="nk-newchat-sheet">
-    <div class="nk-newchat-header">
-      <button id="nkPermissionBack" class="nk-back-btn" aria-label="Back">
-        <i data-lucide="arrow-left" style="width:20px;height:20px;"></i>
-      </button>
-      <p class="nk-newchat-title">Permissions</p>
-      <button id="nkPermissionDoneBtn" class="nk-mark-btn" aria-label="Done">
-        <i data-lucide="check" style="width:18px;height:18px;"></i>
-      </button>
-    </div>
-
-    <div class="nk-permission-list">
-      <div class="nk-permission-row">
-        <div class="nk-permission-info">
-          <p class="nk-permission-title">Send Messages</p>
-          <p class="nk-permission-desc">Who can send messages in this group. If off, only admins can send</p>
-        </div>
-        <button class="nk-toggle" data-on="true" aria-label="Toggle"><span class="nk-toggle-knob"></span></button>
-      </div>
-
-      <div class="nk-permission-row">
-        <div class="nk-permission-info">
-          <p class="nk-permission-title">Add Members</p>
-          <p class="nk-permission-desc">Who can add new members to the group</p>
-        </div>
-        <button class="nk-toggle" data-on="false" aria-label="Toggle"><span class="nk-toggle-knob"></span></button>
-      </div>
-
-      <div class="nk-permission-row">
-        <div class="nk-permission-info">
-          <p class="nk-permission-title">Change Group Info</p>
-          <p class="nk-permission-desc">Who can change group name and photo</p>
-        </div>
-        <button class="nk-toggle" data-on="false" aria-label="Toggle"><span class="nk-toggle-knob"></span></button>
-      </div>
-
-      <div class="nk-permission-row">
-        <div class="nk-permission-info">
-          <p class="nk-permission-title">Disappearing Messages</p>
-          <p class="nk-permission-desc">Messages disappear after 7 days if enabled</p>
-        </div>
-        <button class="nk-toggle" data-on="false" aria-label="Toggle"><span class="nk-toggle-knob"></span></button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-
- 
-     <!-- NORMAL CHATS -->
-      <div class="chat-item" data-type="chat" data-user-id="1" data-username="johndoe">
-        <div class="chat-avatar" data-name="John Doe"></div>
-        <div class="chat-info">
-          <div class="chat-top-row">
-            <p class="chat-name">Joshua dayo</p>
-            <span class="chat-date">10:42 AM</span>
-          </div>
-          <div class="chat-bottom-row">
-            <p class="chat-last-message">Hey, are you free today? Let's link</p>
-            <span class="chat-unread">3</span>
-          </div>
         </div>
       </div>
 
@@ -612,7 +232,7 @@
             <span class="chat-date">Mon</span>
           </div>
           <div class="chat-bottom-row">
-            <p class="chat-last-message">Hdhdhdhdjjdjdjdjdjdjdjdjdjdjdjdjd</p>
+            <p class="chat-last-message">Hdhdhdhdjjdjdjdjdjdjdjdjdjdjdjdjdjd</p>
             <span class="chat-unread">3</span>
           </div>
         </div>
@@ -645,563 +265,676 @@
           </div>
         </div>
       </div>
-
-       <div class="chat-item group" data-type="group" data-group-id="g2">
-        <div class="chat-avatar group-avatar" data-name="Dev Squad"></div>
-        <div class="chat-info">
-          <div class="chat-top-row">
-            <p class="chat-name">Dev Squad</p>
-            <span class="chat-date">Yesterday</span>
-          </div>
-          <div class="chat-bottom-row">
-            <p class="chat-last-message">You: I pushed the update to github...</p>
-          </div>
-        </div>
-      </div>
-
-       <div class="chat-item group" data-type="group" data-group-id="g2">
-        <div class="chat-avatar group-avatar" data-name="Dev Squad"></div>
-        <div class="chat-info">
-          <div class="chat-top-row">
-            <p class="chat-name">Dev Squad</p>
-            <span class="chat-date">Yesterday</span>
-          </div>
-          <div class="chat-bottom-row">
-            <p class="chat-last-message">You: I pushed the update to github...</p>
-          </div>
-        </div>
-      </div>
-
-       <div class="chat-item group" data-type="group" data-group-id="g2">
-        <div class="chat-avatar group-avatar" data-name="Dev Squad"></div>
-        <div class="chat-info">
-          <div class="chat-top-row">
-            <p class="chat-name">Dev Squad</p>
-            <span class="chat-date">Yesterday</span>
-          </div>
-          <div class="chat-bottom-row">
-            <p class="chat-last-message">You: I pushed the update to github...</p>
-          </div>
-        </div>
-      </div>
-
-       <div class="chat-item group" data-type="group" data-group-id="g2">
-        <div class="chat-avatar group-avatar" data-name="Dev Squad"></div>
-        <div class="chat-info">
-          <div class="chat-top-row">
-            <p class="chat-name">Dev Squad</p>
-            <span class="chat-date">Yesterday</span>
-          </div>
-          <div class="chat-bottom-row">
-            <p class="chat-last-message">You: I pushed the update to github...</p>
-          </div>
-        </div>
-      </div>
-
-       <div class="chat-item group" data-type="group" data-group-id="g2">
-        <div class="chat-avatar group-avatar" data-name="Dev Squad"></div>
-        <div class="chat-info">
-          <div class="chat-top-row">
-            <p class="chat-name">Dev Squad</p>
-            <span class="chat-date">Yesterday</span>
-          </div>
-          <div class="chat-bottom-row">
-            <p class="chat-last-message">You: I pushed the update to github...</p>
-          </div>
-        </div>
-      </div>
-
-       <div class="chat-item group" data-type="group" data-group-id="g2">
-        <div class="chat-avatar group-avatar" data-name="Dev Squad"></div>
-        <div class="chat-info">
-          <div class="chat-top-row">
-            <p class="chat-name">Dev Squad</p>
-            <span class="chat-date">Yesterday</span>
-          </div>
-          <div class="chat-bottom-row">
-            <p class="chat-last-message">You: I pushed the update to github...</p>
-          </div>
-        </div>
-      </div>
-
-        <div class="chat-item group" data-type="group" data-group-id="g2">
-        <div class="chat-avatar group-avatar" data-name="Dev Squad"></div>
-        <div class="chat-info">
-          <div class="chat-top-row">
-            <p class="chat-name">Dev Squad</p>
-            <span class="chat-date">Yesterday</span>
-          </div>
-          <div class="chat-bottom-row">
-            <p class="chat-last-message">You: I pushed the update to github...</p>
-          </div>
-        </div>
-      </div>
-
-        <div class="chat-item group" data-type="group" data-group-id="g2">
-        <div class="chat-avatar group-avatar" data-name="Dev Squad"></div>
-        <div class="chat-info">
-          <div class="chat-top-row">
-            <p class="chat-name">Dev Squad</p>
-            <span class="chat-date">Yesterday</span>
-          </div>
-          <div class="chat-bottom-row">
-            <p class="chat-last-message">You: I pushed the update to github...</p>
-          </div>
-        </div>
-      </div>
-      <!-- ANONYMOUS - chats on pending-->
-      <div class="chat-item anon" data-type="chat" data-anonymous="true" data-user-id="anon_1">
-        <div class="chat-avatar anon-avatar" data-anonymous="true">
-          <i data-lucide="ghost" class="anon-ghost-icon"></i>
-        </div>
-        <div class="chat-info">
-          <div class="chat-top-row">
-            <p class="chat-name">Anonymous</p>
-            <span class="chat-date">11:20 PM</span>
-          </div>
-          <div class="chat-bottom-row">
-            <p class="chat-last-message">Anonymous conversation started</p>
-            <span class="chat-unread">1</span>
-          </div>
-        </div>
-      </div>
     </div>
-
-    
-
-    
-
-    
-    <div class="random-tab-content" id="randomTab" style="display:none;">
-      <div class="random-empty-state" id="randomIdle">
-        <div class="random-ghost-circle"><i data-lucide="ghost" class="random-ghost-big"></i></div>
-        <h3>Talk to Strangers</h3>
-        <p>Meet random people anonymously. No ID needed. Just chat.</p>
-        <button class="random-start-btn" id="startRandomBtn"><i data-lucide="shuffle"></i> Start Random Chat</button>
-        <p class="random-online"><span class="dot"></span> 342 online now</p>
-      </div>
-      <div class="random-searching-state" id="randomSearching" style="display:none;">
-        <div class="searching-animation"><div class="pulse"></div><i data-lucide="ghost" class="random-ghost-big"></i></div>
-        <h3>Finding a stranger...</h3>
-        <p>We are pairing you with someone random</p>
-        <button class="random-cancel-btn" id="cancelRandomBtn">Cancel</button>
-      </div>
+    <!-- ANON + RANDOM REMOVED. No ghost, no shuffle, no random tab content. -->
+<!-- Mobile Empty State - Inside list page, shows when list is empty -->
+<div class="chat-empty-state chat-empty-state-mobile" id="chatEmptyStateMobile">
+  <div class="chat-empty-card">
+    <div class="chat-empty-icon"><i data-lucide="message-circle"></i></div>
+    <h2 class="chat-empty-title">Konnekt Chats</h2>
+    <p class="chat-empty-desc">Chat, share moments and stay close to your herd.</p>
+    <div class="chat-empty-three">
+      <button class="chat-empty-three-item" data-goto="chats"><span class="chat-empty-three-icon"><i data-lucide="message-circle"></i></span><b>Chats</b><small>Chat with friends</small></button>
+      <button class="chat-empty-three-item" data-goto="moments"><span class="chat-empty-three-icon"><i data-lucide="image"></i></span><b>Moments</b><small>Share your day</small></button>
+      <button class="chat-empty-three-item" data-goto="loops"><span class="chat-empty-three-icon"><i data-lucide="repeat"></i></span><b>Loops</b><small>Post anonymously to your campus</small></button>
+    </div>
+    <div class="chat-empty-bottom">
+      <button class="chat-empty-start-btn" id="emptyStartChatBtnMobile">Start Chat</button>
+      <button class="chat-empty-start-btn" id="emptyCreateGroupBtnMobile" hidden>Create Group</button>
     </div>
   </div>
+</div>
+  </div>
 
-  <!-- CHAT BACKGROUND WITH MOOD PILL -->
-<div class="chat-background" id="chatBackground" >
-  <!-- ================= HEADER SECTION ================= -->
-  <!-- Contains profile, mood pill, and call,select controls -->
+  <!-- ================= RIGHT SIDE WRAP - DESKTOP EMPTY + CHAT BACKGROUND ================= -->
+  <div class="chat-right-wrap" id="chatRightWrap">
 
-  <div class="profile-headerchatBackground">
-    <div class="profile-extraBorder">
-      <div class="arrow-icon" onclick="closeChat()"><i data-lucide="chevron-left" class="arrow-left-chatBackground"></i></div>
-      <div class="profile-with-mood">
-        <div class="profile-border"><p class="profile-text">JD</p></div>
-        
-        <!-- MOOD PILL  3 STATES AUTO-CYCLE FOR MVP -->
-        <!-- State 1: Playing now + wave | State 2: Was feeling + time | State 3: moon icon + typed text -->
-        <!-- Later backend will replace timer with real Spotify event -->
-        <!-- Tap only, NOT swipeable -->
-        <div class="mood-float" id="moodFloat">
-    
-          <div class="mood-pill-wrapper" id="moodPillWrapper">
-            <!-- State 1: Playing now - tap shows artist card -->
-            <div class="mood-pill-mini active" data-state="playing" data-has-card="true">
-              <span>Playing now</span>
-              <div class="mood-wave"><span></span><span></span><span></span><span></span></div>
+    <!-- ===== DESKTOP EMPTY STATE - Shows when no chat selected (Desktop only) ===== -->
+    <div class="chat-empty-state" id="chatEmptyState">
+      <div class="chat-empty-card">
+        <div class="chat-empty-icon"><i data-lucide="message-circle"></i></div>
+        <h2 class="chat-empty-title">Konnekt Chats</h2>
+        <p class="chat-empty-desc">Chat, share moments and stay close to your herd.</p>
+        <!-- Three icons border: Chats / Moments / Loops -->
+        <div class="chat-empty-three">
+          <button class="chat-empty-three-item" data-goto="chats">
+            <span class="chat-empty-three-icon"><i data-lucide="message-circle"></i></span>
+            <b>Chats</b>
+            <small>Chat with friends</small>
+          </button>
+          <button class="chat-empty-three-item" data-goto="moments">
+            <span class="chat-empty-three-icon"><i data-lucide="image"></i></span>
+            <b>Moments</b>
+            <small>Share your day</small>
+          </button>
+          <button class="chat-empty-three-item" data-goto="loops">
+            <span class="chat-empty-three-icon"><i data-lucide="repeat"></i></span>
+            <b>Loops</b>
+            <small>Post anonymously to your campus</small>
+          </button>
+        </div>
+        <!-- Bottom border: Button changes by tab -->
+        <div class="chat-empty-bottom">
+          <button class="chat-empty-start-btn" id="emptyStartChatBtn">Start Chat</button>
+          <button class="chat-empty-start-btn" id="emptyCreateGroupBtn" hidden>Create Group</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= CHAT BACKGROUND ================= -->
+    <div class="chat-background" id="chatBackground" hidden>
+      <!-- HEADER -->
+      <div class="profile-headerchatBackground">
+        <div class="profile-extraBorder">
+          <div class="arrow-icon" id="closeChatBtn"><i data-lucide="chevron-left" class="arrow-left-chatBackground"></i></div>
+          <!-- Click round OR name/text -> Opens Contact Info / Group Info -->
+          <button class="profile-with-mood profile-open-btn" id="openProfilePreviewBtn">
+            <span class="profile-border"><span class="profile-text" id="chatHeaderInitials">JD</span></span>
+            <!-- Online dot: ONLY in chat background, NOT in list. Green = online, Red = offline -->
+            <span class="chat-online-dot" id="chatOnlineDot"></span>
+            <!-- Mood pill - copied from profile UI: top -30 / left -18 logic handled in CSS for header -->
+            <span class="mood-float" id="moodFloat">
+              <span class="mood-pill-wrapper" id="moodPillWrapper">
+                <span class="mood-pill-mini active" data-state="playing" data-has-card="true">
+                  <span>Playing now</span>
+                  <span class="mood-wave"><span></span><span></span><span></span><span></span></span>
+                </span>
+              </span>
+              <span class="mood-card" id="moodCard">
+                <span class="mood-card-title" id="moodCardTitle">Asiwaju</span>
+                <span class="mood-card-artist" id="moodCardArtist">Ruger</span>
+                <span class="mood-wave big"><span></span><span></span><span></span><span></span></span>
+              </span>
+            </span>
+          </button>
+          <!-- Click name/text also opens profile -->
+          <button class="chat-header-name-wrap profile-open-btn" id="openProfilePreviewBtn2">
+            <span class="chat-name" id="chatHeaderName">Joshua dayo</span>
+            <!-- Normal: Online / Offline + Last seen. Group: Members • Online count / Typing -->
+            <span class="chat-header-status" id="chatHeaderStatus">Online</span>
+            <span class="chat-header-typing" id="chatHeaderTyping" hidden></span>
+          </button>
+        </div>
+
+        <!-- Header right: NORMAL = Call + Video. GROUP = NO Call, NO Video. JS toggles .is-group -->
+        <div class="calls" id="callsIcons">
+          <button class="phone-call-btn" id="startOutgoingCallBtn" style="background:none;border:none;cursor:pointer;">
+            <i data-lucide="phone" class="phone-call"></i>
+          </button>
+          <button id="yourVideoBtn" data-waitlist-video>
+            <i data-lucide="video"></i>
+          </button>
+          <div class="selected-pill" id="selectedPill">
+            <button class="header-cancel-btn" id="headerCancelBtn"><i data-lucide="x"></i></button>
+            <span class="selected-count" id="selectedCount">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Incoming tile inside chat -->
+      <div class="konnekt-incoming-tile inside-chat" id="incomingTileChat">
+        <img class="konnekt-incoming-ava" id="incomingAvaChat" src="https://i.pravatar.cc/300?img=12" />
+        <div class="konnekt-incoming-info">
+          <p class="konnekt-incoming-name" id="incomingNameChat">Joshua dayo</p>
+          <p class="konnekt-incoming-sub">Incoming voice call...</p>
+        </div>
+        <div class="konnekt-incoming-actions">
+          <button class="konnekt-call-mini accept" id="acceptCallChat"><i data-lucide="phone"></i></button>
+          <button class="konnekt-call-mini decline" id="declineCallChat"><i data-lucide="phone"></i></button>
+        </div>
+      </div>
+
+      <!-- In-app notification -->
+      <div class="ios-notify" id="iosNotifyPreview">
+        <div class="ios-notify-avatar">JD</div>
+        <div class="ios-notify-content">
+          <span class="ios-notify-name">Joshua dayo</span>
+          <span class="ios-notify-msg">Bro how far, you don see my code?</span>
+        </div>
+        <span class="ios-notify-time">now</span>
+      </div>
+      <div id="floatingDate" class="floating-date">Today</div>
+
+      <!-- MESSAGES -->
+      <div class="chat-messages" id="chatMessages">
+        <div class="encryption-notice"><i data-lucide="lock" class="enc-lock"></i><p>Messages and calls are end-to-end encrypted. No one outside of this chat, not even Konnekt, can read or listen to them. Tap to learn more.</p></div>
+        <div class="date-sep" data-date="Today"><span>Today</span></div>
+        <div class="unread-sep"><span>3 unread messages</span></div>
+
+        <div class="msg-row receiver" data-message-id="msg1"><div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble receiver-bubble"><p>Bro how far, you don see my code?</p><span class="msg-meta right-meta"><span class="msg-time">9:41 AM</span></span><span class="msg-reaction-badge" id="reaction-msg1"></span></div></div>
+        <div class="msg-row sender" data-message-id="msg2"><div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble sender-bubble sending"><p>Yes I don see am</p><span class="msg-meta right-meta"><span class="msg-time">9:42 AM</span><i data-lucide="clock-3" class="tick-icon clock"></i></span></div></div>
+
+        <!-- Call logs - Normal chat only. Group has no calls. -->
+        <div class="msg-row no-actions call-row" data-message-id="call1">
+          <div class="bubble call-bubble missed">
+            <i data-lucide="phone-missed" class="call-icon missed"></i>
+            <div class="call-info"><span>Missed voice call</span><span class="call-time">Tap to call back</span></div>
+          </div>
+        </div>
+
+        <div class="msg-row sender" data-message-id="msg4"><div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble sender-bubble"><p>Check your chat now</p><span class="msg-meta right-meta"><span class="msg-time">9:43 AM</span><i data-lucide="check" class="tick-icon single"></i></span></div></div>
+
+        <!-- Image bubble -->
+        <div class="msg-row sender" data-message-id="msg6">
+          <div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div>
+          <div class="bubble image-bubble with-caption"><div class="img-wrap"><img src="knnockt.jfif"><span class="msg-meta over-image right-meta"><span class="msg-time">9:45 AM</span><i data-lucide="check-check" class="tick-icon blue"></i></span></div><div class="img-caption-wrap"><p class="img-caption-text">This is caption under image</p></div></div>
+        </div>
+        <!-- Video bubble -->
+        <div class="msg-row sender" data-message-id="msg6-video">
+          <div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div>
+          <div class="bubble video-bubble with-caption"><div class="video-wrap"><video src="" poster="knnockt.jfif"></video><button class="video-play-center"><i data-lucide="play"></i></button><span class="video-duration">00:12</span><span class="msg-meta over-image right-meta"><span class="msg-time">9:45 AM</span><i data-lucide="check-check" class="tick-icon blue"></i></span></div><div class="img-caption-wrap"><p class="img-caption-text">Video caption example</p></div></div>
+        </div>
+        <!-- Sticker -->
+        <div class="msg-row sender" data-message-id="msg7"><div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble sticker-bubble"><img src="knnockt.jfif" alt="sticker"><span class="msg-meta sticker-meta right-meta"><span class="msg-time">9:46 AM</span><i data-lucide="check-check" class="tick-icon blue"></i></span></div></div>
+
+        <!-- Deleted message placeholder - Delete for everyone -->
+        <div class="msg-row sender deleted-row" data-message-id="msgDeleted1"><div class="bubble deleted-bubble"><i data-lucide="trash-2"></i><p>You deleted this message</p><span class="msg-meta right-meta"><span class="msg-time">9:47 AM</span></span></div></div>
+
+        <!-- Group system messages - Centered grey, NOT bubbles. JS shows these only in groups. -->
+        <div class="system-msg" data-system="group-created" hidden><span>Faith created this group</span></div>
+        <div class="system-msg" data-system="group-added" hidden><span>Admin Faith added John • @john_doe</span></div>
+        <div class="system-msg" data-system="group-left" hidden><span>Faith • @faith_mike left</span></div>
+        <div class="system-msg" data-system="group-removed" hidden><span>Admin Faith removed John</span></div>
+
+        <!-- Typing indicators -->
+        <div class="msg-row receiver typing-row no-actions show always-show" id="typingIndicator"><div class="bubble typing-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div></div>
+        <div class="msg-row receiver typing-row no-actions group-typing-row" id="groupTypingIndicator" style="display:none">
+          <div class="group-typing-avatars"><div class="gt-avatar">JD</div><div class="gt-avatar">AK</div></div>
+          <div class="bubble typing-bubble group"><div class="typing-dots"><span></span><span></span><span></span></div></div>
+        </div>
+      </div>
+
+      <div class="message-focus-overlay" id="messageFocusOverlay"></div>
+
+      <!-- HOLD PILL - NO FORWARD. Text=Copy, Image=Save -->
+      <div class="popped-message-container always-middle" id="poppedMessageContainer">
+        <div class="emoji-react-bar" id="emojiReactBar"><button data-emoji="❤️">❤️</button><button data-emoji="😂">😂</button><button data-emoji="😮">😮</button><button data-emoji="😢">😢</button><button data-emoji="🙏">🙏</button><button class="emoji-plus-btn" id="emojiPlusBtn"><i data-lucide="plus"></i></button></div>
+        <div class="popped-clone" id="poppedClone"></div>
+        <div class="message-action-pill" id="messageActionPill">
+          <!-- Copy shows for TEXT only. Save shows for IMAGE only. JS toggles. -->
+          <button data-action="copy" id="pillCopyBtn"><i data-lucide="copy"></i><span>Copy</span></button>
+          <button data-action="save" id="pillSaveBtn" hidden><i data-lucide="download"></i><span>Save</span></button>
+          <button data-action="reply"><i data-lucide="reply"></i><span>Reply</span></button>
+          <button data-action="react"><i data-lucide="smile-plus"></i><span>React</span></button>
+          <button data-action="select"><i data-lucide="check-square"></i><span>Select messages</span></button>
+          <button data-action="favorite" id="favActionBtn"><i data-lucide="star" id="favIcon"></i><span id="favText">Add to favorites</span></button>
+          <button data-action="delete"><i data-lucide="trash-2"></i><span>Delete</span></button>
+        </div>
+      </div>
+
+      <button class="scroll-down-btn" id="scrollDownBtn"><i data-lucide="chevron-down"></i><span class="scroll-new-count" id="scrollNewCount">0</span></button>
+
+      <div class="reply-preview" id="replyPreview"><div class="reply-preview-line"></div><img id="replyPreviewThumb" class="reply-thumb" style="display:none"><div class="reply-preview-content"><span class="reply-preview-name" id="replyPreviewName">You</span><span class="reply-preview-text" id="replyPreviewText"></span></div><button class="reply-preview-close" id="replyPreviewClose"><i data-lucide="x"></i></button></div>
+
+      <div class="plus-pill-menu" id="plusPillMenu"><button class="pill-btn" data-action="send-file"><i data-lucide="file-image"></i><span>Send file</span></button><button class="pill-btn" data-action="create-sticker"><i data-lucide="sticker"></i><span>Create sticker</span></button><button class="pill-btn" data-action="camera"><i data-lucide="camera"></i><span>Camera</span></button></div>
+
+      <div class="sticker-border-panel" id="stickerBorderPanel"><div class="sticker-panel-header"><div class="panel-drag"></div><span class="sticker-panel-title">Stickers</span><button class="sticker-panel-close" id="stickerPanelClose"><i data-lucide="x"></i></button></div><div class="sticker-grid" id="stickerGrid"><button class="sticker-add-box" id="stickerAddBox"><div class="dashed-plus"><i data-lucide="plus"></i></div><span>Add sticker</span></button></div></div>
+
+      <!-- INPUT BAR + TAKEOVERS -->
+      <div class="chat-input-bar" id="chatInputBar">
+        <button class="input-plus-btn" id="inputPlusBtn"><i data-lucide="plus"></i></button>
+        <div class="input-pill" id="inputPill">
+          <button class="emoji-sticker-btn" id="emojiStickerBtn"><i data-lucide="smile"></i></button>
+          <textarea id="msgInput" placeholder="Message" rows="1"></textarea>
+        </div>
+        <button class="mic-send-btn" id="micSendBtn"><i data-lucide="mic" class="icon-mic"></i><i data-lucide="arrow-up" class="icon-send"></i></button>
+      </div>
+
+      <!-- BLOCKED TAKEOVER - Replaces input when blocked. Hidden by default. -->
+      <div class="input-takeover" id="blockedTakeover" hidden>
+        <p>You blocked <span id="blockedName">Faith</span>. Unblock to send messages.</p>
+        <button id="unblockBtn">Unblock</button>
+      </div>
+      <!-- ADMIN-ONLY TAKEOVER - Replaces input when group is admins-only and you are normal member. -->
+      <div class="input-takeover" id="adminOnlyTakeover" hidden>
+        <p><i data-lucide="lock"></i> Only admins can send messages in this group</p>
+      </div>
+
+      <div class="delete-action-bar" id="deleteActionBar"><button class="delete-opt" data-delete="me"><i data-lucide="trash"></i><span>Delete for me</span></button><button class="delete-opt" data-delete="everyone"><i data-lucide="trash-2"></i><span>Delete for everyone</span></button></div>
+
+      <div class="chat-sticker-select-mode" id="chatStickerSelectMode">
+        <div class="sticker-select-header"><h4>Select from chat</h4><button id="stickerSelectClose"><i data-lucide="x"></i></button></div>
+        <div class="sticker-select-center-wrap">
+          <div class="sticker-select-grid" id="stickerSelectGrid"></div>
+          <div class="add-sticker-action-row">
+            <button class="add-sticker-confirm-btn" id="addStickerConfirmBtn">Add sticker</button>
+            <button class="add-sticker-cancel-x" id="addStickerCancelX"><i data-lucide="x"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Image preview -->
+      <div class="image-preview-overlay" id="imagePreviewOverlay">
+        <div class="preview-blur-bg"></div>
+        <div class="preview-header">
+          <button class="preview-close" id="previewClose" title="Back"><i data-lucide="arrow-left"></i></button>
+          <span class="preview-title">Preview</span>
+        </div>
+        <div class="preview-content">
+          <img id="previewImage" style="display:none">
+          <video id="previewVideo" controls style="display:none"></video>
+          <div class="preview-caption-bar">
+            <button class="preview-cancel-beside-input" id="previewCancelText" title="Cancel"><i data-lucide="x"></i></button>
+            <input type="text" id="captionInput" placeholder="Add a caption...">
+            <button class="preview-send-btn" id="previewSendBtn"><i data-lucide="send"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Video full -->
+      <div class="video-full-overlay" id="videoFullOverlay">
+        <div class="preview-blur-bg"></div>
+        <div class="preview-header">
+          <button class="preview-close" id="videoFullClose"><i data-lucide="x"></i></button>
+        </div>
+        <div class="preview-content">
+          <video id="videoFullPlayer" controls autoplay></video>
+          <p class="video-full-caption" id="videoFullCaption"></p>
+        </div>
+      </div>
+
+      <!-- Create sticker -->
+      <div class="create-sticker-page" id="createStickerPage">
+        <div id="ffmpegLoader"><div class="ffmpeg-dot"></div><span>Preparing editor...</span></div>
+        <div id="cuttingLoader"><div class="cut-box"><div class="cut-spinner"></div><span class="cut-text">Cutting video to 3s...</span><div class="cut-bar"><div class="cut-progress"></div></div></div></div>
+        <div class="create-sticker-header">
+          <button id="createStickerBack" class="icon-btn"><i data-lucide="arrow-left"></i></button>
+          <h3>Create sticker</h3>
+          <button id="createStickerClose" class="icon-btn close-x" title="Cancel"><i data-lucide="x"></i></button>
+        </div>
+        <div class="create-sticker-body">
+          <div class="create-canvas-wrap">
+            <div class="create-canvas iphone-crop-container" id="createCanvas">
+              <img id="createStickerImage" style="display:none">
+              <video id="createStickerVideo" loop muted playsinline style="display:none"></video>
+              <canvas id="stickerCanvas" style="display:none"></canvas>
+              <div class="create-placeholder" id="createPlaceholder"><i data-lucide="image"></i><span>Select image or video</span><input type="file" id="stickerFileInput" accept="image/*,video/*" hidden></div>
+              <div class="text-overlay-wrapper" id="textOverlayWrapper" style="display:none"><div class="text-overlay" id="textOverlay" contenteditable="true" data-placeholder="Add text..."></div><span class="resize-handle"></span></div>
             </div>
-            <!-- State 2: Recently - tap shows played time card -->
-            <div class="mood-pill-mini" data-state="recent" data-has-card="true">
-              <span>Was feeling Chilling . 2m ago</span>
+            <div class="video-trim-bar" id="videoTrimBar" style="display:none">
+              <div class="trim-track"><div class="trim-progress" id="trimProgress"></div></div>
+              <div class="trim-inputs"><input type="range" id="trimStart" min="0" max="10" value="0" step="0.1"><input type="range" id="trimEnd" min="0" max="10" value="3" step="0.1"></div>
+              <span id="trimLabel">0.0s - 3.0s (max 3s)</span>
             </div>
-            <!-- State 3: Typed mood - moon icon - tap does NOTHING -->
-            <div class="mood-pill-mini" data-state="typed" data-has-card="false">
-              <i data-lucide="moon" class="mood-icon"></i>
-              <span>Late night vibe</span>
+            <div class="create-toolbar">
+              <button id="addTextBtn"><i data-lucide="type"></i><span>Aa</span></button>
+              <button id="boldTextBtn"><i data-lucide="bold"></i><span>Bold</span></button>
+              <button id="zoomTextBtn"><i data-lucide="zoom-in"></i><span>Zoom</span></button>
+              <button id="cropBtn"><i data-lucide="crop"></i><span>Crop</span></button>
             </div>
-          </div>
-          <!-- Mood card popup for State 1 and 2 only -->
-          <div class="mood-card" id="moodCard">
-            <p class="mood-card-title" id="moodCardTitle">Asiwaju</p>
-            <p class="mood-card-artist" id="moodCardArtist">Ruger</p>
-            <div class="mood-wave big"><span></span><span></span><span></span><span></span></div>
+            <div class="create-actions"><button class="create-add-btn secondary" id="createCancelBtn"><i data-lucide="x"></i> Cancel</button><button class="create-add-btn primary" id="createAddBtn">Add to pack</button></div>
           </div>
         </div>
       </div>
-      <p class="chat-name">Joshua dayo</p>
+
+      <div class="voice-recording-overlay" id="voiceRecordingOverlay"><div class="voice-rec-content"><button class="voice-cancel" id="voiceCancelBtn"><i data-lucide="x"></i></button><div class="voice-wave-big" id="voiceWaveBig"><span></span><span></span><span></span></div><span class="voice-timer" id="voiceTimer">0:00</span><div class="voice-controls"><button class="voice-stop" id="voiceStopBtn"><i data-lucide="trash-2"></i></button><button class="voice-send" id="voiceSendBtn"><i data-lucide="arrow-up"></i></button></div></div></div>
+      <div class="toast" id="toast"><i data-lucide="star"></i><span>Added to favorites</span></div>
+      <input type="file" id="galleryInput" accept="image/*,video/*" hidden><input type="file" id="cameraInput" accept="image/*,video/*" capture="environment" hidden>
     </div>
+  </div>
 
-    <!-- Header right controls - calls and select mode -->
-    <div class="calls" id="callsIcons">
-<button class="phone-call-btn" id="startOutgoingCallBtn" style="background:none;border:none;cursor:pointer;">
-  <i data-lucide="phone" class="phone-call"></i>
-</button>
-     
-<button id="yourVideoBtn" data-waitlist-video>
-  <i data-lucide="video"></i>
-</button>
-
-
-
-      <!-- SELECT MODE PILL - X icon + count together in one pill, responsive -->
-      <!-- Delete icon removed as requested -->
-      <div class="selected-pill" id="selectedPill">
-        <button class="header-cancel-btn" id="headerCancelBtn"><i data-lucide="x"></i></button>
-        <span class="selected-count" id="selectedCount">0</span>
+  <!-- ================= CONTACT INFO - NORMAL CHAT (New Background) ================= -->
+  <!-- Copied structure from profile UI preview: mood pill, username + ID, about, spotify, 3 icons -->
+  <div class="contact-info-bg" id="contactInfoBg" hidden>
+    <div class="contact-info-top">
+      <button class="contact-back-btn" id="contactInfoBack"><i data-lucide="chevron-left"></i></button>
+      <p class="contact-info-title">Contact Info</p>
+      <button class="contact-edit-btn" id="contactEditBtn">Edit</button>
+    </div>
+    <div class="contact-info-scroll custom-scroll">
+      <!-- Round profile - Same as profile UI: pic FULL, mood pill top -30 / left -18 -->
+      <div class="round-profile contact-round-profile" id="contactRoundProfile">
+        <div class="thought contact-mood-pill" id="contactMoodPill"><p class="mood-share-text" id="contactMoodText">share your mood</p></div>
+        <img id="contactProfileImage" src="" alt="Profile" hidden>
+        <div class="first-circle"></div>
+        <div class="second-circle"></div>
+        <!-- Click pic -> Full preview -->
+        <button class="contact-pic-open" id="contactPicOpen" aria-label="View full photo"></button>
       </div>
-    </div>
-  </div>
- 
-   <div class="konnekt-incoming-tile inside-chat" id="incomingTileChat">
-    <img class="konnekt-incoming-ava" id="incomingAvaChat" src="https://i.pravatar.cc/300?img=12" />
-    <div class="konnekt-incoming-info">
-      <p class="konnekt-incoming-name" id="incomingNameChat">Joshua dayo</p>
-      <p class="konnekt-incoming-sub">Incoming voice call...</p>
-    </div>
-    <div class="konnekt-incoming-actions">
-      <button class="konnekt-call-mini accept" id="acceptCallChat"><i data-lucide="phone"></i></button>
-      <button class="konnekt-call-mini decline" id="declineCallChat"><i data-lucide="phone"></i></button>
-    </div>
-  </div>
-
-<!-- IN-APP  Notification  -->
-<div class="ios-notify" id="iosNotifyPreview">
-  <div class="ios-notify-avatar">JD</div>
-  <div class="ios-notify-content">
-    <span class="ios-notify-name">Joshua dayo</span>
-    <span class="ios-notify-msg">Bro how far, you don see my code? </span>
-  </div>
-  <span class="ios-notify-time">now</span>
-</div>
-  <div id="floatingDate" class="floating-date">Today</div>
-
-  <!-- ================= CHAT MESSAGES AREA ================= -->
-  <div class="chat-messages" id="chatMessages">
-    <div class="encryption-notice"><i data-lucide="lock" class="enc-lock"></i><p>Messages and calls are end-to-end encrypted. No one outside of this chat, not even Konnekt, can read or listen to them. Tap to learn more.</p></div>
-    <div class="date-sep" data-date="Today"><span>Today</span></div>
-<div class="unread-sep"><span>3 unread messages</span></div>
-    <!-- Message rows with swipe-reply icon and select circle -->
-    <div class="msg-row receiver" data-message-id="msg1"><div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble receiver-bubble"><p>Bro how far, you don see my code?</p><span class="msg-meta right-meta"><span class="msg-time">9:41 AM</span></span><span class="msg-reaction-badge" id="reaction-msg1"></span></div></div>
-    <div class="msg-row sender" data-message-id="msg2"><div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble sender-bubble sending"><p>Yes I don see am</p><span class="msg-meta right-meta"><span class="msg-time">9:42 AM</span><i data-lucide="clock-3" class="tick-icon clock"></i></span></div></div>
-
-    <!-- Call logs -->
-    <div class="msg-row no-actions call-row" data-message-id="call1">
-      <div class="bubble call-bubble missed">
-        <i data-lucide="phone-missed" class="call-icon missed"></i>
-        <div class="call-info"><span>Missed voice call</span><span class="call-time">Tap to call back</span></div>
+      <p class="preview-username-inside" id="contactUsername">@Faith_mike</p>
+      <p class="contact-id" id="contactIdText">ID: 234567</p>
+      <p class="contact-status" id="contactStatusText">Online</p>
+      <!-- 3 icons: Bigger 48px, white, radius 10px, stroke 2.5 -->
+      <div class="preview-actions contact-actions">
+        <div class="preview-action-btn"><i data-lucide="phone"></i></div>
+        <div class="preview-action-btn"><i data-lucide="video"></i></div>
+        <div class="preview-action-btn"><i data-lucide="message-circle"></i></div>
       </div>
-    </div>
-    <div class="msg-row no-actions call-row" data-message-id="call2">
-      <div class="bubble call-bubble ended">
-        <i data-lucide="video" class="call-icon"></i>
-        <div class="call-info"><span>Video call - 2:30</span><span class="call-time">Today, 9:42 AM</span></div>
+      <!-- About -->
+      <div class="preview-about-border">
+        <p class="preview-about-label">About you</p>
+        <p class="preview-about-text" id="contactAboutText">No description yet</p>
       </div>
-    </div>
-    <div class="msg-row no-actions call-row" data-message-id="call3">
-      <div class="bubble call-bubble answered">
-        <i data-lucide="phone" class="call-icon answered"></i>
-        <div class="call-info"><span>Voice call answered - 1:15</span><span class="call-time">Today, 9:43 AM</span></div>
+      <!-- Spotify / Listening -->
+      <div class="preview-spotify" id="contactSpotify" hidden>
+        <div class="music-bars"><span></span><span></span><span></span><span></span></div>
+        <div><p class="preview-spotify-label">Listening to</p><p class="preview-spotify-song"><span id="contactSongName">Song Name</span> • <span id="contactArtistName">Artist</span></p></div>
       </div>
-    </div>
-
-    <div class="msg-row sender" data-message-id="msg4"><div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble sender-bubble"><p>Check your chat now</p><span class="msg-meta right-meta"><span class="msg-time">9:43 AM</span><i data-lucide="check" class="tick-icon single"></i></span></div></div>
-
-    <!-- Image bubble -->
-    <div class="msg-row sender" data-message-id="msg6">
-      <div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div>
-      <div class="bubble image-bubble with-caption"><div class="img-wrap"><img src="knnockt.jfif"><span class="msg-meta over-image right-meta"><span class="msg-time">9:45 AM</span><i data-lucide="check-check" class="tick-icon blue"></i></span></div><div class="img-caption-wrap"><p class="img-caption-text">This is caption under image</p></div></div>
-    </div>
-    <!-- Video bubble -->
-    <div class="msg-row sender" data-message-id="msg6-video">
-      <div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div>
-      <div class="bubble video-bubble with-caption"><div class="video-wrap"><video src="" poster="knnockt.jfif"></video><button class="video-play-center"><i data-lucide="play"></i></button><span class="video-duration">00:12</span><span class="msg-meta over-image right-meta"><span class="msg-time">9:45 AM</span><i data-lucide="check-check" class="tick-icon blue"></i></span></div><div class="img-caption-wrap"><p class="img-caption-text">Video caption example</p></div></div>
-    </div>
-    <!-- Sticker bubble -->
-    <div class="msg-row sender" data-message-id="msg7"><div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble sticker-bubble"><img src="knnockt.jfif" alt="sticker"><span class="msg-meta sticker-meta right-meta"><span class="msg-time">9:46 AM</span><i data-lucide="check-check" class="tick-icon blue"></i></span></div></div>
-
-    <!-- Typing indicators -->
-    <div class="msg-row receiver typing-row no-actions show always-show" id="typingIndicator"><div class="bubble typing-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div></div>
-    <div class="msg-row receiver typing-row no-actions group-typing-row" id="groupTypingIndicator" style="display:none">
-      <div class="group-typing-avatars"><div class="gt-avatar">JD</div><div class="gt-avatar">AK</div></div>
-      <div class="bubble typing-bubble group"><div class="typing-dots"><span></span><span></span><span></span></div></div>
-    </div>
-  </div>
-
-  <div class="message-focus-overlay" id="messageFocusOverlay"></div>
-
-  <!-- ================= HOLD MESSAGE PILL POPUP ================= -->
-
-  <div class="popped-message-container always-middle" id="poppedMessageContainer">
-    <div class="emoji-react-bar" id="emojiReactBar"><button data-emoji="❤️">❤️</button><button data-emoji="😂">😂</button><button data-emoji="😮">😮</button><button data-emoji="😢">😢</button><button data-emoji="🙏">🙏</button><button class="emoji-plus-btn" id="emojiPlusBtn"><i data-lucide="plus"></i></button></div>
-    <div class="popped-clone" id="poppedClone"></div>
-    <div class="message-action-pill" id="messageActionPill">
-      <button data-action="reply"><i data-lucide="reply"></i><span>Reply</span></button>
-      <button data-action="react"><i data-lucide="smile-plus"></i><span>React</span></button>
-      <button data-action="select"><i data-lucide="check-square"></i><span>Select messages</span></button>
-      <button data-action="favorite" id="favActionBtn"><i data-lucide="star" id="favIcon"></i><span id="favText">Add to favorites</span></button>
-      <button data-action="delete"><i data-lucide="trash-2"></i><span>Delete</span></button>
-    </div>
-  </div>
-
-  <button class="scroll-down-btn" id="scrollDownBtn"><i data-lucide="chevron-down"></i><span class="scroll-new-count" id="scrollNewCount">0</span></button>
-  
-  <!-- Reply preview shown when swipe or hold->reply -->
-  <div class="reply-preview" id="replyPreview"><div class="reply-preview-line"></div><img id="replyPreviewThumb" class="reply-thumb" style="display:none"><div class="reply-preview-content"><span class="reply-preview-name" id="replyPreviewName">You</span><span class="reply-preview-text" id="replyPreviewText"></span></div><button class="reply-preview-close" id="replyPreviewClose"><i data-lucide="x"></i></button></div>
-  
-  <!-- Plus pill menu - DO NOT TOUCH - working as per request -->
-  <div class="plus-pill-menu" id="plusPillMenu"><button class="pill-btn" data-action="send-file"><i data-lucide="file-image"></i><span>Send file</span></button><button class="pill-btn" data-action="create-sticker"><i data-lucide="sticker"></i><span>Create sticker</span></button><button class="pill-btn" data-action="camera"><i data-lucide="camera"></i><span>Camera</span></button></div>
-
-  <!-- ================= STICKER PANEL ================= -->
-
-  <div class="sticker-border-panel" id="stickerBorderPanel"><div class="sticker-panel-header"><div class="panel-drag"></div><span class="sticker-panel-title">Stickers</span><button class="sticker-panel-close" id="stickerPanelClose"><i data-lucide="x"></i></button></div><div class="sticker-grid" id="stickerGrid"><button class="sticker-add-box" id="stickerAddBox"><div class="dashed-plus"><i data-lucide="plus"></i></div><span>Add sticker</span></button></div></div>
-
-  <!-- ================= INPUT BAR - GROWS WITH TEXT LIKE WHATSAPP ================= -->
-
-  <div class="chat-input-bar" id="chatInputBar">
-    <button class="input-plus-btn" id="inputPlusBtn"><i data-lucide="plus"></i></button>
-    <div class="input-pill" id="inputPill">
-      <button class="emoji-sticker-btn" id="emojiStickerBtn"><i data-lucide="smile"></i></button>
-      <textarea id="msgInput" placeholder="Message" rows="1"></textarea>
-    </div>
-    <button class="mic-send-btn" id="micSendBtn"><i data-lucide="mic" class="icon-mic"></i><i data-lucide="arrow-up" class="icon-send"></i></button>
-  </div>
-
-  <div class="delete-action-bar" id="deleteActionBar"><button class="delete-opt" data-delete="me"><i data-lucide="trash"></i><span>Delete for me</span></button><button class="delete-opt" data-delete="everyone"><i data-lucide="trash-2"></i><span>Delete for everyone</span></button></div>
-
-  <!-- ================= ADD STICKER MODE - SELECT FROM CHAT ================= -->
-
-  <div class="chat-sticker-select-mode" id="chatStickerSelectMode">
-    <div class="sticker-select-header"><h4>Select from chat</h4><button id="stickerSelectClose"><i data-lucide="x"></i></button></div>
-    <div class="sticker-select-center-wrap">
-      <div class="sticker-select-grid" id="stickerSelectGrid"></div>
-      <!-- Wrap with X cancel button beside border -->
-      <div class="add-sticker-action-row">
-        <button class="add-sticker-confirm-btn" id="addStickerConfirmBtn">Add sticker</button>
-        <button class="add-sticker-cancel-x" id="addStickerCancelX"><i data-lucide="x"></i></button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Image preview -->
-   <div class="image-preview-overlay" id="imagePreviewOverlay">
-    <div class="preview-blur-bg"></div>
-    <div class="preview-header">
-      <button class="preview-close" id="previewClose" title="Back"><i data-lucide="arrow-left"></i></button>
-      <span class="preview-title">Preview</span>
-    </div>
-    <div class="preview-content">
-      <img id="previewImage" style="display:none">
-      <video id="previewVideo" controls style="display:none"></video>
-      <div class="preview-caption-bar">
-        <button class="preview-cancel-beside-input" id="previewCancelText" title="Cancel"><i data-lucide="x"></i></button>
-        <input type="text" id="captionInput" placeholder="Add a caption...">
-        <button class="preview-send-btn" id="previewSendBtn"><i data-lucide="send"></i></button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ================= VIDEO FULL OVERLAY WITH  ================= -->
-  <div class="video-full-overlay" id="videoFullOverlay">
-    <div class="preview-blur-bg"></div>
-    <div class="preview-header">
-      <button class="preview-close" id="videoFullClose"><i data-lucide="x"></i></button>
-    </div>
-    <div class="preview-content">
-      <video id="videoFullPlayer" controls autoplay></video>
-      <p class="video-full-caption" id="videoFullCaption"></p>
-    </div>
-  </div>
-
-  <!-- ================= CREATE STICKER PAGE ================= -->
- 
-  <div class="create-sticker-page" id="createStickerPage">
-    <!-- FFMPEG 2MB LOADER + CUTTING LOADER -->
-<div id="ffmpegLoader">
-  <div class="ffmpeg-dot"></div>
-  <span>Preparing editor...</span>
-</div>
-
-<div id="cuttingLoader">
-  <div class="cut-box">
-    <div class="cut-spinner"></div>
-    <span class="cut-text">Cutting video to 3s...</span>
-    <div class="cut-bar"><div class="cut-progress"></div></div>
-  </div>
-</div>
-    <div class="create-sticker-header">
-      <button id="createStickerBack" class="icon-btn"><i data-lucide="arrow-left"></i></button>
-      <h3>Create sticker</h3>
-      <button id="createStickerClose" class="icon-btn close-x" title="Cancel"><i data-lucide="x"></i></button>
-    </div>
-    <div class="create-sticker-body">
-      <div class="create-canvas-wrap">
-        <!-- iPhone style crop/zoom container -->
-        <div class="create-canvas iphone-crop-container" id="createCanvas">
-          <img id="createStickerImage" style="display:none">
-          <video id="createStickerVideo" loop muted playsinline style="display:none"></video>
-          <canvas id="stickerCanvas" style="display:none"></canvas>
-          <div class="create-placeholder" id="createPlaceholder"><i data-lucide="image"></i><span>Select image or video</span><input type="file" id="stickerFileInput" accept="image/*,video/*" hidden></div>
-          <!-- Text overlay that reflects on final export -->
-          <div class="text-overlay-wrapper" id="textOverlayWrapper" style="display:none"><div class="text-overlay" id="textOverlay" contenteditable="true" data-placeholder="Add text..."></div><span class="resize-handle"></span></div>
+      <!-- Common Groups -->
+      <div class="contact-section-border">
+        <p class="contact-section-title">Common Groups</p>
+        <div id="commonGroupsList">
+          <p class="contact-empty-text">No common group yet</p>
         </div>
-        <!-- Trim bar - max 3s for sticker -->
-        <div class="video-trim-bar" id="videoTrimBar" style="display:none">
-          <div class="trim-track"><div class="trim-progress" id="trimProgress"></div></div>
-          <div class="trim-inputs"><input type="range" id="trimStart" min="0" max="10" value="0" step="0.1"><input type="range" id="trimEnd" min="0" max="10" value="3" step="0.1"></div>
-          <span id="trimLabel">0.0s - 3.0s (max 3s)</span>
+      </div>
+      <!-- Add To Groups -->
+      <div class="contact-section-border">
+        <p class="contact-section-title">Add Contact To Group</p>
+        <button class="contact-row-btn" id="openAddToGroupsBtn"><span>Add to Groups</span><i data-lucide="chevron-right"></i></button>
+        <button class="contact-row-btn" id="openCreateGroupWithContactBtn"><span>Create Groups with Contact</span><i data-lucide="chevron-right"></i></button>
+      </div>
+      <!-- Bottom actions -->
+      <div class="contact-section-border">
+        <button class="contact-row-btn" id="contactClearChatsBtn"><span>Clear Chats</span><i data-lucide="chevron-right"></i></button>
+        <button class="contact-row-btn" id="contactBlockBtn"><span>Block User</span><i data-lucide="chevron-right"></i></button>
+        <button class="contact-row-btn danger" id="contactDeleteBtn"><span>Delete Chats</span><i data-lucide="chevron-right"></i></button>
+        <!-- When blocked, show Unblock + Delete -->
+        <div id="contactBlockedActions" hidden>
+          <button class="contact-row-btn" id="contactUnblockBtn"><span>Unblock</span></button>
+          <button class="contact-row-btn danger" id="contactDeleteAfterBlockBtn"><span>Delete Chat</span></button>
         </div>
-        <!-- Toolbar - Aa Bold Zoom Crop -->
-        <div class="create-toolbar">
-          <button id="addTextBtn"><i data-lucide="type"></i><span>Aa</span></button>
-          <button id="boldTextBtn"><i data-lucide="bold"></i><span>Bold</span></button>
-          <button id="zoomTextBtn"><i data-lucide="zoom-in"></i><span>Zoom</span></button>
-          <button id="cropBtn"><i data-lucide="crop"></i><span>Crop</span></button>
-        </div>
-        <div class="create-actions"><button class="create-add-btn secondary" id="createCancelBtn"><i data-lucide="x"></i> Cancel</button><button class="create-add-btn primary" id="createAddBtn">Add to pack</button></div>
       </div>
     </div>
   </div>
 
-  <div class="voice-recording-overlay" id="voiceRecordingOverlay"><div class="voice-rec-content"><button class="voice-cancel" id="voiceCancelBtn"><i data-lucide="x"></i></button><div class="voice-wave-big" id="voiceWaveBig"><span></span><span></span><span></span></div><span class="voice-timer" id="voiceTimer">0:00</span><div class="voice-controls"><button class="voice-stop" id="voiceStopBtn"><i data-lucide="trash-2"></i></button><button class="voice-send" id="voiceSendBtn"><i data-lucide="arrow-up"></i></button></div></div></div>
-  <div class="toast" id="toast"><i data-lucide="star"></i><span>Added to favorites</span></div>
-  <input type="file" id="galleryInput" accept="image/*,video/*" hidden><input type="file" id="cameraInput" accept="image/*,video/*" capture="environment" hidden>
-</div>
+  <!-- ================= EDIT CONTACT INFO (New Background on top of Contact Info) ================= -->
+  <div class="edit-contact-bg" id="editContactBg" hidden>
+    <div class="contact-info-top">
+      <button class="contact-back-btn" id="editContactBack"><i data-lucide="chevron-left"></i></button>
+      <p class="contact-info-title">Edit</p>
+      <span class="contact-info-spacer"></span>
+    </div>
+    <p class="edit-contact-heading">Edit Contact Info</p>
+    <div class="contact-section-border">
+      <label class="nk-input-label">First Name</label>
+      <div class="nk-input-line-box"><input id="editFirstName" type="text" placeholder="Faith"></div>
+      <label class="nk-input-label">Last Name</label>
+      <div class="nk-input-line-box"><input id="editLastName" type="text" placeholder="Mike"></div>
+    </div>
+    <!-- Sync Contact - ONLY shows if user put phone number. JS hides if no phone. -->
+    <div class="contact-section-border" id="syncContactBorder" hidden>
+      <div class="sync-row"><p class="contact-section-title">Sync Contact</p><button class="nk-toggle" id="syncContactToggle" data-on="false"><span class="nk-toggle-knob"></span></button></div>
+      <p class="sync-explain">Sync contact helps to get others using Konnekt and also invite contact. If that user put phone number before, you get them here.</p>
+    </div>
+    <div class="edit-contact-save-wrap"><button class="nk-next-border" id="editContactSaveBtn">Save</button></div>
+  </div>
 
+  <!-- ================= ADD TO GROUPS - Slide Up ================= -->
+  <div class="add-to-groups-bg" id="addToGroupsBg" hidden>
+    <div class="contact-info-top">
+      <button class="contact-back-btn" id="addToGroupsClose"><i data-lucide="x"></i></button>
+      <p class="contact-info-title">Add to Groups</p>
+      <span class="contact-info-spacer"></span>
+    </div>
+    <div class="nk-search-wrap"><div class="nk-search-box nk-line-only"><i data-lucide="search" class="nk-search-icon"></i><input id="addToGroupsSearch" type="text" placeholder="Search groups"></div></div>
+    <div class="add-to-groups-list" id="addToGroupsList"></div>
+    <p class="add-to-groups-hint">If button is grey, it means Only admin can add members.</p>
+  </div>
 
+  <!-- ================= GROUP INFO (New Background) ================= -->
+  <div class="group-info-bg" id="groupInfoBg" hidden>
+    <!-- Fixed top -->
+    <div class="group-info-top-fixed">
+      <button class="contact-back-btn" id="groupInfoBack"><i data-lucide="chevron-left"></i></button>
+      <p class="contact-info-title">Group Info</p>
+      <button class="qr-mini-btn" id="groupQrBtn" aria-label="Group QR"><i data-lucide="qr-code"></i></button>
+    </div>
+    <div class="group-info-scroll custom-scroll" id="groupInfoScroll">
+      <!-- Round group profile - Click -> Full preview -->
+      <button class="group-info-pic-btn" id="groupPicOpen">
+        <span class="group-info-avatar">DT</span>
+        <img id="groupInfoImage" src="" alt="" hidden>
+      </button>
+      <p class="preview-username-inside" id="groupInfoName">Design Team</p>
+      <p class="contact-id" id="groupInfoIdText">ID: G123456</p>
+      <p class="group-info-desc" id="groupInfoDesc">Group description here</p>
+      <p class="group-info-count" id="groupInfoCount">12 members • 3 online</p>
+      <!-- 3 icons: Chats / Share / Add Members - Bigger, white, stroke 2.5 -->
+      <div class="preview-actions contact-actions">
+        <div class="preview-action-btn" id="groupActionChats"><i data-lucide="message-circle"></i></div>
+        <div class="preview-action-btn" id="groupActionShare"><i data-lucide="share-2"></i></div>
+        <div class="preview-action-btn" id="groupActionAdd"><i data-lucide="user-plus"></i></div>
+      </div>
+      <!-- Two small borders side by side, sticky under fixed top -->
+      <div class="group-tabs-sticky" id="groupTabsSticky">
+        <button class="group-tab-mini active" data-group-tab="members">Members</button>
+        <button class="group-tab-mini" data-group-tab="settings">Settings</button>
+      </div>
+      <!-- MEMBERS SECTION -->
+      <div class="group-section" id="groupMembersSection">
+        <div class="contact-section-border">
+          <p class="contact-section-title">Members • <span id="groupMembersCount">12</span></p>
+          <!-- Grey if only admin can add -->
+          <button class="add-member-btn" id="groupAddMemberBtn">Add to Group</button>
+          <button class="add-member-btn grey" id="groupAddMemberGreyBtn" hidden>Only admin can add members</button>
+          <p class="contact-section-title small">Admins</p>
+          <div id="groupAdminsList"></div>
+          <p class="contact-section-title small">Members</p>
+          <div id="groupMembersList"></div>
+        </div>
+      </div>
+      <!-- SETTINGS SECTION - Copied from Create Group Permissions -->
+      <div class="group-section" id="groupSettingsSection" hidden>
+        <div class="contact-section-border">
+          <div class="nk-permission-row"><div class="nk-permission-info"><p class="nk-permission-title">Send Messages</p><p class="nk-permission-desc">Who can send messages in this group. If off, only admins can send</p></div><button class="nk-toggle" data-on="true"><span class="nk-toggle-knob"></span></button></div>
+          <div class="nk-permission-row"><div class="nk-permission-info"><p class="nk-permission-title">Add Members</p><p class="nk-permission-desc">Who can add new members to the group</p></div><button class="nk-toggle" data-on="false"><span class="nk-toggle-knob"></span></button></div>
+          <div class="nk-permission-row"><div class="nk-permission-info"><p class="nk-permission-title">Change Group Info</p><p class="nk-permission-desc">Who can change group name and photo</p></div><button class="nk-toggle" data-on="false"><span class="nk-toggle-knob"></span></button></div>
+          <div class="nk-permission-row"><div class="nk-permission-info"><p class="nk-permission-title">Disappearing Messages</p><p class="nk-permission-desc">Messages disappear after 7 days if enabled</p></div><button class="nk-toggle" data-on="false"><span class="nk-toggle-knob"></span></button></div>
+        </div>
+      </div>
+      <!-- ACTIONS -->
+      <div class="contact-section-border">
+        <button class="contact-row-btn" id="groupExitBtn"><span>Exit Group</span><i data-lucide="chevron-right"></i></button>
+        <button class="contact-row-btn danger" id="groupDeleteBtn" hidden><span>Delete Group</span><i data-lucide="chevron-right"></i></button>
+        <button class="contact-row-btn" id="groupReportBtn"><span>Report Group</span><i data-lucide="chevron-right"></i></button>
+        <button class="contact-row-btn" id="groupClearBtn"><span>Clear Chats</span><i data-lucide="chevron-right"></i></button>
+      </div>
+      <!-- Created by + Date - Very bottom -->
+      <p class="group-created-by">Created by <span id="groupCreatedByName">Faith Mike</span></p>
+      <p class="group-created-date" id="groupCreatedDate">12 Nov 2026</p>
+    </div>
+  </div>
 
-<!-- ===== CALL UI - GLOBAL, OUTSIDE CHAT BACKGROUNDS ===== -->
+  <!-- ================= GROUP QR (New Background) ================= -->
+  <div class="group-qr-bg" id="groupQrBg" hidden>
+    <div class="contact-info-top">
+      <button class="contact-back-btn" id="groupQrBack"><i data-lucide="chevron-left"></i></button>
+      <p class="contact-info-title">Group QR</p>
+      <span class="contact-info-spacer"></span>
+    </div>
+    <div class="qr-center">
+      <div class="qr-box"><i data-lucide="qr-code" class="qr-big"></i></div>
+      <p class="qr-group-name" id="qrGroupName">Design Team</p>
+      <p class="qr-hint">Scan to join "Design Team"</p>
+      <button class="nk-next-border" id="qrShareLinkBtn">Share Link</button>
+    </div>
+  </div>
+
+  <!-- ================= REPORT GROUP POPUP ================= -->
+  <div class="report-group-bg" id="reportGroupBg" hidden>
+    <div class="report-group-card">
+      <button class="popup-close" id="reportGroupClose"><i data-lucide="x"></i></button>
+      <h3 class="popup-title">Report Group</h3>
+      <div class="report-options">
+        <button class="report-opt">Harassment</button>
+        <button class="report-opt">Spam</button>
+        <button class="report-opt">Inappropriate content</button>
+        <button class="report-opt">Fake group</button>
+        <button class="report-opt">Other</button>
+      </div>
+      <input type="text" id="reportGroupInput" placeholder="Tell us more...">
+      <button class="nk-next-border" id="reportGroupSubmit">Submit</button>
+    </div>
+  </div>
+
+  <!-- ================= FULL PIC PREVIEW (Normal + Group) ================= -->
+  <div class="popup-overlay" id="fullPicPreview" hidden>
+    <button class="popup-close" id="fullPicClose"><i data-lucide="x"></i></button>
+    <img id="fullPicImage" src="" alt="Full preview">
+    <p class="full-pic-name" id="fullPicName">@Faith_mike</p>
+  </div>
+
+  <!-- ---------- POPUP OVERLAY ALERT - VALIDATION ---------- -->
+  <div id="nkPopupOverlay" class="nk-popup-overlay hidden">
+    <div class="nk-popup-box">
+      <div class="nk-popup-icon-wrap"><i data-lucide="alert-circle" class="nk-popup-icon"></i></div>
+      <p id="nkPopupTitle" class="nk-popup-title">Enter ID</p>
+      <p id="nkPopupDesc" class="nk-popup-desc">Please enter 6 digit ID</p>
+      <button id="nkPopupBtn" class="nk-popup-btn">OK</button>
+    </div>
+  </div>
+
+  <!-- ---------- PLUS SCREEN - NEW CHAT ---------- -->
+  <div id="nkNewChatOverlay" class="nk-newchat-overlay">
+    <div class="nk-newchat-sheet nk-plus-sheet">
+      <div class="nk-newchat-header nk-glass-fixed">
+        <button id="nkNewChatBackDesktop" class="nk-back-btn nk-desktop-only" aria-label="Back"><i data-lucide="arrow-left" style="width:20px;height:20px;"></i></button>
+        <p class="nk-newchat-title">New Chat</p>
+        <button id="nkNewChatClose" class="nk-close-btn" aria-label="Close"><i data-lucide="x" style="width:18px;height:18px;"></i></button>
+      </div>
+      <div class="nk-search-wrap nk-glass-fixed-search">
+        <div class="nk-search-box nk-line-only"><i data-lucide="search" class="nk-search-icon"></i><input id="nkMainSearchInput" type="text" placeholder="Search @username, name" autocomplete="off" /></div>
+      </div>
+      <div class="nk-plus-scroll-area">
+        <div class="nk-up-section">
+          <button id="nkNewIdRow" class="nk-newchat-row">
+            <div class="nk-row-icon nk-round-icon"><div class="nk-icon-stack"><i data-lucide="user" class="nk-main-icon"></i><i data-lucide="plus" class="nk-plus-small"></i></div></div>
+            <div class="nk-row-info"><p class="nk-row-title">New ID</p><p class="nk-row-sub">Add new contact with 6 digit ID</p></div>
+            <i data-lucide="chevron-right" class="nk-chevron"></i>
+          </button>
+          <div class="nk-straight-line"></div>
+          <button id="nkNewGroupRow" class="nk-newchat-row">
+            <div class="nk-row-icon nk-round-icon"><div class="nk-icon-stack"><i data-lucide="users" class="nk-main-icon"></i><i data-lucide="plus" class="nk-plus-small"></i></div></div>
+            <div class="nk-row-info"><p class="nk-row-title">New Group</p><p class="nk-row-sub">Create group with your contacts</p></div>
+            <i data-lucide="chevron-right" class="nk-chevron"></i>
+          </button>
+          <div class="nk-straight-line"></div>
+        </div>
+        <div class="nk-down-section">
+          <p class="nk-section-label">Recent Chats</p>
+          <div id="nkChattedPeopleList" class="nk-results"></div>
+          <div id="nkMainSearchResults" class="nk-results hidden"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------- NEW ID ---------- -->
+  <div id="nkNewIdOverlay" class="nk-newchat-overlay nk-second">
+    <div class="nk-newchat-sheet">
+      <div class="nk-newchat-header">
+        <button id="nkNewIdBack" class="nk-back-btn" aria-label="Back"><i data-lucide="arrow-left" style="width:20px;height:20px;"></i></button>
+        <p class="nk-newchat-title">New ID</p>
+        <button id="nkNewIdMark" class="nk-mark-btn" aria-label="Done"><i data-lucide="check" style="width:18px;height:18px;"></i></button>
+      </div>
+      <div class="nk-form-wrap">
+        <div class="nk-input-group"><label class="nk-input-label">First Name</label><div class="nk-input-line-box"><input id="nkFirstName" type="text" placeholder="ben" /></div></div>
+        <div class="nk-input-group"><label class="nk-input-label">Last Name</label><div class="nk-input-line-box"><input id="nkLastName" type="text" placeholder="saint" /></div></div>
+        <div class="nk-input-group"><label class="nk-input-label">6 Digit ID</label><div class="nk-input-line-box"><span class="nk-id-prefix">ID</span><input id="nkIdInput" type="text" inputmode="numeric" maxlength="6" placeholder="123456" /></div></div>
+        <div id="nkKonnektingWrap" class="nk-konnekting-wrap hidden">
+          <div class="nk-leaves-circle"><i data-lucide="leaf" class="nk-leaf-tiny"></i><i data-lucide="leaf" class="nk-leaf-tiny"></i><i data-lucide="leaf" class="nk-leaf-tiny"></i><i data-lucide="leaf" class="nk-leaf-tiny"></i><i data-lucide="leaf" class="nk-leaf-tiny"></i><i data-lucide="leaf" class="nk-leaf-tiny"></i><i data-lucide="leaf" class="nk-leaf-tiny"></i><i data-lucide="leaf" class="nk-leaf-tiny"></i><i data-lucide="leaf" class="nk-leaf-tiny"></i><i data-lucide="leaf" class="nk-leaf-tiny"></i></div>
+          <p class="nk-konnekting-text">Konnekting...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------- USER PROFILE ID REQUIRED ---------- -->
+  <div id="nkUserProfileOverlay" class="nk-newchat-overlay nk-second">
+    <div class="nk-newchat-sheet">
+      <div class="nk-newchat-header">
+        <button id="nkUserProfileBack" class="nk-back-btn" aria-label="Back"><i data-lucide="arrow-left" style="width:20px;height:20px;"></i></button>
+        <p id="nkUserProfileHeaderTitle" class="nk-newchat-title">New @username</p>
+        <button id="nkUserProfileClose" class="nk-close-btn" aria-label="Close"><i data-lucide="x" style="width:18px;height:18px;"></i></button>
+      </div>
+      <div class="nk-profile-wrap">
+        <div class="nk-profile-image-wrap"><div id="nkProfileBigCircle" class="nk-big-circle nk-profile-circle"><span id="nkProfileInitial" style="font-size:36px;font-weight:700;color:#fff;">K</span><img id="nkProfileImagePreview" src="" alt="" style="display:none;" /></div></div>
+        <div class="nk-profile-info"><p id="nkProfileName" class="nk-profile-name">King David</p><p id="nkProfileUsername" class="nk-profile-username">@king</p><p class="nk-profile-require-text">This user requires 6 digit ID to chat</p></div>
+        <div class="nk-form-wrap" style="padding-top:10px;">
+          <div class="nk-input-group"><label class="nk-input-label">Enter 6 Digit ID</label><div class="nk-input-line-box"><span class="nk-id-prefix">ID</span><input id="nkProfileIdInput" type="text" inputmode="numeric" maxlength="6" placeholder="123456" /></div></div>
+          <div id="nkProfileKonnektingWrap" class="nk-konnekting-wrap hidden"><div class="nk-leaves-circle"><i data-lucide="leaf" class="nk-leaf-tiny"></i><i data-lucide="leaf" class="nk-leaf-tiny"></i><i data-lucide="leaf" class="nk-leaf-tiny"></i><i data-lucide="leaf" class="nk-leaf-tiny"></i><i data-lucide="leaf" class="nk-leaf-tiny"></i><i data-lucide="leaf" class="nk-leaf-tiny"></i><i data-lucide="leaf" class="nk-leaf-tiny"></i><i data-lucide="leaf" class="nk-leaf-tiny"></i><i data-lucide="leaf" class="nk-leaf-tiny"></i><i data-lucide="leaf" class="nk-leaf-tiny"></i></div><p class="nk-konnekting-text">Konnekting...</p></div>
+        </div>
+      </div>
+      <div class="nk-bottom-next-wrap"><button id="nkProfileNextBtn" class="nk-next-border"><span>Next</span><i data-lucide="arrow-right"></i></button></div>
+    </div>
+  </div>
+
+  <!-- ---------- NEW GROUP SEARCH ---------- -->
+  <div id="nkNewGroupOverlay" class="nk-newchat-overlay nk-third">
+    <div class="nk-newchat-sheet">
+      <div class="nk-newchat-header">
+        <button id="nkNewGroupBack" class="nk-back-btn" aria-label="Back"><i data-lucide="arrow-left" style="width:20px;height:20px;"></i></button>
+        <p class="nk-newchat-title">Add Members</p>
+        <button id="nkNewGroupBackDesktop" class="nk-back-btn nk-desktop-only" style="left:auto;right:14px;" aria-label="Close"><i data-lucide="x" style="width:18px;height:18px;"></i></button>
+      </div>
+      <div class="nk-search-wrap"><div class="nk-search-box nk-line-only"><i data-lucide="search" class="nk-search-icon"></i><input id="nkGroupSearchInput" type="text" placeholder="Search people you have chatted with" /></div></div>
+      <div id="nkGroupPeopleResults" class="nk-newchat-list"></div>
+      <div class="nk-bottom-next-wrap"><button id="nkGroupNextBtn" class="nk-next-border"><span>Next</span><i data-lucide="arrow-right"></i></button></div>
+    </div>
+  </div>
+
+  <!-- ---------- GROUP CREATE ---------- -->
+  <div id="nkGroupCreateOverlay" class="nk-newchat-overlay nk-fourth">
+    <div class="nk-newchat-sheet">
+      <div class="nk-newchat-header">
+        <button id="nkGroupCreateBack" class="nk-back-btn" aria-label="Back"><i data-lucide="arrow-left" style="width:20px;height:20px;"></i></button>
+        <p class="nk-newchat-title">New Group</p>
+      </div>
+      <div class="nk-group-image-wrap"><div id="nkGroupImageBtn" class="nk-big-circle"><i data-lucide="camera" class="nk-camera-icon"></i><span class="nk-add-photo-text">Add Photo</span><img id="nkGroupImagePreview" src="" alt="" style="display:none;" /></div><input id="nkGroupImageInput" type="file" accept="image/*" hidden /></div>
+      <div class="nk-form-wrap">
+        <div class="nk-input-group"><label class="nk-input-label">Group Name</label><div class="nk-input-line-box"><input id="nkGroupNameInput" type="text" placeholder="My Group" /></div></div>
+        <button id="nkGroupPermissionRow" class="nk-newchat-row"><div class="nk-row-icon nk-round-icon"><i data-lucide="shield" class="nk-main-icon"></i></div><div class="nk-row-info"><p class="nk-row-title">Permissions</p><p class="nk-row-sub">Members permissions, disappearing etc</p></div><i data-lucide="chevron-right" class="nk-chevron"></i></button>
+      </div>
+      <div class="nk-bottom-next-wrap"><button id="nkGroupFinalCreateBtn" class="nk-next-border"><span>Create Group</span><i data-lucide="check"></i></button></div>
+    </div>
+  </div>
+
+  <!-- ---------- PERMISSIONS ---------- -->
+  <div id="nkGroupPermissionOverlay" class="nk-newchat-overlay nk-fourth">
+    <div class="nk-newchat-sheet">
+      <div class="nk-newchat-header">
+        <button id="nkPermissionBack" class="nk-back-btn" aria-label="Back"><i data-lucide="arrow-left" style="width:20px;height:20px;"></i></button>
+        <p class="nk-newchat-title">Permissions</p>
+        <button id="nkPermissionDoneBtn" class="nk-mark-btn" aria-label="Done"><i data-lucide="check" style="width:18px;height:18px;"></i></button>
+      </div>
+      <div class="nk-permission-list">
+        <div class="nk-permission-row"><div class="nk-permission-info"><p class="nk-permission-title">Send Messages</p><p class="nk-permission-desc">Who can send messages in this group. If off, only admins can send</p></div><button class="nk-toggle" data-on="true"><span class="nk-toggle-knob"></span></button></div>
+        <div class="nk-permission-row"><div class="nk-permission-info"><p class="nk-permission-title">Add Members</p><p class="nk-permission-desc">Who can add new members to the group</p></div><button class="nk-toggle" data-on="false"><span class="nk-toggle-knob"></span></button></div>
+        <div class="nk-permission-row"><div class="nk-permission-info"><p class="nk-permission-title">Change Group Info</p><p class="nk-permission-desc">Who can change group name and photo</p></div><button class="nk-toggle" data-on="false"><span class="nk-toggle-knob"></span></button></div>
+        <div class="nk-permission-row"><div class="nk-permission-info"><p class="nk-permission-title">Disappearing Messages</p><p class="nk-permission-desc">Messages disappear after 7 days if enabled</p></div><button class="nk-toggle" data-on="false"><span class="nk-toggle-knob"></span></button></div>
+      </div>
+    </div>
+  </div>
 
   <!-- ===== CALL UI - GLOBAL ===== -->
-  <div class="konnekt-call-overlay" id="callOverlay" >
+  <div class="konnekt-call-overlay" id="callOverlay">
     <div class="konnekt-call-top">
       <div style="width:68px"></div>
-      <div class="konnekt-call-center">
-        <p class="konnekt-call-name" id="callName">Joshua dayo</p>
-        <p class="konnekt-call-status" id="callStatus">00:00</p>
-      </div>
-      <div class="konnekt-call-top-right">
+      <div class="konnekt-call-center"><p class="konnekt-call-name" id="callName">Joshua dayo</p><p class="konnekt-call-status" id="callStatus">00:00</p></div>
+      <div class="konnekt-call-top-right"><button class="konnekt-top-icon" id="callGoList"><i data-lucide="arrow-left-right"></i></button></div>
+    </div>
+    <div class="konnekt-call-middle"><img class="konnekt-call-big-ava" id="callBigAva" src="https://i.pravatar.cc/300?img=12" /><div class="konnekt-glass-tile"><button class="konnekt-glass-btn" id="callVideoBtn"><i data-lucide="video"></i></button><button class="konnekt-glass-btn" id="callMuteBtn"><i data-lucide="mic"></i></button><button class="konnekt-glass-btn" id="callSpeakerBtn"><i data-lucide="volume-2"></i></button></div></div>
+    <div class="konnekt-call-bottom"><button class="konnekt-end-btn" id="callEndBtn"><i data-lucide="phone"></i></button><span class="konnekt-end-label">end</span></div>
+  </div>
+  <div class="konnekt-dynamic-pill hidden" id="dynamicPill"><div class="konnekt-dot"></div><img class="konnekt-pill-ava" id="pillAva" src="https://i.pravatar.cc/300?img=12" /><span class="konnekt-pill-name" id="pillName">Joshua dayo</span><span class="konnekt-pill-time" id="pillTime">00:00</span></div>
+  <div class="konnekt-expanded-pill hidden" id="expandedPill"><div class="konnekt-expanded-left" id="expandBackToCall"><img class="konnekt-expanded-ava" id="expandedAva" src="https://i.pravatar.cc/300?img=12" /><div><b id="expandedName">Joshua dayo</b><span id="expandedTime">00:00 . tap</span></div></div><div class="konnekt-expanded-actions"><button class="konnekt-exp-btn mute" id="pillMuteBtn"><i data-lucide="mic-off"></i></button><button class="konnekt-exp-btn speaker" id="pillSpeakerBtn"><i data-lucide="volume-2"></i></button><button class="konnekt-exp-btn end" id="pillEndBtn"><i data-lucide="phone"></i></button></div></div>
 
-        <button class="konnekt-top-icon" id="callGoList"><i data-lucide="arrow-left-right"></i></button>
-      </div>
-    </div>
-    <div class="konnekt-call-middle">
-      <img class="konnekt-call-big-ava" id="callBigAva" src="https://i.pravatar.cc/300?img=12" />
-      <div class="konnekt-glass-tile">
-        <button class="konnekt-glass-btn" id="callVideoBtn"><i data-lucide="video"></i></button>
-        <button class="konnekt-glass-btn" id="callMuteBtn"><i data-lucide="mic"></i></button>
-        <button class="konnekt-glass-btn" id="callSpeakerBtn"><i data-lucide="volume-2"></i></button>
-      </div>
-    </div>
-    <div class="konnekt-call-bottom">
-      <button class="konnekt-end-btn" id="callEndBtn"><i data-lucide="phone"></i></button>
-      <span class="konnekt-end-label">end</span>
+  <!-- VIDEO WAITLIST -->
+  <div id="videoWaitlistOverlay" class="konnekt-waitlist-overlay">
+    <div id="videoWaitlistSheet" class="konnekt-waitlist-sheet">
+      <div class="konnekt-waitlist-scroll-track"><div class="konnekt-waitlist-scroll-thumb" id="kwScrollThumb"></div></div>
+      <div class="konnekt-waitlist-handle"></div>
+      <button id="waitlistCloseBtn" class="konnekt-waitlist-close" aria-label="Close"><i data-lucide="x" class="konnekt-waitlist-close-icon"></i></button>
+      <div class="konnekt-waitlist-icon-wrap"><div class="konnekt-waitlist-icon-glow"></div><div class="konnekt-waitlist-icon"><i data-lucide="video" class="konnekt-waitlist-video-icon"></i></div></div>
+      <div class="konnekt-waitlist-badge"><span class="konnekt-waitlist-dot"></span>COMING SOON</div>
+      <h2 class="konnekt-waitlist-title">Video Calls Are Coming</h2>
+      <p class="konnekt-waitlist-desc">We're building crystal-clear, lag-free video calls designed for real connections. Join the waitlist to be among the first to experience it when it launches.</p>
+      <div class="konnekt-waitlist-input-wrap"><label for="waitlistReason" class="konnekt-waitlist-label">Why do you need video calls? (Optional)</label><textarea id="waitlistReason" class="konnekt-waitlist-textarea" placeholder="e.g., For my long-distance relationship, business meetings, family check-ins..." rows="3" maxlength="200"></textarea><span class="konnekt-waitlist-count"><span id="waitlistCharCount">0</span>/200</span></div>
+      <button id="waitlistJoinBtn" class="konnekt-waitlist-btn"><span class="konnekt-waitlist-btn-text">Join Waitlist</span><span class="konnekt-waitlist-loader hidden"><span class="konnekt-leaf-circle"><span class="konnekt-leaf-dot"><i data-lucide="leaf" class="konnekt-leaf-icon"></i></span><span class="konnekt-leaf-dot"><i data-lucide="leaf" class="konnekt-leaf-icon"></i></span><span class="konnekt-leaf-dot"><i data-lucide="leaf" class="konnekt-leaf-icon"></i></span><span class="konnekt-leaf-dot"><i data-lucide="leaf" class="konnekt-leaf-icon"></i></span><span class="konnekt-leaf-dot"><i data-lucide="leaf" class="konnekt-leaf-icon"></i></span></span></span><span class="konnekt-waitlist-check hidden"><i data-lucide="thumbs-up" class="konnekt-check-icon"></i></span></button>
+      <div id="waitlistSuccess" class="konnekt-waitlist-success hidden"><div class="konnekt-waitlist-success-icon"><i data-lucide="bell-ring" class="konnekt-bell-icon"></i></div><h3>You're on the list!</h3><p>We'll notify you on this device as soon as video calls are available. Your feedback will help shape how we build it.</p></div>
+      <p class="konnekt-waitlist-footer">No spam. We'll only notify you once when it's ready.</p>
     </div>
   </div>
-
-  <div class="konnekt-dynamic-pill hidden" id="dynamicPill" >
-    <div class="konnekt-dot"></div>
-    <img class="konnekt-pill-ava" id="pillAva" src="https://i.pravatar.cc/300?img=12" />
-    <span class="konnekt-pill-name" id="pillName">Joshua dayo</span>
-    <span class="konnekt-pill-time" id="pillTime">00:00</span>
-  </div>
-
-  <div class="konnekt-expanded-pill hidden" id="expandedPill" >
-    <div class="konnekt-expanded-left" id="expandBackToCall">
-      <img class="konnekt-expanded-ava" id="expandedAva" src="https://i.pravatar.cc/300?img=12" />
-      <div><b id="expandedName">Joshua dayo</b><span id="expandedTime">00:00 . tap</span></div>
-    </div>
-    <div class="konnekt-expanded-actions">
-      <button class="konnekt-exp-btn mute" id="pillMuteBtn"><i data-lucide="mic-off"></i></button>
-      <button class="konnekt-exp-btn speaker" id="pillSpeakerBtn"><i data-lucide="volume-2"></i></button>
-      <button class="konnekt-exp-btn end" id="pillEndBtn"><i data-lucide="phone"></i></button>
-    </div>
-  </div>
-
-<!-- ===== KONNEKT VIDEO CALL WAITLIST ===== -->
-<div id="videoWaitlistOverlay" class="konnekt-waitlist-overlay">
-  <div id="videoWaitlistSheet" class="konnekt-waitlist-sheet">
-     <div class="konnekt-waitlist-scroll-track">
-    <div class="konnekt-waitlist-scroll-thumb" id="kwScrollThumb"></div>
-  </div>
-    <!-- DRAG HANDLE -->
-    <div class="konnekt-waitlist-handle"></div>
-    
-    <!-- CLOSE X ICON - LUCIDE -->
-    <button id="waitlistCloseBtn" class="konnekt-waitlist-close" aria-label="Close">
-      <i data-lucide="x" class="konnekt-waitlist-close-icon"></i>
-    </button>
-
-    <!-- TOP ICON With VIDEO -->
-    <div class="konnekt-waitlist-icon-wrap">
-      <div class="konnekt-waitlist-icon-glow"></div>
-      <div class="konnekt-waitlist-icon">
-        <i data-lucide="video" class="konnekt-waitlist-video-icon"></i>
-      </div>
-    </div>
-
-    <!-- COMING SOON BADGE -->
-    <div class="konnekt-waitlist-badge">
-      <span class="konnekt-waitlist-dot"></span>
-      COMING SOON
-    </div>
-
-    <!-- TITLE -->
-    <h2 class="konnekt-waitlist-title">Video Calls Are Coming</h2>
-
-    <!-- PARAGRAPH -->
-    <p class="konnekt-waitlist-desc">
-      We're building crystal-clear, lag-free video calls designed for real connections. 
-      Join the waitlist to be among the first to experience it when it launches.
-    </p>
-
-    <!-- REASON INPUT -->
-    <div class="konnekt-waitlist-input-wrap">
-      <label for="waitlistReason" class="konnekt-waitlist-label">Why do you need video calls? (Optional)</label>
-      <textarea 
-        id="waitlistReason" 
-        class="konnekt-waitlist-textarea" 
-        placeholder="e.g., For my long-distance relationship, business meetings, family check-ins..."
-        rows="3"
-        maxlength="200"
-      ></textarea>
-      <span class="konnekt-waitlist-count"><span id="waitlistCharCount">0</span>/200</span>
-    </div>
-
-<button id="waitlistJoinBtn" class="konnekt-waitlist-btn">
-  <span class="konnekt-waitlist-btn-text">Join Waitlist</span>
-  
-  <!-- 5 TINY GREY LEAF - CLOSE CIRCLE -->
-  <span class="konnekt-waitlist-loader hidden">
-    <span class="konnekt-leaf-circle">
-      <span class="konnekt-leaf-dot"><i data-lucide="leaf" class="konnekt-leaf-icon"></i></span>
-      <span class="konnekt-leaf-dot"><i data-lucide="leaf" class="konnekt-leaf-icon"></i></span>
-      <span class="konnekt-leaf-dot"><i data-lucide="leaf" class="konnekt-leaf-icon"></i></span>
-      <span class="konnekt-leaf-dot"><i data-lucide="leaf" class="konnekt-leaf-icon"></i></span>
-      <span class="konnekt-leaf-dot"><i data-lucide="leaf" class="konnekt-leaf-icon"></i></span>
-    </span>
-  </span>
-  
-  <span class="konnekt-waitlist-check hidden">
-    <i data-lucide="thumbs-up" class="konnekt-check-icon"></i>
-  </span>
-</button>
-
-    <!-- SUCCESS STATE -->
-    <div id="waitlistSuccess" class="konnekt-waitlist-success hidden">
-      <div class="konnekt-waitlist-success-icon">
-        <i data-lucide="bell-ring" class="konnekt-bell-icon"></i>
-      </div>
-      <h3>You're on the list!</h3>
-      <p>We'll notify you on this device as soon as video calls are available. Your feedback will help shape how we build it.</p>
-    </div>
-
-    <!-- FOOTER HINT -->
-    <p class="konnekt-waitlist-footer">No spam. We'll only notify you once when it's ready.</p>
-
-  </div>
-</div>
 </div>
 
 <div class="pageMoments">
