@@ -1,6 +1,7 @@
-
 document.addEventListener('DOMContentLoaded', ()=>{
   // ===== STORAGE =====
+  // NOTE: 'campus' here = POSTS array for Campus feed, NOT campus name.
+  // Campus NAME is owned by switch.js only. See getUserCampus() below.
   let campus = JSON.parse(localStorage.getItem('loop_campus')||'[]');
   let general = JSON.parse(localStorage.getItem('loop_general')||'[]');
   let myLoops = JSON.parse(localStorage.getItem('loop_my')||'[]');
@@ -9,12 +10,53 @@ document.addEventListener('DOMContentLoaded', ()=>{
   let appeals = JSON.parse(localStorage.getItem('loop_appeals')||'[]');
   let currentCommentPostId = null;
   let rotIndex = 0;
-  let activeType = localStorage.getItem('loop_active')||'campus';
+  let activeType = localStorage.getItem('loop_active')||'general';
   let selectedTag = null;
   let firstTestPostId = JSON.parse(localStorage.getItem('loop_first_test')||'null');
 
+  // ============================================================
+  // ===== FIX: CAMPUS NAME - SINGLE SOURCE OF TRUTH = switch.js =====
+  // ============================================================
+  // RULE:
+  // - No campus = NO border, NO popup, post DIRECTLY to General.
+  // - Has campus = SHOW border [General | Campus], user picks.
+  // switch.js saves campus in:
+  //   loop_campus_state = {name, skipped, changeCount, lastChange}
+  //   loop_user_campus = "University of Lagos"
+  //   loop_campus_skipped = "true" / "false"
+  // loops.js MUST NOT use konnekt_campus / user_campus etc.
+  // Those keys are never set by switch.js, so they always lie.
+  function getUserCampus(){
+    // 1. Best way: ask switch.js directly if it is loaded
+    try{
+      if(window.CampusSwitch && typeof window.CampusSwitch.getCampusName === 'function'){
+        const n = (window.CampusSwitch.getCampusName()||'').trim();
+        if(n) return n;
+      }
+    }catch(e){}
+    // 2. Fallback: read switch.js storage directly
+    try{
+      const raw = localStorage.getItem('loop_campus_state');
+      if(raw){
+        const s = JSON.parse(raw);
+        if(s && s.name && String(s.name).trim() && !s.skipped) return String(s.name).trim();
+        if(s && s.skipped) return null;
+      }
+    }catch(e){}
+    // 3. Fallback: loop_user_campus, but ONLY if not skipped
+    const skipped = localStorage.getItem('loop_campus_skipped') === 'true';
+    if(skipped) return null;
+    const direct = (localStorage.getItem('loop_user_campus')||'').trim();
+    if(direct) return direct;
+    return null;
+  }
+  function hasCampus(){
+    return !!getUserCampus();
+  }
+  let userCampus = getUserCampus();
+
   // ===== PAGINATION + LOADING + NO INTERNET =====
-  const PAGE_SIZE = 3; // show 3 first, scroll to load rest
+  const PAGE_SIZE = 3;
   let visibleCount = PAGE_SIZE;
   let isLoadingMore = false;
   let hasOfflineError = false;
@@ -47,13 +89,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
   function hideNoInternet(){ hideEl(noInternetEl); hasOfflineError = false; }
   function showEnd(){ hideEl(loadMoreEl); hideEl(noInternetEl); showEl(endOfFeedEl); }
   function hideEnd(){ hideEl(endOfFeedEl); }
-
-  // For UI test: set window.__forceOffline = true in console to test no-internet
   function isOffline(){ return window.__forceOffline === true || !navigator.onLine; }
-
   function resetPagination(){ visibleCount = PAGE_SIZE; isLoadingMore = false; hideLoading(); hideNoInternet(); hideEnd(); }
 
-  // save all
   const save = ()=>{
     localStorage.setItem('loop_campus',JSON.stringify(campus));
     localStorage.setItem('loop_general',JSON.stringify(general));
@@ -129,6 +167,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
   }
 
   function setActiveType(type, resetPage=true){
+    // FIX: If user has NO campus, never allow Campus feed. Force to General.
+    // We re-read campus every time, because switch.js can change it.
+    userCampus = getUserCampus();
+    if(type==='campus' && !hasCampus()){ type='general'; }
     activeType=type; save();
     if(resetPage) resetPagination();
     const isCampus=type==='campus';
@@ -137,15 +179,20 @@ document.addEventListener('DOMContentLoaded', ()=>{
     const dot=$('dotType'); if(dot) dot.className='dot '+(isCampus?'campus':'general');
     if($('herdLabel')) $('herdLabel').textContent = isCampus ? 'My Herd • Campus' : 'Everywhere • General';
     if($('newTitle')) $('newTitle').textContent = isCampus ? 'New Loop • Campus' : 'New Loop • General';
+    // FIX: Hide Campus tab if no campus. switch.js also does this, we keep in sync.
+    const tabC = $('tabCampus');
+    if(tabC){
+      if(!hasCampus()){ tabC.style.display='none'; tabC.disabled=true; }
+      else { tabC.style.display=''; tabC.disabled=false; }
+    }
     renderRot();
   }
 
   function isOwner(postId){ return myLoops.some(m=>m.id===postId); }
 
-  // ===== FEED - WITH PAGINATION (3 first) =====
+  // ===== FEED =====
   function getVisibleList(){
     const list = activeType==='campus'?campus:general;
-    // filter hidden posts first, then slice for pagination
     const filtered = list.filter(p=>{
       const isTestHide = firstTestPostId && p.id===firstTestPostId && (p.down||0)>=1;
       if(((p.down||0)>=5 || isTestHide) && !isOwner(p.id)) return false;
@@ -158,15 +205,11 @@ document.addEventListener('DOMContentLoaded', ()=>{
   function renderFeed(){
     if(!feedEl) return;
     const container = postsListEl || feedEl;
-    // clear only posts, keep empty / loading / no-internet elements
     container.querySelectorAll('.post').forEach(p=>p.remove());
-    // also clear old posts directly under feedEl for backward compat
     if(postsListEl) feedEl.querySelectorAll(':scope > .post').forEach(p=>p.remove());
-
     const { filtered } = getVisibleList();
     const topWinner = getTopWinner(activeType==='campus'?campus:general);
     const topId = topWinner ? topWinner.id : null;
-
     if(filtered.length===0){
       showEmpty(); hideLoading(); hideNoInternet(); hideEnd();
     } else {
@@ -191,13 +234,11 @@ document.addEventListener('DOMContentLoaded', ()=>{
           </div>`;
         container.appendChild(d);
       });
-      // footer states
       if(!hasOfflineError){
         if(visibleCount >= filtered.length){ hideLoading(); hideNoInternet(); showEnd(); }
         else { hideNoInternet(); hideEnd(); hideLoading(); }
       }
     }
-    // bind actions inside container
     container.querySelectorAll('[data-up]').forEach(b=>{ b.onclick=()=>{ let id=parseInt(b.dataset.up); let p=[...campus,...general].find(x=>x.id===id); if(!p) return; let cur=myVotes[id]; if(cur==='up'){ p.up--; delete myVotes[id]; } else { if(cur==='down') p.down--; p.up++; myVotes[id]='up'; } save(); renderFeed(); renderMy(); renderRot(); }; });
     container.querySelectorAll('[data-down]').forEach(b=>{ b.onclick=()=>{ let id=parseInt(b.dataset.down); let p=[...campus,...general].find(x=>x.id===id); if(!p) return; let cur=myVotes[id]; if(cur==='down'){ p.down--; delete myVotes[id]; } else { if(cur==='up') p.up--; p.down=(p.down||0)+1; myVotes[id]='down'; } save(); renderFeed(); renderMy(); renderRot(); }; });
     container.querySelectorAll('[data-comment]').forEach(b=>{ b.onclick=()=>openComments(parseInt(b.dataset.comment)); });
@@ -208,35 +249,21 @@ document.addEventListener('DOMContentLoaded', ()=>{
     checkUnlock(); icon();
   }
 
-  // ===== LOAD MORE ON SCROLL =====
   function loadMorePosts(){
     if(isLoadingMore) return;
     const { filtered } = getVisibleList();
     if(visibleCount >= filtered.length) return;
-    if(isOffline()){
-      showNoInternet();
-      return;
-    }
+    if(isOffline()){ showNoInternet(); return; }
     isLoadingMore = true;
     showLoading();
-    setTimeout(()=>{
-      visibleCount += PAGE_SIZE;
-      isLoadingMore = false;
-      hideLoading(); hideNoInternet();
-      renderFeed();
-    }, 800);
+    setTimeout(()=>{ visibleCount += PAGE_SIZE; isLoadingMore = false; hideLoading(); hideNoInternet(); renderFeed(); }, 800);
   }
-
   function retryLoad(){
     if(isOffline()){ showNoInternet(); return; }
-    hideNoInternet();
-    loadMorePosts();
-    // if nothing left to load, just re-render
+    hideNoInternet(); loadMorePosts();
     const { filtered } = getVisibleList();
     if(visibleCount >= filtered.length) renderFeed();
   }
-
-  // scroll listener on feed view
   if(viewFeed){
     viewFeed.addEventListener('scroll', ()=>{
       if(!viewFeed.classList.contains('active')) return;
@@ -244,15 +271,14 @@ document.addEventListener('DOMContentLoaded', ()=>{
       if(nearBottom) loadMorePosts();
     }, { passive:true });
   }
-  // swipe up / pull to retry when no internet - touch + button
   bind('retryLoadBtn', retryLoad);
   let touchStartY = 0;
   if(viewFeed){
     viewFeed.addEventListener('touchstart', e=>{ touchStartY = e.touches[0].clientY; }, { passive:true });
     viewFeed.addEventListener('touchend', e=>{
       const dy = e.changedTouches[0].clientY - touchStartY;
-      if(hasOfflineError && dy < -40){ retryLoad(); } // swipe up
-      if(hasOfflineError && dy > 40){ retryLoad(); } // pull down also retries
+      if(hasOfflineError && dy < -40){ retryLoad(); }
+      if(hasOfflineError && dy > 40){ retryLoad(); }
     }, { passive:true });
   }
   window.addEventListener('online', ()=>{ if(hasOfflineError) retryLoad(); });
@@ -354,20 +380,18 @@ document.addEventListener('DOMContentLoaded', ()=>{
   if(shareOverlay) shareOverlay.onclick=e=>{ if(e.target===shareOverlay) closeShare(); };
   if(appealOverlay) appealOverlay.onclick=e=>{ if(e.target===appealOverlay) closeAppeal(); };
 
-  // ===== COMMENTS WITH HEART + TOP BADGE =====
+  // ===== COMMENTS =====
   function getTopCommentIdx(arr){
     if(!arr || arr.length===0) return -1;
     let max = -1, idx = -1;
     arr.forEach((c,i)=>{ if((c.likes||0) > max){ max=c.likes; idx=i; } });
     return max >= 1 ? idx : -1;
   }
-
   function openComments(id){
     currentCommentPostId=id;
     if($('commentTitle')) $('commentTitle').innerHTML=`<i data-lucide="message-circle" style="width:18px"></i> Comments • ${(commentsData[id]||[]).length}`;
     renderComments(); commentOverlay?.classList.add('show'); setTimeout(()=>$('commentInput')?.focus(),100); icon();
   }
-
   function renderComments(){
     const list=$('commentList'); if(!list) return; list.innerHTML='';
     const arr=commentsData[currentCommentPostId]||[];
@@ -403,7 +427,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
     });
     list.scrollTop=list.scrollHeight; icon();
   }
-
   function sendComment(){
     const inp=$('commentInput'); if(!inp) return; let txt=inp.value.trim(); if(!txt||!currentCommentPostId) return;
     if(!commentsData[currentCommentPostId]) commentsData[currentCommentPostId]=[];
@@ -424,9 +447,35 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
   const postInput=$('postInput'), charEl=$('char'), openSel=$('openSelector');
   if(postInput) postInput.oninput=e=>{ if(charEl) charEl.textContent=String(e.target.value.length); if(openSel) openSel.disabled=!e.target.value.trim(); };
-  if(openSel) openSel.onclick=()=>{ if(popOverlay) popOverlay.classList.add('show'); icon(); };
+
+  // ============================================================
+  // ===== FIX: POST BUTTON - NO CAMPUS = NO BORDER, DIRECT TO GENERAL =====
+  // ============================================================
+  // OLD BUG: openSelector always opened popOverlay with Campus/General border.
+  // NEW: Re-read campus from switch.js at CLICK time, not at page load.
+  // If user skipped campus in signup, switch.js sets skipped=true,
+  // so hasCampus() = false, we skip popup and post to General directly.
+  function openPostSelector(){
+    const txt = postInput?.value.trim();
+    if(!txt) return;
+    userCampus = getUserCampus(); // fresh read, not cached
+    if(!hasCampus()){
+      postNow('general');
+      return;
+    }
+    const chooseCampusBtn = $('chooseCampus');
+    const chooseGeneralBtn = $('chooseGeneral');
+    if(chooseCampusBtn) chooseCampusBtn.style.display='';
+    if(chooseGeneralBtn) chooseGeneralBtn.style.display='';
+    const popTitle = $('popTitle');
+    if(popTitle) popTitle.textContent = `Post to ${userCampus} or General?`;
+    if(popOverlay) popOverlay.classList.add('show');
+    icon();
+  }
+  if(openSel) openSel.onclick=()=>{ openPostSelector(); };
 
   function postNow(t){
+    if(t==='campus' && !hasCampus()){ t='general'; }
     if(loader) loader.style.display='block';
     setTimeout(()=>{
       const te=$('postInput'); if(!te) return; let txt=te.value.trim(); if(!txt) return;
@@ -445,15 +494,62 @@ document.addEventListener('DOMContentLoaded', ()=>{
   if(tabC) tabC.onclick=()=>{ setActiveType('campus'); renderFeed(); };
   if(tabG) tabG.onclick=()=>{ setActiveType('general'); renderFeed(); };
 
-  // ===== HOOK FOR switch.js (Skip / Add Campus) =====
-  // switch.js will use this, loops.js will NOT handle skip/add itself
+  // ===== HOOK FOR switch.js =====
   window.LoopFeed = {
     setActiveType: (t)=>{ setActiveType(t); renderFeed(); },
     renderFeed,
     getActiveType: ()=> activeType,
-    resetPagination
+    resetPagination,
+    // FIX: switch.js should call this when campus changes, instead of only updating tabs.
+    // Now loops re-reads campus and re-renders feed correctly.
+    onCampusChanged: ()=>{
+      userCampus = getUserCampus();
+      if(!userCampus) setActiveType('general');
+      else setActiveType(activeType);
+      renderFeed();
+    },
+    setUserCampus: (name)=>{
+      if(window.CampusSwitch && window.CampusSwitch.switchTo){
+        // Let switch.js own the save, it will call onCampusChanged
+        if(name) window.CampusSwitch.switchTo('campus');
+        else window.CampusSwitch.switchTo('general');
+        return;
+      }
+      // Fallback if switch.js not loaded
+      if(name && String(name).toLowerCase() !== 'skipped'){
+        localStorage.setItem('loop_user_campus', String(name));
+        localStorage.setItem('loop_campus_skipped','false');
+        userCampus = String(name);
+      } else {
+        localStorage.setItem('loop_user_campus','');
+        localStorage.setItem('loop_campus_skipped','true');
+        userCampus = null;
+      }
+      if(!userCampus) setActiveType('general');
+      renderFeed();
+    },
+    getUserCampus: ()=> getUserCampus(),
+    hasCampus: ()=> hasCampus()
   };
 
   // ===== INIT =====
+  // FIX: If no campus on load, start on General. Old code started on 'campus' from loop_active.
+  if(!hasCampus()){
+    activeType='general';
+    localStorage.setItem('loop_active','general');
+  }
+  // Listen for campus change from switch.js (storage event + custom event)
+  window.addEventListener('storage', (e)=>{
+    if(e.key && e.key.startsWith('loop_campus')){
+      userCampus = getUserCampus();
+      if(!userCampus) setActiveType('general');
+      renderFeed();
+    }
+  });
+  window.addEventListener('konnekt:campusChanged', ()=>{
+    userCampus = getUserCampus();
+    if(!userCampus) setActiveType('general');
+    renderFeed();
+  });
   setActiveType(activeType, false); resetPagination(); renderFeed(); renderMy(); renderRot(); icon();
 });

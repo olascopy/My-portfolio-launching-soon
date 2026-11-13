@@ -1,17 +1,31 @@
 /* ============================================================
   switch.js - FOLLOWS YOUR POPUP RULES
   Your Rules (from settings.html + settings.css):
-    - Popups = <div class="popup-bg" id="xxx" hidden>
-    - Open  = remove `hidden` attribute ONLY
-    - Close = add `hidden` attribute ONLY
-    - Close button = <button data-close="xxx">
-    - Save button  = <button data-save="campus">
-    - NO style.display, NO .show class for popups
-    - Picker = <button data-campus="Name" data-selected="true/false">
-    - Backend reads data-campus + data-selected
+        - Popups = <div class="popup-bg" id="xxx" hidden>
+        - Open  = remove `hidden` attribute ONLY
+        - Close = add `hidden` attribute ONLY
+        - Close button = <button data-close="xxx">
+        - Save button  = <button data-save="campus">
+        - NO style.display, NO .show class for popups
+        - Picker = <button data-campus="Name" data-selected="true/false">
+        - Backend reads data-campus + data-selected
 
   This file NEVER touches style.display for popups.
   Loops tabs / header can use class, popups cannot.
+
+  ===== FIX IN THIS VERSION =====
+    1. getCampusName() now returns '' if skipped=true. Before it
+     returned old name even after skip, so loops.js thought user
+     HAS campus and showed Campus border wrongly.
+    2. Removed setInterval(updateAll, 1000). That interval overwrote
+     loops tabs every 1 sec and fought with loops.js.
+     Now we update ONLY when campus actually changes.
+    3. switch.js now tells loops.js when campus changes via
+     window.LoopFeed.onCampusChanged() + custom event
+     'konnekt:campusChanged'. So loops post border updates instantly.
+    4. Single source of truth: loop_campus_state + loop_user_campus
+          + loop_campus_skipped. loops.js must read from here only.
+     loops.js must NOT use konnekt_campus etc.
 ============================================================ */
 (function () {
   const $ = (id) => document.getElementById(id);
@@ -19,26 +33,64 @@
 
   // ===== BACKEND-READY STATE =====
   // Backend will later do GET /api/user/campus -> same shape
+  // Shape: { name: "University of Lagos" | "", skipped: true/false, changeCount, lastChange }
   function getCampusState() {
     try {
       const raw = localStorage.getItem('loop_campus_state');
-      if (raw) return JSON.parse(raw);
+      if (raw) {
+        const s = JSON.parse(raw);
+        // FIX: Normalize - if skipped, name must be empty. Old data may have both.
+        if (s.skipped) s.name = '';
+        return {
+          name: (s.name || '').trim(),
+          skipped: !!s.skipped,
+          changeCount: parseInt(s.changeCount || 0, 10),
+          lastChange: parseInt(s.lastChange || 0, 10)
+        };
+      }
     } catch (e) {}
     return {
-      name: localStorage.getItem('loop_user_campus') || '',
+      name: (localStorage.getItem('loop_user_campus') || '').trim(),
       skipped: localStorage.getItem('loop_campus_skipped') === 'true',
       changeCount: parseInt(localStorage.getItem('loop_campus_change_count') || '0', 10),
       lastChange: parseInt(localStorage.getItem('loop_campus_last_change') || '0', 10)
     };
   }
+
   function saveCampusState(s) {
-    localStorage.setItem('loop_campus_state', JSON.stringify(s));
-    localStorage.setItem('loop_user_campus', s.name || '');
-    localStorage.setItem('loop_campus_skipped', s.skipped ? 'true' : 'false');
-    localStorage.setItem('loop_campus_change_count', String(s.changeCount || 0));
-    localStorage.setItem('loop_campus_last_change', String(s.lastChange || 0));
+    // FIX: If skipped, force name to '' so no old name remains to confuse loops.js
+    const clean = {
+      name: s.skipped ? '' : (s.name || '').trim(),
+      skipped: !!s.skipped,
+      changeCount: s.changeCount || 0,
+      lastChange: s.lastChange || 0
+    };
+    localStorage.setItem('loop_campus_state', JSON.stringify(clean));
+    localStorage.setItem('loop_user_campus', clean.name);
+    localStorage.setItem('loop_campus_skipped', clean.skipped ? 'true' : 'false');
+    localStorage.setItem('loop_campus_change_count', String(clean.changeCount));
+    localStorage.setItem('loop_campus_last_change', String(clean.lastChange));
+    // FIX: Tell loops.js immediately, don't wait for interval
+    notifyCampusChanged();
   }
-  const getCampusName = () => (getCampusState().name || '').trim();
+
+  // FIX: Central notify - loops.js listens to this
+  function notifyCampusChanged() {
+    // 1. Direct call if loops.js is loaded
+    if (window.LoopFeed && typeof window.LoopFeed.onCampusChanged === 'function') {
+      try { window.LoopFeed.onCampusChanged(); } catch (e) {}
+    }
+    // 2. Event for any other file listening
+    try { window.dispatchEvent(new CustomEvent('konnekt:campusChanged')); } catch (e) {}
+  }
+
+  // FIX: If skipped, return ''. Before it returned old name even after skip.
+  const getCampusName = () => {
+    const s = getCampusState();
+    if (s.skipped) return '';
+    return (s.name || '').trim();
+  };
+  const hasCampus = () => !!getCampusName();
   const getActive = () => localStorage.getItem('loop_active') || 'general';
   const setActive = (t) => localStorage.setItem('loop_active', t);
 
@@ -99,11 +151,26 @@
     }
     if (tabG) tabG.classList.toggle('active', active === 'general' || !name);
   }
-  function updateAll() { updateHeader(); updateTabs(); icon(); }
+  // FIX: updateAll now also notifies loops.js, but does NOT loop every 1 sec
+  function updateAll() {
+    updateHeader();
+    updateTabs();
+    icon();
+    // Don't call notify here to avoid infinite loop (notify -> LoopFeed -> setActiveType -> updateAll)
+    // Notify is only called from saveCampusState() and switchTo()
+  }
 
   function switchTo(type) {
-    if (type === 'campus' && !getCampusName()) { setActive('general'); updateAll(); return; }
-    setActive(type); updateAll();
+    // FIX: If no campus, never allow campus. Force to general.
+    if (type === 'campus' && !hasCampus()) {
+      setActive('general');
+      updateAll();
+      notifyCampusChanged();
+      return;
+    }
+    setActive(type);
+    updateAll();
+    notifyCampusChanged();
     if (window.LoopFeed && window.LoopFeed.setActiveType) window.LoopFeed.setActiveType(type);
   }
 
@@ -143,7 +210,7 @@
     const btn = e.target.closest('button');
     if (!btn) return;
 
-    // --- A. GENERIC POPUP CLOSE - SAME AS ALL YOUR OTHER POPUPS ---
+    // --- A. GENERIC POPUP CLOSE ---
     // <button data-close="changeCampusBg"> in .popup-header
     const closeId = btn.getAttribute('data-close');
     if (closeId) {
@@ -153,7 +220,7 @@
 
     const id = btn.id;
 
-    // --- B. OPEN SETTINGS CAMPUS - SAME AS openAccount, openChats, etc ---
+    // --- B. OPEN SETTINGS CAMPUS ---
     // <button id="openChangeCampus"> inside #accountBg
     if (id === 'openChangeCampus') {
       openPopup('changeCampusBg');
@@ -190,6 +257,7 @@
     if (id === 'skipCampusBtn' || id === 'skipCampus') {
       e.preventDefault();
       const s = getCampusState();
+      // FIX: Save with name='' + skipped=true, so getCampusName() returns ''
       saveCampusState({ ...s, name: '', skipped: true });
       setActive('general');
       updateAll(); showLoopsPage(); switchTo('general');
@@ -209,8 +277,7 @@
       return;
     }
 
-    // --- F. SETTINGS SAVE - SAME AS ALL YOUR OTHER SAVES ---
-    // Your other saves: <button data-save="account">, data-save="privacy">
+    // --- F. SETTINGS SAVE ---
     // Campus save: <button data-save="campus"> + <button id="confirmCampusBtn">
     if (id === 'confirmCampusBtn' || btn.getAttribute('data-save') === 'campus') {
       // Only handle if changeCampusBg is open (so we don't hijack other saves)
@@ -252,8 +319,19 @@
     }
   });
 
-  window.addEventListener('storage', updateAll);
-  setInterval(updateAll, 1000);
+  // FIX: Removed setInterval(updateAll, 1000)
+  // Old interval overwrote loops.js tabs every 1 sec and caused flicker.
+  // Now we update ONLY when storage changes in another tab, or when campus changes.
+  window.addEventListener('storage', (e) => {
+    if (!e.key) return;
+    if (e.key.startsWith('loop_campus') || e.key === 'loop_active') {
+      updateAll();
+    }
+  });
+  // FIX: Also listen for campus change from loops.js (if loops calls setUserCampus)
+  window.addEventListener('konnekt:campusChanged', updateAll);
+
   updateAll();
-  window.CampusSwitch = { getCampusName, switchTo, updateAll, openPopup, closePopup, canChangeCampus };
+  // FIX: Expose hasCampus + getCampusState so loops.js can use same source of truth
+  window.CampusSwitch = { getCampusName, hasCampus, getCampusState, saveCampusState, switchTo, updateAll, openPopup, closePopup, canChangeCampus, notifyCampusChanged };
 })();

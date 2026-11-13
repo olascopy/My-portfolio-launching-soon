@@ -1,5 +1,3 @@
-
-
 /* ================= RESET + BODY ================= */
 *{
   margin: 0;
@@ -60,6 +58,19 @@ img{
   --grey-text: rgb(170,170,170);
   --grey-line: rgba(255,255,255,.25);
   --card-bg: rgb(28,28,30);
+}
+
+/* ================= REAL ICONS - NO EMOJI ================= */
+/* All ticks / chevrons are SVG, never emoji. This only styles the SVG inside the tick spans. */
+.tick-icon{
+  display: block;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+.username-tick .tick-icon{
+  width: 16px;
+  height: 16px;
 }
 
 /* ================= FIRST SPLASH - BIG ICON - NO LOADING ================= */
@@ -322,7 +333,7 @@ img{
   background: var(--blue-tick-bg);
   border-color: var(--blue-tick-bg);
 }
-.terms-tick{font-size: 15px;font-weight: 700;line-height: 1}
+.terms-tick{display: flex;align-items: center;justify-content: center;line-height: 1;color: #fff;}
 .terms-tick[hidden]{display: none}
 .terms-text{
   color: #fff;
@@ -476,10 +487,20 @@ img{
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
-  font-weight: 700;
 }
 .username-tick[hidden]{display: none}
+
+/* ================= PHONE NUMBER - NEW - SAME RULES AS OTHER BACKGROUNDS ================= */
+/* #phoneBg uses .signup-bg + hidden, same as usernameBg, campusSetupBg */
+/* It reuses .popup-header, .popup-body, .popup-label, .popup-input, .popup-field-error, .confirm-btn, .link-btn, .popup-small-note */
+.phone-bg .popup-body{
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.phone-bg .popup-input{
+  margin-bottom: 8px;
+}
 
 /* ================= ONBOARDING - FIXED - IMAGE FITS INSIDE BORDER ================= */
 /* BEFORE: image dey overflow border, dey cut, dey squeeze */

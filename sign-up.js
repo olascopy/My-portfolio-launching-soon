@@ -9,6 +9,8 @@
    No stretching / zooming - blocked for ALL screens.
    First Splash: image + text CANNOT be copied, cannot be dragged,
    cannot be long-pressed, cannot be selected.
+   Flow: Splash -> Welcome -> Sign Place -> OTP -> Password
+         -> Username -> Phone -> Onboarding -> Profile -> Campus -> index.html
    ================================================================== */
 
 (function () {
@@ -227,6 +229,7 @@
   function resumeFromStep(step) {
     if (step === "password") return showBg("passwordBg");
     if (step === "username") return showBg("usernameBg");
+    if (step === "phone") return showBg("phoneBg");
     if (step === "onboarding") return showOnboarding(0);
     if (step === "profile") return showBg("profileSetupBg");
     if (step === "campus") return showBg("campusSetupBg");
@@ -255,6 +258,7 @@
       if (target === "otpBg") return showBg("signPlaceBg");
       if (target === "passwordBg") return showBg("signPlaceBg");
       if (target === "usernameBg") return showBg("passwordBg");
+      if (target === "phoneBg") return showBg("usernameBg");
       if (target === "profileSetupBg") return showOnboarding(3);
       if (target === "campusSetupBg") return showBg("profileSetupBg");
       if (target === "loginBg") return showBg("welcomeBg");
@@ -525,7 +529,44 @@
     }
     if (err) err.hidden = true;
     $("usernameInput").classList.remove("is-invalid");
-    saveProgress({ username: val, step: "onboarding" });
+    // NEW: Go to Phone, NOT Onboarding
+    saveProgress({ username: val, step: "phone" });
+    showBg("phoneBg");
+    setTimeout(() => { const p = $("phoneNumberInput"); if (p) p.focus(); }, 100);
+  });
+
+  /* ================= 10A. PHONE NUMBER - AFTER USERNAME ================= */
+  /* Same popup rules: signup-bg + hidden, chevron data-close="phoneBg" */
+  /* Backend reads: phone + phoneSkipped */
+  function isValidPhone(v) {
+    const digits = String(v || "").replace(/[^0-9]/g, "");
+    return digits.length >= 10 && digits.length <= 15;
+  }
+  if ($("phoneNumberInput")) $("phoneNumberInput").addEventListener("input", () => {
+    const err = $("phoneError");
+    if (err) err.hidden = true;
+  });
+  if ($("continuePhoneBtn")) $("continuePhoneBtn").addEventListener("click", () => {
+    const v = ($("phoneNumberInput") || {}).value || "";
+    const err = $("phoneError");
+    if (!v.trim()) {
+      if (err) { err.textContent = "Please enter your phone number or tap Skip."; err.hidden = false; }
+      return;
+    }
+    if (!isValidPhone(v)) {
+      if (err) { err.textContent = "Please enter a valid phone number, for example +234 801 234 5678."; err.hidden = false; }
+      return;
+    }
+    if (err) err.hidden = true;
+    saveProgress({ phone: v.trim(), phoneSkipped: false, step: "onboarding" });
+    try { localStorage.setItem("loop_user_phone", v.trim()); localStorage.setItem("loop_phone_skipped", "false"); } catch (e) {}
+    showOnboarding(0);
+  });
+  if ($("skipPhoneBtn")) $("skipPhoneBtn").addEventListener("click", () => {
+    const err = $("phoneError");
+    if (err) err.hidden = true;
+    saveProgress({ phone: "", phoneSkipped: true, step: "onboarding" });
+    try { localStorage.setItem("loop_user_phone", ""); localStorage.setItem("loop_phone_skipped", "true"); } catch (e) {}
     showOnboarding(0);
   });
 
@@ -590,7 +631,7 @@
     "Michael Okpara University (MOUAU)", "Federal University, Oye-Ekiti (FUOYE)", "Babcock University",
     "Redeemer's University", "Landmark University", "Bowen University", "Afe Babalola University (ABUAD)",
     "Pan-Atlantic University", "Igbinedion University", "Elizade University", "Caleb University",
-    "Bells University", "Kwararafa University", "Federal Polytechnic Ilaro", "Yaba College of Technology (YABATECH)",
+    "Bells University", "Kwara State University (KWASU)", "Federal Polytechnic Ilaro", "Yaba College of Technology (YABATECH)",
     "Lagos State Polytechnic (LASPOTECH)", "The Polytechnic Ibadan", "Federal Polytechnic Nekede",
     "Kaduna Polytechnic", "Auchi Polytechnic", "Osun State Polytechnic", "Rufus Giwa Polytechnic",
     "Delta State Polytechnic", "Federal College of Education, Zaria", "Adeniran Ogunsanya College of Education",

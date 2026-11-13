@@ -33,7 +33,7 @@
       <!-- FIX 4: Text = By clicking, I agree to Terms and Conditions -->
       <div class="terms-row">
         <button type="button" class="terms-box" id="termsBox" aria-label="Agree to Terms">
-          <span class="terms-tick" id="termsTick" hidden>✓</span>
+          <span class="terms-tick" id="termsTick" hidden><svg class="tick-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 12.5L9.5 18L20 6.5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
         </button>
         <p class="terms-text">By clicking, I agree to <button type="button" class="terms-link" id="openTermsBg">Terms and Conditions</button> and <button type="button" class="terms-link" id="openPrivacyBg">Privacy Policy</button></p>
       </div>
@@ -74,7 +74,7 @@
         <p>If you break these rules, we may warn you, temporarily restrict your account, or permanently ban your account. If you believe your account was banned unfairly, you can appeal through Help Center by contacting support.</p>
         <h3>Deleting Your Account</h3>
         <p>If you delete your account, you will lose all of your messages, Moments, Loops posts, contacts, and everything connected to your account. This action cannot be undone. You can sign up again later with same email as a brand new account, but your old data will not be restored.</p>
-        <p><strong>Konnekt - Version V1.0.0.0 - First Version - © 2026 Konnekt</strong></p>
+        <p><strong>Konnekt - Version V1.0.0.0 - First Version - &copy; 2026 Konnekt</strong></p>
       </div>
       <button type="button" class="confirm-btn" data-close="termsBg">Back</button>
     </div>
@@ -99,7 +99,7 @@
         <p>You can control who can see your Moments, your profile picture, and your About. You can choose Everyone, Contacts Only, or Nobody. You can control who can add you to groups. You can turn Moments Read Receipts on or off.</p>
         <h3>Your Safety</h3>
         <p>Never share your password, verification code, or location with strangers. Block and report anyone who makes you feel unsafe. Our team reviews reports.</p>
-        <p><strong>Konnekt - Version V1.0.0.0 - First Version - © 2026 Konnekt</strong></p>
+        <p><strong>Konnekt - Version V1.0.0.0 - First Version - &copy; 2026 Konnekt</strong></p>
       </div>
       <button type="button" class="confirm-btn" data-close="privacyBg">Back</button>
     </div>
@@ -202,11 +202,34 @@
       <label class="popup-label" for="usernameInput">Username</label>
       <div class="username-wrap">
         <input type="text" class="popup-input" id="usernameInput" placeholder="@Faith_mike" autocomplete="off" autocapitalize="off" />
-        <span class="username-tick" id="usernameTick" hidden>✓</span>
+        <span class="username-tick" id="usernameTick" hidden><svg class="tick-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 12.5L9.5 18L20 6.5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </div>
       <p class="popup-field-error" id="usernameError" hidden></p>
       <p class="popup-small-note" id="usernameSuggest" hidden></p>
       <button type="button" class="confirm-btn" id="continueUsernameBtn">Continue</button>
+    </div>
+  </div>
+
+  <!-- ================= 5A. PHONE NUMBER - After Username ================= -->
+  <!-- NEW: Phone Number background. Same popup rules as all other backgrounds. -->
+  <!-- signup-bg + hidden, popup-header + chevron data-close, popup-body -->
+  <!-- Backend will read: #phoneNumberInput -->
+  <div class="signup-bg phone-bg" id="phoneBg" hidden>
+    <div class="popup-header">
+      <button type="button" class="popup-chevron" data-close="phoneBg" aria-label="Back">
+        <svg class="chevron-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <p class="popup-title">Add Your Phone Number</p>
+      <span class="popup-header-space"></span>
+    </div>
+    <div class="popup-body">
+      <p class="popup-explain">Your phone number is only used to sync your contacts so you can find people you already know. It is never shown to other users, and it does not have any other effect on your account. You can change it at any time in Settings.</p>
+      <label class="popup-label" for="phoneNumberInput">Phone Number</label>
+      <input type="tel" class="popup-input" id="phoneNumberInput" placeholder="Enter your phone number" inputmode="tel" autocomplete="tel" />
+      <p class="popup-field-error" id="phoneError" hidden></p>
+      <button type="button" class="confirm-btn" id="continuePhoneBtn">Continue</button>
+      <button type="button" class="link-btn" id="skipPhoneBtn">Skip</button>
+      <p class="popup-small-note">If you skip, you can add your phone number later in Settings, under Account, then Change Phone Number. Skipping will not stop you from using Konnekt.</p>
     </div>
   </div>
 
