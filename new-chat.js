@@ -1,14 +1,9 @@
-
 // ================================================================
-// NK NEW CHAT JS V9 FINAL - FIX EVERYTHING
-// - X icon working all (close, back, profile close) with wiggle iPhone
-// - Popup centered desktop (chat-load-list area) + mobile full center
-// - Search @username round no border, @ -> global, name -> local
-// - Fake chat active fix: normal list clickable, group add works
-// - Direct @username vs ID required flow with profile overlay
-// - Backend ready: searchUsers(), getUserByUsername(), validateChatId()
-// - Chocolate mobile, hide pill only mobile, lock scroll, no drag
-// - All lucide icons, grey borders, 10 tiny leaves konnekting
+// NK NEW CHAT JS V10 - CLEAN - NO CUT - NO DUPLICATE
+// No wiggle, No liquid click, No duplicate Toggle / Mic / Gallery
+// Main JS owns: openChat, closeChat, toggles, mic send, gallery
+// Reaction JS owns: sticker, voice, preview, FFmpeg
+// This file ONLY owns: New Chat / New ID / Profile ID / New Group / Permissions / Recent Chats Scroll
 // ================================================================
 (function(){
   // ---------- DOM - PLUS SCREEN ----------
@@ -32,7 +27,7 @@
   const idInput = document.getElementById('nkIdInput');
   const konnektingWrap = document.getElementById('nkKonnektingWrap');
 
-  // User Profile ID Required - for @username that needs ID
+  // User Profile ID Required
   const userProfileOverlay = document.getElementById('nkUserProfileOverlay');
   const userProfileBack = document.getElementById('nkUserProfileBack');
   const userProfileClose = document.getElementById('nkUserProfileClose');
@@ -80,15 +75,13 @@
   const popupDesc = document.getElementById('nkPopupDesc');
   const popupBtn = document.getElementById('nkPopupBtn');
 
-  // ---------- FAKE MEMORY - REFRESH CLEARS ----------
+  // ---------- STATE ----------
   let fakeChats = [];
   let fakeMessagesMap = {};
   let selectedMembers = [];
-  let currentFakeId = null;
   let selectedProfileUser = null;
 
-  // ---------- MOCK GLOBAL USERS - FAKE DEMO BEFORE BACKEND ----------
-  // Other devs: Replace with API later, keep same structure requiresId true/false
+  // ---------- MOCK GLOBAL USERS - Backend will replace ----------
   const mockGlobalUsers = [
     { username: "ola", name: "Ola John", requiresId: false, avatar: "O", id: "111111", gradient: "linear-gradient(135deg, #FF6B6B, #EE5A24)" },
     { username: "king", name: "King David", requiresId: true, avatar: "K", id: "123456", gradient: "linear-gradient(135deg, #70A1FF, #1E90FF)" },
@@ -96,7 +89,6 @@
     { username: "joshua", name: "joshua", requiresId: true, avatar: "j", id: "333333", gradient: "linear-gradient(135deg, #FFA502, #FF7F50)" },
     { username: "olarenwaju", name: "olarenwaju", requiresId: false, avatar: "o", id: "444444", gradient: "linear-gradient(135deg, #A29BFE, #6C5CE7)" },
   ];
-
   const avatarGradients = [
     "linear-gradient(135deg, #FF6B6B, #EE5A24)",
     "linear-gradient(135deg, #70A1FF, #1E90FF)",
@@ -105,13 +97,13 @@
     "linear-gradient(135deg, #A29BFE, #6C5CE7)"
   ];
   function getGradient(name){
-    let h=0; for(let i=0;i<name.length;i++) h+=name.charCodeAt(i);
+    let h=0; const n=name||'User'; for(let i=0;i<n.length;i++) h+=n.charCodeAt(i);
     return avatarGradients[h%avatarGradients.length];
   }
   function isMobile(){ return window.innerWidth <= 768; }
+  function refreshIcons(){ if(window.lucide) lucide.createIcons(); }
 
-  // ---------- BACKEND READY FUNCTIONS ----------
-  // Other devs: Swap with fetch when backend ready
+  // ---------- BACKEND READY ----------
   function searchUsers(query){
     if(!query) return { type: "none", results: [] };
     if(query.startsWith("@")){
@@ -122,153 +114,209 @@
     return { type: "local", query };
   }
   function getUserByUsername(username){
-    const clean = username.replace("@","").toLowerCase();
+    const clean = (username||'').replace("@","").toLowerCase();
     return mockGlobalUsers.find(u => u.username.toLowerCase() === clean) || null;
   }
   function validateChatId(user, enteredId){
     if(!user.requiresId) return true;
     return enteredId === user.id;
   }
+  window.nkSearchUsers = searchUsers;
+  window.nkGetUserByUsername = getUserByUsername;
 
-  // ---------- LOCK BODY + HIDE PILL ONLY MOBILE ----------
+  // ---------- LOCK BODY + HIDE PILL ONLY MOBILE - FIX: Check any open ----------
+  function anyNewChatOpen(){
+    return !!document.querySelector('.nk-newchat-overlay.show, .nk-newchat-overlay.open');
+  }
   function lockBody(){
     document.body.classList.add('nk-lock-scroll');
     if(isMobile()){
-      document.querySelectorAll('.sidebar-section,.bottom-nav,.nav-pill,.pill-nav,.sidebar, nav.mobile-nav,.start-up,.konnekt-incoming-tile').forEach(el=>{
-        if(el) el.classList.add('nk-hide-pill-sidebar');
-      });
+      document.querySelectorAll('.sidebar-section,.bottom-nav,.nav-pill,.pill-nav,.sidebar, nav.mobile-nav,.start-up,.konnekt-incoming-tile').forEach(el=>{ if(el) el.classList.add('nk-hide-pill-sidebar'); });
     }
   }
   function unlockBody(){
-    const anyOpen = document.querySelector('.nk-newchat-overlay.show');
-    if(!anyOpen){
+    if(!anyNewChatOpen()){
       document.body.classList.remove('nk-lock-scroll');
-      document.querySelectorAll('.sidebar-section,.bottom-nav,.nav-pill,.pill-nav,.sidebar, nav.mobile-nav,.start-up,.konnekt-incoming-tile').forEach(el=>{
-        if(el) el.classList.remove('nk-hide-pill-sidebar');
-      });
+      document.querySelectorAll('.sidebar-section,.bottom-nav,.nav-pill,.pill-nav,.sidebar, nav.mobile-nav,.start-up,.konnekt-incoming-tile').forEach(el=>{ if(el) el.classList.remove('nk-hide-pill-sidebar'); });
     }
   }
+  window.nkLockBody = lockBody;
+  window.nkUnlockBody = unlockBody;
 
-  // ---------- POPUP - NICE IPHONE CLICKS - CENTERED ----------
-  // Other devs: Popup works desktop + mobile, centered over your stuff on desktop
+  // ---------- POPUP ----------
   function showPopup(title, desc){
     if(!popupOverlay) return;
     if(popupTitle) popupTitle.textContent = title;
     if(popupDesc) popupDesc.textContent = desc;
     popupOverlay.classList.remove('hidden');
-    void popupOverlay.offsetWidth;
     popupOverlay.classList.add('show');
-    if(window.lucide) lucide.createIcons();
+    refreshIcons();
   }
   function hidePopup(){
     if(!popupOverlay) return;
     popupOverlay.classList.remove('show');
-    setTimeout(()=> popupOverlay.classList.add('hidden'), 240);
+    popupOverlay.classList.add('hidden');
   }
-  popupBtn?.addEventListener('click', hidePopup);
-  popupOverlay?.addEventListener('click', (e)=>{ if(e.target === popupOverlay) hidePopup(); });
+  window.nkShowPopup = showPopup;
+  if(popupBtn && !popupBtn.dataset.nkBound){ popupBtn.dataset.nkBound='1'; popupBtn.addEventListener('click', hidePopup); }
+  if(popupOverlay && !popupOverlay.dataset.nkBound){ popupOverlay.dataset.nkBound='1'; popupOverlay.addEventListener('click', (e)=>{ if(e.target === popupOverlay) hidePopup(); }); }
 
-  function wiggleX(btn){
-    if(!btn) return;
-    btn.classList.remove('nk-wiggle');
-    void btn.offsetWidth;
-    btn.classList.add('nk-wiggle');
-    setTimeout(()=> btn.classList.remove('nk-wiggle'), 450);
+  // ---------- OPEN FAKE CHAT - Use Main JS openChat if available ----------
+  function openChatForElement(el){
+    if(!el) return;
+    // If Main JS openChat exists and el is a real .chat-item, use it
+    if(window.openChat && el.classList.contains('chat-item')){
+      window.openChat(el);
+      return;
+    }
+    // Fake chat fallback - create minimal bg via Main JS if possible, else fallback to old bg logic
+    const fakeId = el.dataset.userId || el.dataset.groupId || el.dataset.fakeId;
+    if(fakeId) openFakeChatBg(fakeId);
+  }
+  function openFakeChatBg(id){
+    const chat = fakeChats.find(c=>c.id===id);
+    if(!chat) return;
+    // Try to find real chat-item for this fake chat and use Main JS
+    const realItem = chatContainer?.querySelector(`.chat-item[data-user-id="${id}"], .chat-item[data-group-id="${id}"]`);
+    if(realItem && window.openChat){ window.openChat(realItem); return; }
+    // Fallback only if Main JS not loaded
+    if(chatBg && !window.openChat){
+      if(isMobile()){
+        chatLoadList?.classList.add('mobile-hide');
+        chatBg?.classList.add('mobile-show');
+      }
+      chatBg?.classList.add('active-chat');
+      const headerName = chatBg.querySelector('.chat-name');
+      if(headerName) headerName.textContent = chat.name;
+      renderFakeMessages(id);
+    }
+    refreshIcons();
+  }
+  function renderFakeMessages(id){
+    if(!chatMessages || window.openChat) return; // Main JS owns messages if loaded
+    const msgs = fakeMessagesMap[id] || [];
+    const enc = chatMessages.querySelector('.encryption-notice');
+    const dateSep = chatMessages.querySelector('.date-sep');
+    chatMessages.innerHTML = '';
+    if(enc) chatMessages.appendChild(enc);
+    if(dateSep) chatMessages.appendChild(dateSep);
+    msgs.forEach(m=>{
+      const row = document.createElement('div');
+      row.className = `msg-row ${m.sender}`;
+      row.innerHTML = `<div class="bubble ${m.sender}-bubble"><p></p><span class="msg-meta right-meta"><span class="msg-time">now</span></span></div>`;
+      row.querySelector('p').textContent = m.text;
+      chatMessages.appendChild(row);
+    });
+    const typing = document.getElementById('typingIndicator');
+    if(typing) chatMessages.appendChild(typing);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+  function createFakeChatElement(chatObj, subText){
+    const initials = (chatObj.name||'U').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const div = document.createElement('div');
+    div.className = 'chat-item nk-fake' + (chatObj.isGroup ? ' group' : '');
+    div.dataset.chat = chatObj.id;
+    if(chatObj.isGroup) div.dataset.type = 'group'; else div.dataset.type = 'chat';
+    div.dataset.userId = chatObj.id;
+    div.innerHTML = `<div class="chat-avatar" style="background:${chatObj.gradient||getGradient(chatObj.name)}">${initials}</div><div class="chat-info"><div class="chat-top-row"><p class="chat-name">${chatObj.name}</p><span class="chat-date">now</span></div><div class="chat-bottom-row"><p class="chat-last-message">${subText||''}</p></div></div>`;
+    // FIX: Use Main JS openChat via click delegation - Main JS binds .chat-item on load, new items need direct bind
+    div.addEventListener('click', ()=>{ if(window.openChat) window.openChat(div); else openFakeChatBg(chatObj.id); });
+    chatContainer?.prepend(div);
+    return div;
   }
 
   // ---------- RENDER CHATTED LIST + MAIN SEARCH @USERNAME ----------
   function renderChattedList(filter=''){
     if(!chattedPeopleList || !mainSearchResults) return;
+    const f = (filter||'').trim();
 
-    if(filter.startsWith("@")){
-      // Global @username search
-      const { results } = searchUsers(filter);
+    if(f.startsWith("@")){
+      const { results } = searchUsers(f);
       mainSearchResults.classList.remove('hidden');
       chattedPeopleList.classList.add('hidden');
       if(!results.length){
-        mainSearchResults.innerHTML = `<div class="nk-empty">No @username found for "${filter}"</div>`;
+        mainSearchResults.innerHTML = `<div class="nk-empty">No @username found for "${f}"</div>`;
       } else {
         let html = '';
         results.forEach(u=>{
           const badge = u.requiresId ? `<span style="font-size:11px;color:#ff9f0a;margin-left:6px;">• Requires ID</span>` : `<span style="font-size:11px;color:#34c759;margin-left:6px;">• Direct</span>`;
-          html += `
-            <button class="nk-newchat-row nk-person-row" data-global-username="${u.username}">
-              <div class="nk-row-icon nk-person-avatar" style="background:${u.gradient}">${u.avatar}</div>
-              <div class="nk-row-info"><p class="nk-row-title">${u.name} ${badge}</p><p class="nk-row-sub">@${u.username}</p></div>
-              <i data-lucide="chevron-right" class="nk-chevron"></i>
-            </button>
-          `;
+          html += `<button class="nk-newchat-row nk-person-row" data-global-username="${u.username}"><div class="nk-row-icon nk-person-avatar" style="background:${u.gradient}">${u.avatar}</div><div class="nk-row-info"><p class="nk-row-title">${u.name} ${badge}</p><p class="nk-row-sub">@${u.username}</p></div><i data-lucide="chevron-right" class="nk-chevron"></i></button>`;
         });
         mainSearchResults.innerHTML = html;
         mainSearchResults.querySelectorAll('[data-global-username]').forEach(btn=>{
+          if(btn.dataset.nkBound) return; btn.dataset.nkBound='1';
           btn.addEventListener('click', ()=> handleGlobalUsernameClick(btn.dataset.globalUsername));
         });
       }
-      if(window.lucide) lucide.createIcons();
+      refreshIcons();
       return;
     }
 
-    // Local name search - chatted people
     mainSearchResults.classList.add('hidden');
     chattedPeopleList.classList.remove('hidden');
-
     const existingItems = document.querySelectorAll('#chatContainer .chat-item');
     let html = '';
-    const lower = filter.toLowerCase();
-
+    const lower = f.toLowerCase();
     existingItems.forEach(item=>{
       const name = item.querySelector('.chat-name')?.textContent?.trim() || 'User';
+      const blocked = item.classList.contains('blocked-item');
       if(!lower || name.toLowerCase().includes(lower)){
         const avatar = item.querySelector('.chat-avatar')?.textContent || name[0];
-        html += `<button class="nk-newchat-row nk-person-row" data-name="${name}"><div class="nk-row-icon nk-person-avatar" style="background:${getGradient(name)}">${avatar.slice(0,2).toUpperCase()}</div><div class="nk-row-info"><p class="nk-row-title">${name}</p></div></button>`;
+        const last = item.querySelector('.chat-last-message')?.textContent || '';
+        html += `<button class="nk-result-row" data-chat-name="${name}"><div class="nk-result-ava" style="background:${getGradient(name)}"><span>${avatar.slice(0,2).toUpperCase()}</span></div><div class="nk-result-info"><p class="nk-result-name">${name}</p><p class="nk-result-sub">${blocked?'Blocked':last}</p></div>${blocked?'<span class="nk-blocked-tag">Blocked</span>':''}</button>`;
       }
     });
-
     fakeChats.filter(c=> !lower || c.name.toLowerCase().includes(lower)).forEach(c=>{
-      html += `<button class="nk-newchat-row nk-person-row" data-fake-id="${c.id}"><div class="nk-row-icon nk-person-avatar" style="background:${getGradient(c.name)}">${c.name[0]}</div><div class="nk-row-info"><p class="nk-row-title">${c.name} <span class="nk-fake-badge">FAKE</span></p></div></button>`;
+      html += `<button class="nk-newchat-row nk-person-row" data-fake-id="${c.id}"><div class="nk-row-icon nk-person-avatar" style="background:${getGradient(c.name)}">${c.name[0]}</div><div class="nk-row-info"><p class="nk-row-title">${c.name}</p></div></button>`;
     });
-
     if(!html){
-      chattedPeopleList.innerHTML = filter ? `<div class="nk-empty">No results for "${filter}"</div>` : `<div class="nk-empty">You haven't chatted with anyone yet<br>Start with New ID or search @username</div>`;
+      chattedPeopleList.innerHTML = f ? `<div class="nk-empty">No results for "${f}"</div>` : `<div class="nk-empty">You haven't chatted with anyone yet<br>Start with New ID or search @username</div>`;
     } else {
       chattedPeopleList.innerHTML = html;
-      chattedPeopleList.querySelectorAll('[data-fake-id]').forEach(btn=>{ btn.addEventListener('click', ()=> openFakeChatBg(btn.dataset.fakeId)); });
+      // FIX: Bind Recent Chats rows - Blocked shows Unblock popup, else open chat
+      chattedPeopleList.querySelectorAll('[data-chat-name]').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const name = btn.dataset.chatName;
+          const item = document.querySelector(`#chatContainer .chat-item .chat-name`);
+          // Find exact item by name
+          let found = null;
+          document.querySelectorAll('#chatContainer .chat-item').forEach(it=>{ if((it.querySelector('.chat-name')?.textContent||'').trim()===name) found=it; });
+          if(!found) return;
+          if(found.classList.contains('blocked-item')){
+            const pop = document.getElementById('unblockPopup'); if(pop){ pop.classList.remove('hidden'); pop.classList.add('show'); }
+            return;
+          }
+          closeAllNewChat();
+          if(window.openChat) window.openChat(found); else openFakeChatBg(found.dataset.userId);
+        });
+      });
+      chattedPeopleList.querySelectorAll('[data-fake-id]').forEach(btn=>{ btn.addEventListener('click', ()=>{ closeAllNewChat(); openFakeChatBg(btn.dataset.fakeId); }); });
     }
-    if(window.lucide) lucide.createIcons();
+    refreshIcons();
+    fixNewChatScroll();
   }
+  window.nkRenderChattedList = renderChattedList;
 
   // ---------- HANDLE GLOBAL @USERNAME CLICK ----------
   function handleGlobalUsernameClick(username){
     const user = getUserByUsername(username);
     if(!user) return;
-    if(!user.requiresId){
-      createFakeChatDirect(user);
-    } else {
-      openProfileIdRequired(user);
-    }
+    if(!user.requiresId) createFakeChatDirect(user);
+    else openProfileIdRequired(user);
   }
-
   function createFakeChatDirect(user){
     const id = user.id || ('u'+Date.now());
     const existing = fakeChats.find(c=> c.id===id);
     if(!existing){
-      const chatObj = { id, name: user.name, username: user.username, fake:true };
+      const chatObj = { id, name: user.name, username: user.username, fake:true, gradient: user.gradient };
       fakeChats.unshift(chatObj);
-      fakeMessagesMap[id] = [{ text:`Chat with ${user.name} @${user.username} started `, sender:'other' }];
-      const initials = user.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-      const div = document.createElement('div');
-      div.className = 'chat-item nk-fake';
-      div.dataset.userId = id;
-      div.style.pointerEvents = 'auto'; // fix block
-      div.innerHTML = `<div class="chat-avatar" style="background:${user.gradient}">${initials}</div><div class="chat-info"><div class="chat-top-row"><p class="chat-name">${user.name} <span class="nk-fake-badge">FAKE</span></p><span class="chat-date">now</span></div><div class="chat-bottom-row"><p class="chat-last-message">@${user.username} - Direct chat</p></div></div>`;
-      chatContainer?.prepend(div);
-      div.addEventListener('click', ()=> openFakeChatBg(id));
+      fakeMessagesMap[id] = [{ text:`Chat with ${user.name} @${user.username} started`, sender:'other' }];
+      createFakeChatElement(chatObj, `@${user.username} - Direct chat`);
     }
-    newChatOverlay?.classList.remove('show');
-    unlockBody();
-    openFakeChatBg(id);
+    closeAllNewChat();
+    const el = chatContainer?.querySelector(`.chat-item[data-user-id="${id}"]`);
+    if(el && window.openChat) window.openChat(el); else openFakeChatBg(id);
   }
-
   function openProfileIdRequired(user){
     selectedProfileUser = user;
     if(userProfileHeaderTitle) userProfileHeaderTitle.textContent = `New @${user.username}`;
@@ -280,11 +328,11 @@
     profileKonnektingWrap?.classList.add('hidden');
     userProfileOverlay?.classList.add('show');
     lockBody();
-    if(window.lucide) lucide.createIcons();
+    refreshIcons();
     profileIdInput?.focus();
   }
 
-  // ---------- PLUS SCREEN OPEN/CLOSE - X ICON WORKING ----------
+  // ---------- PLUS SCREEN OPEN / CLOSE - X Icon Instant, No Wiggle ----------
   function openNewChat(){
     renderChattedList();
     if(mainSearchInput) mainSearchInput.value = '';
@@ -292,37 +340,43 @@
     chattedPeopleList?.classList.remove('hidden');
     newChatOverlay?.classList.add('show');
     lockBody();
-    if(window.lucide) lucide.createIcons();
+    refreshIcons();
+    fixNewChatScroll();
+  }
+  function closeAllNewChat(){
+    document.querySelectorAll('.nk-newchat-overlay').forEach(o=>o.classList.remove('show','open'));
+    unlockBody();
   }
   function closeNewChat(){
-    // X icon working with wiggle iPhone 17
-    wiggleX(newChatClose);
-    wiggleX(newChatBackDesktop);
-    setTimeout(()=>{
-      newChatOverlay?.classList.remove('show');
-      unlockBody();
-    }, 180);
+    // FIX: Instant close, no wiggle delay, no 180ms timeout blocking click
+    newChatOverlay?.classList.remove('show');
+    unlockBody();
   }
-  startChatBtn?.addEventListener('click', openNewChat);
-  newChatClose?.addEventListener('click', closeNewChat);
-  newChatBackDesktop?.addEventListener('click', closeNewChat);
-  mainSearchInput?.addEventListener('input', (e)=>{ renderChattedList(e.target.value.trim()); });
+  window.openNewChat = openNewChat;
+  window.closeNewChat = closeAllNewChat;
+  window.openAddMember = function(){ newGroupOverlay?.classList.add('show'); lockBody(); renderGroupPeople(); refreshIcons(); };
+  if(startChatBtn && !startChatBtn.dataset.nkBound){ startChatBtn.dataset.nkBound='1'; startChatBtn.addEventListener('click', openNewChat); }
+  if(newChatClose && !newChatClose.dataset.nkBound){ newChatClose.dataset.nkBound='1'; newChatClose.addEventListener('click', closeNewChat); }
+  if(newChatBackDesktop && !newChatBackDesktop.dataset.nkBound){ newChatBackDesktop.dataset.nkBound='1'; newChatBackDesktop.addEventListener('click', closeNewChat); }
+  if(mainSearchInput && !mainSearchInput.dataset.nkBound){ mainSearchInput.dataset.nkBound='1'; mainSearchInput.addEventListener('input', (e)=>{ renderChattedList(e.target.value); }); }
 
-  // ---------- NEW ID FLOW - X + BACK WORKING ----------
-  newIdRow?.addEventListener('click', ()=>{
-    newIdOverlay?.classList.add('show');
-    lockBody();
-    firstNameInput?.focus();
-    if(window.lucide) lucide.createIcons();
-  });
-  newIdBack?.addEventListener('click', ()=>{
-    wiggleX(newIdBack);
-    setTimeout(()=>{
+  // ---------- NEW ID FLOW ----------
+  if(newIdRow && !newIdRow.dataset.nkBound){
+    newIdRow.dataset.nkBound='1';
+    newIdRow.addEventListener('click', ()=>{
+      newIdOverlay?.classList.add('show');
+      lockBody();
+      firstNameInput?.focus();
+      refreshIcons();
+    });
+  }
+  if(newIdBack && !newIdBack.dataset.nkBound){
+    newIdBack.dataset.nkBound='1';
+    newIdBack.addEventListener('click', ()=>{
       newIdOverlay?.classList.remove('show');
       if(!newChatOverlay?.classList.contains('show')) unlockBody();
-    }, 150);
-  });
-
+    });
+  }
   function createFakeChatFromId(){
     const fn = firstNameInput?.value.trim() || 'User';
     const ln = lastNameInput?.value.trim() || '';
@@ -330,53 +384,52 @@
     if(!id){ showPopup('Enter ID', 'Please enter 6 digit ID'); return; }
     if(id.length!==6 ||!/^\d+$/.test(id)){ showPopup('Invalid ID', 'ID must be 6 numbers only'); return; }
     konnektingWrap?.classList.remove('hidden');
-    if(window.lucide) lucide.createIcons();
+    refreshIcons();
     setTimeout(()=>{
       const name = `${fn} ${ln}`.trim();
       const chatObj = { id, name, fake:true };
       fakeChats.unshift(chatObj);
-      fakeMessagesMap[id] = [{ text:`Fake chat with ${name} - ID ${id} started `, sender:'other' }];
-      const initials = name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-      const div = document.createElement('div');
-      div.className = 'chat-item nk-fake';
-      div.dataset.userId = id;
-      div.style.pointerEvents = 'auto';
-      div.innerHTML = `<div class="chat-avatar" style="background:${getGradient(name)}">${initials}</div><div class="chat-info"><div class="chat-top-row"><p class="chat-name">${name} <span class="nk-fake-badge">FAKE</span></p><span class="chat-date">now</span></div><div class="chat-bottom-row"><p class="chat-last-message">ID: ${id} - Fake test chat</p></div></div>`;
-      chatContainer?.prepend(div);
-      div.addEventListener('click', ()=> openFakeChatBg(id));
+      fakeMessagesMap[id] = [{ text:`Fake chat with ${name} - ID ${id} started`, sender:'other' }];
+      createFakeChatElement(chatObj, `ID: ${id} - Fake test chat`);
       konnektingWrap?.classList.add('hidden');
       newIdOverlay?.classList.remove('show');
       newChatOverlay?.classList.remove('show');
       unlockBody();
-      firstNameInput.value=''; lastNameInput.value=''; idInput.value='';
-      openFakeChatBg(id);
+      if(firstNameInput) firstNameInput.value=''; if(lastNameInput) lastNameInput.value=''; if(idInput) idInput.value='';
+      const el = chatContainer?.querySelector(`.chat-item[data-user-id="${id}"]`);
+      if(el && window.openChat) window.openChat(el); else openFakeChatBg(id);
     }, 1200);
   }
-  newIdMark?.addEventListener('click', createFakeChatFromId);
-  idInput?.addEventListener('keydown', (e)=>{ if(e.key==='Enter') createFakeChatFromId(); });
-  idInput?.addEventListener('input', ()=>{ idInput.value = idInput.value.replace(/\D/g,'').slice(0,6); });
+  if(newIdMark && !newIdMark.dataset.nkBound){ newIdMark.dataset.nkBound='1'; newIdMark.addEventListener('click', createFakeChatFromId); }
+  if(idInput && !idInput.dataset.nkBound){
+    idInput.dataset.nkBound='1';
+    idInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') createFakeChatFromId(); });
+    idInput.addEventListener('input', ()=>{ idInput.value = idInput.value.replace(/\D/g,'').slice(0,6); });
+  }
 
-  // ---------- PROFILE ID REQUIRED FLOW - X WORKING ----------
-  userProfileBack?.addEventListener('click', ()=>{
-    wiggleX(userProfileBack);
-    setTimeout(()=>{
+  // ---------- PROFILE ID REQUIRED FLOW ----------
+  if(userProfileBack && !userProfileBack.dataset.nkBound){
+    userProfileBack.dataset.nkBound='1';
+    userProfileBack.addEventListener('click', ()=>{
       userProfileOverlay?.classList.remove('show');
       selectedProfileUser = null;
       lockBody();
-    }, 150);
-  });
-  userProfileClose?.addEventListener('click', ()=>{
-    wiggleX(userProfileClose);
-    setTimeout(()=>{
+    });
+  }
+  if(userProfileClose && !userProfileClose.dataset.nkBound){
+    userProfileClose.dataset.nkBound='1';
+    userProfileClose.addEventListener('click', ()=>{
       userProfileOverlay?.classList.remove('show');
       newChatOverlay?.classList.remove('show');
       selectedProfileUser = null;
       unlockBody();
-    }, 150);
-  });
-  profileIdInput?.addEventListener('input', ()=>{ profileIdInput.value = profileIdInput.value.replace(/\D/g,'').slice(0,6); });
-  profileIdInput?.addEventListener('keydown', (e)=>{ if(e.key==='Enter') handleProfileNext(); });
-
+    });
+  }
+  if(profileIdInput && !profileIdInput.dataset.nkBound){
+    profileIdInput.dataset.nkBound='1';
+    profileIdInput.addEventListener('input', ()=>{ profileIdInput.value = profileIdInput.value.replace(/\D/g,'').slice(0,6); });
+    profileIdInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') handleProfileNext(); });
+  }
   function handleProfileNext(){
     if(!selectedProfileUser){ showPopup('No user', 'Select user first'); return; }
     const entered = profileIdInput?.value.trim();
@@ -385,22 +438,15 @@
     const ok = validateChatId(selectedProfileUser, entered);
     if(!ok){ showPopup('Wrong ID', `Wrong ID for @${selectedProfileUser.username}. Try ${selectedProfileUser.id}`); return; }
     profileKonnektingWrap?.classList.remove('hidden');
-    if(window.lucide) lucide.createIcons();
+    refreshIcons();
     setTimeout(()=>{
       const id = selectedProfileUser.id;
       const existing = fakeChats.find(c=> c.id===id);
       if(!existing){
-        const chatObj = { id, name: selectedProfileUser.name, username: selectedProfileUser.username, fake:true };
+        const chatObj = { id, name: selectedProfileUser.name, username: selectedProfileUser.username, fake:true, gradient: selectedProfileUser.gradient };
         fakeChats.unshift(chatObj);
-        fakeMessagesMap[id] = [{ text:`Chat with ${selectedProfileUser.name} @${selectedProfileUser.username} verified ${entered} `, sender:'other' }];
-        const initials = selectedProfileUser.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-        const div = document.createElement('div');
-        div.className = 'chat-item nk-fake';
-        div.dataset.userId = id;
-        div.style.pointerEvents = 'auto';
-        div.innerHTML = `<div class="chat-avatar" style="background:${selectedProfileUser.gradient}">${initials}</div><div class="chat-info"><div class="chat-top-row"><p class="chat-name">${selectedProfileUser.name} <span class="nk-fake-badge">FAKE</span></p><span class="chat-date">now</span></div><div class="chat-bottom-row"><p class="chat-last-message">@${selectedProfileUser.username} - ID verified</p></div></div>`;
-        chatContainer?.prepend(div);
-        div.addEventListener('click', ()=> openFakeChatBg(id));
+        fakeMessagesMap[id] = [{ text:`Chat with ${selectedProfileUser.name} @${selectedProfileUser.username} verified ${entered}`, sender:'other' }];
+        createFakeChatElement(chatObj, `@${selectedProfileUser.username} - ID verified`);
       }
       profileKonnektingWrap?.classList.add('hidden');
       userProfileOverlay?.classList.remove('show');
@@ -408,115 +454,45 @@
       const chatId = selectedProfileUser.id;
       selectedProfileUser = null;
       unlockBody();
-      openFakeChatBg(chatId);
+      const el = chatContainer?.querySelector(`.chat-item[data-user-id="${chatId}"]`);
+      if(el && window.openChat) window.openChat(el); else openFakeChatBg(chatId);
     }, 1200);
   }
-  profileNextBtn?.addEventListener('click', handleProfileNext);
+  if(profileNextBtn && !profileNextBtn.dataset.nkBound){ profileNextBtn.dataset.nkBound='1'; profileNextBtn.addEventListener('click', handleProfileNext); }
 
-  // ---------- FAKE CHAT BACKGROUND - FIX NOT BLOCKING ----------
-  function openFakeChatBg(id){
-    currentFakeId = id;
-    const chat = fakeChats.find(c=>c.id===id);
-    if(!chat ||!chatBg) return;
-    if(isMobile()){
-      chatLoadList?.classList.add('mobile-hide');
-      chatBg?.classList.add('mobile-show');
-      document.querySelector('.sidebar-section')?.classList.add('hide-nav');
-    }
-    chatBg?.classList.add('active-chat');
-    const headerName = chatBg.querySelector('.chat-name');
-    const profileText = chatBg.querySelector('.profile-text');
-    if(headerName) headerName.textContent = chat.name;
-    if(profileText) profileText.textContent = chat.name[0];
-    renderFakeMessages(id);
-    if(window.lucide) lucide.createIcons();
-  }
-  function renderFakeMessages(id){
-    if(!chatMessages) return;
-    const msgs = fakeMessagesMap[id] || [];
-    const enc = chatMessages.querySelector('.encryption-notice');
-    const dateSep = chatMessages.querySelector('.date-sep');
-    chatMessages.innerHTML = '';
-    if(enc) chatMessages.appendChild(enc);
-    if(dateSep) chatMessages.appendChild(dateSep);
-    msgs.forEach(m=>{
-      const row = document.createElement('div');
-      row.className = `msg-row ${m.sender}`;
-      row.innerHTML = `<div class="bubble ${m.sender}-bubble"><p>${m.text.replace(/\n/g,'<br>')}</p><span class="msg-meta right-meta"><span class="msg-time">now</span></span></div>`;
-      chatMessages.appendChild(row);
+  // ---------- NEW GROUP ----------
+  if(newGroupRow && !newGroupRow.dataset.nkBound){
+    newGroupRow.dataset.nkBound='1';
+    newGroupRow.addEventListener('click', ()=>{
+      newGroupOverlay?.classList.add('show');
+      lockBody();
+      renderGroupPeople();
+      refreshIcons();
     });
-    const typing = document.getElementById('typingIndicator');
-    if(typing) chatMessages.appendChild(typing);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
   }
-
-  const msgInput = document.getElementById('msgInput');
-  const micSendBtn = document.getElementById('micSendBtn');
-  function sendFake(){
-    if(!currentFakeId ||!msgInput) return;
-    const t = msgInput.value.trim(); if(!t) return;
-    fakeMessagesMap[currentFakeId].push({ text:t, sender:'sender' });
-    renderFakeMessages(currentFakeId);
-    if(window.resetInputBar) window.resetInputBar(); else msgInput.value='';
-    setTimeout(()=>{
-      fakeMessagesMap[currentFakeId].push({ text:'Fake reply for testing ', sender:'receiver' });
-      renderFakeMessages(currentFakeId);
-    }, 800);
+  function closeGroupOverlay(){
+    newGroupOverlay?.classList.remove('show');
+    if(!newChatOverlay?.classList.contains('show')) unlockBody(); else lockBody();
   }
-  micSendBtn?.addEventListener('click', ()=>{ if(currentFakeId && msgInput?.value.trim()) sendFake(); });
-  msgInput?.addEventListener('keydown', (e)=>{ if(e.key==='Enter' &&!e.shiftKey && currentFakeId){ e.preventDefault(); sendFake(); } });
+  if(newGroupBack && !newGroupBack.dataset.nkBound){ newGroupBack.dataset.nkBound='1'; newGroupBack.addEventListener('click', closeGroupOverlay); }
+  if(newGroupBackDesktop && !newGroupBackDesktop.dataset.nkBound){ newGroupBackDesktop.dataset.nkBound='1'; newGroupBackDesktop.addEventListener('click', closeGroupOverlay); }
 
-  const origClose = window.closeChat;
-  window.closeChat = function(){
-    currentFakeId=null;
-    if(origClose) origClose();
-    else{
-      if(isMobile()){
-        chatLoadList?.classList.remove('mobile-hide');
-        chatBg?.classList.remove('mobile-show');
-      }
-      chatBg?.classList.remove('active-chat');
-    }
-    unlockBody();
-  };
-
-  // ---------- NEW GROUP - FIX CLICK WORKING ----------
-  newGroupRow?.addEventListener('click', ()=>{
-    newGroupOverlay?.classList.add('show');
-    lockBody();
-    renderGroupPeople();
-    if(window.lucide) lucide.createIcons();
-  });
-  newGroupBack?.addEventListener('click', ()=>{
-    wiggleX(newGroupBack);
-    setTimeout(()=>{
-      newGroupOverlay?.classList.remove('show');
-      if(!newChatOverlay?.classList.contains('show')) unlockBody();
-      else lockBody();
-    }, 150);
-  });
-  newGroupBackDesktop?.addEventListener('click', ()=>{
-    wiggleX(newGroupBackDesktop);
-    setTimeout(()=>{
-      newGroupOverlay?.classList.remove('show');
-      if(!newChatOverlay?.classList.contains('show')) unlockBody();
-    }, 150);
-  });
-
+  // FIX: Group Add Members search must filter - name + ID + username
   function renderGroupPeople(filter=''){
     if(!groupPeopleResults) return;
     let html='';
-    const lower = filter.toLowerCase();
-    // Fake chats - now clickable fix
-    fakeChats.filter(c=> c.name.toLowerCase().includes(lower) || c.id.includes(lower)).forEach(c=>{
+    const lower = (filter||'').toLowerCase();
+    fakeChats.filter(c=> c.name.toLowerCase().includes(lower) || (c.id||'').includes(lower) || (c.username||'').toLowerCase().includes(lower)).forEach(c=>{
       const selected = selectedMembers.includes(c.id);
-      html+=`<button class="nk-newchat-row" data-pick-id="${c.id}" style="${selected?'opacity:0.5;background:rgba(10,132,255,0.12)':''};pointer-events:auto;"><div class="nk-row-icon nk-person-avatar" style="background:${getGradient(c.name)}">${c.name[0]}</div><div class="nk-row-info"><p class="nk-row-title">${c.name}</p><p class="nk-row-sub">${c.id}</p></div><i data-lucide="${selected?'check-circle-2':'circle'}" style="width:20px;height:20px;color:${selected?'#0a84ff':'#3a3a3c'}"></i></button>`;
+      html+=`<button class="nk-newchat-row" data-pick-id="${c.id}" style="${selected?'opacity:0.5;background:rgba(10,132,255,0.12)':''};pointer-events:auto;"><div class="nk-row-icon nk-person-avatar" style="background:${getGradient(c.name)}">${(c.name||'U')[0]}</div><div class="nk-row-info"><p class="nk-row-title">${c.name}</p><p class="nk-row-sub">${c.id}</p></div><i data-lucide="${selected?'check-circle-2':'circle'}" style="width:20px;height:20px;color:${selected?'#0a84ff':'#3a3a3c'}"></i></button>`;
     });
     const real = document.querySelectorAll('#chatContainer .chat-item');
     real.forEach(item=>{
       const name = item.querySelector('.chat-name')?.textContent?.trim()||'User';
       if(name.toLowerCase().includes(lower)){
-        html+=`<button class="nk-newchat-row" data-pick-real="${name}" style="pointer-events:auto;"><div class="nk-row-icon nk-person-avatar" style="background:${getGradient(name)}">${name[0]}</div><div class="nk-row-info"><p class="nk-row-title">${name}</p></div><i data-lucide="circle" style="width:20px;height:20px;color:#3a3a3c"></i></button>`;
+        const selId = 'real_'+name;
+        const selected = selectedMembers.includes(selId);
+        html+=`<button class="nk-newchat-row" data-pick-real="${name}" style="pointer-events:auto;${selected?'opacity:0.5;background:rgba(10,132,255,0.12)':''}"><div class="nk-row-icon nk-person-avatar" style="background:${getGradient(name)}">${name[0]}</div><div class="nk-row-info"><p class="nk-row-title">${name}</p></div><i data-lucide="${selected?'check-circle-2':'circle'}" style="width:20px;height:20px;color:${selected?'#0a84ff':'#3a3a3c'}"></i></button>`;
       }
     });
     if(!html) groupPeopleResults.innerHTML=`<div class="nk-empty">No results for "${filter}"<br>You haven't chatted with anyone yet</div>`;
@@ -530,7 +506,6 @@
           renderGroupPeople(groupSearchInput?.value||'');
         });
       });
-      // Real users pick also
       groupPeopleResults.querySelectorAll('[data-pick-real]').forEach(btn=>{
         btn.addEventListener('click', ()=>{
           const name=btn.dataset.pickReal;
@@ -541,105 +516,104 @@
         });
       });
     }
-    if(window.lucide) lucide.createIcons();
+    refreshIcons();
+    fixNewChatScroll();
   }
-  groupSearchInput?.addEventListener('input', (e)=> renderGroupPeople(e.target.value));
+  window.nkRenderGroupPeople = renderGroupPeople;
+  if(groupSearchInput && !groupSearchInput.dataset.nkBound){ groupSearchInput.dataset.nkBound='1'; groupSearchInput.addEventListener('input', (e)=> renderGroupPeople(e.target.value)); }
 
-  groupNextBtn?.addEventListener('click', ()=>{
-    if(selectedMembers.length===0){ showPopup('Select members', 'Please select at least 1 member'); return; }
-    groupCreateOverlay?.classList.add('show');
-    lockBody();
-    if(window.lucide) lucide.createIcons();
-  });
-  groupCreateBack?.addEventListener('click', ()=>{
-    wiggleX(groupCreateBack);
-    setTimeout(()=>{ groupCreateOverlay?.classList.remove('show'); lockBody(); }, 150);
-  });
+  if(groupNextBtn && !groupNextBtn.dataset.nkBound){
+    groupNextBtn.dataset.nkBound='1';
+    groupNextBtn.addEventListener('click', ()=>{
+      if(selectedMembers.length===0){ showPopup('Select members', 'Please select at least 1 member'); return; }
+      groupCreateOverlay?.classList.add('show');
+      lockBody();
+      refreshIcons();
+    });
+  }
+  if(groupCreateBack && !groupCreateBack.dataset.nkBound){
+    groupCreateBack.dataset.nkBound='1';
+    groupCreateBack.addEventListener('click', ()=>{ groupCreateOverlay?.classList.remove('show'); lockBody(); });
+  }
+  if(groupImageBtn && !groupImageBtn.dataset.nkBound){ groupImageBtn.dataset.nkBound='1'; groupImageBtn.addEventListener('click', ()=> groupImageInput?.click()); }
+  if(groupImageInput && !groupImageInput.dataset.nkBound){
+    groupImageInput.dataset.nkBound='1';
+    groupImageInput.addEventListener('change', (e)=>{
+      const file=e.target.files[0]; if(!file) return;
+      const url=URL.createObjectURL(file);
+      if(groupImagePreview){ groupImagePreview.src=url; groupImagePreview.style.display='block'; }
+      refreshIcons();
+    });
+  }
+  if(permissionRow && !permissionRow.dataset.nkBound){
+    permissionRow.dataset.nkBound='1';
+    permissionRow.addEventListener('click', ()=>{
+      permissionOverlay?.classList.add('show');
+      lockBody();
+      refreshIcons();
+    });
+  }
+  if(permissionBack && !permissionBack.dataset.nkBound){
+    permissionBack.dataset.nkBound='1';
+    permissionBack.addEventListener('click', ()=>{ permissionOverlay?.classList.remove('show'); lockBody(); });
+  }
+  if(permissionDone && !permissionDone.dataset.nkBound){
+    permissionDone.dataset.nkBound='1';
+    permissionDone.addEventListener('click', ()=>{ permissionOverlay?.classList.remove('show'); lockBody(); });
+  }
+  // NOTE: .nk-toggle - Main JS owns it, DO NOT bind here. No duplicate.
 
-  groupImageBtn?.addEventListener('click', ()=> groupImageInput?.click());
-  groupImageInput?.addEventListener('change', (e)=>{
-    const file=e.target.files[0]; if(!file) return;
-    const url=URL.createObjectURL(file);
-    groupImagePreview.src=url; groupImagePreview.style.display='block';
-    if(window.lucide) lucide.createIcons();
-  });
+  if(finalCreateBtn && !finalCreateBtn.dataset.nkBound){
+    finalCreateBtn.dataset.nkBound='1';
+    finalCreateBtn.addEventListener('click', ()=>{
+      const gName = groupNameInput?.value.trim();
+      if(!gName){ showPopup('Group name', 'Please enter group name'); return; }
+      if(selectedMembers.length===0){ showPopup('No members', 'Select at least 1 member'); return; }
+      const gid = 'g'+Date.now();
+      const chatObj = { id:gid, name:gName, fake:true, isGroup:true };
+      fakeChats.unshift(chatObj);
+      fakeMessagesMap[gid]=[{ text:`Group ${gName} created with ${selectedMembers.length} members`, sender:'other' }];
+      createFakeChatElement(chatObj, `Group with ${selectedMembers.length} members`);
+      permissionOverlay?.classList.remove('show');
+      groupCreateOverlay?.classList.remove('show');
+      newGroupOverlay?.classList.remove('show');
+      newChatOverlay?.classList.remove('show');
+      unlockBody();
+      if(groupNameInput) groupNameInput.value=''; selectedMembers=[];
+      if(groupImagePreview){ groupImagePreview.style.display='none'; groupImagePreview.src=''; }
+      const el = chatContainer?.querySelector(`.chat-item[data-user-id="${gid}"]`);
+      if(el && window.openChat) window.openChat(el); else openFakeChatBg(gid);
+    });
+  }
 
-  permissionRow?.addEventListener('click', ()=>{
-    permissionOverlay?.classList.add('show');
-    lockBody();
-    if(window.lucide) lucide.createIcons();
-  });
-  permissionBack?.addEventListener('click', ()=>{
-    wiggleX(permissionBack);
-    setTimeout(()=>{ permissionOverlay?.classList.remove('show'); lockBody(); }, 150);
-  });
-  permissionDone?.addEventListener('click', ()=>{
-    wiggleX(permissionDone);
-    setTimeout(()=>{ permissionOverlay?.classList.remove('show'); lockBody(); }, 150);
-  });
-
-  document.querySelectorAll('.nk-toggle').forEach(t=>{
-    t.addEventListener('click', ()=>{ const on = t.dataset.on==='true'; t.dataset.on = (!on).toString(); });
-  });
-
-  finalCreateBtn?.addEventListener('click', ()=>{
-    const gName = groupNameInput?.value.trim();
-    if(!gName){ showPopup('Group name', 'Please enter group name'); return; }
-    if(selectedMembers.length===0){ showPopup('No members', 'Select at least 1 member'); return; }
-    const gid = 'g'+Date.now();
-    const chatObj = { id:gid, name:gName, fake:true };
-    fakeChats.unshift(chatObj);
-    fakeMessagesMap[gid]=[{ text:`Group ${gName} created with ${selectedMembers.length} members `, sender:'other' }];
-    const div=document.createElement('div');
-    div.className='chat-item group nk-fake';
-    div.dataset.groupId=gid;
-    div.style.pointerEvents='auto';
-    div.innerHTML=`<div class="chat-avatar group-avatar" style="background:${getGradient(gName)}">${gName[0]}</div><div class="chat-info"><div class="chat-top-row"><p class="chat-name">${gName} <span class="nk-fake-badge">FAKE</span></p><span class="chat-date">now</span></div><div class="chat-bottom-row"><p class="chat-last-message">Group with ${selectedMembers.length} members</p></div></div>`;
-    chatContainer?.prepend(div);
-    div.addEventListener('click', ()=> openFakeChatBg(gid));
-    permissionOverlay?.classList.remove('show');
-    groupCreateOverlay?.classList.remove('show');
-    newGroupOverlay?.classList.remove('show');
-    newChatOverlay?.classList.remove('show');
-    unlockBody();
-    groupNameInput.value=''; selectedMembers=[]; if(groupImagePreview){ groupImagePreview.style.display='none'; groupImagePreview.src=''; }
-    openFakeChatBg(gid);
-  });
-
-  // Prevent drag up only mobile
+  // ---------- FIX: Recent Chats + List Scroll - Allow scroll inside, block outside ----------
+  function fixNewChatScroll(){
+    document.querySelectorAll('.nk-down-section, .nk-results, .nk-plus-scroll-area, .nk-newchat-list, #nkChattedPeopleList, #nkMainSearchResults, #nkGroupPeopleResults').forEach(function(el){
+      el.style.overflowY = 'auto';
+      el.style.touchAction = 'pan-y';
+      el.style.webkitOverflowScrolling = 'touch';
+    });
+  }
+  window.nkFixNewChatScroll = fixNewChatScroll;
   document.querySelectorAll('.nk-newchat-overlay').forEach(ov=>{
+    if(ov.dataset.nkScrollBound) return; ov.dataset.nkScrollBound='1';
     ov.addEventListener('touchmove', (e)=>{
       if(!isMobile()) return;
-      const sheet = ov.querySelector('.nk-newchat-sheet');
-      const scrollArea = ov.querySelector('.nk-plus-scroll-area, .nk-form-wrap, .nk-profile-wrap, .nk-newchat-list, .nk-permission-list');
-      if(scrollArea && scrollArea.contains(e.target)) return;
-      if(sheet && sheet.contains(e.target) && scrollArea) return;
+      // If inside scroll area, allow scroll - DO NOT preventDefault
+      const scrollArea = e.target.closest('.nk-plus-scroll-area, .nk-form-wrap, .nk-profile-wrap, .nk-newchat-list, .nk-permission-list, .nk-down-section, .nk-results, #nkChattedPeopleList, #nkMainSearchResults, #nkGroupPeopleResults');
+      if(scrollArea) return;
       e.preventDefault();
     }, { passive:false });
   });
+  // Fix scroll after render / open
+  new MutationObserver(fixNewChatScroll).observe(document.body, {childList:true, subtree:true});
+  fixNewChatScroll();
 
   window.addEventListener('resize', ()=>{
     if(!isMobile()){
-      document.querySelectorAll('.sidebar-section,.bottom-nav,.nav-pill,.pill-nav,.sidebar').forEach(el=>{
-        el.classList.remove('nk-hide-pill-sidebar');
-      });
+      document.querySelectorAll('.sidebar-section,.bottom-nav,.nav-pill,.pill-nav,.sidebar').forEach(el=>{ el.classList.remove('nk-hide-pill-sidebar'); });
     }
   });
 
-  console.log('NK JS V9 loaded - X working all, popup centered, fake chat fix, @username flow');
-
-  // Liquid click + wiggle follow - no glow
-function nkLiquid(el){
-  if(!el) return;
-  el.classList.remove('nk-liquid-click');
-  void el.offsetWidth; // reflow
-  el.classList.add('nk-liquid-click');
-  setTimeout(()=> el.classList.remove('nk-liquid-click'), 450);
-}
-document.addEventListener('click', (e)=>{
-  const row = e.target.closest('.nk-newchat-row, .nk-next-border, .nk-popup-btn, .nk-big-circle, .nk-back-btn, .nk-close-btn');
-  if(row) nkLiquid(row);
-});
-
-
+  console.log('NK NEW CHAT JS V10 loaded - No wiggle, No duplicate, Scroll fixed');
 })();

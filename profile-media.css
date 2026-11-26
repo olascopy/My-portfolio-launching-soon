@@ -15,7 +15,7 @@
 @media (max-width: 768px) {
 
   /* ---------- TOP BAR - MOBILE + PWA ---------- */
-  .edit-section-profile{
+  .edit-section-profile {
     left: 0;
     right: 0;
     height: 60px;
@@ -24,20 +24,23 @@
     align-items: center;
     box-sizing: border-box;
   }
-  .cancel-button{
+
+  .cancel-button {
     margin-top: 0;
     margin-left: 0;
     width: 36px;
     height: 36px;
     flex-shrink: 0;
   }
-  .edit-section-cancel{
+
+  .edit-section-cancel {
     margin-top: 0;
     margin-left: 0;
     width: 22px;
     height: 22px;
   }
-  .edit-section-text{
+
+  .edit-section-text {
     margin-top: 0;
     margin-right: 0;
     font-size: 17px;
@@ -45,7 +48,8 @@
     text-align: center;
     flex: 1;
   }
-  .edit-section-save{
+
+  .edit-section-save {
     margin-top: 0;
     margin-right: 0;
     width: auto;
@@ -54,7 +58,8 @@
     padding: 0 14px;
     flex-shrink: 0;
   }
-  .save-edit-text{
+
+  .save-edit-text {
     margin-top: 0;
     transform: none;
     font-size: 14px;
@@ -63,13 +68,14 @@
   }
 
   /* ---------- BACKGROUND - MOBILE  ---------- */
-  
-  .extrabackground-profile{
-    top: calc(804px + env(safe-area-inset-top)); /* FIX V8: Bring down small - was 74px, now 84px */
+
+  .extrabackground-profile {
+    top: calc(804px + env(safe-area-inset-top));
+    /* FIX V8: Bring down small - was 74px, now 84px */
     left: 12px;
     right: 12px;
-    transform: none; 
-    width: auto; 
+    transform: none;
+    width: auto;
     max-width: none;
     height: 630px;
     border-radius: 18px;
@@ -77,13 +83,14 @@
   }
 
   /* ---------- PREVIEW BUTTON - MOBILE ---------- */
-  .preview-profile-btn{
+  .preview-profile-btn {
     margin-left: auto;
     margin-right: 12px;
     width: 140px;
     height: 32px;
   }
-  .preview-profile-text{
+
+  .preview-profile-text {
     font-size: 15px;
     margin-left: 12px;
     line-height: 32px;
@@ -91,92 +98,107 @@
   }
 
   /* ---------- ROUND PROFILE - MOBILE ---------- */
-  .round-profile{
+  .round-profile {
     margin-left: calc(50% - 60px);
     margin-top: 55px;
     width: 120px;
     height: 120px;
   }
-  .thought{
+
+  .thought {
     width: 150px;
     left: -22px;
   }
-  .mood-share-text{
+
+  .mood-share-text {
     font-size: 14px;
   }
-  .edit-profile-btn{
+
+  .edit-profile-btn {
     right: 0;
     gap: 6px;
     align-items: center;
     justify-content: center;
   }
-  .edit-camera-icon{
+
+  .edit-camera-icon {
     margin-top: 0;
     margin-left: 0;
     width: 18px;
     height: 18px;
   }
-  .edit-text{
+
+  .edit-text {
     margin-top: 0;
     font-size: 14px;
   }
 
   /* ---------- USERNAME / ID + COPY - MOBILE ---------- */
-  .username-border{
+  .username-border {
     justify-content: center;
     width: 100%;
   }
-  .username-profile{
+
+  .username-profile {
     margin-left: 0;
     margin-right: 0;
     font-size: 19px;
     text-align: center;
   }
-  .id-profile{
+
+  .id-profile {
     margin-left: 0;
     margin-right: 0;
     text-align: center;
   }
-  .edit-username{
+
+  .edit-username {
     margin-top: 20px;
     width: 15px;
     height: 15px;
   }
-  .copy-profile-btn{
+
+  .copy-profile-btn {
     margin-top: 14px;
     margin-left: 4px;
     width: 30px;
     height: 30px;
     flex-shrink: 0;
   }
-  .copied-text{
+
+  .copied-text {
     margin-top: 20px;
     font-size: 11px;
   }
 
   /* ---------- PERSONAL INFO / ABOUT / SPOTIFY - MOBILE ---------- */
-  .personal-information-text{
+  .personal-information-text {
     margin-left: 16px;
     margin-top: 28px;
     font-size: 18px;
   }
+
   .about-me-text,
-  .mood-connect-text{
+  .mood-connect-text {
     margin-left: 16px;
   }
-  .input-about-border{
+
+  .input-about-border {
     padding-right: 16px;
     box-sizing: border-box;
   }
-  .input-about{
+
+  .input-about {
     width: 100%;
     margin-left: 16px;
     margin-right: 0;
   }
-  .edit-about{
+
+  .edit-about {
     flex-shrink: 0;
   }
-  .mood-connect-display{
+
+  .mood-connect-display {
     width: calc(100% - 32px);
     margin-left: 16px;
     margin-right: 16px;
@@ -184,12 +206,13 @@
     min-height: 180px;
     padding: 14px;
   }
-  .spotify-explain{
+
+  .spotify-explain {
     font-size: 13px;
   }
 
   /* Connect btn SHORT - still short */
-  .spotify-connect-btn{
+  .spotify-connect-btn {
     width: 110px;
     height: 34px;
     padding: 8px 12px;
@@ -197,7 +220,7 @@
   }
 
   /* ---------- PHOTO PILL - MOBILE ---------- */
-  .photo-pill{
+  .photo-pill {
     right: -10px;
     left: auto;
     min-width: 150px;
@@ -205,14 +228,15 @@
   }
 
   /* ---------- MOOD POPUP - MOBILE - CENTER ---------- */
-  .popup-overlay{
+  .popup-overlay {
     padding: 12px;
     align-items: center;
     justify-content: center;
     padding-top: calc(12px + env(safe-area-inset-top));
     padding-bottom: calc(12px + env(safe-area-inset-bottom));
   }
-  .popup-liquid{
+
+  .popup-liquid {
     max-width: 380px;
     max-height: 82vh;
     border-radius: 24px;
@@ -220,65 +244,73 @@
   }
 
   /* ---------- PREVIEW POPUP - MOBILE - CENTER ---------- */
-  .preview-background{
+  .preview-background {
     padding: 12px;
     align-items: center;
     justify-content: center;
     padding-top: calc(12px + env(safe-area-inset-top));
     padding-bottom: calc(12px + env(safe-area-inset-bottom));
   }
-  .preview-popup-card{
+
+  .preview-popup-card {
     max-width: 380px;
     max-height: 82vh;
     border-radius: 24px;
     padding: 16px;
     padding-top: 10px;
   }
-  .preview-round-profile{
+
+  .preview-round-profile {
     margin-top: 38px !important;
   }
 
   /* Preview mood - fixed width, NO expand, ... */
-  .preview-mood-wrap{
+  .preview-mood-wrap {
     top: -28px;
     left: -22px;
   }
-  .preview-mood-border{
+
+  .preview-mood-border {
     width: 150px;
     height: 32px;
     padding: 0 12px;
   }
-  .preview-mood-text{
+
+  .preview-mood-text {
     font-size: 12px;
     max-width: 126px;
   }
 
   /* Preview 3 icons - 10px, SHOW CLEARLY */
-  .preview-actions{
+  .preview-actions {
     gap: 14px;
   }
-  .preview-action-btn{
+
+  .preview-action-btn {
     border-radius: 10px !important;
   }
+
   .preview-action-btn i,
-  .preview-action-btn svg{
+  .preview-action-btn svg {
     opacity: 1 !important;
     color: #111 !important;
   }
-  .preview-action-label{
+
+  .preview-action-label {
     opacity: 1 !important;
     color: #333 !important;
   }
 
-  .preview-about-border{
+  .preview-about-border {
     width: 100%;
   }
-  .preview-spotify{
+
+  .preview-spotify {
     width: 100%;
   }
 
   /* ---------- FULL IMAGE - MOBILE ---------- */
-  #fullImageViewer img{
+  #fullImageViewer img {
     max-width: 92vw;
     max-height: 78vh;
   }
@@ -286,200 +318,228 @@
 
 /* ===== SMALL PHONE ONLY - 480px ===== */
 @media (max-width: 480px) {
-  .edit-section-profile{
+  .edit-section-profile {
     height: 58px;
     padding-top: calc(4px + env(safe-area-inset-top));
   }
-  .edit-section-text{
+
+  .edit-section-text {
     font-size: 16px;
   }
-  .edit-section-save{
+
+  .edit-section-save {
     min-width: 60px;
     padding: 0 10px;
   }
 
   /* FIX V8: Background - CENTER + BRING DOWN SMALL - Small phone */
   /* Before V7: top 70px. Now V8: top 80px (bring down small +10px) */
-  .extrabackground-profile{
+  .extrabackground-profile {
     left: 10px;
     right: 10px;
-    top: calc(80px + env(safe-area-inset-top)); /* FIX V8: Bring down small - was 70px, now 80px */
+    top: calc(80px + env(safe-area-inset-top));
+    /* FIX V8: Bring down small - was 70px, now 80px */
     transform: none;
     width: auto;
     max-width: none;
-    height: 560px; /* Keep V7 height */
+    height: 560px;
+    /* Keep V7 height */
   }
 
-  .round-profile{
+  .round-profile {
     margin-left: calc(50% - 52px);
     width: 105px;
     height: 105px;
   }
-  .thought{
+
+  .thought {
     width: 135px;
     left: -12px;
     top: -28px;
     height: 32px;
   }
-  .mood-share-text{
+
+  .mood-share-text {
     font-size: 13px;
   }
-  .edit-profile-btn{
+
+  .edit-profile-btn {
     width: 72px;
     height: 32px;
     bottom: -8px;
     right: 0;
   }
-  .edit-text{
+
+  .edit-text {
     font-size: 13px;
   }
 
-  .username-profile{
+  .username-profile {
     margin-left: 0;
     font-size: 18px;
   }
-  .id-profile{
+
+  .id-profile {
     margin-left: 0;
   }
-  .copy-profile-btn{
+
+  .copy-profile-btn {
     width: 28px;
     height: 28px;
     margin-top: 13px;
   }
-  .copy-profile-btn svg{
+
+  .copy-profile-btn svg {
     width: 16px;
     height: 16px;
   }
-  .copied-text{
+
+  .copied-text {
     font-size: 11px;
     margin-top: 19px;
   }
 
-  .personal-information-text{
+  .personal-information-text {
     margin-left: 14px;
     font-size: 17px;
   }
+
   .about-me-text,
-  .mood-connect-text{
+  .mood-connect-text {
     margin-left: 14px;
   }
-  .input-about{
+
+  .input-about {
     margin-left: 14px;
     height: 42px;
     font-size: 14px;
   }
-  .mood-connect-display{
+
+  .mood-connect-display {
     width: calc(100% - 28px);
     margin-left: 14px;
     margin-right: 14px;
     padding: 12px;
   }
-  .preview-profile-btn{
+
+  .preview-profile-btn {
     width: 130px;
     margin-right: 10px;
   }
-  .preview-profile-text{
+
+  .preview-profile-text {
     font-size: 14px;
   }
 
   /* Connect btn SHORT - Small phone */
-  .spotify-connect-btn{
+  .spotify-connect-btn {
     width: 100px;
     height: 32px;
     font-size: 12px;
     padding: 7px 10px;
   }
 
-  .photo-pill{
+  .photo-pill {
     right: -8px;
     min-width: 140px;
   }
-  .photo-pill-btn{
+
+  .photo-pill-btn {
     font-size: 13px;
     padding: 9px 10px;
   }
 
   /* Mood Popup CENTER - Small phone */
-  .popup-overlay{
+  .popup-overlay {
     padding: 8px;
     align-items: center;
     justify-content: center;
     padding-top: calc(8px + env(safe-area-inset-top));
     padding-bottom: calc(8px + env(safe-area-inset-bottom));
   }
-  .popup-liquid{
+
+  .popup-liquid {
     padding: 16px;
     border-radius: 22px;
     max-height: 82vh;
     max-width: 360px;
   }
-  .popup-title{
+
+  .popup-title {
     font-size: 17px;
   }
+
   .duration-btn,
   .visibility-btn,
-  .suggestion-btn{
+  .suggestion-btn {
     font-size: 12px;
     padding: 7px 10px;
   }
-  .mood-save-btn{
+
+  .mood-save-btn {
     height: 46px;
     font-size: 14px;
   }
 
   /* Preview Popup CENTER - Small phone */
-  .preview-background{
+  .preview-background {
     padding: 8px;
     align-items: center;
     justify-content: center;
     padding-top: calc(8px + env(safe-area-inset-top));
     padding-bottom: calc(8px + env(safe-area-inset-bottom));
   }
-  .preview-popup-card{
+
+  .preview-popup-card {
     padding: 14px;
     padding-top: 8px;
     border-radius: 22px;
     max-height: 82vh;
     max-width: 360px;
   }
-  .preview-round-profile{
+
+  .preview-round-profile {
     width: 105px !important;
     height: 105px !important;
     margin-top: 36px !important;
   }
 
   /* Preview mood - small phone, fixed width, ... */
-  .preview-mood-wrap{
+  .preview-mood-wrap {
     top: -26px;
     left: -12px;
   }
-  .preview-mood-border{
+
+  .preview-mood-border {
     width: 135px;
     height: 32px;
     font-size: 12px;
     padding: 0 10px;
   }
-  .preview-mood-text{
+
+  .preview-mood-text {
     font-size: 12px;
     max-width: 115px;
   }
 
-  .preview-username-inside{
+  .preview-username-inside {
     font-size: 17px;
   }
-  .preview-actions{
+
+  .preview-actions {
     gap: 12px;
     margin-top: 12px;
     margin-bottom: 12px;
   }
 
   /* Preview 3 icons - small phone, 10px NOT 19px */
-  .preview-action-btn{
+  .preview-action-btn {
     width: 38px;
     height: 38px;
     border-radius: 10px !important;
   }
-  .preview-about-text{
+
+  .preview-about-text {
     font-size: 13px;
   }
 }

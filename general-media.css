@@ -1,6 +1,8 @@
 /* ===== GENERAL MEDIA - LOCK PORTRAIT ===== */
 @media screen and (max-width: 932px) {
-  html, body {
+
+  html,
+  body {
     width: 100% !important;
     max-width: 100vw !important;
     height: 100% !important;
@@ -11,7 +13,10 @@
     box-sizing: border-box !important;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
   }
-    * { box-sizing: border-box !important; }
+
+  * {
+    box-sizing: border-box !important;
+  }
 }
 
 /* LOCK LANDSCAPE - show rotate message */
@@ -29,12 +34,17 @@
     font-weight: 700;
     letter-spacing: -0.2px;
   }
-  body > * {
+
+  body>* {
     display: none !important;
   }
-}/* ===== GENERAL MEDIA - LOCK PORTRAIT ===== */
+}
+
+/* ===== GENERAL MEDIA - LOCK PORTRAIT ===== */
 @media screen and (max-width: 932px) {
-  html, body {
+
+  html,
+  body {
     width: 100% !important;
     max-width: 100vw !important;
     height: 100% !important;
@@ -45,7 +55,10 @@
     box-sizing: border-box !important;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
   }
-    * { box-sizing: border-box !important; }
+
+  * {
+    box-sizing: border-box !important;
+  }
 }
 
 /* LOCK LANDSCAPE - show rotate message */
@@ -63,7 +76,8 @@
     font-weight: 700;
     letter-spacing: -0.2px;
   }
-  body > * {
+
+  body>* {
     display: none !important;
   }
 }

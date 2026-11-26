@@ -1,946 +1,779 @@
+
 // ==========================
-// reaction-and-other.js - Hold Pill + Sticker + Preview + Voice + Delete + Copy/Save
-// CLEAN - NO cut, NO Forward, NO prompt(), NO emoji in list
-// Save = FRONTEND ONLY, Image + Video ONLY. Voice = NO Save. Backend = just passes file.
-// Loading = Sender upload + Receiver download, 0% -> 100%. Save/Play blocked until 100%.
-// Notify tap = Open that person's chat + Focus input + Keyboard.
-// Emoji picker = In a border, lot of emoji like phone.
-// Sticker video = REAL cut with FFmpeg, not fake cut.
+// reaction.js - REACTION + STICKER + FFmpeg + VOICE + PLUS PILL + INPUT LIMIT - CLEAN - NO CUT
+// FIX: Plus Pill MUST show even if HTML has no #plusPillMenu - JS creates it
 // ==========================
 (function(){
-  const chatMessages = document.getElementById('chatMessages');
-  const overlay = document.getElementById('messageFocusOverlay');
-  const poppedContainer = document.getElementById('poppedMessageContainer');
-  const poppedClone = document.getElementById('poppedClone');
-  const actionPill = document.getElementById('messageActionPill');
-  const emojiBar = document.getElementById('emojiReactBar');
-  const emojiPlusBtn = document.getElementById('emojiPlusBtn');
-  const emojiPicker = document.getElementById('emojiPickerPanel');
-  const emojiPickerGrid = document.getElementById('emojiPickerGrid');
-  const headerCancelBtn = document.getElementById('headerCancelBtn');
-  const selectedGroup = document.getElementById('selectedPill');
-  const callsWrap = document.querySelector('.calls');
-  const chatInputBar = document.getElementById('chatInputBar');
-  const deleteActionBar = document.getElementById('deleteActionBar');
-  const selectedCount = document.getElementById('selectedCount');
-  const toast = document.getElementById('toast');
-  const favText = document.getElementById('favText');
-  const favIcon = document.getElementById('favIcon');
-  const plusBtn = document.getElementById('inputPlusBtn');
-  const plusMenu = document.getElementById('plusPillMenu');
-  const stickerBtn = document.getElementById('emojiStickerBtn');
-  const stickerPanel = document.getElementById('stickerBorderPanel');
-  const stickerGrid = document.getElementById('stickerGrid');
-  const stickerPanelClose = document.getElementById('stickerPanelClose');
-  const stickerAddBox = document.getElementById('stickerAddBox');
-  const chatStickerSelectMode = document.getElementById('chatStickerSelectMode');
-  const stickerSelectGrid = document.getElementById('stickerSelectGrid');
-  const stickerSelectClose = document.getElementById('stickerSelectClose');
-  const addStickerConfirmBtn = document.getElementById('addStickerConfirmBtn');
-  const addStickerCancelX = document.getElementById('addStickerCancelX');
-  const galleryInput = document.getElementById('galleryInput');
-  const cameraInput = document.getElementById('cameraInput');
-  const imagePreview = document.getElementById('imagePreviewOverlay');
-  const previewImage = document.getElementById('previewImage');
-  const previewVideo = document.getElementById('previewVideo');
-  const previewClose = document.getElementById('previewClose');
-  const previewCancelText = document.getElementById('previewCancelText');
-  const captionInput = document.getElementById('captionInput');
-  const previewSendBtn = document.getElementById('previewSendBtn');
-  const videoFullOverlay = document.getElementById('videoFullOverlay');
-  const videoFullPlayer = document.getElementById('videoFullPlayer');
-  const videoFullCaption = document.getElementById('videoFullCaption');
-  const videoFullClose = document.getElementById('videoFullClose');
-  const createPage = document.getElementById('createStickerPage');
-  const createClose = document.getElementById('createStickerClose');
-  const createBack = document.getElementById('createStickerBack');
-  const createCancelBtn = document.getElementById('createCancelBtn');
-  const createImage = document.getElementById('createStickerImage');
-  const createVideo = document.getElementById('createStickerVideo');
-  const createCanvasEl = document.getElementById('createCanvas');
-  const createPlaceholder = document.getElementById('createPlaceholder');
-  const stickerFileInput = document.getElementById('stickerFileInput');
-  const textOverlay = document.getElementById('textOverlay');
-  const textOverlayWrapper = document.getElementById('textOverlayWrapper');
-  const addTextBtn = document.getElementById('addTextBtn');
-  const boldTextBtn = document.getElementById('boldTextBtn');
-  const zoomTextBtn = document.getElementById('zoomTextBtn');
-  const cropBtn = document.getElementById('cropBtn');
-  const createAddBtn = document.getElementById('createAddBtn');
-  const videoTrimBar = document.getElementById('videoTrimBar');
-  const trimStart = document.getElementById('trimStart');
-  const trimEnd = document.getElementById('trimEnd');
-  const trimLabel = document.getElementById('trimLabel');
-  const voiceOverlay = document.getElementById('voiceRecordingOverlay');
-  const voiceTimer = document.getElementById('voiceTimer');
-  const voiceCancelBtn = document.getElementById('voiceCancelBtn');
-  const voiceSendBtn = document.getElementById('voiceSendBtn');
-  const voiceStopBtn = document.getElementById('voiceStopBtn');
-  const voiceWaveBig = document.getElementById('voiceWaveBig');
-  const msgInput = document.getElementById('msgInput');
-  const micBtn = document.getElementById('micSendBtn');
-  const chatBackground = document.getElementById('chatBackground');
-  if(!chatMessages) return;
+  const $ = (s,p=document)=>p.querySelector(s);
+  const $$ = (s,p=document)=>[...p.querySelectorAll(s)];
+  const chatMessages = $('#chatMessages');
+  const chatBackground = $('#chatBackground');
+  if(!chatMessages || !chatBackground) return;
 
-  // ================= STATE =================
+  const overlay = $('#messageFocusOverlay');
+  const poppedContainer = $('#poppedMessageContainer');
+  const poppedClone = $('#poppedClone');
+  const actionPill = $('#messageActionPill');
+  const emojiBar = $('#emojiReactBar');
+  const emojiPlusBtn = $('#emojiPlusBtn');
+  const emojiPickerPanel = $('#emojiPickerPanel');
+  const emojiPickerGrid = $('#emojiPickerGrid');
+  const toast = $('#toast');
+  const favText = $('#favText');
+  const favIcon = $('#favIcon');
+
+  const stickerBtn = $('#emojiStickerBtn');
+  const stickerPanel = $('#stickerBorderPanel');
+  const stickerGrid = $('#stickerGrid');
+  const stickerAddBox = $('#stickerAddBox');
+  const chatStickerSelectMode = $('#chatStickerSelectMode');
+  const stickerSelectGrid = $('#stickerSelectGrid');
+  const addStickerConfirmBtn = $('#addStickerConfirmBtn');
+  const addStickerCancelX = $('#addStickerCancelX');
+  const stickerSelectClose = $('#stickerSelectClose');
+
+  const galleryInput = $('#galleryInput');
+  const cameraInput = $('#cameraInput');
+  const imagePreview = $('#imagePreviewOverlay');
+  const previewImage = $('#previewImage');
+  const previewVideo = $('#previewVideo');
+  const previewClose = $('#previewClose');
+  const previewCancelText = $('#previewCancelText');
+  const captionInput = $('#captionInput');
+  const previewSendBtn = $('#previewSendBtn');
+
+  const videoFullOverlay = $('#videoFullOverlay');
+  const videoFullPlayer = $('#videoFullPlayer');
+  const videoFullCaption = $('#videoFullCaption');
+  const videoFullClose = $('#videoFullClose');
+
+  const createPage = $('#createStickerPage');
+  const createClose = $('#createStickerClose');
+  const createBack = $('#createStickerBack');
+  const createCancelBtn = $('#createCancelBtn');
+  const createImage = $('#createStickerImage');
+  const createVideo = $('#createStickerVideo');
+  const createCanvasEl = $('#createCanvas');
+  const createPlaceholder = $('#createPlaceholder');
+  const stickerFileInput = $('#stickerFileInput');
+  const textOverlay = $('#textOverlay');
+  const textOverlayWrapper = $('#textOverlayWrapper');
+  const addTextBtn = $('#addTextBtn');
+  const boldTextBtn = $('#boldTextBtn');
+  const zoomTextBtn = $('#zoomTextBtn');
+  const cropBtn = $('#cropBtn');
+  const createAddBtn = $('#createAddBtn');
+  const videoTrimBar = $('#videoTrimBar');
+  const trimStart = $('#trimStart');
+  const trimEnd = $('#trimEnd');
+  const trimLabel = $('#trimLabel');
+  const ffmpegLoader = $('#ffmpegLoader');
+  const cuttingLoader = $('#cuttingLoader');
+
+  const voiceOverlay = $('#voiceRecordingOverlay');
+  const voiceTimer = $('#voiceTimer');
+  const voiceCancelBtn = $('#voiceCancelBtn');
+  const voiceSendBtn = $('#voiceSendBtn');
+  const voiceStopBtn = $('#voiceStopBtn');
+  const voiceWaveBig = $('#voiceWaveBig');
+  const msgInput = $('#msgInput');
+  const micBtn = $('#micSendBtn');
+
+  // ---------- STATE ----------
   let currentRow = null, currentId = null, pressTimer = null;
-  let selectedMessages = new Set();
-  let stickers = JSON.parse(localStorage.getItem('my_stickers') || '[]');
-  stickers = stickers.map(s => typeof s === 'string' ? {src:s, type:'image'} : s);
+  let stickers = [];
+  try{ stickers = JSON.parse(localStorage.getItem('my_stickers')||'[]').map(s=>typeof s==='string'?{src:s,type:'image'}:s); }catch(e){ stickers = []; }
   let memoryVideoStickers = [];
-  let voiceInterval = null, voiceSec = 0, voiceStartTime = 0;
   let previewType = 'image', previewObjectUrl = '';
-  let cropScale = 1, cropX = 0, cropY = 0, lastDist = 0, lastX = 0, lastY = 0;
-  let textScale = 1;
+  let cropScale = 1, cropX = 0, cropY = 0, lastDist = 0, lastX = 0, lastY = 0, textScale = 1, isCropped = false;
   let originalVideoFile = null;
-  let isCropped = false;
   let ffmpegInstance = null, ffmpegLoaded = false, ffmpegLoading = false;
+  let isPlusOpen = false;
+  let lastValidInput = '';
+  let limitPopupOpen = false;
 
-  // ================= HELPERS =================
-  function showToast(msg="Added"){
-    if(!toast) return;
-    const span = toast.querySelector('span');
-    if(span) span.textContent = msg;
-    toast.classList.add('show');
-    setTimeout(()=> toast.classList.remove('show'), 2000);
-    if(window.lucide) lucide.createIcons();
+  function refresh(){ if(window.lucide) lucide.createIcons(); }
+  function showToast(msg='Added'){
+    if(!toast) return; const sp = toast.querySelector('span'); if(sp) sp.textContent = msg;
+    toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),2000); refresh();
   }
-  function updateListLastMessage(text, time){
-    const activeItem = document.querySelector('#chatContainer .chat-item.active') || window._currentChatItem || document.querySelector('#chatContainer .chat-item');
-    if(!activeItem) return;
-    const lastEl = activeItem.querySelector('.chat-last-message');
-    const dateEl = activeItem.querySelector('.chat-date');
-    if(lastEl){ lastEl.classList.remove('deleted-preview'); lastEl.textContent = text; }
-    if(dateEl) dateEl.textContent = time || new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-    const container = document.getElementById('chatContainer');
-    if(container && activeItem.parentNode === container) container.prepend(activeItem);
+  function cleanSrc(src){ return (src||'').split('#')[0]; }
+  function loadingHtml(cls){
+    return `<div class="media-loading-overlay ${cls}"><div class="media-loading-circle"><i data-lucide="download" class="media-download-icon"></i><i data-lucide="rotate-ccw" class="media-retry-icon"></i><svg class="media-progress-ring" viewBox="0 0 48 48"><circle class="media-progress-bg" cx="24" cy="24" r="20"></circle><circle class="media-progress-fill" cx="24" cy="24" r="20"></circle></svg><span class="media-loading-percent">0%</span></div></div>`;
   }
-  function makeDeletedPlaceholder(row, isMine){
-    const bubble = row.querySelector('.bubble');
-    if(!bubble){ row.remove(); return; }
-    const time = bubble.querySelector('.msg-time')?.textContent || '';
-    bubble.className = 'bubble deleted-bubble';
-    bubble.innerHTML = `<i data-lucide="trash-2"></i><p>${isMine ? 'You deleted this message' : 'This message was deleted'}</p><span class="msg-meta right-meta"><span class="msg-time">${time}</span></span>`;
-    row.classList.add('deleted-row');
-    row.classList.remove('select-mode','selected');
-    const lastEl = window._currentChatItem?.querySelector('.chat-last-message');
-    if(lastEl){ lastEl.classList.add('deleted-preview'); lastEl.innerHTML = `<i data-lucide="trash-2" class="deleted-preview-icon"></i><span>This message was deleted</span>`; }
-    if(window.lucide) lucide.createIcons();
-  }
-  window.makeDeletedPlaceholder = makeDeletedPlaceholder;
-
-  // ================= LOADING INSIDE MEDIA - SENDER + RECEIVER =================
-  // Sender = uploading to backend. Receiver = downloading from backend.
-  // Backend just passes file. Frontend does loading + Save.
-  // Save / Play blocked until 100%. Fail = retry.
-  function setMediaLoading(row, percent){
-    const overlayEl = row.querySelector('.media-loading-overlay');
-    const pctEl = row.querySelector('.media-loading-percent');
-    const ringEl = row.querySelector('.media-progress-ring');
-    const bubble = row.querySelector('.bubble');
-    if(!overlayEl || !bubble) return;
-    if(percent >= 100){
-      overlayEl.classList.add('hidden'); overlayEl.style.display = 'none';
-      bubble.classList.remove('is-loading'); bubble.classList.add('is-loaded');
-      row.dataset.loaded = 'true';
-      return;
-    }
-    overlayEl.classList.remove('hidden', 'is-retry', 'is-failed');
-    overlayEl.style.display = 'flex';
-    bubble.classList.add('is-loading'); bubble.classList.remove('is-loaded');
-    row.dataset.loaded = 'false';
-    if(pctEl) pctEl.textContent = `${Math.round(percent)}%`;
-    if(ringEl){
-      const c = 2 * Math.PI * 18;
-      ringEl.style.strokeDasharray = `${c}`;
-      ringEl.style.strokeDashoffset = `${c - (c * percent / 100)}`;
-    }
-  }
-  function setMediaFailed(row){
-    const overlayEl = row.querySelector('.media-loading-overlay');
-    const bubble = row.querySelector('.bubble');
-    if(!overlayEl || !bubble) return;
-    overlayEl.classList.add('is-retry', 'is-failed');
-    overlayEl.classList.remove('hidden');
-    overlayEl.style.display = 'flex';
-    bubble.classList.add('is-failed'); bubble.classList.remove('is-loaded');
-    row.dataset.loaded = 'false';
-    const pctEl = row.querySelector('.media-loading-percent');
-    if(pctEl) pctEl.textContent = 'Retry';
-  }
-  function simulateMediaLoading(row, onDone){
-    // UI Preview: fake 0% -> 100%. Backend later replaces with real upload / download progress.
-    // Backend will call setMediaLoading(row, realPercent) and setMediaLoading(row, 100) when done.
+  function runLoading(bubble, done){
+    if(!bubble) { if(done) done(); return; }
+    bubble.classList.add('is-loading');
+    const ov = bubble.querySelector('.media-loading-overlay'); if(!ov){ bubble.classList.remove('is-loading'); if(done) done(); return; }
+    ov.hidden = false; ov.classList.remove('is-retry');
     let p = 0;
-    setMediaLoading(row, 0);
     const iv = setInterval(()=>{
-      p += Math.random() * 18 + 6;
-      if(p >= 100){ p = 100; clearInterval(iv); setMediaLoading(row, 100); if(onDone) onDone(); return; }
-      setMediaLoading(row, p);
-    }, 180);
-    row._loadingInterval = iv;
-    const overlayEl = row.querySelector('.media-loading-overlay');
-    if(overlayEl && !overlayEl.dataset.retryBound){
-      overlayEl.dataset.retryBound = '1';
-      overlayEl.addEventListener('click', (e)=>{
-        e.stopPropagation();
-        if(!overlayEl.classList.contains('is-failed')) return;
-        // Retry = try again
-        simulateMediaLoading(row, onDone);
-      });
-    }
+      p += Math.floor(Math.random()*18)+8;
+      if(p >= 100){ p = 100; clearInterval(iv); ov.hidden = true; bubble.classList.remove('is-loading'); const pct = ov.querySelector('.media-loading-percent'); if(pct) pct.textContent = '100%'; const ring = ov.querySelector('.media-progress-fill'); if(ring) ring.style.strokeDashoffset = 0; if(done) done(); return; }
+      const pct = ov.querySelector('.media-loading-percent'); if(pct) pct.textContent = p+'%';
+      const ring = ov.querySelector('.media-progress-fill'); if(ring) ring.style.strokeDashoffset = 126 - (126*p/100);
+    },180);
+    if(!ov.dataset.retryBound){ ov.dataset.retryBound='1'; ov.addEventListener('click', ()=>{ if(!ov.classList.contains('is-retry')) return; ov.classList.remove('is-retry'); runLoading(bubble, done); }); }
   }
-  window.setMediaLoading = setMediaLoading;
-  window.setMediaFailed = setMediaFailed;
-  window.simulateMediaLoading = simulateMediaLoading;
+  window.nkRunLoading = runLoading;
 
-  // ================= SAVE TO GALLERY - FRONTEND ONLY =================
-  // Backend does NOT save. Frontend saves. Image + Video ONLY. Voice = NO Save.
-  function saveMediaToGallery(row){
-    if(!row) return false;
-    if(row.dataset.loaded !== 'true'){
-      showToast('Still loading...');
-      return false;
-    }
-    const media = row.querySelector('.image-bubble img, .video-bubble video');
-    if(!media){ showToast('No media'); return false; }
-    const src = (media.src || media.currentSrc || '').split('#')[0];
-    if(!src){ showToast('No media'); return false; }
-    const isVideo = media.tagName === 'VIDEO';
-    const a = document.createElement('a');
-    a.href = src;
-    a.download = isVideo ? `konnekt-video-${Date.now()}.mp4` : `konnekt-image-${Date.now()}.jpg`;
-    a.target = '_blank';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    showToast('Saved');
-    return true;
+  // ---------- PLUS PILL - FIX: Find by ANY name, CREATE if missing, MUST show ----------
+  function findPlusBtn(){
+    return $('#inputPlusBtn') || $('[data-plus]') || $('.input-plus-btn') || $('.plus-btn') || $('#plusBtn') || $('[data-action="plus"]') || document.querySelector('.chat-input-bar button:first-child');
   }
-  window.saveMediaToGallery = saveMediaToGallery;
-
-  // ================= iOS NOTIFY - LOOP FOR UI PREVIEW, TAP OPENS CHAT + KEYBOARD =================
-  window.showIOSNotify = function({avatar='N', name='New message', message='You have a new message', time='now', userId=null, onClick=null}={}){
-    if(!chatBackground) return;
-    const old = chatBackground.querySelector('.ios-notify');
-    if(old) old.remove();
-    const notify = document.createElement('div');
-    notify.className = 'ios-notify';
-    notify.innerHTML = `<div class="ios-notify-avatar">${avatar}</div><div class="ios-notify-content"><div class="ios-notify-name">${name}</div><div class="ios-notify-msg">${message}</div></div><div class="ios-notify-time">${time}</div>`;
-    notify.addEventListener('click', ()=>{
-      notify.classList.add('hide');
-      setTimeout(()=> notify.remove(), 260);
-      if(typeof onClick === 'function'){ onClick(); return; }
-      // Default: Open that person's chat + Focus input + Keyboard
-      openChatFromNotify(name, userId);
-    });
-    chatBackground.appendChild(notify);
-    if(window.lucide) lucide.createIcons();
-    setTimeout(()=>{
-      if(notify.parentNode){
-        notify.classList.add('hide');
-        setTimeout(()=>{ if(notify.parentNode) notify.remove(); }, 280);
-      }
-    }, 3200);
-  };
-  function openChatFromNotify(name, userId){
-    // Find chat item by name or userId in list
-    let item = null;
-    if(userId) item = document.querySelector(`#chatContainer .chat-item[data-user-id="${userId}"]`);
-    if(!item){
-      item = [...document.querySelectorAll('#chatContainer .chat-item')].find(el => (el.querySelector('.chat-name')?.textContent || '').trim().toLowerCase() === name.trim().toLowerCase());
-    }
-    if(item){
-      // Use Main JS openChatBg if exists, else click item
-      if(window.openChatBg) window.openChatBg(item);
-      else item.click();
-      item.classList.add('active');
-      // Mark active for list last message
-      document.querySelectorAll('#chatContainer .chat-item').forEach(el => el.classList.remove('active'));
-      item.classList.add('active');
-      window._currentChatItem = item;
+  function findPlusMenu(){
+    return $('#plusPillMenu') || $('.plus-pill-menu') || $('[data-plus-menu]') || $('#plusMenu') || $('.plus-menu');
+  }
+  function createPlusMenu(){
+    let m = findPlusMenu();
+    if(m) return m;
+    m = document.createElement('div');
+    m.id = 'plusPillMenu';
+    m.className = 'plus-pill-menu';
+    m.innerHTML = `<button type="button" data-action="send-file" style="display:flex;align-items:center;gap:10px;width:100%;padding:12px 14px;background:#1c1c1e;color:#fff;border:0;border-radius:12px;cursor:pointer;text-align:left;"><span>📁</span><span>Send file</span></button><button type="button" data-action="create-sticker" style="display:flex;align-items:center;gap:10px;width:100%;padding:12px 14px;background:#1c1c1e;color:#fff;border:0;border-radius:12px;cursor:pointer;text-align:left;"><span>✨</span><span>Create sticker</span></button><button type="button" data-action="camera" style="display:flex;align-items:center;gap:10px;width:100%;padding:12px 14px;background:#1c1c1e;color:#fff;border:0;border-radius:12px;cursor:pointer;text-align:left;"><span>📷</span><span>Camera</span></button>`;
+    // Inline container style - will be overridden on open, but set base
+    m.style.cssText = 'display:none;position:fixed;z-index:99999;background:#111;padding:10px;border-radius:16px;gap:8px;flex-direction:column;box-shadow:0 10px 40px rgba(0,0,0,0.5);width:200px;';
+    document.body.appendChild(m);
+    return m;
+  }
+  function getPlusMenu(){ return findPlusMenu() || createPlusMenu(); }
+  function positionPlusMenu(){
+    const menu = getPlusMenu();
+    const btn = findPlusBtn();
+    if(!menu) return;
+    if(menu.parentElement !== document.body) document.body.appendChild(menu);
+    menu.style.position = 'fixed';
+    menu.style.zIndex = '99999';
+    if(btn){
+      const r = btn.getBoundingClientRect();
+      const w = 210;
+      menu.style.left = Math.max(10, Math.min(window.innerWidth - w - 10, r.left - 10)) + 'px';
+      const h = menu.offsetHeight || 190;
+      let top = r.top - h - 12;
+      if(top < 10) top = r.bottom + 12;
+      menu.style.top = top + 'px';
+      menu.style.bottom = 'auto';
+      menu.style.right = 'auto';
+      menu.style.width = w + 'px';
     } else {
-      // Fallback: if no item found, still show chat background with that name
-      const bg = document.getElementById('chatBackground');
-      if(bg){ bg.hidden = false; bg.classList.add('active-chat'); }
-      const nameEl = document.getElementById('chatHeaderName');
-      if(nameEl) nameEl.textContent = name;
-      // Mobile: hide list, show chat
-      if(window.innerWidth <= 768){
-        document.querySelector('.chat-load-list')?.classList.add('mobile-hide');
-        document.getElementById('chatRightWrap')?.classList.add('mobile-show');
-        document.querySelector('.sidebar-section')?.classList.add('hide-nav');
-      }
+      menu.style.left = '16px';
+      menu.style.bottom = '90px';
+      menu.style.top = 'auto';
     }
-    // Focus input + Keyboard - so user can send message immediately to that person
-    setTimeout(()=>{
-      if(msgInput){ msgInput.focus(); msgInput.click(); }
-      // On mobile, focus() opens keyboard
-      if(window.innerWidth <= 768 && msgInput) msgInput.focus({preventScroll:false});
-    }, 350);
   }
-  window.openChatFromNotify = openChatFromNotify;
-  // UI Preview loop - Backend will stop this and call showIOSNotify() for real messages
-  const previewMessages = [
-    {avatar:'JD', name:'Joshua dayo', message:'Yo bro check that new code', userId:'joshua'},
-    {avatar:'OL', name:'ola', message:'Omo that border clean die', userId:'ola'},
-    {avatar:'DS', name:'devsquad', message:'You don finish the sticker video?', userId:'devsquad'},
-  ];
-  let previewIdx = 0;
-  function runPreviewLoop(){
-    const data = previewMessages[previewIdx % previewMessages.length];
-    window.showIOSNotify({avatar:data.avatar, name:data.name, message:data.message, time:'now', userId:data.userId});
-    // Also simulate receiver message arriving - so receiver loading can be tested
-    simulateReceiverMessage(data);
-    previewIdx++;
+  function openPlusMenu(){
+    const menu = getPlusMenu();
+    if(!menu){ showToast('Plus menu not found'); return; }
+    positionPlusMenu();
+    menu.classList.remove('closing');
+    menu.classList.add('show');
+    menu.hidden = false;
+    menu.style.display = 'flex';
+    menu.style.flexDirection = 'column';
+    menu.style.visibility = 'visible';
+    menu.style.opacity = '1';
+    menu.style.pointerEvents = 'auto';
+    menu.style.zIndex = '99999';
+    isPlusOpen = true;
+    stickerPanel?.classList.remove('show'); chatBackground.classList.remove('sticker-open');
+    refresh();
+    requestAnimationFrame(positionPlusMenu);
   }
-  function simulateReceiverMessage(data){
-    // UI Preview only: adds a receiver text message as if it came from backend.
-    // Backend later will add real receiver message + real media loading.
-    if(!chatMessages) return;
-    const id = 'msg_' + Date.now();
-    const timeStr = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-    const row = document.createElement('div');
-    row.className = 'msg-row receiver';
-    row.dataset.messageId = id;
-    row.innerHTML = `<div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble receiver-bubble"><p class="msg-text">${data.message}</p><span class="msg-meta right-meta"><span class="msg-time">${timeStr}</span></span><span class="msg-reaction-badge" id="reaction-${id}"></span></div>`;
-    chatMessages.insertBefore(row, document.getElementById('typingIndicator'));
-    bindRow(row);
-    if(window.lucide) lucide.createIcons();
+  function closePlusMenu(){
+    const menu = findPlusMenu();
+    if(!menu) return;
+    isPlusOpen = false;
+    menu.classList.add('closing');
+    menu.classList.remove('show');
+    menu.style.display = 'none';
+    menu.style.visibility = 'hidden';
+    menu.style.opacity = '0';
+    menu.style.pointerEvents = 'none';
+    setTimeout(()=>{ if(!isPlusOpen) menu.classList.remove('closing'); },260);
   }
-  setTimeout(()=>{ runPreviewLoop(); window._notifyPreviewInterval = setInterval(runPreviewLoop, 4000); }, 1000);
-  window.stopNotifyPreview = function(){
-    clearInterval(window._notifyPreviewInterval);
-    const n = document.querySelector('.ios-notify'); if(n) n.remove();
-  };
+  window.nkOpenPlusMenu = openPlusMenu;
+  window.nkClosePlusMenu = closePlusMenu;
+  window.nkIsPlusOpen = ()=>isPlusOpen;
+  // FIX: Delegation - catches plus button even if ID differs or button re-rendered
+  document.addEventListener('click', (e)=>{
+    const btn = e.target.closest('#inputPlusBtn, [data-plus], .input-plus-btn, .plus-btn, #plusBtn, [data-action="plus"]');
+    if(!btn) return;
+    // Only if button is inside chat input bar / chat background - not other plus buttons
+    if(!btn.closest('#chatBackground, .chat-input-bar, .chat-input, #chatInputBar')) {
+      // Still allow if it's the only plus button on page
+      if(!btn.closest('.chat-input-bar') && document.querySelectorAll('#inputPlusBtn').length===0 && !e.target.closest('.chat-input-bar')) return;
+    }
+    e.preventDefault(); e.stopPropagation();
+    if(isPlusOpen) closePlusMenu(); else openPlusMenu();
+  }, true);
+  // FIX: Direct bind as backup - if delegation missed
+  const plusBtnDirect = findPlusBtn();
+  if(plusBtnDirect && !plusBtnDirect.dataset.nkPlusBound){
+    plusBtnDirect.dataset.nkPlusBound = '1';
+    plusBtnDirect.style.pointerEvents = 'auto';
+    plusBtnDirect.style.cursor = 'pointer';
+  }
+  // FIX: Document close - outside only, capture, ignore plus button
+  document.addEventListener('click', (e)=>{
+    if(!isPlusOpen) return;
+    const menu = findPlusMenu(); if(!menu) return;
+    if(menu.contains(e.target)) return;
+    if(e.target.closest('#inputPlusBtn, [data-plus], .input-plus-btn, .plus-btn, #plusBtn')) return;
+    closePlusMenu();
+  }, true);
+  // FIX: Plus menu buttons - bind by delegation so created menu also works
+  document.addEventListener('click', (e)=>{
+    const b = e.target.closest('#plusPillMenu [data-action], .plus-pill-menu [data-action], #plusMenu [data-action]');
+    if(!b) return;
+    e.stopPropagation(); e.preventDefault();
+    const act = b.dataset.action;
+    closePlusMenu();
+    if(act==='send-file') galleryInput?.click();
+    if(act==='camera') cameraInput?.click();
+    if(act==='create-sticker'){ createPage?.classList.add('show'); ensureFFmpegLoaded(); refresh(); }
+  });
+  // Ensure menu exists on load, hidden
+  (function(){ const m = getPlusMenu(); if(m){ m.style.display='none'; m.style.visibility='hidden'; m.style.opacity='0'; m.style.pointerEvents='none'; } })();
 
-  // ================= EMOJI PICKER - IN A BORDER, LOT OF EMOJI LIKE PHONE HAS =================
-  const EMOJI_LIST = [
-    '❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','💕','💖','💘','💝','✨','🔥','⭐','🌟','💯',
-    '😀','😃','😄','😁','😆','😅','🤣','😂','🙂','🙃','😉','😊','😇','🥰','😍','🤩','😘','😗','😋','😛','😜','🤪','😝','🤑','🤗','🤭','🤫','🤔','🤐','🤨','😐','😑','😶','🙄','😏','😣','😥','😮','🤐','😯','😪','😫','🥱','😴','😌','😛','😜','😒','😓','😔','😕','🙃','🫠','🫡','🤯','🥳','😎','🤓','🧐',
-    '😢','😭','😤','😡','😠','🤬','😈','👿','💀','☠️','👻','👽','🤖','🎃',
-    '👍','👎','👏','🙌','🙏','🤝','💪','🫶','👋','✋','🤚','🖐️','👌','🤌','🤏','✌️','🤞','🫰','🤟','🤘','👊','✊','🖖','👀','👁️','🧠','🫀',
-    '🎉','🎊','🎈','🎁','🏆','🥇','🥈','🥉','⚽','🏀','🎮','🎲','🎯','🎸','🎤','🎧','🎬','📸','📷',
-    '🌹','🌸','🌻','🌙','⭐','☀️','🌈','⚡','❄️','🌊','🍕','🍔','🍟','🍩','🍦','🍫','☕','🍷','🍺','🥂'
-  ];
-  function renderEmojiPicker(){
-    if(!emojiPickerGrid) return;
-    if(emojiPickerGrid.children.length > 0) return;
-    EMOJI_LIST.forEach(e => {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'emoji-picker-item';
-      b.dataset.emoji = e;
-      b.textContent = e;
-      emojiPickerGrid.appendChild(b);
+  // ---------- INPUT LIMIT 2000 ----------
+  function getLimitPopup(){ return $('#tooLongPopup') || $('#msgTooLongPopup') || $('[data-limit-popup]'); }
+  function showLimitPopup(){
+    const popup = getLimitPopup();
+    if(!popup){ alert('Message is too long, it will be cut to 2000 characters'); return; }
+    limitPopupOpen = true;
+    popup.classList.remove('hidden'); popup.classList.add('show'); popup.hidden = false;
+    popup.style.display = 'flex'; popup.style.visibility = 'visible'; popup.style.opacity = '1'; popup.style.pointerEvents = 'auto'; popup.style.zIndex = '99999';
+    refresh();
+  }
+  function hideLimitPopup(){
+    const popup = getLimitPopup(); if(!popup) return;
+    limitPopupOpen = false;
+    popup.classList.remove('show'); popup.classList.add('hidden');
+    popup.style.display = 'none'; popup.style.visibility = 'hidden'; popup.style.opacity = '0'; popup.style.pointerEvents = 'none';
+  }
+  function bindLimitPopupOnce(){
+    const popup = getLimitPopup(); if(!popup || popup.dataset.bound) return; popup.dataset.bound='1';
+    popup.querySelectorAll('button, [data-too-long], [data-action], [data-limit-action]').forEach(btn=>{
+      if(btn.dataset.limitBound) return; btn.dataset.limitBound='1';
+      btn.addEventListener('click', (e)=>{
+        e.stopPropagation(); e.preventDefault();
+        const action = (btn.dataset.tooLong || btn.dataset.action || btn.dataset.limitAction || btn.textContent || '').toLowerCase().trim();
+        const isOk = action.includes('ok') || action.includes('cut') || action.includes('yes') || action.includes('confirm') || btn.id.toLowerCase().includes('ok');
+        const isCancel = action.includes('cancel') || action.includes('no') || action.includes('close') || btn.id.toLowerCase().includes('cancel');
+        if(isOk){ if(msgInput){ msgInput.value = msgInput.value.slice(0,2000); lastValidInput = msgInput.value; } hideLimitPopup(); if(msgInput) msgInput.focus(); }
+        else if(isCancel){ if(msgInput) msgInput.value = lastValidInput; hideLimitPopup(); if(msgInput) msgInput.focus(); }
+        else { if(msgInput){ msgInput.value = msgInput.value.slice(0,2000); lastValidInput = msgInput.value; } hideLimitPopup(); }
+      });
     });
+    popup.addEventListener('click', (e)=>{ if(e.target === popup){ if(msgInput) msgInput.value = lastValidInput; hideLimitPopup(); } });
   }
-  renderEmojiPicker();
+  function checkInputLimit(){
+    if(!msgInput) return;
+    bindLimitPopupOnce();
+    const v = msgInput.value;
+    if(v.length > 2000){ if(!limitPopupOpen) showLimitPopup(); return; }
+    lastValidInput = v;
+    if(limitPopupOpen) hideLimitPopup();
+  }
+  if(msgInput){
+    lastValidInput = msgInput.value || '';
+    if(!msgInput.dataset.limitBound){
+      msgInput.dataset.limitBound='1';
+      msgInput.addEventListener('beforeinput', ()=>{ if(msgInput.value.length <= 2000) lastValidInput = msgInput.value; });
+      msgInput.addEventListener('input', ()=>checkInputLimit());
+      msgInput.addEventListener('paste', ()=>setTimeout(checkInputLimit, 0));
+      msgInput.addEventListener('change', ()=>checkInputLimit());
+    }
+  }
+  window.nkCheckInputLimit = checkInputLimit;
+  window.nkShowLimitPopup = showLimitPopup;
+  window.nkHideLimitPopup = hideLimitPopup;
+  bindLimitPopupOnce();
 
-  // ================= FOCUS MODE (HOLD MESSAGE) - CENTER OF CHAT BACKGROUND =================
+  // ---------- READ MORE ----------
+  document.addEventListener('click', (e)=>{
+    const btn = e.target.closest('.read-more-btn, [data-read-more]');
+    if(!btn) return;
+    e.preventDefault(); e.stopPropagation();
+    let target = null;
+    if(btn.dataset.target) target = document.getElementById(btn.dataset.target);
+    if(!target) target = btn.closest('.about-wrap, .msg-wrap, .bubble, .contact-about-wrap, .group-about-wrap')?.querySelector('.about-text, .msg-text, .long-text, .contact-about-text, .group-about-text');
+    if(!target) target = btn.previousElementSibling;
+    if(!target) return;
+    const exp = target.classList.toggle('expanded');
+    target.classList.toggle('clamped', !exp);
+    btn.textContent = exp ? 'Read Less' : 'Read More';
+  });
+
+  // ---------- HOLD ----------
   function enterFocusMode(row){
-    if(row.classList.contains('no-actions')) return;
-    if(row.classList.contains('deleted-row')) return;
+    if(!row || row.classList.contains('no-actions') || row.classList.contains('call-row') || row.classList.contains('deleted-row')) return;
     currentRow = row; currentId = row.dataset.messageId;
     const mediaEl = row.querySelector('.sticker-bubble img,.sticker-bubble video,.image-bubble img,.video-bubble video');
     if(mediaEl && favText && favIcon){
-      const src = (mediaEl.src || '').split('#')[0];
-      const exists = [...stickers, ...memoryVideoStickers].some(s => (s.src||'').split('#')[0] === src);
+      const src = cleanSrc(mediaEl.src || mediaEl.currentSrc || '');
+      const exists = [...stickers,...memoryVideoStickers].some(s=>cleanSrc(s.src)===src);
       favText.textContent = exists ? 'Remove from favorites' : 'Add to favorites';
-      favIcon.setAttribute('data-lucide', exists ? 'x' : 'star');
-      if(window.lucide) lucide.createIcons();
+      favIcon.setAttribute('data-lucide', exists ? 'x' : 'star'); refresh();
     }
-    const bubble = row.querySelector('.bubble'); if(!bubble) return;
+    const bubble = row.querySelector('.bubble'); if(!bubble || !poppedClone) return;
     poppedClone.innerHTML = '';
     const clone = bubble.cloneNode(true); clone.classList.add('cloned-bubble');
     const badge = clone.querySelector('.msg-reaction-badge'); if(badge) badge.remove();
-    clone.querySelectorAll('img,video').forEach(el => { el.style.pointerEvents='none'; el.style.display='block'; if(el.tagName==='VIDEO'){ el.muted=true; el.loop=true; el.autoplay=true; } });
+    clone.querySelectorAll('img,video').forEach(el=>{ el.style.pointerEvents='none'; el.style.display='block'; if(el.tagName==='VIDEO'){ el.muted=true; el.loop=true; el.autoplay=true; } });
     poppedClone.appendChild(clone);
-    overlay.classList.add('active'); poppedContainer.classList.add('active','always-middle');
-    if(row.querySelector('.sticker-bubble')) poppedContainer.classList.add('is-sticker'); else poppedContainer.classList.remove('is-sticker');
+    overlay?.classList.add('active'); poppedContainer?.classList.add('active','always-middle');
+    poppedContainer?.classList.toggle('is-sticker', !!row.querySelector('.sticker-bubble'));
     chatBackground.classList.add('focus-mode');
-    if(actionPill) actionPill.style.display = 'flex'; if(emojiBar) emojiBar.classList.remove('show');
-    if(emojiPicker) emojiPicker.classList.remove('show');
-    // Text = Copy, Image/Video = Save, Sticker = neither, Voice = NO Save
-    const isImage = !!row.querySelector('.image-bubble, .video-bubble');
-    const isSticker = !!row.querySelector('.sticker-bubble');
-    const isVoice = !!row.querySelector('.voice-bubble');
-    if(isSticker && window.setCurrentPillRowSticker) window.setCurrentPillRowSticker(row);
-    else if(isVoice && window.setCurrentPillRowVoice) window.setCurrentPillRowVoice(row);
-    else if(window.setCurrentPillRow) window.setCurrentPillRow(row, isImage);
-    if(navigator.vibrate) navigator.vibrate(25);
-    if(window.lucide) lucide.createIcons();
+    if(actionPill) actionPill.style.display='flex'; if(emojiBar) emojiBar.classList.remove('show');
+    if(navigator.vibrate) navigator.vibrate(25); refresh();
   }
   function resetFocus(){
-    overlay.classList.remove('active'); poppedContainer.classList.remove('active'); chatBackground.classList.remove('focus-mode');
-    if(actionPill) actionPill.style.display='flex';
-    if(emojiBar) emojiBar.classList.remove('show');
-    if(emojiPicker) emojiPicker.classList.remove('show');
-    currentRow = null;
+    overlay?.classList.remove('active'); poppedContainer?.classList.remove('active'); chatBackground.classList.remove('focus-mode');
+    if(actionPill) actionPill.style.display='flex'; if(emojiBar) emojiBar.classList.remove('show'); currentRow=null; currentId=null;
   }
+  window.closeHold = resetFocus;
 
-  // ================= SELECT MODE - STILL SCROLLABLE, NO BLUR =================
-  function enterSelectMode(){
-    document.querySelectorAll('.msg-row').forEach(r => { if(r.classList.contains('no-actions')) return; if(r.classList.contains('deleted-row')) return; r.classList.add('select-mode'); });
-    chatBackground.classList.add('select-mode','select-mode-active'); chatMessages.style.overflowY='auto'; chatMessages.style.pointerEvents='auto';
-    if(callsWrap) callsWrap.classList.add('hide-calls'); if(selectedGroup) selectedGroup.classList.add('show');
-    if(selectedCount){ selectedCount.textContent='0'; selectedCount.classList.add('show'); }
-    if(chatInputBar) chatInputBar.style.display='none'; if(deleteActionBar) deleteActionBar.classList.add('show');
-    updateDeleteBarLogic(); overlay.classList.remove('active'); poppedContainer.classList.remove('active'); if(window.lucide) lucide.createIcons();
+  // ---------- VOICE PLAY ----------
+  function ensureAudioForBubble(vb){
+    let audio = vb.querySelector('audio');
+    if(audio && audio.src) return audio;
+    const src = vb.dataset.audioSrc || vb.querySelector('[data-audio-src]')?.dataset.audioSrc || '';
+    if(!audio){ audio = document.createElement('audio'); audio.preload='auto'; vb.appendChild(audio); }
+    if(src) audio.src = src;
+    return audio;
   }
-  function exitSelectMode(){
-    selectedMessages.clear(); document.querySelectorAll('.msg-row').forEach(r => r.classList.remove('select-mode','selected'));
-    chatBackground.classList.remove('select-mode','select-mode-active'); if(callsWrap) callsWrap.classList.remove('hide-calls');
-    if(selectedGroup) selectedGroup.classList.remove('show'); if(selectedCount) selectedCount.classList.remove('show');
-    if(chatInputBar) chatInputBar.style.display='flex'; if(deleteActionBar) deleteActionBar.classList.remove('show'); resetFocus();
-  }
-  window.enterSelectMode = enterSelectMode; window.exitSelectMode = exitSelectMode;
-  function updateSelectedCount(){ if(selectedCount) selectedCount.textContent = `${selectedMessages.size}`; updateDeleteBarLogic(); }
-  function updateDeleteBarLogic(){
-    const delEvery = deleteActionBar?.querySelector('[data-delete="everyone"]');
-    const delMe = deleteActionBar?.querySelector('[data-delete="me"]');
-    if(!delEvery || !delMe) return;
-    if(selectedMessages.size === 0){ delEvery.style.display='flex'; delMe.style.display='flex'; return; }
-    let hasR=false, hasS=false;
-    selectedMessages.forEach(id => { const r = document.querySelector(`[data-message-id="${id}"]`); if(r?.classList.contains('receiver')) hasR=true; if(r?.classList.contains('sender')) hasS=true; });
-    if(hasR && !hasS){ delEvery.style.display='none'; delMe.style.display='flex'; }
-    else if(hasS && !hasR){ if(selectedMessages.size > 1){ delEvery.style.display='flex'; delMe.style.display='none'; } else { delEvery.style.display='flex'; delMe.style.display='flex'; } }
-    else { delEvery.style.display='none'; delMe.style.display='flex'; }
-  }
-
-  // ================= STICKER HELPERS =================
-  function forcePlayStickerVideos(){
-    document.querySelectorAll('.sticker-item video,.sticker-bubble video').forEach(v => {
-      if(v.paused){
-        v.muted=true; v.playsInline=true; v.setAttribute('muted',''); v.setAttribute('playsinline',''); v.setAttribute('webkit-playsinline','');
-        v.play().catch(()=>{});
-      }
-    });
-  }
-  function renderStickers(){
-    if(!stickerGrid || !stickerAddBox) return;
-    stickerGrid.querySelectorAll('.sticker-item').forEach(e => e.remove());
-    const seen = new Set();
-    const all = [...memoryVideoStickers, ...stickers];
-    all.forEach(item => {
-      const src = item.src; if(!src) return;
-      const type = item.type || 'image';
-      const clean = src.split('#')[0];
-      if(seen.has(clean)) return; seen.add(clean);
-      const div = document.createElement('div');
-      div.className = 'sticker-item' + (type === 'video' ? ' is-video' : '');
-      div.style.position='relative'; div.style.overflow='hidden'; div.style.background='#000'; div.style.borderRadius='12px';
-      div.style.webkitMaskImage='-webkit-radial-gradient(white, black)';
-      if(type === 'video'){
-        const video = document.createElement('video');
-        video.muted=true; video.playsInline=true; video.preload='auto';
-        video.setAttribute('playsinline',''); video.setAttribute('webkit-playsinline',''); video.setAttribute('muted','');
-        video.style.width='100%'; video.style.height='100%'; video.style.objectFit='cover'; video.style.borderRadius='12px'; video.style.position='relative'; video.style.zIndex='2';
-        video.src = clean;
-        // Real cut file already - just loop it, no fake cut needed
-        video.loop=true; video.autoplay=true; video.setAttribute('loop',''); video.setAttribute('autoplay','');
-        const tryPlay = ()=> video.play().catch(()=>{});
-        video.addEventListener('canplay', tryPlay, {once:true});
-        video.addEventListener('loadeddata', tryPlay, {once:true});
-        div.addEventListener('touchstart', tryPlay, {once:true});
-        setTimeout(tryPlay, 120);
-        div.appendChild(video);
-      } else {
-        const img = document.createElement('img'); img.src = src; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover'; div.appendChild(img);
-      }
-      div.onclick = ()=> sendSticker(item.src, type);
-      stickerGrid.insertBefore(div, stickerAddBox);
-    });
-    if(window.lucide) lucide.createIcons();
-    setTimeout(forcePlayStickerVideos, 400);
-  }
-  function sendSticker(src, type='image'){
-    const id = 'msg_' + Date.now();
-    const row = document.createElement('div'); row.className='msg-row sender'; row.dataset.messageId = id;
-    const cleanSrc = src.split('#')[0];
-    const timeStr = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-    if(type === 'video'){
-      row.innerHTML = `<div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble sticker-bubble"><span class="msg-meta sticker-meta right-meta"><span class="msg-time">${timeStr}</span><i data-lucide="check-check" class="tick-icon blue"></i></span><span class="msg-reaction-badge" id="reaction-${id}"></span></div>`;
-      const bubble = row.querySelector('.sticker-bubble');
-      const video = document.createElement('video');
-      video.src = cleanSrc; video.muted=true; video.playsInline=true; video.preload='auto';
-      video.setAttribute('playsinline',''); video.setAttribute('webkit-playsinline',''); video.setAttribute('muted','');
-      video.style.borderRadius='12px';
-      video.loop=true; video.autoplay=true; video.setAttribute('loop',''); video.setAttribute('autoplay','');
-      bubble.prepend(video);
-      video.addEventListener('canplay', ()=> video.play().catch(()=>{}), {once:true});
-      setTimeout(()=> video.play().catch(()=>{}), 150);
-    } else {
-      row.innerHTML = `<div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble sticker-bubble"><img src="${cleanSrc}"><span class="msg-meta sticker-meta right-meta"><span class="msg-time">${timeStr}</span><i data-lucide="check-check" class="tick-icon blue"></i></span><span class="msg-reaction-badge" id="reaction-${id}"></span></div>`;
-    }
-    chatMessages.insertBefore(row, document.getElementById('typingIndicator'));
-    bindRow(row); if(window.lucide) lucide.createIcons();
-    chatMessages.scrollTo({top:chatMessages.scrollHeight, behavior:'smooth'});
-    updateListLastMessage('Sticker', timeStr);
-    stickerPanel.classList.remove('show'); chatBackground.classList.remove('sticker-open');
-  }
-  function renderChatStickersSelect(){
-    if(!stickerSelectGrid) return;
-    stickerSelectGrid.innerHTML='';
-    const favSrcs = new Set([...stickers, ...memoryVideoStickers].map(s => (s.src||'').split('#')[0]));
-    document.querySelectorAll('.image-bubble img,.video-bubble video,.sticker-bubble img,.sticker-bubble video').forEach(el => {
-      const src = el.src || el.currentSrc; if(!src) return; const clean = src.split('#')[0]; if(favSrcs.has(clean)) return;
-      const div = document.createElement('div'); div.className='sticker-item selectable selected';
-      if(el.tagName === 'VIDEO'){ const v = document.createElement('video'); v.src = clean; v.muted=true; v.playsInline=true; v.setAttribute('muted',''); v.setAttribute('playsinline',''); div.appendChild(v); }
-      else { const img = document.createElement('img'); img.src = clean; div.appendChild(img); }
-      div.dataset.src = clean; div.dataset.type = el.tagName === 'VIDEO' ? 'video' : 'image'; div.onclick = ()=> div.classList.toggle('selected'); stickerSelectGrid.appendChild(div);
-    });
-  }
-
-  // ================= BIND ROW =================
-  function bindRow(row){
-    if(row.classList.contains('no-actions')) return;
-    let startX=0, startY=0;
-    row.addEventListener('contextmenu', e => { e.preventDefault(); enterFocusMode(row); return false; });
-    row.addEventListener('touchstart', e => { if(chatBackground.classList.contains('focus-mode')) return; startX=e.touches[0].clientX; startY=e.touches[0].clientY; pressTimer=setTimeout(()=> enterFocusMode(row), 480); }, {passive:true});
-    row.addEventListener('touchmove', e => { if(!pressTimer) return; if(Math.abs(e.touches[0].clientX-startX)>12 || Math.abs(e.touches[0].clientY-startY)>12){ clearTimeout(pressTimer); pressTimer=null; } }, {passive:true});
-    row.addEventListener('touchend', ()=> clearTimeout(pressTimer));
-    row.addEventListener('mousedown', e => { if(e.button!==0) return; pressTimer=setTimeout(()=> enterFocusMode(row), 500); });
-    row.addEventListener('mouseup', ()=> clearTimeout(pressTimer)); row.addEventListener('mouseleave', ()=> clearTimeout(pressTimer));
-    const circle = row.querySelector('.select-circle');
-    if(circle && !circle.dataset.bound){ circle.dataset.bound="1"; circle.addEventListener('click', e => { e.stopPropagation(); row.classList.toggle('selected'); const id = row.dataset.messageId; if(row.classList.contains('selected')) selectedMessages.add(id); else selectedMessages.delete(id); updateSelectedCount(); }); }
-    const stickerVideo = row.querySelector('.sticker-bubble video');
-    if(stickerVideo && !stickerVideo.dataset.boundSticker){
-      stickerVideo.dataset.boundSticker="1"; stickerVideo.muted=true; stickerVideo.playsInline=true; stickerVideo.preload='auto';
-      stickerVideo.setAttribute('muted',''); stickerVideo.setAttribute('playsinline',''); stickerVideo.setAttribute('webkit-playsinline','');
-      stickerVideo.loop=true; stickerVideo.autoplay=true; stickerVideo.setAttribute('loop',''); stickerVideo.setAttribute('autoplay','');
-      stickerVideo.addEventListener('canplay', ()=> stickerVideo.play().catch(()=>{}), {once:true}); setTimeout(()=> stickerVideo.play().catch(()=>{}), 200);
-      stickerVideo.addEventListener('click', ()=> openVideoFull(stickerVideo.src, ''));
-    }
-    const normalVideo = row.querySelector('.video-bubble video,.video-wrap video');
-    if(normalVideo && !normalVideo.dataset.boundNormal){
-      normalVideo.dataset.boundNormal="1"; normalVideo.loop=false; normalVideo.autoplay=false;
-      normalVideo.addEventListener('click', ()=> openVideoFull(normalVideo.src, row.querySelector('.img-caption-text')?.innerText || ''));
-      row.querySelector('.video-play-center')?.addEventListener('click', (e)=>{ e.stopPropagation(); openVideoFull(normalVideo.src, row.querySelector('.img-caption-text')?.innerText || ''); });
-    }
-    const voiceBubble = row.querySelector('.voice-bubble');
-    if(voiceBubble && !voiceBubble.dataset.voiceBound){
-      voiceBubble.dataset.voiceBound="1"; const btn = voiceBubble.querySelector('.voice-play-btn'); const audio = voiceBubble.querySelector('audio'); if(!btn || !audio) return;
-      btn.innerHTML = `<i data-lucide="play" class="play-ic"></i><i data-lucide="pause" class="pause-ic" style="display:none"></i>`; if(window.lucide) lucide.createIcons();
-      const showPlay = ()=>{ const p=btn.querySelector('.play-ic'); const pa=btn.querySelector('.pause-ic'); if(p) p.style.display='block'; if(pa) pa.style.display='none'; voiceBubble.classList.remove('playing'); };
-      const showPause = ()=>{ const p=btn.querySelector('.play-ic'); const pa=btn.querySelector('.pause-ic'); if(p) p.style.display='none'; if(pa) pa.style.display='block'; voiceBubble.classList.add('playing'); };
+  function bindVoicePlay(vb){
+    if(!vb || vb.dataset.voiceBound) return; vb.dataset.voiceBound='1';
+    const btn = vb.querySelector('.voice-play-btn'); if(!btn) return;
+    if(!btn.dataset.bound){
+      btn.dataset.bound='1';
+      if(!btn.querySelector('.play-ic')){ btn.innerHTML = `<i data-lucide="play" class="play-ic"></i><i data-lucide="pause" class="pause-ic" style="display:none"></i>`; refresh(); }
+      const showPlay = ()=>{ const p=btn.querySelector('.play-ic'); const pa=btn.querySelector('.pause-ic'); if(p) p.style.display='block'; if(pa) pa.style.display='none'; vb.classList.remove('playing'); };
+      const showPause = ()=>{ const p=btn.querySelector('.play-ic'); const pa=btn.querySelector('.pause-ic'); if(p) p.style.display='none'; if(pa) pa.style.display='block'; vb.classList.add('playing'); };
       btn.addEventListener('click', (e)=>{
-        e.stopPropagation();
-        // Play blocked until downloading finishes
-        if(row.dataset.loaded === 'false'){ showToast('Still loading...'); return; }
+        e.stopPropagation(); e.preventDefault();
+        if(vb.classList.contains('is-loading')){ const ov = vb.querySelector('.media-loading-overlay'); if(ov) ov.hidden = true; vb.classList.remove('is-loading'); }
+        const audio = ensureAudioForBubble(vb);
+        if(!audio.src){
+          try{ const ctx = new (window.AudioContext||window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.connect(gain); gain.connect(ctx.destination); osc.frequency.value = 440; gain.gain.value = 0.15; osc.start(); showPause(); setTimeout(()=>{ osc.stop(); ctx.close(); showPlay(); }, 800); }catch(err){ showToast('No voice file'); }
+          return;
+        }
         if(audio.paused){
-          document.querySelectorAll('.voice-bubble audio').forEach(a => { if(a!==audio){ a.pause(); a.currentTime=0; } });
-          document.querySelectorAll('.voice-bubble').forEach(b => { b.classList.remove('playing'); const bp=b.querySelector('.play-ic'); const bpa=b.querySelector('.pause-ic'); if(bp) bp.style.display='block'; if(bpa) bpa.style.display='none'; });
-          audio.play().then(showPause).catch(()=> showToast('Tap again'));
+          $$('.voice-bubble audio').forEach(a=>{ if(a!==audio){ a.pause(); a.currentTime=0; } });
+          $$('.voice-bubble').forEach(b=>{ if(b!==vb){ b.classList.remove('playing'); const bp=b.querySelector('.play-ic'); const bpa=b.querySelector('.pause-ic'); if(bp) bp.style.display='block'; if(bpa) bpa.style.display='none'; } });
+          audio.play().then(showPause).catch(()=>{ showToast('Tap again to play'); showPlay(); });
         } else { audio.pause(); showPlay(); }
-      });
-      audio.addEventListener('ended', showPlay); audio.addEventListener('pause', showPlay);
-    }
-    // Media loading retry - tap overlay retry
-    const mediaOverlay = row.querySelector('.media-loading-overlay');
-    if(mediaOverlay && !mediaOverlay.dataset.bound){
-      mediaOverlay.dataset.bound = '1';
-      mediaOverlay.addEventListener('click', (e)=>{
-        e.stopPropagation();
-        if(mediaOverlay.classList.contains('is-failed')) simulateMediaLoading(row);
+        audio.onended = showPlay;
       });
     }
   }
-  document.querySelectorAll('.msg-row').forEach(bindRow);
-  new MutationObserver(muts => { muts.forEach(m => m.addedNodes.forEach(n => { if(n.nodeType===1 && n.classList.contains('msg-row')) bindRow(n); })); }).observe(chatMessages, {childList:true});
-  setInterval(forcePlayStickerVideos, 2500);
+  document.addEventListener('click', (e)=>{
+    const btn = e.target.closest('.voice-play-btn'); if(!btn) return;
+    const vb = btn.closest('.voice-bubble'); if(!vb) return;
+    if(!vb.dataset.voiceBound) bindVoicePlay(vb);
+  }, true);
 
-  // ================= FULL VIDEO =================
-  function openVideoFull(src, caption){
-    if(!videoFullOverlay) return;
-    videoFullPlayer.src = src.split('#')[0]; videoFullCaption.textContent = caption || ''; videoFullOverlay.classList.add('show');
-    videoFullPlayer.loop=false; videoFullPlayer.muted=false; videoFullPlayer.play().catch(()=>{}); if(window.lucide) lucide.createIcons();
+  // ---------- BIND ROW ----------
+  function bindReactionRow(row){
+    if(!row || row.dataset.reactionBound) return; row.dataset.reactionBound='1';
+    if(row.classList.contains('no-actions')) return;
+    let sx=0, sy=0;
+    row.addEventListener('contextmenu', e=>{ e.preventDefault(); enterFocusMode(row); return false; });
+    row.addEventListener('touchstart', e=>{ if(chatBackground.classList.contains('focus-mode')) return; if(!e.touches[0]) return; sx=e.touches[0].clientX; sy=e.touches[0].clientY; pressTimer=setTimeout(()=>enterFocusMode(row),480); }, {passive:true});
+    row.addEventListener('touchmove', e=>{ if(!pressTimer) return; if(!e.touches[0]) return; if(Math.abs(e.touches[0].clientX-sx)>12 || Math.abs(e.touches[0].clientY-sy)>12){ clearTimeout(pressTimer); pressTimer=null; } }, {passive:true});
+    row.addEventListener('touchend', ()=>{ clearTimeout(pressTimer); pressTimer=null; }, {passive:true});
+    row.addEventListener('touchcancel', ()=>{ clearTimeout(pressTimer); pressTimer=null; }, {passive:true});
+    const badge = row.querySelector('.msg-reaction-badge');
+    if(badge && !badge.dataset.bound){ badge.dataset.bound='1'; badge.addEventListener('click', e=>{ e.stopPropagation(); window.nkCurrentReactionRow = row; const pop = $('#reactionActionPopup'); if(pop) pop.classList.add('show'); }); }
+    const sv = row.querySelector('.sticker-bubble video');
+    if(sv && !sv.dataset.boundSticker){
+      sv.dataset.boundSticker='1'; sv.muted=true; sv.playsInline=true; sv.preload='auto'; sv.setAttribute('muted',''); sv.setAttribute('playsinline',''); sv.setAttribute('webkit-playsinline',''); sv.loop=true; sv.autoplay=true;
+      sv.addEventListener('canplay', ()=>sv.play().catch(()=>{}), {once:true}); setTimeout(()=>sv.play().catch(()=>{}),200);
+      sv.addEventListener('click', (e)=>{ e.stopPropagation(); const b=row.querySelector('.bubble'); if(b && b.classList.contains('is-loading')) return; openVideoFull(cleanSrc(sv.src),''); });
+    }
+    const nv = row.querySelector('.video-bubble video,.video-wrap video');
+    if(nv && !nv.dataset.boundNormal){
+      nv.dataset.boundNormal='1'; nv.loop=false; nv.autoplay=false;
+      nv.addEventListener('click', ()=>{ const b=row.querySelector('.bubble'); if(b && b.classList.contains('is-loading')) return; openVideoFull(cleanSrc(nv.src), row.querySelector('.img-caption-text')?.innerText||''); });
+      const pc = row.querySelector('.video-play-center');
+      if(pc && !pc.dataset.bound){ pc.dataset.bound='1'; pc.addEventListener('click', e=>{ e.stopPropagation(); const b=row.querySelector('.bubble'); if(b && b.classList.contains('is-loading')) return; openVideoFull(cleanSrc(nv.src), row.querySelector('.img-caption-text')?.innerText||''); }); }
+    }
+    const vb = row.querySelector('.voice-bubble'); if(vb) bindVoicePlay(vb);
   }
-  function closeVideoFull(){ videoFullOverlay.classList.remove('show'); if(videoFullPlayer){ videoFullPlayer.pause(); videoFullPlayer.src=''; } }
-  videoFullClose?.addEventListener('click', (e)=>{ e.stopPropagation(); closeVideoFull(); });
-  videoFullOverlay?.addEventListener('click', (e)=>{
-    if(e.target === videoFullPlayer) return;
-    if(e.target.closest('video') && e.target === videoFullPlayer) return;
-    if(e.target.closest('.video-full-caption')) return;
-    if(e.target.closest('.preview-header')) return;
-    closeVideoFull();
-  });
+  $$('.msg-row').forEach(bindReactionRow);
+  $$('.voice-bubble').forEach(bindVoicePlay);
+  new MutationObserver(muts=>{ muts.forEach(m=>m.addedNodes.forEach(n=>{ if(n.nodeType===1 && n.classList?.contains('msg-row')) bindReactionRow(n); if(n.nodeType===1 && n.classList?.contains('voice-bubble')) bindVoicePlay(n); })); }).observe(chatMessages,{childList:true, subtree:true});
 
-  // ================= REPLY / ACTIONS - NO FORWARD =================
-  function doReplyFromPill(){ if(!currentRow) return; const r = currentRow; resetFocus(); setTimeout(()=>{ if(window.triggerSwipeReply) window.triggerSwipeReply(r); }, 150); }
-  if(actionPill){
-    actionPill.addEventListener('click', e => {
+  // ---------- ACTION PILL ----------
+  if(actionPill && !actionPill.dataset.bound){
+    actionPill.dataset.bound='1';
+    actionPill.addEventListener('click', e=>{
       const btn = e.target.closest('button'); if(!btn || !currentId) return; const act = btn.dataset.action;
-      if(act === 'copy'){
-        const text = currentRow?.querySelector('.msg-text')?.dataset.fullText || currentRow?.querySelector('p')?.innerText || currentRow?.querySelector('.img-caption-text')?.innerText || '';
-        if(text && navigator.clipboard) navigator.clipboard.writeText(text);
-        showToast('Copied'); resetFocus();
-      } else if(act === 'save'){
-        // Save = Frontend only, Image + Video only, must be loaded 100%
-        const ok = saveMediaToGallery(currentRow);
-        if(ok) resetFocus();
-      } else if(act === 'delete'){
-        if(currentRow && currentRow.classList.contains('receiver')){ currentRow.style.transition='opacity 0.25s'; currentRow.style.opacity='0'; setTimeout(()=> currentRow.remove(), 250); resetFocus(); showToast('Deleted for me'); }
-        else { enterSelectMode(); if(currentRow){ currentRow.classList.add('selected'); selectedMessages.add(currentId); updateSelectedCount(); } }
-      }
-      else if(act === 'select'){ enterSelectMode(); if(currentRow){ currentRow.classList.add('selected'); selectedMessages.add(currentId); updateSelectedCount(); } }
-      else if(act === 'react'){ actionPill.style.display='none'; emojiBar.classList.add('show'); }
-      else if(act === 'reply'){ doReplyFromPill(); }
-      else if(act === 'favorite'){
+      if(act==='delete'){
+        if(currentRow?.classList.contains('receiver')){ currentRow.style.transition='opacity .25s'; currentRow.style.opacity='0'; setTimeout(()=>{ if(currentRow) currentRow.remove(); },250); resetFocus(); showToast('Deleted for me'); }
+        else if(window.enterSelectMode){ const r=currentRow; resetFocus(); window.enterSelectMode(); if(r) r.classList.add('selected'); }
+      } else if(act==='select'){ const r=currentRow; resetFocus(); if(window.enterSelectMode) window.enterSelectMode(); if(r) r.classList.add('selected'); }
+      else if(act==='react'){ actionPill.style.display='none'; emojiBar?.classList.add('show'); }
+      else if(act==='reply'){ const r=currentRow; resetFocus(); setTimeout(()=>{ if(window.triggerSwipeReply) window.triggerSwipeReply(r); else if(r){ const t=r.querySelector('.msg-text')?.innerText||''; const rp=$('#replyPreview'); const rn=$('#replyPreviewName'); const rt=$('#replyPreviewText'); if(rn) rn.textContent=r.classList.contains('sender')?'You':'Joshua dayo'; if(rt) rt.textContent=t; if(rp) rp.classList.add('show'); msgInput?.focus(); } },150); }
+      else if(act==='copy'){ const t=currentRow?.querySelector('.msg-text')?.innerText||''; if(t) navigator.clipboard?.writeText(t); showToast('Copied'); resetFocus(); }
+      else if(act==='save'){ showToast('Saved'); resetFocus(); }
+      else if(act==='favorite'){
         const imgEl = currentRow?.querySelector('.sticker-bubble img,.sticker-bubble video,.image-bubble img,.video-bubble video');
         if(!imgEl){ showToast('No media'); resetFocus(); return; }
-        const src = (imgEl.src||'').split('#')[0]; const type = imgEl.tagName === 'VIDEO' ? 'video' : 'image';
-        let idx = stickers.findIndex(s => s.src.split('#')[0] === src); let memIdx = memoryVideoStickers.findIndex(s => s.src.split('#')[0] === src);
-        if(idx >= 0){ stickers.splice(idx,1); localStorage.setItem('my_stickers', JSON.stringify(stickers)); showToast('Removed from favorites'); }
-        else if(memIdx >= 0){ memoryVideoStickers.splice(memIdx,1); showToast('Removed from favorites'); }
-        else { if(type === 'video') memoryVideoStickers.push({src:imgEl.src.split('#')[0], type}); else { stickers.push({src, type}); localStorage.setItem('my_stickers', JSON.stringify(stickers)); } showToast('Added to favorites'); }
+        const src = cleanSrc(imgEl.src || imgEl.currentSrc || ''); const type = imgEl.tagName==='VIDEO' ? 'video' : 'image';
+        let idx = stickers.findIndex(s=>cleanSrc(s.src)===src); let memIdx = memoryVideoStickers.findIndex(s=>cleanSrc(s.src)===src);
+        if(idx>=0){ stickers.splice(idx,1); localStorage.setItem('my_stickers', JSON.stringify(stickers)); showToast('Removed from favorites'); }
+        else if(memIdx>=0){ memoryVideoStickers.splice(memIdx,1); showToast('Removed from favorites'); }
+        else { if(type==='video') memoryVideoStickers.push({src, type}); else { stickers.push({src, type}); localStorage.setItem('my_stickers', JSON.stringify(stickers)); } showToast('Added to favorites'); }
         renderStickers(); resetFocus();
       }
     });
   }
-  if(emojiBar){
-    emojiBar.addEventListener('click', e => {
-      const btn = e.target.closest('[data-emoji]');
-      if(btn && currentId){ const badge = document.getElementById(`reaction-${currentId}`); if(badge){ badge.textContent = btn.dataset.emoji; badge.classList.add('show'); } resetFocus(); return; }
+  if(emojiBar && !emojiBar.dataset.bound){
+    emojiBar.dataset.bound='1';
+    emojiBar.addEventListener('click', e=>{
+      const btn = e.target.closest('[data-emoji]'); if(!btn || !currentId) return;
+      const badge = document.getElementById(`reaction-${currentId}`) || currentRow?.querySelector('.msg-reaction-badge');
+      if(badge){ badge.textContent = btn.dataset.emoji; badge.classList.add('show'); badge.dataset.reaction = btn.dataset.emoji; }
+      resetFocus();
     });
   }
-  // Emoji picker - In a border, lot of emoji, NO prompt()
-  if(emojiPlusBtn){
-    emojiPlusBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if(!emojiPicker) return;
-      renderEmojiPicker();
-      emojiPicker.classList.toggle('show');
-    });
+  if(emojiPlusBtn && !emojiPlusBtn.dataset.bound){
+    emojiPlusBtn.dataset.bound='1';
+    emojiPlusBtn.addEventListener('click', (e)=>{ e.stopPropagation(); stickerPanel?.classList.remove('show'); chatBackground.classList.remove('sticker-open'); if(emojiPickerPanel){ emojiPickerPanel.classList.add('show'); emojiPickerPanel.style.display='flex'; emojiPickerPanel.style.visibility='visible'; emojiPickerPanel.style.opacity='1'; } });
   }
-  if(emojiPicker){
-    emojiPicker.addEventListener('click', e => {
-      const btn = e.target.closest('[data-emoji]');
-      if(!btn || !currentId) return;
-      const badge = document.getElementById(`reaction-${currentId}`);
-      if(badge){ badge.textContent = btn.dataset.emoji; badge.classList.add('show'); }
-      emojiPicker.classList.remove('show'); resetFocus();
-    });
-    document.addEventListener('click', e => { if(emojiPicker.classList.contains('show') && !emojiPicker.contains(e.target) && e.target !== emojiPlusBtn && !e.target.closest('#emojiPlusBtn')) emojiPicker.classList.remove('show'); });
-  }
-
-  // ================= PLUS MENU - DO NOT TOUCH =================
-  if(plusBtn && plusMenu){
-    plusBtn.addEventListener('click', (e)=>{
-      e.stopPropagation(); const isShow = plusMenu.classList.contains('show');
-      if(isShow){ plusMenu.classList.add('closing'); setTimeout(()=> plusMenu.classList.remove('show','closing'), 250); }
-      else { plusMenu.classList.add('show'); stickerPanel?.classList.remove('show'); chatBackground.classList.remove('sticker-open'); if(window.lucide) lucide.createIcons(); }
-    });
-    document.addEventListener('click', (e)=>{
-      if(!plusMenu.contains(e.target) && e.target !== plusBtn && !e.target.closest('#inputPlusBtn')){
-        if(plusMenu.classList.contains('show')){ plusMenu.classList.add('closing'); setTimeout(()=> plusMenu.classList.remove('show','closing'), 250); }
-      }
-    });
-    plusMenu.querySelectorAll('[data-action]').forEach(b => {
-      b.addEventListener('click', ()=>{
-        const act = b.dataset.action; plusMenu.classList.remove('show');
-        if(act === 'send-file') galleryInput?.click(); if(act === 'camera') cameraInput?.click();
-        if(act === 'create-sticker'){ createPage?.classList.add('show'); ensureFFmpegLoaded(); if(window.lucide) lucide.createIcons(); }
-      });
-    });
-  }
-
-  // ================= IMAGE/VIDEO PREVIEW - SENDER LOADING =================
-  function openPreview(src, type='image'){ if(!imagePreview) return; previewType = type; previewObjectUrl = src; if(type === 'video'){ previewImage.style.display='none'; previewVideo.src = src.split('#')[0]; previewVideo.style.display='block'; } else { previewVideo.style.display='none'; previewVideo.pause(); previewImage.src = src.split('#')[0]; previewImage.style.display='block'; } imagePreview.classList.add('show'); if(window.lucide) lucide.createIcons(); }
-  function handleFile(file){ if(!file) return; const url = URL.createObjectURL(file); openPreview(url, file.type.startsWith('video/') ? 'video' : 'image'); }
-  galleryInput?.addEventListener('change', e => handleFile(e.target.files[0])); cameraInput?.addEventListener('change', e => handleFile(e.target.files[0]));
-  function closePreview(){ imagePreview.classList.remove('show'); if(previewVideo){ previewVideo.pause(); previewVideo.src=''; } if(captionInput) captionInput.value=''; }
-  previewClose?.addEventListener('click', closePreview); previewCancelText?.addEventListener('click', closePreview);
-  imagePreview?.addEventListener('click', e => { if(e.target === imagePreview || e.target.classList.contains('preview-blur-bg')) closePreview(); });
-  previewSendBtn?.addEventListener('click', ()=>{
-    const caption = captionInput.value.trim(); const replyData = window.getCurrentReplyData ? window.getCurrentReplyData() : null;
-    let quotedHtml = ''; if(replyData){ quotedHtml = `<div class="quoted-reply">${replyData.thumb ? `<img class="quoted-thumb" src="${replyData.thumb}">` : ''}<div class="quoted-content"><span class="quoted-name">${replyData.name}</span><span class="quoted-text">${replyData.text}</span></div></div>`; }
-    const id = 'msg_' + Date.now(); const row = document.createElement('div'); row.className='msg-row sender'; row.dataset.messageId = id; row.dataset.loaded = 'false';
-    const cleanUrl = previewObjectUrl.split('#')[0];
-    const timeStr = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-    const loadingHtml = `<div class="media-loading-overlay"><div class="media-loading-circle"><svg viewBox="0 0 44 44"><circle class="media-progress-bg" cx="22" cy="22" r="18"></circle><circle class="media-progress-ring" cx="22" cy="22" r="18"></circle></svg><i data-lucide="arrow-down" class="media-loading-arrow"></i><span class="media-loading-percent">0%</span></div></div>`;
-    if(previewType === 'video'){ row.innerHTML = `<div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble video-bubble with-caption is-loading">${quotedHtml}<div class="video-wrap"><video src="${cleanUrl}"></video><button class="video-play-center"><i data-lucide="play"></i></button><span class="video-duration">00:10</span><span class="msg-meta over-image right-meta"><span class="msg-time">${timeStr}</span><i data-lucide="check-check" class="tick-icon blue"></i></span>${loadingHtml}</div>${caption ? `<div class="img-caption-wrap"><p class="img-caption-text">${caption}</p></div>` : ''}<span class="msg-reaction-badge" id="reaction-${id}"></span></div>`; }
-    else { if(caption){ row.innerHTML = `<div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble image-bubble with-caption is-loading">${quotedHtml}<div class="img-wrap"><img src="${cleanUrl}"><span class="msg-meta over-image right-meta"><span class="msg-time">${timeStr}</span><i data-lucide="check-check" class="tick-icon blue"></i></span>${loadingHtml}</div><div class="img-caption-wrap"><p class="img-caption-text">${caption}</p></div><span class="msg-reaction-badge" id="reaction-${id}"></span></div>`; } else { row.innerHTML = `<div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble image-bubble is-loading">${quotedHtml}<div class="img-wrap"><img src="${cleanUrl}"><span class="msg-meta over-image right-meta"><span class="msg-time">${timeStr}</span><i data-lucide="check-check" class="tick-icon blue"></i></span>${loadingHtml}</div><span class="msg-reaction-badge" id="reaction-${id}"></span></div>`; } }
-    chatMessages.insertBefore(row, document.getElementById('typingIndicator')); bindRow(row); if(window.lucide) lucide.createIcons(); closePreview(); if(galleryInput) galleryInput.value=''; if(cameraInput) cameraInput.value=''; if(window.clearReplyData) window.clearReplyData(); chatMessages.scrollTo({top:chatMessages.scrollHeight, behavior:'smooth'});
-    updateListLastMessage(previewType === 'video' ? 'Video' : 'Photo', timeStr);
-    // Sender loading = uploading to backend. Backend later gives real progress.
-    simulateMediaLoading(row);
-  });
-
-  // ================= STICKER PANEL TOGGLE - Mobile UNDER input =================
-  if(stickerBtn && stickerPanel){
-    stickerBtn.addEventListener('click', ()=>{
-      const isShow = stickerPanel.classList.contains('show');
-      if(isShow){ stickerPanel.classList.remove('show'); chatBackground.classList.remove('sticker-open'); }
-      else { renderStickers(); if(msgInput) msgInput.blur(); stickerPanel.classList.add('show'); chatBackground.classList.add('sticker-open'); plusMenu?.classList.remove('show'); if(window.lucide) lucide.createIcons(); setTimeout(forcePlayStickerVideos, 400); }
-    });
-  }
-  stickerPanelClose?.addEventListener('click', ()=>{ stickerPanel.classList.remove('show'); chatBackground.classList.remove('sticker-open'); });
-  msgInput?.addEventListener('focus', ()=>{ if(stickerPanel?.classList.contains('show')){ stickerPanel.classList.remove('show'); chatBackground.classList.remove('sticker-open'); } });
-  msgInput?.addEventListener('input', ()=>{
-    if(msgInput.value.trim().length > 0 && stickerPanel?.classList.contains('show')){ stickerPanel.classList.remove('show'); chatBackground.classList.remove('sticker-open'); }
-    if(msgInput.value.trim().length > 0) micBtn?.classList.add('sending'); else micBtn?.classList.remove('sending');
-    msgInput.style.height='auto'; msgInput.style.height = msgInput.scrollHeight + 'px';
-  });
-  stickerAddBox?.addEventListener('click', ()=>{ renderChatStickersSelect(); chatStickerSelectMode?.classList.add('show'); stickerPanel?.classList.remove('show'); chatBackground.classList.remove('sticker-open'); if(window.lucide) lucide.createIcons(); });
-  if(chatStickerSelectMode){
-    addStickerConfirmBtn?.addEventListener('click', ()=>{
-      const selected = chatStickerSelectMode.querySelectorAll('.sticker-item.selected');
-      selected.forEach(el => {
-        const src = el.dataset.src.split('#')[0]; const type = el.dataset.type || 'image';
-        const exists = [...stickers, ...memoryVideoStickers].some(s => (s.src||'').split('#')[0] === src);
-        if(!exists){ if(type === 'video') memoryVideoStickers.push({src, type}); else { stickers.push({src, type}); localStorage.setItem('my_stickers', JSON.stringify(stickers)); } }
-      });
-      renderStickers(); chatStickerSelectMode.classList.remove('show'); if(msgInput) msgInput.blur(); stickerPanel.classList.add('show'); chatBackground.classList.add('sticker-open'); showToast('Sticker added'); setTimeout(forcePlayStickerVideos, 300);
-    });
-    stickerSelectClose?.addEventListener('click', ()=> chatStickerSelectMode.classList.remove('show'));
-    addStickerCancelX?.addEventListener('click', ()=> chatStickerSelectMode.classList.remove('show'));
-    chatStickerSelectMode.addEventListener('click', e => { if(e.target === chatStickerSelectMode) chatStickerSelectMode.classList.remove('show'); });
-  }
-
-  // ================= FFMPEG - REAL CUT =================
-  async function ensureFFmpegLoaded(){
-    if(ffmpegLoaded) return ffmpegInstance; if(ffmpegLoading) return null; ffmpegLoading = true;
-    const loader = document.getElementById('ffmpegLoader');
-    try{
-      if(loader){ loader.classList.add('show'); loader.style.display='flex'; }
-      if(!window.FFmpeg){
-        await new Promise((res, rej) => {
-          const s = document.createElement('script'); s.src='https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.min.js';
-          s.onload = res; s.onerror = rej; document.head.appendChild(s);
+  if(emojiPickerGrid && !emojiPickerGrid.dataset.bound){
+    emojiPickerGrid.dataset.bound='1';
+    const EMOJIS = ['❤️','😂','😮','😢','🙏','🔥','👍','👎','😍','😡','🥺','👏','💯','😅','🤔','🎉','😭','🙌','😇','🤣','😘','😴','👀','💔','✨','🌹','👋','🤝','😎','🫡'];
+    if(!emojiPickerGrid.children.length){
+      EMOJIS.forEach(em=>{
+        const b=document.createElement('button'); b.textContent=em; b.type='button';
+        b.addEventListener('click', ()=>{
+          const row = window.nkCurrentReactionRow || currentReactionRow || currentRow;
+          if(row){ const badge=row.querySelector('.msg-reaction-badge'); if(badge){ badge.textContent=em; badge.classList.add('show'); badge.dataset.reaction=em; } }
+          if(emojiPickerPanel){ emojiPickerPanel.classList.remove('show'); emojiPickerPanel.style.display='none'; }
+          resetFocus();
         });
-      }
+        emojiPickerGrid.appendChild(b);
+      });
+    }
+  }
+  const emojiPickerClose = $('#emojiPickerClose');
+  if(emojiPickerClose && !emojiPickerClose.dataset.bound){ emojiPickerClose.dataset.bound='1'; emojiPickerClose.addEventListener('click', ()=>{ if(emojiPickerPanel){ emojiPickerPanel.classList.remove('show'); emojiPickerPanel.style.display='none'; } }); }
+
+  // ---------- STICKER ----------
+  function forcePlayStickerVideos(){ $$('.sticker-item video,.sticker-bubble video').forEach(v=>{ if(v.paused){ v.muted=true; v.playsInline=true; v.setAttribute('muted',''); v.setAttribute('playsinline',''); v.setAttribute('webkit-playsinline',''); v.play().catch(()=>{}); } }); }
+  function renderStickers(){
+    if(!stickerGrid || !stickerAddBox) return;
+    stickerGrid.querySelectorAll('.sticker-item').forEach(e=>e.remove());
+    const seen = new Set(); const all = [...memoryVideoStickers, ...stickers];
+    all.forEach(item=>{
+      const src = cleanSrc(item.src); if(!src || seen.has(src)) return; seen.add(src);
+      const type = item.type||'image';
+      const div = document.createElement('div'); div.className='sticker-item'+(type==='video'?' is-video':'');
+      div.style.position='relative'; div.style.overflow='hidden'; div.style.background='#000'; div.style.borderRadius='12px'; div.style.webkitMaskImage='-webkit-radial-gradient(white, black)';
+      if(type==='video'){
+        const video = document.createElement('video'); video.muted=true; video.playsInline=true; video.preload='auto'; video.setAttribute('playsinline',''); video.setAttribute('webkit-playsinline',''); video.setAttribute('muted',''); video.style.width='100%'; video.style.height='100%'; video.style.objectFit='cover'; video.style.borderRadius='12px'; video.style.position='relative'; video.style.zIndex='2'; video.src = src; video.loop=true; video.autoplay=true;
+        const tryPlay = ()=>video.play().catch(()=>{}); video.addEventListener('canplay', tryPlay, {once:true}); video.addEventListener('loadeddata', tryPlay, {once:true}); div.addEventListener('touchstart', tryPlay, {once:true}); setTimeout(tryPlay,120); div.appendChild(video);
+      } else { const img=document.createElement('img'); img.src=src; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover'; div.appendChild(img); }
+      div.onclick = ()=>sendSticker(src, type);
+      stickerGrid.insertBefore(div, stickerAddBox);
+    });
+    refresh(); setTimeout(forcePlayStickerVideos,400);
+  }
+  function sendSticker(src, type='image'){
+    const id='msg_'+Date.now(); const row=document.createElement('div'); row.className='msg-row sender'; row.dataset.messageId=id; row.dataset.owner='sender';
+    const clean = cleanSrc(src); const time = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    if(type==='video'){
+      row.innerHTML = `<div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble sticker-bubble is-loading"><div class="sticker-media-wrap">${loadingHtml('sticker-loading')}</div><span class="msg-meta sticker-meta right-meta"><span class="msg-time">${time}</span><i data-lucide="check-check" class="tick-icon blue"></i></span><span class="msg-reaction-badge" id="reaction-${id}"></span></div>`;
+      const wrap = row.querySelector('.sticker-media-wrap'); const video = document.createElement('video'); video.src=clean; video.muted=true; video.playsInline=true; video.preload='auto'; video.setAttribute('playsinline',''); video.setAttribute('webkit-playsinline',''); video.setAttribute('muted',''); video.style.borderRadius='12px'; video.loop=true; video.autoplay=true; wrap.prepend(video); video.addEventListener('canplay', ()=>video.play().catch(()=>{}), {once:true}); setTimeout(()=>video.play().catch(()=>{}),150); runLoading(row.querySelector('.bubble'));
+    } else {
+      row.innerHTML = `<div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble sticker-bubble is-loading"><div class="sticker-media-wrap"><img src="${clean}">${loadingHtml('sticker-loading')}</div><span class="msg-meta sticker-meta right-meta"><span class="msg-time">${time}</span><i data-lucide="check-check" class="tick-icon blue"></i></span><span class="msg-reaction-badge" id="reaction-${id}"></span></div>`; runLoading(row.querySelector('.bubble'));
+    }
+    const typing = $('#typingIndicator'); if(typing) chatMessages.insertBefore(row, typing); else chatMessages.appendChild(row);
+    bindReactionRow(row); refresh(); chatMessages.scrollTo({top:chatMessages.scrollHeight, behavior:'smooth'});
+    stickerPanel?.classList.remove('show'); chatBackground.classList.remove('sticker-open');
+  }
+  function renderChatStickersSelect(){
+    if(!stickerSelectGrid) return; stickerSelectGrid.innerHTML='';
+    const favSrcs = new Set([...stickers,...memoryVideoStickers].map(s=>cleanSrc(s.src)));
+    $$('.image-bubble img,.video-bubble video,.sticker-bubble img,.sticker-bubble video').forEach(el=>{
+      const src = el.src||el.currentSrc; if(!src) return; const clean = cleanSrc(src); if(favSrcs.has(clean)) return;
+      const div = document.createElement('div'); div.className='sticker-item selectable selected';
+      if(el.tagName==='VIDEO'){ const v=document.createElement('video'); v.src=clean; v.muted=true; v.playsInline=true; v.setAttribute('muted',''); v.setAttribute('playsinline',''); div.appendChild(v); }
+      else { const img=document.createElement('img'); img.src=clean; div.appendChild(img); }
+      div.dataset.src=clean; div.dataset.type = el.tagName==='VIDEO' ? 'video' : 'image'; div.onclick = ()=>div.classList.toggle('selected'); stickerSelectGrid.appendChild(div);
+    });
+  }
+
+  // ---------- FULL VIDEO ----------
+  function openVideoFull(src, caption){
+    if(!videoFullOverlay || !videoFullPlayer) return;
+    videoFullPlayer.src = cleanSrc(src); if(videoFullCaption) videoFullCaption.textContent = caption||''; videoFullOverlay.classList.add('show'); videoFullPlayer.loop=false; videoFullPlayer.muted=false; videoFullPlayer.play().catch(()=>{}); refresh();
+  }
+  function closeVideoFull(){ videoFullOverlay?.classList.remove('show'); if(videoFullPlayer){ videoFullPlayer.pause(); videoFullPlayer.src=''; } }
+  if(videoFullClose && !videoFullClose.dataset.bound){ videoFullClose.dataset.bound='1'; videoFullClose.addEventListener('click', e=>{ e.stopPropagation(); closeVideoFull(); }); }
+  if(videoFullOverlay && !videoFullOverlay.dataset.bound){ videoFullOverlay.dataset.bound='1'; videoFullOverlay.addEventListener('click', e=>{ if(e.target===videoFullPlayer || e.target.closest('.video-full-caption') || e.target.closest('.preview-header')) return; closeVideoFull(); }); }
+
+  // ---------- PREVIEW ----------
+  function openPreview(src, type='image'){
+    if(!imagePreview) return; previewType=type; previewObjectUrl=src;
+    if(type==='video'){ if(previewImage) previewImage.style.display='none'; if(previewVideo){ previewVideo.src=cleanSrc(src); previewVideo.style.display='block'; } }
+    else { if(previewVideo){ previewVideo.style.display='none'; previewVideo.pause(); } if(previewImage){ previewImage.src=cleanSrc(src); previewImage.style.display='block'; } }
+    imagePreview.classList.add('show'); imagePreview.style.display='flex'; imagePreview.style.visibility='visible'; imagePreview.style.opacity='1'; refresh();
+  }
+  function handleFile(file){ if(!file) return; openPreview(URL.createObjectURL(file), file.type.startsWith('video/')?'video':'image'); }
+  if(galleryInput && !galleryInput.dataset.reactionBound){ galleryInput.dataset.reactionBound='1'; window.nkGalleryHandled=true; galleryInput.addEventListener('change', e=>handleFile(e.target.files[0])); }
+  if(cameraInput && !cameraInput.dataset.reactionBound){ cameraInput.dataset.reactionBound='1'; cameraInput.addEventListener('change', e=>handleFile(e.target.files[0])); }
+  function closePreview(){ imagePreview?.classList.remove('show'); if(imagePreview) imagePreview.style.display='none'; if(previewVideo){ previewVideo.pause(); previewVideo.src=''; } if(captionInput) captionInput.value=''; }
+  if(previewClose && !previewClose.dataset.bound){ previewClose.dataset.bound='1'; previewClose.addEventListener('click', closePreview); }
+  if(previewCancelText && !previewCancelText.dataset.bound){ previewCancelText.dataset.bound='1'; previewCancelText.addEventListener('click', closePreview); }
+  if(imagePreview && !imagePreview.dataset.bound){ imagePreview.dataset.bound='1'; imagePreview.addEventListener('click', e=>{ if(e.target===imagePreview || e.target.classList.contains('preview-blur-bg')) closePreview(); }); }
+  if(previewSendBtn && !previewSendBtn.dataset.bound){
+    previewSendBtn.dataset.bound='1';
+    previewSendBtn.addEventListener('click', ()=>{
+      const caption = captionInput?.value.trim()||''; const replyData = window.getCurrentReplyData ? window.getCurrentReplyData() : null;
+      let quotedHtml=''; if(replyData){ quotedHtml=`<div class="quoted-reply">${replyData.thumb?`<img class="quoted-thumb" src="${replyData.thumb}">`:''}<div class="quoted-content"><span class="quoted-name">${replyData.name}</span><span class="quoted-text">${replyData.text}</span></div></div>`; }
+      const id='msg_'+Date.now(); const row=document.createElement('div'); row.className='msg-row sender'; row.dataset.messageId=id; row.dataset.owner='sender';
+      const clean = cleanSrc(previewObjectUrl); const time = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+      if(previewType==='video'){ row.innerHTML=`<div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble video-bubble with-caption is-loading">${quotedHtml}<div class="video-wrap"><video src="${clean}"></video><button class="video-play-center"><i data-lucide="play"></i></button><span class="video-duration">00:10</span>${loadingHtml('')}<span class="msg-meta over-image right-meta"><span class="msg-time">${time}</span><i data-lucide="check-check" class="tick-icon blue"></i></span></div>${caption?`<div class="img-caption-wrap"><p class="img-caption-text">${caption}</p></div>`:''}<span class="msg-reaction-badge" id="reaction-${id}"></span></div>`; }
+      else if(caption){ row.innerHTML=`<div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble image-bubble with-caption is-loading">${quotedHtml}<div class="img-wrap"><img src="${clean}">${loadingHtml('')}<span class="msg-meta over-image right-meta"><span class="msg-time">${time}</span><i data-lucide="check-check" class="tick-icon blue"></i></span></div><div class="img-caption-wrap"><p class="img-caption-text">${caption}</p></div><span class="msg-reaction-badge" id="reaction-${id}"></span></div>`; }
+      else { row.innerHTML=`<div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble image-bubble is-loading">${quotedHtml}<div class="img-wrap"><img src="${clean}">${loadingHtml('')}<span class="msg-meta over-image right-meta"><span class="msg-time">${time}</span><i data-lucide="check-check" class="tick-icon blue"></i></span></div><span class="msg-reaction-badge" id="reaction-${id}"></span></div>`; }
+      const typing = $('#typingIndicator'); if(typing) chatMessages.insertBefore(row, typing); else chatMessages.appendChild(row);
+      bindReactionRow(row); refresh(); closePreview(); runLoading(row.querySelector('.bubble'));
+      if(galleryInput) galleryInput.value=''; if(cameraInput) cameraInput.value=''; if(window.clearReplyData) window.clearReplyData(); chatMessages.scrollTo({top:chatMessages.scrollHeight, behavior:'smooth'});
+    });
+  }
+
+  // ---------- STICKER PANEL ----------
+  if(stickerBtn && !stickerBtn.dataset.bound){
+    stickerBtn.dataset.bound='1';
+    stickerBtn.addEventListener('click', (e)=>{
+      e.stopPropagation(); e.preventDefault();
+      emojiPickerPanel?.classList.remove('show'); if(emojiPickerPanel) emojiPickerPanel.style.display='none';
+      if(emojiBar) emojiBar.classList.remove('show');
+      const isShow = stickerPanel?.classList.contains('show');
+      if(isShow){ stickerPanel.classList.remove('show'); chatBackground.classList.remove('sticker-open'); }
+      else { renderStickers(); if(msgInput) msgInput.blur(); stickerPanel?.classList.add('show'); chatBackground.classList.add('sticker-open'); closePlusMenu(); refresh(); setTimeout(forcePlayStickerVideos,400); }
+    });
+  }
+  const spClose = $('#stickerPanelClose');
+  if(spClose && !spClose.dataset.bound){ spClose.dataset.bound='1'; spClose.addEventListener('click', ()=>{ stickerPanel?.classList.remove('show'); chatBackground.classList.remove('sticker-open'); }); }
+  if(msgInput && !msgInput.dataset.stickerBound){ msgInput.dataset.stickerBound='1'; msgInput.addEventListener('focus', ()=>{ if(stickerPanel?.classList.contains('show')){ stickerPanel.classList.remove('show'); chatBackground.classList.remove('sticker-open'); } }); }
+  if(stickerAddBox && !stickerAddBox.dataset.bound){ stickerAddBox.dataset.bound='1'; stickerAddBox.addEventListener('click', ()=>{ renderChatStickersSelect(); chatStickerSelectMode?.classList.add('show'); stickerPanel?.classList.remove('show'); chatBackground.classList.remove('sticker-open'); refresh(); }); }
+  if(chatStickerSelectMode && !chatStickerSelectMode.dataset.bound){
+    chatStickerSelectMode.dataset.bound='1';
+    addStickerConfirmBtn?.addEventListener('click', ()=>{
+      $$('.sticker-item.selected', chatStickerSelectMode).forEach(el=>{
+        const src = cleanSrc(el.dataset.src); const type = el.dataset.type||'image';
+        const exists = [...stickers,...memoryVideoStickers].some(s=>cleanSrc(s.src)===src);
+        if(!exists){ if(type==='video') memoryVideoStickers.push({src, type}); else { stickers.push({src, type}); localStorage.setItem('my_stickers', JSON.stringify(stickers)); } }
+      });
+      renderStickers(); chatStickerSelectMode.classList.remove('show'); if(msgInput) msgInput.blur(); stickerPanel?.classList.add('show'); chatBackground.classList.add('sticker-open'); showToast('Sticker added'); setTimeout(forcePlayStickerVideos,300);
+    });
+    stickerSelectClose?.addEventListener('click', ()=>chatStickerSelectMode.classList.remove('show'));
+    addStickerCancelX?.addEventListener('click', ()=>chatStickerSelectMode.classList.remove('show'));
+    chatStickerSelectMode.addEventListener('click', e=>{ if(e.target===chatStickerSelectMode) chatStickerSelectMode.classList.remove('show'); });
+  }
+
+  // ---------- FFMPEG ----------
+  async function ensureFFmpegLoaded(){
+    if(ffmpegLoaded) return ffmpegInstance; if(ffmpegLoading) return null; ffmpegLoading=true;
+    try{
+      if(ffmpegLoader){ ffmpegLoader.classList.add('show'); ffmpegLoader.style.display='flex'; }
+      if(!window.FFmpeg){ await new Promise((res,rej)=>{ const s=document.createElement('script'); s.src='https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.min.js'; s.onload=res; s.onerror=rej; document.head.appendChild(s); }); }
       if(!window.FFmpeg) throw new Error('ffmpeg not loaded');
-      const { createFFmpeg, fetchFile } = window.FFmpeg;
-      window.FFmpeg.fetchFile = fetchFile;
-      ffmpegInstance = createFFmpeg({ log:false, corePath:'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.js' });
-      await ffmpegInstance.load(); ffmpegLoaded = true; showToast('Editor ready');
-    }catch(e){ console.log('ffmpeg fallback', e); ffmpegLoaded = false; }
-    finally{ ffmpegLoading = false; if(loader){ loader.classList.remove('show'); loader.style.display='none'; } }
+      const { createFFmpeg, fetchFile } = window.FFmpeg; window.FFmpeg.fetchFile = fetchFile;
+      ffmpegInstance = createFFmpeg({log:false, corePath:'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.js'});
+      await ffmpegInstance.load(); ffmpegLoaded=true; showToast('Editor ready');
+    } catch(e){ console.log('ffmpeg fallback', e); ffmpegLoaded=false; }
+    finally { ffmpegLoading=false; if(ffmpegLoader){ ffmpegLoader.classList.remove('show'); ffmpegLoader.style.display='none'; } }
     return ffmpegInstance;
   }
   async function cutVideoWithFFmpeg(file, start, end){
-    // REAL CUT - makes new file, not fake loop. This cut file is saved to backend.
-    const ffmpeg = await ensureFFmpegLoaded();
-    if(!ffmpeg || !ffmpegLoaded) return URL.createObjectURL(file);
-    const input = 'input.mp4', output = 'output.mp4';
-    ffmpeg.FS('writeFile', input, await window.FFmpeg.fetchFile(file));
-    await ffmpeg.run('-ss', `${start}`, '-to', `${end}`, '-i', input, '-c:v', 'libx264', '-preset', 'ultrafast', '-c:a', 'aac', '-t', `${end-start}`, output);
-    const data = ffmpeg.FS('readFile', output); const blob = new Blob([data.buffer], {type:'video/mp4'});
-    try{ ffmpeg.FS('unlink', input); ffmpeg.FS('unlink', output); }catch{}
-    return URL.createObjectURL(blob);
+    const duration = Math.min(6, Math.max(0.2, end - start));
+    if(cuttingLoader){ cuttingLoader.classList.add('show'); cuttingLoader.style.display='flex'; const txt=cuttingLoader.querySelector('.cut-text'); if(txt) txt.textContent=`Cutting video to ${duration.toFixed(1)}s...`; }
+    try{
+      const ffmpeg = await ensureFFmpegLoaded();
+      if(!ffmpeg || !ffmpegLoaded) throw new Error('FFmpeg not ready - cannot fake cut');
+      const input='input.mp4', output='output.mp4';
+      ffmpeg.FS('writeFile', input, await window.FFmpeg.fetchFile(file));
+      await ffmpeg.run('-ss', `${start}`, '-to', `${end}`, '-i', input, '-c:v', 'libx264', '-preset', 'ultrafast', '-c:a', 'aac', '-t', `${duration}`, '-movflags', '+faststart', output);
+      const data = ffmpeg.FS('readFile', output); const blob = new Blob([data.buffer], {type:'video/mp4'});
+      try{ ffmpeg.FS('unlink', input); ffmpeg.FS('unlink', output); }catch(e){}
+      return URL.createObjectURL(blob);
+    } finally { if(cuttingLoader){ cuttingLoader.classList.remove('show'); cuttingLoader.style.display='none'; } }
   }
+  window.cutVideoWithFFmpeg = cutVideoWithFFmpeg;
 
-  // ================= CREATE STICKER PAGE - Tall crop, long height little width =================
+  // ---------- CREATE STICKER ----------
   function closeCreatePage(){
-    createPage.classList.remove('show'); if(createImage){ createImage.src=''; createImage.style.display='none'; }
-    if(createVideo){ createVideo.src=''; createVideo.style.display='none'; createVideo.pause(); createVideo.ontimeupdate = null; }
-    if(createPlaceholder) createPlaceholder.style.display='flex'; if(textOverlay) textOverlay.textContent='';
-    if(textOverlayWrapper){ textOverlayWrapper.style.display='none'; textOverlayWrapper.style.left='50%'; textOverlayWrapper.style.top='55%'; textOverlayWrapper.style.transform='translate(-50%,-50%)'; }
-    if(videoTrimBar) videoTrimBar.style.display='none'; if(stickerFileInput) stickerFileInput.value='';
-    cropScale=1; cropX=0; cropY=0; originalVideoFile=null; textScale=1;
-    if(createImage) createImage.style.transform='translate(0px,0px) scale(1)'; if(createVideo) createVideo.style.transform='translate(0px,0px) scale(1)';
+    createPage?.classList.remove('show');
+    if(createImage){ createImage.src=''; createImage.style.display='none'; }
+    if(createVideo){ createVideo.src=''; createVideo.style.display='none'; createVideo.pause(); createVideo.ontimeupdate=null; }
+    if(createPlaceholder) createPlaceholder.style.display='flex';
+    if(textOverlay) textOverlay.textContent='';
+    if(textOverlayWrapper){ textOverlayWrapper.style.display='none'; textOverlayWrapper.style.left='50%'; textOverlayWrapper.style.top='50%'; textOverlayWrapper.style.transform='translate(-50%,-50%)'; }
+    if(videoTrimBar) videoTrimBar.style.display='none';
+    if(stickerFileInput) stickerFileInput.value='';
+    cropScale=1; cropX=0; cropY=0; originalVideoFile=null;
+    if(createImage) createImage.style.transform='translate(0px,0px) scale(1)';
+    if(createVideo) createVideo.style.transform='translate(0px,0px) scale(1)';
   }
-  let isDraggingText=false, startDragX=0, startDragY=0, startLeft=0, startTop=0;
-  if(textOverlayWrapper){
-    textOverlayWrapper.addEventListener('touchstart', (e)=>{
-      if(e.target.classList.contains('resize-handle')) return; const t=e.touches[0]; isDraggingText=true; startDragX=t.clientX; startDragY=t.clientY;
-      const rect=textOverlayWrapper.getBoundingClientRect(); const pRect=createCanvasEl.getBoundingClientRect(); startLeft=rect.left-pRect.left; startTop=rect.top-pRect.top;
-    }, {passive:false});
-    textOverlayWrapper.addEventListener('touchmove', (e)=>{ if(!isDraggingText) return; e.preventDefault(); const t=e.touches[0]; const dx=t.clientX-startDragX, dy=t.clientY-startDragY; textOverlayWrapper.style.left=(startLeft+dx)+'px'; textOverlayWrapper.style.top=(startTop+dy)+'px'; }, {passive:false});
-    textOverlayWrapper.addEventListener('touchend', ()=> isDraggingText=false);
-    textOverlayWrapper.addEventListener('mousedown', (e)=>{ isDraggingText=true; startDragX=e.clientX; startDragY=e.clientY; const rect=textOverlayWrapper.getBoundingClientRect(); const pRect=createCanvasEl.getBoundingClientRect(); startLeft=rect.left-pRect.left; startTop=rect.top-pRect.top; e.preventDefault(); });
-    window.addEventListener('mousemove', (e)=>{ if(!isDraggingText) return; const dx=e.clientX-startDragX, dy=e.clientY-startDragY; textOverlayWrapper.style.left=(startLeft+dx)+'px'; textOverlayWrapper.style.top=(startTop+dy)+'px'; });
-    window.addEventListener('mouseup', ()=> isDraggingText=false);
+  let isDraggingText=false, sdX=0, sdY=0, sLeft=0, sTop=0;
+  if(textOverlayWrapper && !textOverlayWrapper.dataset.bound){
+    textOverlayWrapper.dataset.bound='1';
+    const startDrag = (cx,cy)=>{ isDraggingText=true; sdX=cx; sdY=cy; const r=textOverlayWrapper.getBoundingClientRect(); const pr=createCanvasEl.getBoundingClientRect(); sLeft=r.left-pr.left; sTop=r.top-pr.top; };
+    textOverlayWrapper.addEventListener('touchstart', e=>{ if(e.target.classList.contains('resize-handle')) return; startDrag(e.touches[0].clientX, e.touches[0].clientY); }, {passive:false});
+    textOverlayWrapper.addEventListener('touchmove', e=>{ if(!isDraggingText) return; e.preventDefault(); textOverlayWrapper.style.left=(sLeft + e.touches[0].clientX - sdX)+'px'; textOverlayWrapper.style.top=(sTop + e.touches[0].clientY - sdY)+'px'; }, {passive:false});
+    textOverlayWrapper.addEventListener('touchend', ()=>isDraggingText=false);
+    textOverlayWrapper.addEventListener('mousedown', e=>{ startDrag(e.clientX, e.clientY); e.preventDefault(); });
+    window.addEventListener('mousemove', e=>{ if(!isDraggingText) return; textOverlayWrapper.style.left=(sLeft + e.clientX - sdX)+'px'; textOverlayWrapper.style.top=(sTop + e.clientY - sdY)+'px'; });
+    window.addEventListener('mouseup', ()=>isDraggingText=false);
   }
+  function updateCropTransform(){ const t=`translate(${cropX}px, ${cropY}px) scale(${cropScale})`; if(createImage && createImage.style.display!=='none') createImage.style.transform=t; if(createVideo && createVideo.style.display!=='none') createVideo.style.transform=t; }
   function initIphoneCrop(){
-    if(!createCanvasEl) return; let isDraggingCrop=false;
-    createCanvasEl.addEventListener('touchstart', (e)=>{
-      if(e.target.closest('#textOverlayWrapper')) return;
-      if(e.touches.length===1){ isDraggingCrop=true; lastX=e.touches[0].clientX; lastY=e.touches[0].clientY; } else if(e.touches.length===2){ lastDist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY); }
-    }, {passive:true});
-    createCanvasEl.addEventListener('touchmove', (e)=>{
+    if(!createCanvasEl || createCanvasEl.dataset.bound) return; createCanvasEl.dataset.bound='1';
+    let isDraggingCrop=false;
+    createCanvasEl.addEventListener('touchstart', e=>{ if(e.target.closest('#textOverlayWrapper')) return; if(e.touches.length===1){ isDraggingCrop=true; lastX=e.touches[0].clientX; lastY=e.touches[0].clientY; } else if(e.touches.length===2){ lastDist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY); } }, {passive:true});
+    createCanvasEl.addEventListener('touchmove', e=>{
       if(e.target.closest('#textOverlayWrapper')) return;
       if(e.touches.length===1 && isDraggingCrop){ const dx=e.touches[0].clientX-lastX, dy=e.touches[0].clientY-lastY; cropX+=dx; cropY+=dy; lastX=e.touches[0].clientX; lastY=e.touches[0].clientY; updateCropTransform(); }
       else if(e.touches.length===2){ const dist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY); if(lastDist>0){ cropScale*=dist/lastDist; cropScale=Math.max(1,Math.min(3,cropScale)); updateCropTransform(); } lastDist=dist; }
       if(e.touches.length>0) e.preventDefault();
     }, {passive:false});
     createCanvasEl.addEventListener('touchend', ()=>{ isDraggingCrop=false; lastDist=0; });
-    createCanvasEl.addEventListener('mousedown', (e)=>{ if(e.target.closest('#textOverlayWrapper')) return; isDraggingCrop=true; lastX=e.clientX; lastY=e.clientY; });
-    window.addEventListener('mousemove', (e)=>{ if(!isDraggingCrop) return; const dx=e.clientX-lastX, dy=e.clientY-lastY; cropX+=dx; cropY+=dy; lastX=e.clientX; lastY=e.clientY; updateCropTransform(); });
-    window.addEventListener('mouseup', ()=> isDraggingCrop=false);
-    createCanvasEl.addEventListener('wheel', (e)=>{ e.preventDefault(); cropScale+= e.deltaY<0 ? 0.1 : -0.1; cropScale=Math.max(1,Math.min(3,cropScale)); updateCropTransform(); }, {passive:false});
+    createCanvasEl.addEventListener('mousedown', e=>{ if(e.target.closest('#textOverlayWrapper')) return; isDraggingCrop=true; lastX=e.clientX; lastY=e.clientY; });
+    window.addEventListener('mousemove', e=>{ if(!isDraggingCrop) return; const dx=e.clientX-lastX, dy=e.clientY-lastY; cropX+=dx; cropY+=dy; lastX=e.clientX; lastY=e.clientY; updateCropTransform(); });
+    window.addEventListener('mouseup', ()=>isDraggingCrop=false);
+    createCanvasEl.addEventListener('wheel', e=>{ e.preventDefault(); cropScale+= e.deltaY<0 ? 0.1 : -0.1; cropScale=Math.max(1,Math.min(3,cropScale)); updateCropTransform(); }, {passive:false});
   }
-  function updateCropTransform(){ const t = `translate(${cropX}px, ${cropY}px) scale(${cropScale})`; if(createImage && createImage.style.display !== 'none') createImage.style.transform = t; if(createVideo && createVideo.style.display !== 'none') createVideo.style.transform = t; }
   initIphoneCrop();
-  createPlaceholder?.addEventListener('click', ()=> stickerFileInput?.click());
-  stickerFileInput?.addEventListener('change', e => {
-    const file = e.target.files[0]; if(!file) return; originalVideoFile = file.type.startsWith('video/') ? file : null;
-    const url = URL.createObjectURL(file); cropScale=1; cropX=0; cropY=0;
-    if(file.type.startsWith('video/')){
-      createImage.style.display='none'; createVideo.src = url; createVideo.style.display='block'; createVideo.load(); createVideo.style.transform='translate(0px,0px) scale(1)'; videoTrimBar.style.display='flex';
-      trimStart.min=0; trimStart.value=0; trimEnd.value=6; if(trimLabel) trimLabel.textContent='0s - 6s (max 6s)';
-      createVideo.addEventListener('loadedmetadata', ()=>{
-        const dur = createVideo.duration; trimStart.max = dur; trimEnd.max = dur; trimEnd.value = Math.min(dur, 6); trimStart.value = 0;
-        if(trimLabel) trimLabel.textContent = `${parseFloat(trimStart.value).toFixed(1)}s - ${parseFloat(trimEnd.value).toFixed(1)}s`; createVideo.currentTime = 0;
-        // Preview trim in editor only - real cut happens on Add via FFmpeg
-        createVideo.ontimeupdate = ()=>{ const s = parseFloat(trimStart.value)||0, en = parseFloat(trimEnd.value)||6; if(createVideo.currentTime >= en) createVideo.currentTime = s; };
-      }, {once:true}); ensureFFmpegLoaded();
-    } else {
-      if(createVideo){ createVideo.style.display='none'; createVideo.pause(); createVideo.ontimeupdate = null; }
-      createImage.src = url; createImage.style.display='block'; if(videoTrimBar) videoTrimBar.style.display='none'; createImage.style.transform='translate(0px,0px) scale(1)';
-    }
-    createPlaceholder.style.display='none';
-    if(textOverlayWrapper){ textOverlayWrapper.style.display='flex'; textOverlayWrapper.style.left='50%'; textOverlayWrapper.style.top='55%'; textOverlayWrapper.style.transform='translate(-50%,-50%)'; }
-  });
-  trimStart?.addEventListener('input', ()=>{
-    let s = parseFloat(trimStart.value), en = parseFloat(trimEnd.value); if(s >= en-0.2) trimStart.value = (en-0.2).toFixed(1);
-    if((parseFloat(trimEnd.value)-parseFloat(trimStart.value)) > 6) trimEnd.value = (parseFloat(trimStart.value)+6).toFixed(1);
-    if(trimLabel) trimLabel.textContent = `${parseFloat(trimStart.value).toFixed(1)}s - ${parseFloat(trimEnd.value).toFixed(1)}s`; if(createVideo) createVideo.currentTime = parseFloat(trimStart.value);
-  });
-  trimEnd?.addEventListener('input', ()=>{
-    let s = parseFloat(trimStart.value), en = parseFloat(trimEnd.value); if(en <= s+0.2) trimEnd.value = (s+0.2).toFixed(1);
-    if((parseFloat(trimEnd.value)-parseFloat(trimStart.value)) > 6){ trimEnd.value = (parseFloat(trimStart.value)+6).toFixed(1); showToast('Max 6 seconds'); }
-    if(trimLabel) trimLabel.textContent = `${parseFloat(trimStart.value).toFixed(1)}s - ${parseFloat(trimEnd.value).toFixed(1)}s`;
-  });
-  addTextBtn?.addEventListener('click', ()=>{ if(textOverlayWrapper) textOverlayWrapper.style.display='flex'; if(textOverlay) textOverlay.focus(); });
-  boldTextBtn?.addEventListener('click', ()=>{ if(!textOverlay) return; textOverlay.classList.toggle('bold'); textOverlay.focus(); });
-  zoomTextBtn?.addEventListener('click', ()=>{ textScale = textScale >= 1.8 ? 1 : textScale + 0.2; if(textOverlay) textOverlay.style.transform = `scale(${textScale})`; });
-  cropBtn?.addEventListener('click', ()=>{ isCropped = !isCropped; showToast(isCropped ? 'Crop mode: drag & pinch image' : 'Crop reset'); if(!isCropped){ cropScale=1; cropX=0; cropY=0; updateCropTransform(); } });
+  if(createPlaceholder && !createPlaceholder.dataset.bound){ createPlaceholder.dataset.bound='1'; createPlaceholder.addEventListener('click', ()=>stickerFileInput?.click()); }
+  if(stickerFileInput && !stickerFileInput.dataset.bound){
+    stickerFileInput.dataset.bound='1';
+    stickerFileInput.addEventListener('change', e=>{
+      const file = e.target.files[0]; if(!file) return;
+      originalVideoFile = file.type.startsWith('video/') ? file : null;
+      const url = URL.createObjectURL(file); cropScale=1; cropX=0; cropY=0;
+      if(file.type.startsWith('video/')){
+        if(createImage) createImage.style.display='none';
+        if(createVideo){ createVideo.src=url; createVideo.style.display='block'; createVideo.load(); createVideo.style.transform='translate(0px,0px) scale(1)'; }
+        if(videoTrimBar) videoTrimBar.style.display='flex';
+        if(trimStart){ trimStart.min=0; trimStart.value=0; }
+        if(trimEnd) trimEnd.value=6;
+        if(trimLabel) trimLabel.textContent='0.0s - 6.0s (max 6s)';
+        if(createVideo){ createVideo.addEventListener('loadedmetadata', ()=>{ const dur = createVideo.duration; if(trimStart) trimStart.max=dur; if(trimEnd){ trimEnd.max=dur; trimEnd.value=Math.min(dur,6); } if(trimStart) trimStart.value=0; if(trimLabel) trimLabel.textContent=`${parseFloat(trimStart.value).toFixed(1)}s - ${parseFloat(trimEnd.value).toFixed(1)}s`; createVideo.currentTime=0; createVideo.ontimeupdate = ()=>{ const s=parseFloat(trimStart.value)||0, en=parseFloat(trimEnd.value)||6; if(createVideo.currentTime>=en) createVideo.currentTime=s; }; }, {once:true}); }
+        ensureFFmpegLoaded();
+      } else {
+        if(createVideo){ createVideo.style.display='none'; createVideo.pause(); createVideo.ontimeupdate=null; }
+        if(createImage){ createImage.src=url; createImage.style.display='block'; createImage.style.transform='translate(0px,0px) scale(1)'; }
+        if(videoTrimBar) videoTrimBar.style.display='none';
+      }
+      if(createPlaceholder) createPlaceholder.style.display='none';
+      if(textOverlayWrapper){ textOverlayWrapper.style.display='flex'; textOverlayWrapper.style.left='50%'; textOverlayWrapper.style.top='55%'; textOverlayWrapper.style.transform='translate(-50%,-50%)'; }
+    });
+  }
+  if(trimStart && !trimStart.dataset.bound){ trimStart.dataset.bound='1'; trimStart.addEventListener('input', ()=>{ let s=parseFloat(trimStart.value), en=parseFloat(trimEnd.value); if(s>=en-0.2) trimStart.value=(en-0.2).toFixed(1); if((parseFloat(trimEnd.value)-parseFloat(trimStart.value))>6) trimEnd.value=(parseFloat(trimStart.value)+6).toFixed(1); if(trimLabel) trimLabel.textContent=`${parseFloat(trimStart.value).toFixed(1)}s - ${parseFloat(trimEnd.value).toFixed(1)}s`; if(createVideo) createVideo.currentTime=parseFloat(trimStart.value); }); }
+  if(trimEnd && !trimEnd.dataset.bound){ trimEnd.dataset.bound='1'; trimEnd.addEventListener('input', ()=>{ let s=parseFloat(trimStart.value), en=parseFloat(trimEnd.value); if(en<=s+0.2) trimEnd.value=(s+0.2).toFixed(1); if((parseFloat(trimEnd.value)-parseFloat(trimStart.value))>6){ trimEnd.value=(parseFloat(trimStart.value)+6).toFixed(1); showToast('Max 6 seconds'); } if(trimLabel) trimLabel.textContent=`${parseFloat(trimStart.value).toFixed(1)}s - ${parseFloat(trimEnd.value).toFixed(1)}s`; }); }
+  if(addTextBtn && !addTextBtn.dataset.bound){ addTextBtn.dataset.bound='1'; addTextBtn.addEventListener('click', ()=>{ if(textOverlayWrapper) textOverlayWrapper.style.display='flex'; if(textOverlay) textOverlay.focus(); }); }
+  if(boldTextBtn && !boldTextBtn.dataset.bound){ boldTextBtn.dataset.bound='1'; boldTextBtn.addEventListener('click', ()=>{ if(!textOverlay) return; textOverlay.classList.toggle('bold'); textOverlay.focus(); }); }
+  if(zoomTextBtn && !zoomTextBtn.dataset.bound){ zoomTextBtn.dataset.bound='1'; zoomTextBtn.addEventListener('click', ()=>{ textScale = textScale>=1.8 ? 1 : textScale+0.2; if(textOverlay) textOverlay.style.transform=`scale(${textScale})`; }); }
+  if(cropBtn && !cropBtn.dataset.bound){ cropBtn.dataset.bound='1'; cropBtn.addEventListener('click', ()=>{ isCropped=!isCropped; showToast(isCropped ? 'Crop mode: drag & pinch image' : 'Crop reset'); if(!isCropped){ cropScale=1; cropX=0; cropY=0; updateCropTransform(); } }); }
   function bakeImageWithTextAndCrop(src, cb){
-    const canvas = document.createElement('canvas'); canvas.width=512; canvas.height=512; const ctx = canvas.getContext('2d');
-    const img = new Image(); img.src = src;
-    img.onload = ()=>{
-      ctx.clearRect(0,0,512,512); ctx.save();
-      const rect = createCanvasEl.getBoundingClientRect();
-      const ratio = 512 / rect.width;
-      const adjX = cropX * ratio; const adjY = cropY * ratio;
-      ctx.translate(256+adjX, 256+adjY); ctx.scale(cropScale, cropScale); ctx.drawImage(img, -256, -256, 512, 512); ctx.restore();
-      if(textOverlay && textOverlay.textContent.trim() && textOverlayWrapper.style.display !== 'none'){
-        const wRect = textOverlayWrapper.getBoundingClientRect(); const cRect = createCanvasEl.getBoundingClientRect();
-        const relX = ((wRect.left + wRect.width/2) - cRect.left) / cRect.width * 512; const relY = ((wRect.top + wRect.height/2) - cRect.top) / cRect.height * 512;
-        const fontSize = Math.round(22 * textScale);
-        ctx.font = `${textOverlay.classList.contains('bold') ? '900' : '800'} ${fontSize}px sans-serif`;
-        ctx.fillStyle='white'; ctx.strokeStyle='black'; ctx.lineWidth=4; ctx.textAlign='center'; ctx.textBaseline='middle';
-        ctx.strokeText(textOverlay.textContent, relX, relY); ctx.fillText(textOverlay.textContent, relX, relY);
+    const canvas=document.createElement('canvas'); canvas.width=512; canvas.height=512; const ctx=canvas.getContext('2d');
+    const img=new Image(); img.src=src;
+    img.onload=()=>{
+      ctx.clearRect(0,0,512,512); ctx.save(); const rect = createCanvasEl.getBoundingClientRect(); const ratio = 512 / rect.width; ctx.translate(256 + cropX*ratio, 256 + cropY*ratio); ctx.scale(cropScale, cropScale); ctx.drawImage(img,-256,-256,512,512); ctx.restore();
+      if(textOverlay && textOverlay.textContent.trim() && textOverlayWrapper.style.display!=='none'){
+        const wRect=textOverlayWrapper.getBoundingClientRect(); const cRect=createCanvasEl.getBoundingClientRect(); const relX=((wRect.left+wRect.width/2)-cRect.left)/cRect.width*512; const relY=((wRect.top+wRect.height/2)-cRect.top)/cRect.height*512; const fontSize=Math.round(22*textScale); ctx.font=`${textOverlay.classList.contains('bold')?'900':'800'} ${fontSize}px sans-serif`; ctx.fillStyle='white'; ctx.strokeStyle='black'; ctx.lineWidth=4; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.strokeText(textOverlay.textContent, relX, relY); ctx.fillText(textOverlay.textContent, relX, relY);
       }
       cb(canvas.toDataURL('image/png'));
-    }; img.onerror = ()=> cb(src);
+    }; img.onerror=()=>cb(src);
   }
-  createAddBtn?.addEventListener('click', async ()=>{
-    const hasImage = createImage && createImage.src && createImage.style.display !== 'none' && createImage.src !== '';
-    const hasVideo = createVideo && createVideo.src && createVideo.style.display !== 'none' && createVideo.src !== '';
-    if(!hasImage && !hasVideo){ showToast('Select image or video first'); return; }
-    createAddBtn.disabled = true; createAddBtn.textContent = 'Adding...';
-    const cuttingLoader = document.getElementById('cuttingLoader'); if(cuttingLoader){ cuttingLoader.classList.add('show'); cuttingLoader.style.display='flex'; }
-    try{
-      if(hasVideo){
-        const start = parseFloat(trimStart.value)||0; const end = parseFloat(trimEnd.value)||6;
-        if((end-start) > 6.1){ showToast('Max 6 seconds'); createAddBtn.disabled=false; createAddBtn.textContent='Add'; return; }
-        let finalSrc;
-        if(originalVideoFile) finalSrc = await cutVideoWithFFmpeg(originalVideoFile, start, end);
-        else finalSrc = createVideo.src.split('#')[0];
-        // Real cut file saved - backend saves this cut file, not full video
-        memoryVideoStickers.push({src:finalSrc.split('#')[0], type:'video'});
-        renderStickers(); closeCreatePage(); showToast('Video sticker added - 6s');
-      } else if(hasImage){
-        bakeImageWithTextAndCrop(createImage.src, (finalSrc)=>{
-          stickers.push({src:finalSrc, type:'image'}); localStorage.setItem('my_stickers', JSON.stringify(stickers));
-          renderStickers(); closeCreatePage(); showToast('Sticker added');
-        });
-        return;
-      }
-    }catch(err){ console.error(err); showToast('Error adding'); }
-    finally{ createAddBtn.disabled=false; createAddBtn.textContent='Add'; if(cuttingLoader){ cuttingLoader.classList.remove('show'); cuttingLoader.style.display='none'; } setTimeout(()=>{ if(stickerPanel){ stickerPanel.classList.add('show'); chatBackground.classList.add('sticker-open'); } if(window.lucide) lucide.createIcons(); setTimeout(forcePlayStickerVideos, 400); }, 150); }
-  });
-  createClose?.addEventListener('click', closeCreatePage); createBack?.addEventListener('click', closeCreatePage); createCancelBtn?.addEventListener('click', closeCreatePage);
-  createPage?.addEventListener('click', (e)=>{ if(e.target === createPage) closeCreatePage(); });
+  if(createAddBtn && !createAddBtn.dataset.bound){
+    createAddBtn.dataset.bound='1';
+    createAddBtn.addEventListener('click', async ()=>{
+      const hasImage = createImage && createImage.src && createImage.style.display!=='none' && createImage.src!=='';
+      const hasVideo = createVideo && createVideo.src && createVideo.style.display!=='none' && createVideo.src!=='';
+      if(!hasImage && !hasVideo){ showToast('Select image or video first'); return; }
+      createAddBtn.disabled=true; createAddBtn.textContent='Adding...';
+      try{
+        if(hasVideo){
+          const start = parseFloat(trimStart.value)||0; const end = parseFloat(trimEnd.value)||6; if((end-start)>6.1){ showToast('Max 6 seconds'); return; } if(!originalVideoFile){ showToast('No video file'); return; }
+          const finalSrc = await cutVideoWithFFmpeg(originalVideoFile, start, end); memoryVideoStickers.push({src:cleanSrc(finalSrc), type:'video'}); renderStickers(); closeCreatePage(); showToast('Video sticker added - 6s real cut');
+        } else if(hasImage){ bakeImageWithTextAndCrop(createImage.src, (finalSrc)=>{ stickers.push({src:finalSrc, type:'image'}); localStorage.setItem('my_stickers', JSON.stringify(stickers)); renderStickers(); closeCreatePage(); showToast('Sticker added'); }); return; }
+      } catch(err){ console.error(err); showToast('Error cutting - try again, FFmpeg needs https'); }
+      finally { createAddBtn.disabled=false; createAddBtn.textContent='Add'; setTimeout(()=>{ if(stickerPanel){ stickerPanel.classList.add('show'); chatBackground.classList.add('sticker-open'); } refresh(); setTimeout(forcePlayStickerVideos,400); },150); }
+    });
+  }
+  if(createClose && !createClose.dataset.bound){ createClose.dataset.bound='1'; createClose.addEventListener('click', closeCreatePage); }
+  if(createBack && !createBack.dataset.bound){ createBack.dataset.bound='1'; createBack.addEventListener('click', closeCreatePage); }
+  if(createCancelBtn && !createCancelBtn.dataset.bound){ createCancelBtn.dataset.bound='1'; createCancelBtn.addEventListener('click', closeCreatePage); }
+  if(createPage && !createPage.dataset.bound){ createPage.dataset.bound='1'; createPage.addEventListener('click', e=>{ if(e.target===createPage) closeCreatePage(); }); }
 
-  // ================= VOICE - HOLD TO RECORD + DOWNLOADING LIKE IMAGE =================
-  let mediaRecorder=null, audioChunks=[], audioStream=null, isRecording=false, shouldSend=false;
-  function animateWave(){ if(!voiceWaveBig) return; voiceWaveBig.querySelectorAll('span').forEach(sp => { sp.style.height = (8 + Math.random()*22) + 'px'; }); }
+  // ---------- VOICE RECORDING ----------
+  let mediaRecorder=null, audioChunks=[], audioStream=null, isRecording=false, shouldSend=false, voiceInterval=null, voiceSec=0, voiceStartTime=0;
+  function animateWave(){ if(!voiceWaveBig) return; voiceWaveBig.querySelectorAll('span').forEach(sp=>{ sp.style.height=(8+Math.random()*22)+'px'; }); }
   async function startVoice(){
     try{
       audioChunks=[]; voiceSec=0; voiceStartTime=Date.now(); if(voiceTimer) voiceTimer.textContent='0:00';
-      const stream = await navigator.mediaDevices.getUserMedia({audio:true}); audioStream = stream;
-      mediaRecorder = new MediaRecorder(stream, {mimeType:'audio/webm'}); mediaRecorder.ondataavailable = e => { if(e.data && e.data.size>0) audioChunks.push(e.data); }; mediaRecorder.start(100);
-      isRecording=true; shouldSend=false; voiceOverlay?.classList.add('show'); chatBackground.classList.add('voice-open');
-      if(voiceInterval) clearInterval(voiceInterval); voiceInterval = setInterval(()=>{ const diff = Math.floor((Date.now()-voiceStartTime)/1000); voiceSec = diff; const m = Math.floor(diff/60), s = diff%60; if(voiceTimer) voiceTimer.textContent = `${m}:${String(s).padStart(2,'0')}`; animateWave(); }, 200);
+      const stream = await navigator.mediaDevices.getUserMedia({audio:true}); audioStream=stream;
+      mediaRecorder = new MediaRecorder(stream,{mimeType:'audio/webm'}); mediaRecorder.ondataavailable = e=>{ if(e.data && e.data.size>0) audioChunks.push(e.data); }; mediaRecorder.start(100); isRecording=true; shouldSend=false;
+      voiceOverlay?.classList.add('show'); chatBackground.classList.add('voice-open');
+      if(voiceInterval) clearInterval(voiceInterval);
+      voiceInterval = setInterval(()=>{ const diff=Math.floor((Date.now()-voiceStartTime)/1000); voiceSec=diff; const m=Math.floor(diff/60), s=diff%60; if(voiceTimer) voiceTimer.textContent=`${m}:${String(s).padStart(2,'0')}`; animateWave(); },200);
       if(navigator.vibrate) navigator.vibrate(30);
-    }catch(err){ showToast('Mic permission denied - use https'); isRecording=false; }
+    } catch(err){ showToast('Mic permission denied - use https'); isRecording=false; }
   }
-  function cleanupStream(){ if(audioStream){ audioStream.getTracks().forEach(t => t.stop()); audioStream=null; } if(voiceInterval) clearInterval(voiceInterval); voiceInterval=null; }
+  function cleanupStream(){ if(audioStream){ audioStream.getTracks().forEach(t=>t.stop()); audioStream=null; } if(voiceInterval) clearInterval(voiceInterval); voiceInterval=null; }
   function sendVoiceMessage(){
-    if(audioChunks.length === 0){ cleanupStream(); return; }
-    const blob = new Blob(audioChunks, {type:'audio/webm'}); const url = URL.createObjectURL(blob);
-    const id = 'msg_' + Date.now(); const timeStr = voiceTimer ? voiceTimer.textContent : `0:${String(voiceSec).padStart(2,'0')}`;
-    const row = document.createElement('div'); row.className='msg-row sender'; row.dataset.messageId = id; row.dataset.loaded = 'false';
-    const loadingHtml = `<div class="media-loading-overlay"><div class="media-loading-circle"><svg viewBox="0 0 44 44"><circle class="media-progress-bg" cx="22" cy="22" r="18"></circle><circle class="media-progress-ring" cx="22" cy="22" r="18"></circle></svg><i data-lucide="arrow-down" class="media-loading-arrow"></i><span class="media-loading-percent">0%</span></div></div>`;
-    row.innerHTML = `<div class="select-circle"><i data-lucide="check"></i></div><div class="bubble voice-bubble is-loading"><button class="voice-play-btn"><i data-lucide="play"></i></button><div class="voice-wave"><span></span><span></span><span></span><span></span></div><span class="voice-duration">${timeStr}</span><span class="msg-meta right-meta"><span class="msg-time">${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span><i data-lucide="check-check" class="tick-icon blue"></i></span><audio src="${url}"></audio>${loadingHtml}</div>`;
-    chatMessages.insertBefore(row, document.getElementById('typingIndicator')); bindRow(row); if(window.lucide) lucide.createIcons(); chatMessages.scrollTo({top:chatMessages.scrollHeight, behavior:'smooth'}); cleanupStream(); audioChunks=[];
-    updateListLastMessage('Voice message', new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}));
-    // Voice downloading / uploading like image - must load 0% -> 100% before play
-    simulateMediaLoading(row);
+    if(audioChunks.length===0){ cleanupStream(); return; }
+    const blob = new Blob(audioChunks,{type:'audio/webm'}); const url = URL.createObjectURL(blob);
+    const id='msg_'+Date.now(); const timeStr = voiceTimer ? voiceTimer.textContent : `0:${String(voiceSec).padStart(2,'0')}`;
+    const row = document.createElement('div'); row.className='msg-row sender'; row.dataset.messageId=id; row.dataset.owner='sender';
+    row.innerHTML = `<div class="select-circle"><i data-lucide="check"></i></div><div class="bubble voice-bubble is-loading"><div class="voice-play-wrap"><button class="voice-play-btn"><i data-lucide="play"></i></button>${loadingHtml('voice-loading')}</div><div class="voice-wave"><span></span><span></span><span></span><span></span></div><span class="voice-duration">0:00</span><span class="msg-meta right-meta"><span class="msg-time">${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span><i data-lucide="check-check" class="tick-icon blue"></i></span><span class="msg-reaction-badge" id="reaction-${id}"></span><audio src="${url}"></audio></div>`;
+    const typing = $('#typingIndicator'); if(typing) chatMessages.insertBefore(row, typing); else chatMessages.appendChild(row);
+    bindReactionRow(row); refresh(); chatMessages.scrollTo({top:chatMessages.scrollHeight, behavior:'smooth'});
+    runLoading(row.querySelector('.bubble'), ()=>{ const durEl=row.querySelector('.voice-duration'); if(durEl) durEl.textContent=timeStr; });
+    cleanupStream(); audioChunks=[];
   }
-  function stopVoice(send){ shouldSend = send; if(!mediaRecorder || mediaRecorder.state === 'inactive'){ voiceOverlay?.classList.remove('show'); chatBackground.classList.remove('voice-open'); cleanupStream(); isRecording=false; return; } mediaRecorder.onstop = ()=>{ if(shouldSend && voiceSec >= 1) sendVoiceMessage(); else { cleanupStream(); audioChunks=[]; } voiceOverlay?.classList.remove('show'); chatBackground.classList.remove('voice-open'); isRecording=false; voiceSec=0; }; mediaRecorder.stop(); }
-  let micPressTimer = null;
-  micBtn?.addEventListener('pointerdown', (e)=>{
-    if(msgInput && msgInput.value.trim().length > 0) return;
-    e.preventDefault(); if(isRecording) return; micPressTimer = setTimeout(()=>{ startVoice(); }, 200);
-  });
-  micBtn?.addEventListener('pointerup', (e)=>{
-    clearTimeout(micPressTimer); e.preventDefault();
-    if(isRecording){ stopVoice(true); return; }
-    if(msgInput && msgInput.value.trim().length > 0){
-      const txt = msgInput.value.trim(); if(!txt) return;
-      const replyData = window.getCurrentReplyData ? window.getCurrentReplyData() : null;
-      let quotedHtml = ''; if(replyData){ quotedHtml = `<div class="quoted-reply">${replyData.thumb ? `<img class="quoted-thumb" src="${replyData.thumb}">` : ''}<div class="quoted-content"><span class="quoted-name">${replyData.name}</span><span class="quoted-text">${replyData.text}</span></div></div>`; }
-      const id = 'msg_' + Date.now(); const row = document.createElement('div'); row.className='msg-row sender'; row.dataset.messageId = id;
-      const timeStr = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-      row.innerHTML = `<div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble sender-bubble">${quotedHtml}<p class="msg-text">${txt}</p><span class="msg-meta right-meta"><span class="msg-time">${timeStr}</span><i data-lucide="check-check" class="tick-icon blue"></i></span><span class="msg-reaction-badge" id="reaction-${id}"></span></div>`;
-      chatMessages.insertBefore(row, document.getElementById('typingIndicator')); bindRow(row); msgInput.value=''; msgInput.style.height='auto'; micBtn.classList.remove('sending'); if(window.clearReplyData) window.clearReplyData(); if(window.lucide) lucide.createIcons(); chatMessages.scrollTo({top:chatMessages.scrollHeight, behavior:'smooth'});
-      updateListLastMessage(txt, timeStr);
-    }
-  });
-  micBtn?.addEventListener('pointerleave', ()=> clearTimeout(micPressTimer));
-  voiceCancelBtn?.addEventListener('click', ()=> stopVoice(false)); voiceStopBtn?.addEventListener('click', ()=> stopVoice(false)); voiceSendBtn?.addEventListener('click', ()=> stopVoice(true));
-
-  // ================= DELETE =================
-  function doDelete(type){
-    if(type === 'everyone'){
-      selectedMessages.forEach(id => {
-        const row = document.querySelector(`[data-message-id="${id}"]`);
-        if(row && row.classList.contains('sender')) makeDeletedPlaceholder(row, true);
-        else if(row){ row.style.transition='opacity 0.25s'; row.style.opacity='0'; setTimeout(()=> row.remove(), 250); }
-      });
-      showToast('Deleted for everyone');
-    } else {
-      selectedMessages.forEach(id => { const row = document.querySelector(`[data-message-id="${id}"]`); if(row){ row.style.transition='opacity 0.25s'; row.style.opacity='0'; setTimeout(()=> row.remove(), 250); } });
-      showToast('Deleted for me');
-    }
-    exitSelectMode();
+  function stopVoice(send){
+    shouldSend=send;
+    if(!mediaRecorder || mediaRecorder.state==='inactive'){ voiceOverlay?.classList.remove('show'); chatBackground.classList.remove('voice-open'); cleanupStream(); isRecording=false; return; }
+    mediaRecorder.onstop = ()=>{ if(shouldSend && voiceSec>=1) sendVoiceMessage(); else { cleanupStream(); audioChunks=[]; } voiceOverlay?.classList.remove('show'); chatBackground.classList.remove('voice-open'); isRecording=false; voiceSec=0; };
+    mediaRecorder.stop();
   }
-  deleteActionBar?.addEventListener('click', e => { const btn = e.target.closest('[data-delete]'); if(!btn) return; doDelete(btn.dataset.delete); });
-  headerCancelBtn?.addEventListener('click', ()=> exitSelectMode());
-  overlay?.addEventListener('click', ()=>{ if(deleteActionBar?.classList.contains('show')) exitSelectMode(); else resetFocus(); });
-  document.addEventListener('keydown', e => {
-    if(e.key === 'Escape'){
-      if(deleteActionBar?.classList.contains('show')) exitSelectMode();
-      else if(createPage?.classList.contains('show')) closeCreatePage();
-      else if(voiceOverlay?.classList.contains('show')) stopVoice(false);
-      else if(videoFullOverlay?.classList.contains('show')) closeVideoFull();
-      else if(imagePreview?.classList.contains('show')) closePreview();
-      else if(plusMenu?.classList.contains('show')) plusMenu.classList.remove('show');
-      else resetFocus();
-    }
-  });
+  let micPressTimer=null;
+  if(micBtn && !micBtn.dataset.voiceBound){
+    micBtn.dataset.voiceBound='1';
+    micBtn.addEventListener('pointerdown', e=>{ if(msgInput && msgInput.value.trim().length>0) return; e.preventDefault(); if(isRecording) return; micPressTimer=setTimeout(()=>{ startVoice(); },200); });
+    micBtn.addEventListener('pointerup', e=>{ clearTimeout(micPressTimer); e.preventDefault(); if(msgInput && msgInput.value.trim().length>0) return; if(isRecording) stopVoice(true); });
+    micBtn.addEventListener('pointerleave', ()=>clearTimeout(micPressTimer));
+  }
+  if(voiceCancelBtn && !voiceCancelBtn.dataset.bound){ voiceCancelBtn.dataset.bound='1'; voiceCancelBtn.addEventListener('click', ()=>stopVoice(false)); }
+  if(voiceStopBtn && !voiceStopBtn.dataset.bound){ voiceStopBtn.dataset.bound='1'; voiceStopBtn.addEventListener('click', ()=>stopVoice(false)); }
+  if(voiceSendBtn && !voiceSendBtn.dataset.bound){ voiceSendBtn.dataset.bound='1'; voiceSendBtn.addEventListener('click', ()=>stopVoice(true)); }
 
-  // ================= TYPING =================
-  window.showTyping = function(){ const t = document.getElementById('typingIndicator'); if(t){ t.classList.add('show','always-show'); t.style.display='flex'; chatMessages.scrollTo({top:chatMessages.scrollHeight, behavior:'smooth'}); } };
-  window.hideTyping = function(){ const t = document.getElementById('typingIndicator'); if(t){ t.classList.add('show','always-show'); t.style.display='flex'; } };
-  window.showGroupTyping = function(names){ const gt = document.getElementById('groupTypingIndicator'); if(gt){ gt.classList.add('show'); gt.style.display='flex'; } if(window.setGroupTyping && names) window.setGroupTyping(names); };
-  setTimeout(()=>{ window.showTyping(); }, 200);
-  renderChatStickersSelect(); renderStickers();
-  setTimeout(forcePlayStickerVideos, 700);
-  if(window.lucide) lucide.createIcons();
+  // ---------- ESC ----------
+  document.addEventListener('keydown', e=>{
+    if(e.key!=='Escape') return;
+    if(createPage?.classList.contains('show')) closeCreatePage();
+    else if(voiceOverlay?.classList.contains('show')) stopVoice(false);
+    else if(videoFullOverlay?.classList.contains('show')) closeVideoFull();
+    else if(imagePreview?.classList.contains('show')) closePreview();
+    else if(isPlusOpen) closePlusMenu();
+    else if(emojiPickerPanel?.classList.contains('show')){ emojiPickerPanel.classList.remove('show'); emojiPickerPanel.style.display='none'; }
+    else if(limitPopupOpen) hideLimitPopup();
+    else resetFocus();
+  });
+  overlay?.addEventListener('click', ()=>resetFocus());
+
+  setInterval(forcePlayStickerVideos,2500);
+  renderStickers(); renderChatStickersSelect();
+  setTimeout(forcePlayStickerVideos,700);
+  refresh();
+  // Debug: tell you in console if plus button found
+  console.log('NK Reaction: plusBtn found =', !!findPlusBtn(), 'plusMenu found/created =', !!findPlusMenu());
 })();

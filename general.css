@@ -3,7 +3,7 @@
   --bg-app: #000000;
   --bg-header: #0A0A0A;
   --card-bg: #1E293B;
-  --border:#888;
+  --border: #888;
   --side-border: #121212;
   --text-main: white;
   --text-gray: #94A3B8;
@@ -17,21 +17,21 @@
 }
 
 /*  RESET EVERYTHING */
-* { 
-  margin: 0; 
-  padding: 0; 
+* {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
-  font-family: var(--font-main); 
+  font-family: var(--font-main);
   -webkit-tap-highlight-color: transparent;
 }
 
-html{
+html {
   height: 100%;
   height: -webkit-fill-available;
   overscroll-behavior: none;
 }
 
-body{
+body {
   background-color: var(--bg-app);
   color: var(--text-main);
 
@@ -54,14 +54,21 @@ body{
 }
 
 /* ===== MOBILE  ===== */
-@media (max-width: 768px){
-  body{
+@media (max-width: 768px) {
+  body {
     padding-left: var(--safe-left);
     padding-right: var(--safe-right);
-    padding-top: calc(60px + var(--safe-top)); /* smaller header for mobile */
-    padding-bottom: calc(80px + var(--safe-bottom)); /* space for bottom nav if you get */
+    padding-top: calc(60px + var(--safe-top));
+    /* smaller header for mobile */
+    padding-bottom: calc(80px + var(--safe-bottom));
+    /* space for bottom nav if you get */
   }
 }
 
 /* Crash protection - no need extra JS */
-img, video{ max-width:100%; height:auto; display:block; }
+img,
+video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
