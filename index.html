@@ -177,6 +177,7 @@
   <main>
 
 
+
     <div id="pageChats">
 
       <!-- ========== LEFT: CHAT LIST ========== -->
@@ -184,8 +185,8 @@
         <div class="start-up" id="mobileTopBar">
           <p class="app-name">KONNEKT</p>
           <p class="app-chats-mid" id="midChatsText">Chats</p>
-          <button class="start-chat-btn" id="openNewChatBtn" data-open-new-chat><i data-lucide="plus"
-              class="start-chat-icon"></i>
+          <button class="start-chat-btn" id="openNewChatBtn" data-open-new-chat>
+            <i data-lucide="plus" class="start-chat-icon"></i>
             <div class="new-chat-text">
               <p>New Chat</p>
             </div>
@@ -230,8 +231,7 @@
               <button class="chat-empty-three-item" data-goto="moments"><span class="chat-empty-three-icon"><i
                     data-lucide="image"></i></span><b>Moments</b><small>Share your day</small></button>
               <button class="chat-empty-three-item" data-goto="loops"><span class="chat-empty-three-icon"><i
-                    data-lucide="repeat"></i></span><b>Loops</b><small>Post anonymously to your
-                  campus</small></button>
+                    data-lucide="repeat"></i></span><b>Loops</b><small>Post anonymously to your campus</small></button>
             </div>
             <div class="chat-empty-bottom"><button class="chat-empty-start-btn" id="emptyStartChatBtnMobile">Start
                 Chat</button><button class="chat-empty-start-btn" id="emptyCreateGroupBtnMobile" hidden>Create
@@ -321,7 +321,7 @@
         </div>
       </div>
 
-      <!-- ========== RIGHT WRAP - B: Desktop list stays, Contact/Group only right, Mobile full ========== -->
+      <!-- ========== RIGHT WRAP ========== -->
       <div class="chat-right-wrap" id="chatRightWrap">
         <div class="chat-empty-state" id="chatEmptyState">
           <div class="chat-empty-card">
@@ -336,12 +336,11 @@
               <button class="chat-empty-three-item" data-goto="moments"><span class="chat-empty-three-icon"><i
                     data-lucide="image"></i></span><b>Moments</b><small>Share your day</small></button>
               <button class="chat-empty-three-item" data-goto="loops"><span class="chat-empty-three-icon"><i
-                    data-lucide="repeat"></i></span><b>Loops</b><small>Post anonymously to your
-                  campus</small></button>
+                    data-lucide="repeat"></i></span><b>Loops</b><small>Post anonymously to your campus</small></button>
             </div>
             <div class="chat-empty-bottom"><button class="chat-empty-start-btn" id="emptyStartChatBtn">Start
-                Chat</button><button class="chat-empty-start-btn" id="emptyCreateGroupBtn" hidden>Create
-                Group</button></div>
+                Chat</button><button class="chat-empty-start-btn" id="emptyCreateGroupBtn" hidden>Create Group</button>
+            </div>
           </div>
         </div>
 
@@ -354,8 +353,7 @@
               <div class="profile-with-mood">
                 <button class="profile-open-btn" id="openProfilePreviewBtn"><span class="profile-border has-image"><img
                       src="konnekt-10-img.png" alt="" id="chatHeaderAvatarImg"><span class="profile-text"
-                      id="chatHeaderInitials">JD</span><span class="chat-online-dot"
-                      id="chatOnlineDot"></span></span></button>
+                      id="chatHeaderInitials">JD</span></span></button>
                 <span class="mood-float" id="moodFloat">
                   <span class="mood-pill-wrapper" id="moodPillWrapper">
                     <span class="mood-pill-mini active" data-state="playing" data-has-card="true"><span>Playing
@@ -378,6 +376,7 @@
                   id="chatHeaderStatus">Online</span><span class="chat-header-typing" id="chatHeaderTyping"
                   hidden>typing...</span></button>
             </div>
+            <!-- Group: no call / video call - hidden by .is-group CSS, kept for normal chat only -->
             <div class="calls" id="callsIcons">
               <button class="chat-header-action-btn phone-call-btn" id="startOutgoingCallBtn" data-action="call"><i
                   data-lucide="phone" class="phone-call"></i></button>
@@ -410,8 +409,8 @@
 
           <div class="chat-messages" id="chatMessages">
             <div class="encryption-notice" id="encryptionNotice"><i data-lucide="lock" class="enc-lock"></i>
-              <p>Messages and calls are end-to-end encrypted. No one outside of this chat, not even Konnekt, can read
-                or listen to them. Tap to learn more.</p>
+              <p>Messages and calls are end-to-end encrypted. No one outside of this chat, not even Konnekt, can read or
+                listen to them. Tap to learn more.</p>
             </div>
             <div class="date-sep" data-date="Today"><span>Today</span></div>
             <div class="system-msg" data-system="joined"><span>Joshua dayo joined Konnekt</span></div>
@@ -444,8 +443,7 @@
             </div>
             <div class="msg-row no-actions call-row" data-message-id="call2">
               <div class="bubble call-bubble ended"><i data-lucide="video" class="call-icon"></i>
-                <div class="call-info"><span>Video call - 2:30</span><span class="call-time">Today, 9:42 AM</span>
-                </div>
+                <div class="call-info"><span>Video call - 2:30</span><span class="call-time">Today, 9:42 AM</span></div>
               </div>
             </div>
             <div class="msg-row no-actions call-row" data-message-id="call3">
@@ -477,6 +475,7 @@
               </div>
             </div>
 
+            <!-- GROUP: Round profile beside each message - name+colour if no pic, image if pic -->
             <div class="msg-row receiver group-msg" data-message-id="msgGroup1" data-msg-type="text"
               data-owner="receiver">
               <div class="group-msg-avatar"><img src="konnekt-10-img.png" alt=""><span>AL</span></div>
@@ -486,6 +485,17 @@
                 <p class="msg-text">Group message from Alex</p><span class="msg-meta right-meta"><span
                     class="msg-time">9:44 AM</span></span><span class="msg-reaction-badge"
                   data-reaction-for="msgGroup1"></span>
+              </div>
+            </div>
+            <div class="msg-row receiver group-msg" data-message-id="msgGroup2" data-msg-type="text"
+              data-owner="receiver">
+              <div class="group-msg-avatar no-image" data-name="Faith Mike"><span>FM</span></div>
+              <div class="select-circle"><i data-lucide="check"></i></div>
+              <div class="swipe-reply-icon"><i data-lucide="reply"></i></div>
+              <div class="bubble receiver-bubble"><span class="group-msg-name">Faith Mike</span>
+                <p class="msg-text">Group message from Faith, no pic - name + colour</p><span
+                  class="msg-meta right-meta"><span class="msg-time">9:44 AM</span></span><span
+                  class="msg-reaction-badge" data-reaction-for="msgGroup2"></span>
               </div>
             </div>
 
@@ -501,7 +511,8 @@
                         <circle class="media-progress-bg" cx="24" cy="24" r="20"></circle>
                         <circle class="media-progress-fill" cx="24" cy="24" r="20"></circle>
                       </svg><span class="media-loading-percent">0%</span></div>
-                  </div><span class="msg-meta over-image right-meta"><span class="msg-time">9:45 AM</span><i
+                  </div>
+                  <span class="msg-meta over-image right-meta"><span class="msg-time">9:45 AM</span><i
                       data-lucide="check-check" class="tick-icon blue"></i></span>
                 </div>
                 <div class="img-caption-wrap">
@@ -524,7 +535,8 @@
                         <circle class="media-progress-bg" cx="24" cy="24" r="20"></circle>
                         <circle class="media-progress-fill" cx="24" cy="24" r="20"></circle>
                       </svg><span class="media-loading-percent">0%</span></div>
-                  </div><span class="msg-meta over-image right-meta"><span class="msg-time">9:45 AM</span><i
+                  </div>
+                  <span class="msg-meta over-image right-meta"><span class="msg-time">9:45 AM</span><i
                       data-lucide="check-check" class="tick-icon blue"></i></span>
                 </div>
                 <div class="img-caption-wrap">
@@ -533,6 +545,7 @@
               </div>
             </div>
 
+            <!-- VOICE: clock -> tick -> tick -> blue tick, real audio -->
             <div class="msg-row sender" data-message-id="msgVoice1" data-msg-type="voice" data-owner="sender">
               <div class="select-circle"><i data-lucide="check"></i></div>
               <div class="swipe-reply-icon"><i data-lucide="reply"></i></div>
@@ -549,9 +562,12 @@
                 </div>
                 <div class="voice-wave">
                   <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-                </div><span class="voice-duration">0:12</span><span class="msg-meta right-meta"><span
-                    class="msg-time">9:45 AM</span><i data-lucide="check-check" class="tick-icon blue"></i></span><span
-                  class="msg-reaction-badge" data-reaction-for="msgVoice1"></span>
+                </div>
+                <span class="voice-duration">0:12</span>
+                <span class="msg-meta right-meta"><span class="msg-time">9:45 AM</span><i data-lucide="check-check"
+                    class="tick-icon blue"></i></span>
+                <span class="msg-reaction-badge" data-reaction-for="msgVoice1"></span>
+                <audio src="" preload="auto"></audio>
               </div>
             </div>
 
@@ -568,7 +584,8 @@
                         <circle class="media-progress-fill" cx="24" cy="24" r="20"></circle>
                       </svg><span class="media-loading-percent">0%</span></div>
                   </div>
-                </div><span class="msg-meta sticker-meta right-meta"><span class="msg-time">9:46 AM</span><i
+                </div>
+                <span class="msg-meta sticker-meta right-meta"><span class="msg-time">9:46 AM</span><i
                     data-lucide="check-check" class="tick-icon blue"></i></span><span class="msg-reaction-badge"
                   data-reaction-for="msg7"></span>
               </div>
@@ -579,12 +596,13 @@
               <div class="swipe-reply-icon"><i data-lucide="reply"></i></div>
               <div class="bubble sender-bubble">
                 <p class="msg-text long-text" id="longTextMsg">This is a very long message that should be cut after 4
-                  lines and show Read More button so user can expand it to read everything and then Read Less to
-                  reduce it again. Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor
-                  incididunt ut labore et dolore magna aliqua.</p><button class="read-more-btn show"
-                  data-target="longTextMsg">Read More</button><span class="msg-meta right-meta"><span
-                    class="msg-time">9:47 AM</span><i data-lucide="check-check" class="tick-icon blue"></i></span><span
-                  class="msg-reaction-badge" data-reaction-for="msg-long"></span>
+                  lines and show Read More button so user can expand it to read everything and then Read Less to reduce
+                  it again. Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut
+                  labore et dolore magna aliqua.</p>
+                <button class="read-more-btn show" data-target="longTextMsg">Read More</button>
+                <span class="msg-meta right-meta"><span class="msg-time">9:47 AM</span><i data-lucide="check-check"
+                    class="tick-icon blue"></i></span><span class="msg-reaction-badge"
+                  data-reaction-for="msg-long"></span>
               </div>
             </div>
 
@@ -601,6 +619,16 @@
 
             <div class="system-msg" data-system="encrypted"><span>Messages are end-to-end encrypted</span></div>
             <div class="system-msg" data-system="group-added"><span>Admin Faith added John</span></div>
+            <div class="system-msg" data-system="group-added-group"><span>Dev Squad group members added to Connect
+                group</span></div>
+            <div class="system-msg" data-system="admin-added"><span>Admin Josh added @faith_mike as admin</span></div>
+            <div class="system-msg" data-system="admin-dismissed" hidden><span>@faith_mike has been dismissed as
+                admin</span></div>
+            <div class="system-msg" data-system="admin-removed" hidden><span>@faith_mike has been removed by Admin
+                Josh</span></div>
+            <div class="system-msg" data-system="admin-allow-change" hidden><span>Admin allows user to change group
+                info</span></div>
+            <div class="system-msg" data-system="admin-left" hidden><span>@you left the group</span></div>
             <div class="system-msg" data-system="admin-deleted" hidden><span>Admin deleted this message</span></div>
 
             <div class="msg-row receiver typing-row no-actions show always-show" id="typingIndicator">
@@ -608,11 +636,12 @@
                 <div class="typing-dots"><span></span><span></span><span></span></div>
               </div>
             </div>
+            <!-- GROUP TYPING: ONE round border - name+colour + image round -->
             <div class="msg-row receiver typing-row no-actions group-typing-row" id="groupTypingIndicator"
               style="display:none">
               <div class="group-typing-avatars">
-                <div class="gt-avatar">JD</div>
-                <div class="gt-avatar">AK</div>
+                <div class="gt-avatar no-image" data-name="Joshua dayo"><span>JD</span></div>
+                <div class="gt-avatar has-image"><img src="konnekt-10-img.png" alt=""></div>
               </div>
               <div class="bubble typing-bubble group">
                 <div class="typing-dots"><span></span><span></span><span></span></div>
@@ -662,6 +691,8 @@
                 data-lucide="file-image"></i><span>Send file</span></button><button class="pill-btn"
               data-action="create-sticker"><i data-lucide="sticker"></i><span>Create sticker</span></button><button
               class="pill-btn" data-action="camera"><i data-lucide="camera"></i><span>Camera</span></button></div>
+
+          <!-- STICKER PANEL: under input, input goes up, no blur -->
           <div class="sticker-border-panel" id="stickerBorderPanel">
             <div class="sticker-panel-header">
               <div class="panel-drag"></div><span class="sticker-panel-title">Stickers</span><button
@@ -695,10 +726,18 @@
           <div class="input-takeover group-gone-takeover" id="groupGoneTakeover" hidden>
             <p class="takeover-title">This group does not exist anymore</p>
           </div>
+          <div class="input-takeover group-no-access-takeover" id="groupNoAccessTakeover" hidden>
+            <p class="takeover-title">You no longer have access to this group</p>
+            <p class="takeover-sub">You can no longer send messages in this group</p>
+          </div>
+
+          <!-- SELECT: Delete for me / Delete for everyone - everyone hidden for other person msg by JS -->
           <div class="delete-action-bar" id="deleteActionBar"><button class="delete-opt" data-delete="me"><i
                 data-lucide="trash"></i><span>Delete for me</span></button><button class="delete-opt"
-              data-delete="everyone"><i data-lucide="trash-2"></i><span>Delete for everyone</span></button></div>
+              data-delete="everyone" id="deleteForEveryoneBtn"><i data-lucide="trash-2"></i><span>Delete for
+                everyone</span></button></div>
 
+          <!-- ADD STICKER PANEL: blue, low opacity -->
           <div class="chat-sticker-select-mode" id="chatStickerSelectMode">
             <div class="sticker-select-header">
               <h4>Select from chat</h4><button id="stickerSelectClose"><i data-lucide="x"></i></button>
@@ -708,6 +747,19 @@
               <div class="add-sticker-action-row"><button class="add-sticker-confirm-btn" id="addStickerConfirmBtn">Add
                   sticker</button><button class="add-sticker-cancel-x" id="addStickerCancelX"><i
                     data-lucide="x"></i></button></div>
+            </div>
+          </div>
+
+          <!-- SEND FILE: new background, chat background hidden -->
+          <div class="send-file-bg" id="sendFileBg" hidden>
+            <div class="contact-info-top"><button class="contact-back-btn" data-close-send-file><i
+                  data-lucide="arrow-left"></i></button>
+              <p class="contact-info-title">Send File</p><button class="contact-save-top-btn"
+                data-close-send-file>Cancel</button>
+            </div>
+            <div class="send-file-center"><i data-lucide="file-image"></i>
+              <p>Select file to send</p><button class="nk-next-border" data-open-gallery>Choose File</button><button
+                class="nk-next-border" data-open-camera>Camera</button>
             </div>
           </div>
 
@@ -732,13 +784,14 @@
             </div>
           </div>
 
+          <!-- CREATE STICKER: new background, 3s cut -->
           <div class="create-sticker-page" id="createStickerPage">
             <div id="ffmpegLoader">
               <div class="ffmpeg-dot"></div><span>Preparing editor...</span>
             </div>
             <div id="cuttingLoader">
               <div class="cut-box">
-                <div class="cut-spinner"></div><span class="cut-text">Cutting video to 6s...</span>
+                <div class="cut-spinner"></div><span class="cut-text">Cutting video to 3s...</span>
                 <div class="cut-bar">
                   <div class="cut-progress"></div>
                 </div>
@@ -754,8 +807,8 @@
                 <div class="create-canvas iphone-crop-container tall-crop" id="createCanvas"><img
                     id="createStickerImage" style="display:none" alt=""><video id="createStickerVideo" loop muted
                     playsinline style="display:none"></video><canvas id="stickerCanvas" style="display:none"></canvas>
-                  <div class="create-placeholder" id="createPlaceholder"><i data-lucide="image"></i><span>Click here
-                      to select image</span><span class="create-placeholder-sub">Select image or video</span><input
+                  <div class="create-placeholder" id="createPlaceholder"><i data-lucide="image"></i><span>Click here to
+                      select image</span><span class="create-placeholder-sub">Select image or video</span><input
                       type="file" id="stickerFileInput" accept="image/*,video/*" hidden></div>
                   <div class="text-overlay-wrapper" id="textOverlayWrapper" style="display:none">
                     <div class="text-overlay" id="textOverlay" contenteditable="true" data-placeholder="Add text...">
@@ -767,8 +820,8 @@
                     <div class="trim-progress" id="trimProgress"></div>
                   </div>
                   <div class="trim-inputs"><input type="range" id="trimStart" min="0" max="10" value="0"
-                      step="0.1"><input type="range" id="trimEnd" min="0" max="10" value="6" step="0.1"></div><span
-                    id="trimLabel">0.0s - 6.0s (max 6s)</span>
+                      step="0.1"><input type="range" id="trimEnd" min="0" max="10" value="3" step="0.1"></div><span
+                    id="trimLabel">0.0s - 3.0s (max 3s)</span>
                 </div>
                 <div class="create-toolbar"><button id="addTextBtn"><i
                       data-lucide="type"></i><span>Aa</span></button><button id="boldTextBtn"><i
@@ -797,7 +850,7 @@
             accept="image/*,video/*" capture="environment" hidden>
         </div>
 
-        <!-- ========== CONTACT INFO - INSIDE RIGHT WRAP - B ========== -->
+        <!-- ========== CONTACT INFO ========== -->
         <div class="contact-info-bg" id="contactInfoBg" hidden>
           <div class="contact-info-top"><button class="contact-back-btn" id="contactInfoBack" data-close-info><i
                 data-lucide="arrow-left"></i></button>
@@ -806,9 +859,15 @@
           </div>
           <div class="contact-info-scroll">
             <div class="contact-info-responsive">
-              <div class="contact-round-profile"><img src="konnekt-10-img.png" alt="" id="contactProfileImage"><span
-                  class="contact-round-initials">FM</span><button class="contact-pic-open" id="contactPicOpen"
-                  data-open-full-pic></button>
+              <!-- SHARE THOUGHT on top of profile - like Profile UI: top -30, left -18, 160x35, dots -->
+              <div class="contact-round-profile">
+                <div class="thought" id="contactThought"><span class="mood-share-text" id="contactThoughtText">Share
+                    your mood</span></div>
+                <div class="first-circle"></div>
+                <div class="second-circle"></div>
+                <img src="konnekt-10-img.png" alt="" id="contactProfileImage"><span
+                  class="contact-round-initials">FM</span>
+                <button class="contact-pic-open" id="contactPicOpen" data-open-full-pic></button>
                 <div class="contact-mood-pill-fixed" id="contactMoodPill"><span>Share your mood</span></div>
               </div>
               <p class="preview-username-inside" id="contactUsername">Faith Mike</p>
@@ -828,13 +887,22 @@
                 </p><button class="read-more-btn" data-target="contactAboutText" id="contactAboutReadMore">Read
                   More</button>
               </div>
-              <div class="preview-spotify preview-spotify-dark" id="contactSpotify">
+              <!-- LISTEN TO NOW / LAST VIBE - state like mood pill under profile -->
+              <div class="preview-spotify preview-spotify-dark" id="contactSpotify" data-listen-state="playing">
                 <div class="music-bars"><span></span><span></span><span></span><span></span></div>
                 <div>
-                  <p class="preview-spotify-label">Listen to now</p>
+                  <p class="preview-spotify-label" id="contactListenLabel">Listen to now</p>
                   <p class="preview-spotify-song"><span id="contactSongName">Asake</span> • <span
-                      id="contactArtistName">Sungba</span></p>
-                  <p class="preview-spotify-sub">Last vibe • Like mood pill</p>
+                      id="contactArtistName">Remember</span></p>
+                  <p class="preview-spotify-sub" id="contactListenSub">Playing now • Spotify</p>
+                </div>
+              </div>
+              <div class="preview-spotify preview-spotify-dark" id="contactLastVibe" data-listen-state="last" hidden>
+                <div class="music-bars paused"><span></span><span></span><span></span><span></span></div>
+                <div>
+                  <p class="preview-spotify-label">Last vibe</p>
+                  <p class="preview-spotify-song"><span>Asake</span> • <span>Remember</span></p>
+                  <p class="preview-spotify-sub">Was listening • 2m ago</p>
                 </div>
               </div>
               <div class="contact-section-border contact-section-dark">
@@ -844,17 +912,18 @@
                 </div>
               </div>
               <div class="contact-section-border contact-section-dark">
-                <p class="contact-section-title">Add to Groups</p><button class="contact-row-btn"
-                  id="openAddToGroupsBtn" data-open-add-groups>Add to Groups <i
-                    data-lucide="chevron-right"></i></button><button class="contact-row-btn"
-                  id="openCreateGroupWithContactBtn">Create Group with Contact <i
+                <p class="contact-section-title">Add to Groups</p>
+                <button class="contact-row-btn" id="openAddToGroupsBtn" data-open-add-groups>Add to Groups <i
+                    data-lucide="chevron-right"></i></button>
+                <button class="contact-row-btn" id="openCreateGroupWithContactBtn">Create Group with Contact <i
                     data-lucide="chevron-right"></i></button>
               </div>
-              <div class="contact-section-border contact-section-dark"><button class="contact-row-btn"
-                  id="contactClearChatsBtn" data-action="clear">Clear Chats <i
-                    data-lucide="chevron-right"></i></button><button class="contact-row-btn" id="contactBlockBtn"
-                  data-action="block">Block <i data-lucide="chevron-right"></i></button><button
-                  class="contact-row-btn danger" id="contactDeleteBtn" data-action="delete">Delete Chat <i
+              <div class="contact-section-border contact-section-dark">
+                <button class="contact-row-btn" id="contactClearChatsBtn" data-action="clear">Clear Chats <i
+                    data-lucide="chevron-right"></i></button>
+                <button class="contact-row-btn" id="contactBlockBtn" data-action="block">Block <i
+                    data-lucide="chevron-right"></i></button>
+                <button class="contact-row-btn danger" id="contactDeleteBtn" data-action="delete">Delete Chat <i
                     data-lucide="chevron-right"></i></button>
                 <div id="contactBlockedActions" hidden><button class="contact-row-btn"
                     id="contactUnblockBtn">Unblock</button><button class="contact-row-btn danger"
@@ -888,11 +957,7 @@
                 </div>
                 <p class="sync-explain">Sync this contact with your phone contacts.</p>
               </div>
-              <div class="contact-section-border">
-                <p class="contact-section-title">Chat Background</p>
-                <div class="edit-bg-options" id="editBgOptions"><button
-                    class="edit-bg-option active">Default</button><button class="edit-bg-option">Dark</button></div>
-              </div>
+              <!-- Chat Background Default / Dark REMOVED -->
               <div class="edit-contact-save-wrap"><button class="nk-next-border" id="editContactSaveBtn">Save</button>
               </div>
             </div>
@@ -909,12 +974,14 @@
             <div class="nk-search-box nk-line-only"><i data-lucide="search" class="nk-search-icon"></i><input
                 id="addToGroupsSearch" type="text" placeholder="Search groups"></div>
           </div>
-          <div class="add-to-groups-list" id="addToGroupsList"><label class="add-group-row"><input type="checkbox"
-                data-group-id="g1"><span class="add-group-ava">DT</span><span class="add-group-name">Design
-                Team</span><span class="add-group-check"><i data-lucide="check"></i></span></label><label
-              class="add-group-row"><input type="checkbox" data-group-id="g2"><span class="add-group-ava">DS</span><span
-                class="add-group-name">Dev Squad</span><span class="add-group-check"><i
-                  data-lucide="check"></i></span></label></div>
+          <div class="add-to-groups-list" id="addToGroupsList">
+            <label class="add-group-row"><input type="checkbox" data-group-id="g1"><span
+                class="add-group-ava">DT</span><span class="add-group-name">Design Team</span><span
+                class="add-group-check"><i data-lucide="check"></i></span></label>
+            <label class="add-group-row"><input type="checkbox" data-group-id="g2"><span
+                class="add-group-ava">DS</span><span class="add-group-name">Dev Squad</span><span
+                class="add-group-check"><i data-lucide="check"></i></span></label>
+          </div>
           <p class="add-to-groups-hint">If button is grey, it means Only admin can add members.</p>
         </div>
 
@@ -934,8 +1001,7 @@
               <div class="preview-about-border preview-about-dark group-desc-border">
                 <p class="preview-about-label">About Group</p>
                 <p class="preview-about-text" id="groupInfoDesc">Design Team - We design beautiful products together.
-                </p><button class="read-more-btn" data-target="groupAboutText" id="groupAboutReadMore">Read
-                  More</button>
+                </p><button class="read-more-btn" data-target="groupInfoDesc" id="groupAboutReadMore">Read More</button>
               </div>
               <p class="group-info-count" id="groupInfoCount">12 members • 3 online</p>
               <button class="group-edit-btn" id="groupEditBtn"><i data-lucide="pencil"></i><span>Edit</span></button>
@@ -943,35 +1009,41 @@
                     data-lucide="pencil"></i><span>Edit Name</span></button><button data-group-edit="photo"><i
                     data-lucide="image"></i><span>Edit Photo</span></button><button data-group-edit="about"><i
                     data-lucide="align-left"></i><span>Edit About</span></button></div>
-              <div class="contact-actions contact-actions-dark"><button class="preview-action-dark"
-                  id="groupActionChats" data-group-action="chat"><i
-                    data-lucide="message-circle"></i><span>Chat</span></button><button class="preview-action-dark"
-                  id="groupActionShare" data-group-action="share"><i
-                    data-lucide="share-2"></i><span>Share</span></button><button class="preview-action-dark"
-                  id="groupActionAdd" data-group-action="add"><i data-lucide="user-plus"></i><span>Add</span></button>
+              <div class="contact-actions contact-actions-dark">
+                <button class="preview-action-dark" id="groupActionChats" data-group-action="chat"><i
+                    data-lucide="message-circle"></i><span>Chat</span></button>
+                <button class="preview-action-dark" id="groupActionShare" data-group-action="share"><i
+                    data-lucide="share-2"></i><span>Share</span></button>
+                <button class="preview-action-dark" id="groupActionAdd" data-group-action="add"><i
+                    data-lucide="user-plus"></i><span>Add</span></button>
               </div>
               <div class="group-tabs-sticky" id="groupTabsSticky"><button class="group-tab-mini active"
                   data-group-tab="members">Members</button><button class="group-tab-mini" data-group-tab="settings"
                   data-admin-only="true">Settings</button></div>
               <div class="group-section" id="groupMembersSection">
                 <div class="contact-section-border contact-section-dark">
-                  <p class="contact-section-title">Members • <span id="groupMembersCount">12</span></p><button
-                    class="add-member-btn" id="groupAddMemberBtn">Add Member</button><button class="add-member-btn grey"
-                    id="groupAddMemberGreyBtn" hidden>Only admin can add members</button>
+                  <p class="contact-section-title">Members • <span id="groupMembersCount">12</span></p>
+                  <button class="add-member-btn" id="groupAddMemberBtn">Add Member</button>
+                  <button class="add-member-btn grey" id="groupAddMemberGreyBtn" hidden>Only admin can add
+                    members</button>
                   <p class="contact-section-title small">Admins</p>
-                  <div id="groupAdminsList"><button class="group-member-row" data-user-id="me" data-role="admin"><span
+                  <div id="groupAdminsList">
+                    <button class="group-member-row" data-user-id="me" data-role="admin"><span
                         class="group-member-ava">YO</span><span class="group-member-name">You</span><span
-                        class="group-member-role">Admin</span><i data-lucide="chevron-right"></i></button><button
-                      class="group-member-row" data-user-id="1" data-role="admin"><span
+                        class="group-member-role">Admin</span><i data-lucide="chevron-right"></i></button>
+                    <button class="group-member-row" data-user-id="1" data-role="admin"><span
                         class="group-member-ava">FM</span><span class="group-member-name">Faith Mike</span><span
-                        class="group-member-role">Admin</span><i data-lucide="chevron-right"></i></button></div>
+                        class="group-member-role">Admin</span><i data-lucide="chevron-right"></i></button>
+                  </div>
                   <p class="contact-section-title small">Members</p>
-                  <div id="groupMembersList"><button class="group-member-row" data-user-id="2" data-role="member"><span
+                  <div id="groupMembersList">
+                    <button class="group-member-row" data-user-id="2" data-role="member"><span
                         class="group-member-ava">JD</span><span class="group-member-name">Joshua dayo</span><span
-                        class="group-member-role">Member</span><i data-lucide="chevron-right"></i></button><button
-                      class="group-member-row" data-user-id="3" data-role="member"><span
+                        class="group-member-role">Member</span><i data-lucide="chevron-right"></i></button>
+                    <button class="group-member-row" data-user-id="3" data-role="member"><span
                         class="group-member-ava">AL</span><span class="group-member-name">Alex</span><span
-                        class="group-member-role">Member</span><i data-lucide="chevron-right"></i></button></div>
+                        class="group-member-role">Member</span><i data-lucide="chevron-right"></i></button>
+                  </div>
                 </div>
               </div>
               <div class="group-section" id="groupSettingsSection" hidden>
@@ -981,50 +1053,65 @@
                       <p class="nk-permission-title">Send Messages</p>
                       <p class="nk-permission-desc">Who can send messages in this group. If off, only admins can send
                       </p>
-                    </div><button class="nk-toggle" data-on="true"><span class="nk-toggle-knob"></span></button>
+                    </div><button class="nk-toggle" data-permission="send" data-on="true"><span
+                        class="nk-toggle-knob"></span></button>
                   </div>
                   <div class="nk-permission-row">
                     <div class="nk-permission-info">
                       <p class="nk-permission-title">Add Members</p>
                       <p class="nk-permission-desc">Admins decide who can add new members</p>
-                    </div><button class="nk-toggle" data-on="false"><span class="nk-toggle-knob"></span></button>
+                    </div><button class="nk-toggle" data-permission="add" data-on="false"><span
+                        class="nk-toggle-knob"></span></button>
                   </div>
                   <div class="nk-permission-row">
                     <div class="nk-permission-info">
                       <p class="nk-permission-title">Change Group Info</p>
                       <p class="nk-permission-desc">Admins decide who can change group name and photo</p>
-                    </div><button class="nk-toggle" data-on="false"><span class="nk-toggle-knob"></span></button>
-                  </div>
-                  <div class="nk-permission-row">
-                    <div class="nk-permission-info">
-                      <p class="nk-permission-title">Disappearing Messages</p>
-                      <p class="nk-permission-desc">Messages disappear after 7 days if enabled</p>
-                    </div><button class="nk-toggle" data-on="false"><span class="nk-toggle-knob"></span></button>
+                    </div><button class="nk-toggle" data-permission="change-info" data-on="false"><span
+                        class="nk-toggle-knob"></span></button>
                   </div>
                 </div>
               </div>
-              <div class="contact-section-border contact-section-dark"><button class="contact-row-btn" id="groupExitBtn"
-                  data-group-action="exit"><span>Exit Group</span><i data-lucide="chevron-right"></i></button><button
-                  class="contact-row-btn danger" id="groupDeleteBtn" data-group-action="delete" hidden><span>Delete
-                    Group</span></button><button class="contact-row-btn" id="groupReportBtn"
-                  data-group-action="report"><span>Report Group</span><i
-                    data-lucide="chevron-right"></i></button><button class="contact-row-btn" id="groupClearBtn"
-                  data-group-action="clear"><span>Clear Chats</span><i data-lucide="chevron-right"></i></button></div>
+              <div class="contact-section-border contact-section-dark">
+                <button class="contact-row-btn" id="groupExitBtn" data-group-action="exit"><span>Exit Group</span><i
+                    data-lucide="chevron-right"></i></button>
+                <button class="contact-row-btn danger" id="groupDeleteBtn" data-group-action="delete"
+                  hidden><span>Delete Group</span></button>
+                <button class="contact-row-btn" id="groupReportBtn" data-group-action="report"><span>Report
+                    Group</span><i data-lucide="chevron-right"></i></button>
+                <button class="contact-row-btn" id="groupClearBtn" data-group-action="clear"><span>Clear Chats</span><i
+                    data-lucide="chevron-right"></i></button>
+              </div>
               <p class="group-created-by">Created by <span id="groupCreatedByName">Faith Mike</span></p>
               <p class="group-created-date" id="groupCreatedDate">12 Nov 2026</p>
             </div>
           </div>
+          <!-- MEMBER SHEET: admin-admin / admin-member / member-member set by JS, no Exit in wrong place -->
           <div class="member-sheet" id="memberSheet" hidden>
             <div class="member-sheet-handle"></div>
             <p class="member-sheet-name" id="memberSheetName">Alex</p>
-            <div class="member-sheet-actions" id="memberSheetActions"><button data-member-action="view-info"><i
-                  data-lucide="user"></i><span>View Info</span></button><button data-member-action="remove"
-                class="danger" hidden><i data-lucide="user-x"></i><span>Remove Member</span></button><button
-                data-member-action="make-admin" hidden><i data-lucide="shield"></i><span>Make
-                  Admin</span></button><button data-member-action="dismiss-admin" class="danger" hidden><i
-                  data-lucide="shield-off"></i><span>Dismiss as Admin</span></button><button data-member-action="exit"
-                class="danger" hidden><i data-lucide="log-out"></i><span>Exit Group</span></button></div><button
-              class="member-sheet-cancel" id="memberSheetCancel">Cancel</button>
+            <div class="member-sheet-actions" id="memberSheetActions">
+              <button data-member-action="view-info"><i data-lucide="user"></i><span>View Info</span></button>
+              <button data-member-action="remove" class="danger" hidden><i data-lucide="user-x"></i><span>Remove
+                  Member</span></button>
+              <button data-member-action="make-admin" hidden><i data-lucide="shield"></i><span>Make
+                  Admin</span></button>
+              <button data-member-action="dismiss-admin" class="danger" hidden><i
+                  data-lucide="shield-off"></i><span>Dismiss as Admin</span></button>
+            </div>
+            <button class="member-sheet-cancel" id="memberSheetCancel">Cancel</button>
+          </div>
+          <!-- SELF SHEET: only for you -->
+          <div class="member-sheet" id="selfSheet" hidden>
+            <div class="member-sheet-handle"></div>
+            <p class="member-sheet-name">You</p>
+            <div class="member-sheet-actions">
+              <button data-member-action="exit" class="danger"><i data-lucide="log-out"></i><span>Exit
+                  Group</span></button>
+              <button data-member-action="delete-chats"><i data-lucide="trash"></i><span>Delete Chats</span></button>
+              <button data-member-action="clear-chats"><i data-lucide="trash-2"></i><span>Clear Chats</span></button>
+            </div>
+            <button class="member-sheet-cancel" data-close-self-sheet>Cancel</button>
           </div>
         </div>
 
@@ -1038,8 +1125,8 @@
                 data-lucide="qr-code" class="qr-big" id="groupQrPlaceholder"></i></div>
             <p class="qr-group-name" id="qrGroupName">Design Team</p>
             <p class="qr-hint">Scan to join "Design Team"</p>
-            <p class="qr-copied-hint" id="qrCopiedHint" hidden>Copied</p><button class="nk-next-border"
-              id="qrShareLinkBtn">Share Link</button>
+            <p class="qr-copied-hint" id="qrCopiedHint" hidden>Copied</p>
+            <button class="nk-next-border" id="qrShareLinkBtn">Share Link</button>
           </div>
         </div>
 
@@ -1059,6 +1146,34 @@
             </div>
           </div>
         </div>
+        <!-- GROUP EDIT PHOTO: gallery -->
+        <div class="group-edit-bg" id="groupEditPhotoBg" hidden>
+          <div class="contact-info-top"><button class="contact-back-btn" data-close-group-edit-photo><i
+                data-lucide="arrow-left"></i></button>
+            <p class="contact-info-title">Edit Photo</p><button class="contact-save-top-btn"
+              data-save-group-photo>Save</button>
+          </div>
+          <div class="contact-info-scroll">
+            <div class="edit-bg-responsive"><input type="file" id="groupPhotoInput" accept="image/*"><button
+                class="nk-next-border" data-open-group-gallery>Choose from Gallery</button></div>
+          </div>
+        </div>
+        <!-- GROUP EDIT ABOUT: different title -->
+        <div class="group-edit-bg" id="groupEditAboutBg" hidden>
+          <div class="contact-info-top"><button class="contact-back-btn" data-close-group-edit-about><i
+                data-lucide="arrow-left"></i></button>
+            <p class="contact-info-title">Edit Description</p><button class="contact-save-top-btn"
+              data-save-group-about>Save</button>
+          </div>
+          <div class="contact-info-scroll">
+            <div class="edit-bg-responsive">
+              <div class="contact-section-border"><label class="nk-input-label">About Group</label>
+                <div class="nk-input-line-box"><textarea id="groupEditAboutInput" placeholder="About group"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <div class="popup-overlay full-pic-bg" id="fullPicPreview" hidden>
           <div class="contact-info-top"><button class="contact-back-btn" id="fullPicClose" data-close-info><i
@@ -1074,8 +1189,8 @@
             <h3 class="popup-title">Report Group</h3>
             <div class="report-options"><button class="report-opt">Harassment</button><button
                 class="report-opt">Spam</button><button class="report-opt">Inappropriate</button><button
-                class="report-opt">Fake</button><button class="report-opt">Other</button></div><input type="text"
-              id="reportGroupInput" placeholder="Tell us more..."><button class="nk-next-border"
+                class="report-opt">Fake</button><button class="report-opt">Other</button></div>
+            <input type="text" id="reportGroupInput" placeholder="Tell us more..."><button class="nk-next-border"
               id="reportGroupSubmit">Submit</button>
             <div class="report-success" id="reportSuccess" hidden><i data-lucide="check"></i>
               <p>Thanks for reporting. We will review it.</p>
@@ -1105,34 +1220,31 @@
       </div>
       <div id="clearChatsPopup" class="nk-popup-overlay hidden">
         <div class="nk-popup-box">
-          <p class="nk-popup-title">Clear Chats?</p>
-          <p class="nk-popup-desc">Do you want to clear chats? Encryption notice will stay.</p>
+          <p class="nk-popup-title">Do you want to clear chat?</p>
           <div class="nk-popup-actions"><button class="nk-popup-btn secondary" data-close-popup>Cancel</button><button
-              class="nk-popup-btn danger" data-confirm-clear>Clear</button></div>
+              class="nk-popup-btn danger" data-confirm-clear>Yes</button></div>
         </div>
       </div>
       <div id="blockUserPopup" class="nk-popup-overlay hidden">
         <div class="nk-popup-box">
-          <p class="nk-popup-title">Block Contact?</p>
-          <p class="nk-popup-desc">You will not receive messages from this contact.</p>
+          <p class="nk-popup-title">Do you want to block this contact?</p>
           <div class="nk-popup-actions"><button class="nk-popup-btn secondary" data-close-popup>Cancel</button><button
-              class="nk-popup-btn danger" data-confirm-block>Block</button></div>
+              class="nk-popup-btn danger" data-confirm-block>Yes</button></div>
         </div>
       </div>
       <div id="deleteChatPopup" class="nk-popup-overlay hidden">
         <div class="nk-popup-box">
-          <p class="nk-popup-title">Delete Chat?</p>
-          <p class="nk-popup-desc">This will delete chat from your list.</p>
+          <p class="nk-popup-title">Do you want to delete this chat?</p>
           <div class="nk-popup-actions"><button class="nk-popup-btn secondary" data-close-popup>Cancel</button><button
-              class="nk-popup-btn danger" data-confirm-delete-chat>Delete</button></div>
+              class="nk-popup-btn danger" data-confirm-delete-chat>Yes</button></div>
         </div>
       </div>
       <div id="unblockPopup" class="nk-popup-overlay hidden">
         <div class="nk-popup-box">
-          <p class="nk-popup-title">Unblock contact?</p>
+          <p class="nk-popup-title">Unblock user?</p>
           <p class="nk-popup-desc">Unblock this contact to chat again.</p>
           <div class="nk-popup-actions"><button class="nk-popup-btn secondary" data-close-popup>Cancel</button><button
-              class="nk-popup-btn" data-confirm-unblock>Unblock</button></div>
+              class="nk-popup-btn" data-confirm-unblock>Yes</button></div>
         </div>
       </div>
       <div id="exitGroupPopup" class="nk-popup-overlay hidden">
@@ -1188,171 +1300,96 @@
                 </div>
                 <div class="nk-row-info">
                   <p class="nk-row-title">New Group</p>
-                  <p class="nk-row-sub">Create group with your contacts</p>
+                  <p class="nk-row-sub">Create a new group</p>
                 </div><i data-lucide="chevron-right" class="nk-chevron"></i>
               </button>
-              <div class="nk-straight-line"></div>
             </div>
-            <div class="nk-down-section">
-              <p class="nk-section-label">Recent Chats</p>
-              <div id="nkChattedPeopleList" class="nk-results"></div>
-              <div id="nkMainSearchResults" class="nk-results hidden"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div id="nkNewIdOverlay" class="nk-newchat-overlay nk-second">
-        <div class="nk-newchat-sheet">
-          <div class="nk-newchat-header"><button id="nkNewIdBack" class="nk-back-btn"><i
-                data-lucide="arrow-left"></i></button>
-            <p class="nk-newchat-title">New ID</p><button id="nkNewIdMark" class="nk-mark-btn"><i
-                data-lucide="check"></i></button>
-          </div>
-          <div class="nk-form-wrap">
-            <div class="nk-input-group"><label class="nk-input-label">First Name</label>
-              <div class="nk-input-line-box"><input id="nkFirstName" type="text" placeholder="ben"></div>
-            </div>
-            <div class="nk-input-group"><label class="nk-input-label">Last Name</label>
-              <div class="nk-input-line-box"><input id="nkLastName" type="text" placeholder="saint"></div>
-            </div>
-            <div class="nk-input-group"><label class="nk-input-label">6 Digit ID</label>
-              <div class="nk-input-line-box"><span class="nk-id-prefix">ID</span><input id="nkIdInput" type="text"
-                  inputmode="numeric" maxlength="6" placeholder="123456"></div>
-            </div>
-            <div id="nkKonnektingWrap" class="nk-konnekting-wrap hidden">
-              <div class="nk-leaves-circle"><i data-lucide="leaf" class="nk-leaf-tiny"></i><i data-lucide="leaf"
-                  class="nk-leaf-tiny"></i><i data-lucide="leaf" class="nk-leaf-tiny"></i><i data-lucide="leaf"
-                  class="nk-leaf-tiny"></i><i data-lucide="leaf" class="nk-leaf-tiny"></i><i data-lucide="leaf"
-                  class="nk-leaf-tiny"></i><i data-lucide="leaf" class="nk-leaf-tiny"></i><i data-lucide="leaf"
-                  class="nk-leaf-tiny"></i><i data-lucide="leaf" class="nk-leaf-tiny"></i><i data-lucide="leaf"
-                  class="nk-leaf-tiny"></i></div>
-              <p class="nk-konnekting-text">Konnekting...</p>
+            <!-- RECENTS: like Add Member - round + name, blocked = blur + Blocked -->
+            <p class="nk-section-title">Recents</p>
+            <div class="nk-recents-list" id="nkRecentsList">
+              <button class="nk-recent-row" data-user-id="1"><span class="nk-recent-ava has-image"><img
+                    src="konnekt-10-img.png" alt=""><span>JD</span></span><span class="nk-recent-name">Joshua
+                  dayo</span><span class="nk-recent-blocked" hidden>Blocked</span></button>
+              <button class="nk-recent-row" data-user-id="3"><span class="nk-recent-ava"><span>AL</span></span><span
+                  class="nk-recent-name">Alex</span></button>
+              <button class="nk-recent-row blocked-row" data-user-id="5" data-blocked="true"><span
+                  class="nk-recent-ava"><span>FM</span></span><span class="nk-recent-name">Faith Mike</span><span
+                  class="nk-recent-blocked">Blocked</span></button>
             </div>
           </div>
         </div>
       </div>
 
-      <div id="nkUserProfileOverlay" class="nk-newchat-overlay nk-second">
+      <!-- ========== CREATE GROUP ========== -->
+      <div id="nkCreateGroupOverlay" class="nk-newchat-overlay" hidden>
         <div class="nk-newchat-sheet">
-          <div class="nk-newchat-header"><button id="nkUserProfileBack" class="nk-back-btn"><i
+          <div class="nk-newchat-header"><button class="nk-back-btn" data-close-create-group><i
                 data-lucide="arrow-left"></i></button>
-            <p id="nkUserProfileHeaderTitle" class="nk-newchat-title">New @username</p><button id="nkUserProfileClose"
-              class="nk-close-btn"><i data-lucide="x"></i></button>
+            <p class="nk-newchat-title">Create Group</p><button class="nk-close-btn" data-close-create-group><i
+                data-lucide="x"></i></button>
           </div>
-          <div class="nk-profile-wrap">
-            <div class="nk-profile-image-wrap">
-              <div id="nkProfileBigCircle" class="nk-big-circle nk-profile-circle"><span
-                  id="nkProfileInitial">K</span><img id="nkProfileImagePreview" src="konnekt-10-img.png" alt=""
-                  style="display:none"></div>
+          <div class="nk-plus-scroll-area">
+            <div class="contact-section-border"><label class="nk-input-label">Group Name</label>
+              <div class="nk-input-line-box"><input id="createGroupName" type="text" placeholder="Group name"></div>
             </div>
-            <div class="nk-profile-info">
-              <p id="nkProfileName" class="nk-profile-name">King David</p>
-              <p id="nkProfileUsername" class="nk-profile-username">@king</p>
-              <p class="nk-profile-require-text">This user requires 6 digit ID to chat</p>
-            </div>
-            <div class="nk-form-wrap" style="padding-top:10px;">
-              <div class="nk-input-group"><label class="nk-input-label">Enter 6 Digit ID</label>
-                <div class="nk-input-line-box"><span class="nk-id-prefix">ID</span><input id="nkProfileIdInput"
-                    type="text" inputmode="numeric" maxlength="6" placeholder="123456"></div>
-              </div>
-              <div id="nkProfileKonnektingWrap" class="nk-konnekting-wrap hidden">
-                <div class="nk-leaves-circle"><i data-lucide="leaf" class="nk-leaf-tiny"></i><i data-lucide="leaf"
-                    class="nk-leaf-tiny"></i><i data-lucide="leaf" class="nk-leaf-tiny"></i><i data-lucide="leaf"
-                    class="nk-leaf-tiny"></i><i data-lucide="leaf" class="nk-leaf-tiny"></i><i data-lucide="leaf"
-                    class="nk-leaf-tiny"></i><i data-lucide="leaf" class="nk-leaf-tiny"></i><i data-lucide="leaf"
-                    class="nk-leaf-tiny"></i><i data-lucide="leaf" class="nk-leaf-tiny"></i><i data-lucide="leaf"
-                    class="nk-leaf-tiny"></i></div>
-                <p class="nk-konnekting-text">Konnekting...</p>
+            <div class="contact-section-border"><label class="nk-input-label">Description</label>
+              <div class="nk-input-line-box"><textarea id="createGroupDesc" placeholder="Group description"></textarea>
               </div>
             </div>
-          </div>
-          <div class="nk-bottom-next-wrap"><button id="nkProfileNextBtn" class="nk-next-border"><span>Next</span><i
-                data-lucide="arrow-right"></i></button></div>
-        </div>
-      </div>
-
-      <div id="nkNewGroupOverlay" class="nk-newchat-overlay nk-third">
-        <div class="nk-newchat-sheet">
-          <div class="nk-newchat-header"><button id="nkNewGroupBack" class="nk-back-btn"><i
-                data-lucide="arrow-left"></i></button>
-            <p class="nk-newchat-title">Add Members</p><button id="nkNewGroupBackDesktop"
-              class="nk-back-btn nk-desktop-only" style="left:auto;right:14px;"><i data-lucide="x"></i></button>
-          </div>
-          <div class="nk-search-wrap">
-            <div class="nk-search-box nk-line-only"><i data-lucide="search" class="nk-search-icon"></i><input
-                id="nkGroupSearchInput" type="text" placeholder="Search people you have chatted with"></div>
-          </div>
-          <div id="nkGroupPeopleResults" class="nk-newchat-list"></div>
-          <div class="nk-bottom-next-wrap"><button id="nkGroupNextBtn" class="nk-next-border"><span>Next</span><i
-                data-lucide="arrow-right"></i></button></div>
-        </div>
-      </div>
-
-      <div id="nkGroupCreateOverlay" class="nk-newchat-overlay nk-fourth">
-        <div class="nk-newchat-sheet">
-          <div class="nk-newchat-header"><button id="nkGroupCreateBack" class="nk-back-btn"><i
-                data-lucide="arrow-left"></i></button>
-            <p class="nk-newchat-title">New Group</p>
-          </div>
-          <div class="nk-group-image-wrap">
-            <div id="nkGroupImageBtn" class="nk-big-circle"><i data-lucide="camera" class="nk-camera-icon"></i><span
-                class="nk-add-photo-text">Add Photo</span><img id="nkGroupImagePreview" src="konnekt-10-img.png" alt=""
-                style="display:none"></div><input id="nkGroupImageInput" type="file" accept="image/*" hidden>
-          </div>
-          <div class="nk-form-wrap">
-            <div class="nk-input-group"><label class="nk-input-label">Group Name</label>
-              <div class="nk-input-line-box"><input id="nkGroupNameInput" type="text" placeholder="My Group"></div>
+            <p class="nk-section-title">Add Members</p>
+            <div class="add-to-groups-list" id="createGroupMembersList">
+              <label class="add-group-row"><input type="checkbox" data-user-id="1"><span
+                  class="add-group-ava">JD</span><span class="add-group-name">Joshua dayo</span><span
+                  class="add-group-check"><i data-lucide="check"></i></span></label>
+              <label class="add-group-row"><input type="checkbox" data-user-id="3"><span
+                  class="add-group-ava">AL</span><span class="add-group-name">Alex</span><span
+                  class="add-group-check"><i data-lucide="check"></i></span></label>
             </div>
-            <div class="nk-input-group"><label class="nk-input-label">About Group</label>
-              <div class="nk-input-line-box"><input id="nkGroupAboutInput" type="text" placeholder="Add about group">
+            <p class="nk-section-title">Add Group Members To This Group</p>
+            <div class="add-to-groups-list" id="createGroupAddGroupList">
+              <label class="add-group-row"><input type="checkbox" data-group-id="g2"><span
+                  class="add-group-ava">DS</span><span class="add-group-name">Dev Squad</span><span
+                  class="add-group-check"><i data-lucide="check"></i></span></label>
+            </div>
+            <p class="nk-section-title">Permissions</p>
+            <div class="contact-section-border">
+              <div class="nk-permission-row">
+                <div class="nk-permission-info">
+                  <p class="nk-permission-title">Send Messages</p>
+                </div><button class="nk-toggle" data-create-permission="send" data-on="true"><span
+                    class="nk-toggle-knob"></span></button>
               </div>
-            </div><button id="nkGroupPermissionRow" class="nk-newchat-row">
-              <div class="nk-row-icon nk-round-icon"><i data-lucide="shield" class="nk-main-icon"></i></div>
-              <div class="nk-row-info">
-                <p class="nk-row-title">Permissions</p>
-                <p class="nk-row-sub">Members permissions, disappearing etc</p>
-              </div><i data-lucide="chevron-right" class="nk-chevron"></i>
-            </button>
+              <div class="nk-permission-row">
+                <div class="nk-permission-info">
+                  <p class="nk-permission-title">Add Members</p>
+                </div><button class="nk-toggle" data-create-permission="add" data-on="false"><span
+                    class="nk-toggle-knob"></span></button>
+              </div>
+              <div class="nk-permission-row">
+                <div class="nk-permission-info">
+                  <p class="nk-permission-title">Change Group Info</p>
+                </div><button class="nk-toggle" data-create-permission="change-info" data-on="false"><span
+                    class="nk-toggle-knob"></span></button>
+              </div>
+            </div>
+            <button class="nk-next-border" id="createGroupConfirmBtn">Create Group</button>
           </div>
-          <div class="nk-bottom-next-wrap"><button id="nkGroupFinalCreateBtn" class="nk-next-border"><span>Create
-                Group</span><i data-lucide="check"></i></button></div>
         </div>
       </div>
 
-      <div id="nkGroupPermissionOverlay" class="nk-newchat-overlay nk-fourth">
-        <div class="nk-newchat-sheet">
-          <div class="nk-newchat-header"><button id="nkPermissionBack" class="nk-back-btn"><i
-                data-lucide="arrow-left"></i></button>
-            <p class="nk-newchat-title">Permissions</p><button id="nkPermissionDoneBtn" class="nk-mark-btn"><i
-                data-lucide="check"></i></button>
-          </div>
-          <div class="nk-permission-list">
-            <div class="nk-permission-row">
-              <div class="nk-permission-info">
-                <p class="nk-permission-title">Send Messages</p>
-                <p class="nk-permission-desc">Who can send messages in this group. If off, only admins can send</p>
-              </div><button class="nk-toggle" data-on="true"><span class="nk-toggle-knob"></span></button>
-            </div>
-            <div class="nk-permission-row">
-              <div class="nk-permission-info">
-                <p class="nk-permission-title">Add Members</p>
-                <p class="nk-permission-desc">Who can add new members to the group</p>
-              </div><button class="nk-toggle" data-on="false"><span class="nk-toggle-knob"></span></button>
-            </div>
-            <div class="nk-permission-row">
-              <div class="nk-permission-info">
-                <p class="nk-permission-title">Change Group Info</p>
-                <p class="nk-permission-desc">Who can change group name and photo</p>
-              </div><button class="nk-toggle" data-on="false"><span class="nk-toggle-knob"></span></button>
-            </div>
-            <div class="nk-permission-row">
-              <div class="nk-permission-info">
-                <p class="nk-permission-title">Disappearing Messages</p>
-                <p class="nk-permission-desc">Messages disappear after 7 days if enabled</p>
-              </div><button class="nk-toggle" data-on="false"><span class="nk-toggle-knob"></span></button>
-            </div>
-          </div>
+      <!-- ========== ADD MEMBER TO GROUP ========== -->
+      <div id="addMemberBg" class="add-to-groups-bg" hidden>
+        <div class="contact-info-top"><button class="contact-back-btn" data-close-add-member><i
+              data-lucide="x"></i></button>
+          <p class="contact-info-title">Add Member to Group</p><button class="contact-save-top-btn"
+            data-confirm-add-member>Add</button>
+        </div>
+        <div class="add-to-groups-list" id="addMemberList">
+          <label class="add-group-row"><input type="checkbox" data-user-id="1"><span
+              class="add-group-ava">JD</span><span class="add-group-name">Joshua dayo</span><span
+              class="add-group-check"><i data-lucide="check"></i></span></label>
+        </div>
+        <div class="add-to-groups-list"><button class="nk-next-border" data-add-to-group-confirm>Add to Group</button>
         </div>
       </div>
 
@@ -1409,20 +1446,20 @@
           <h2 class="konnekt-waitlist-title">Video Calls Are Coming</h2>
           <p class="konnekt-waitlist-desc">We're building crystal-clear, lag-free video calls designed for real
             connections. Join the waitlist to be among the first to experience it when it launches.</p>
-          <div class="konnekt-waitlist-input-wrap"><label for="waitlistReason" class="konnekt-waitlist-label">Why do
-              you need video calls? (Optional)</label><textarea id="waitlistReason" class="konnekt-waitlist-textarea"
+          <div class="konnekt-waitlist-input-wrap"><label for="waitlistReason" class="konnekt-waitlist-label">Why do you
+              need video calls? (Optional)</label><textarea id="waitlistReason" class="konnekt-waitlist-textarea"
               placeholder="e.g., For my long-distance relationship, business meetings, family check-ins..." rows="3"
               maxlength="200"></textarea><span class="konnekt-waitlist-count"><span
-                id="waitlistCharCount">0</span>/200</span></div><button id="waitlistJoinBtn"
-            class="konnekt-waitlist-btn"><span class="konnekt-waitlist-btn-text">Join Waitlist</span><span
-              class="konnekt-waitlist-loader hidden"><span class="konnekt-leaf-circle"><span class="konnekt-leaf-dot"><i
-                    data-lucide="leaf" class="konnekt-leaf-icon"></i></span><span class="konnekt-leaf-dot"><i
-                    data-lucide="leaf" class="konnekt-leaf-icon"></i></span><span class="konnekt-leaf-dot"><i
-                    data-lucide="leaf" class="konnekt-leaf-icon"></i></span><span class="konnekt-leaf-dot"><i
-                    data-lucide="leaf" class="konnekt-leaf-icon"></i></span><span class="konnekt-leaf-dot"><i
-                    data-lucide="leaf" class="konnekt-leaf-icon"></i></span></span></span><span
-              class="konnekt-waitlist-check hidden"><i data-lucide="thumbs-up"
-                class="konnekt-check-icon"></i></span></button>
+                id="waitlistCharCount">0</span>/200</span></div>
+          <button id="waitlistJoinBtn" class="konnekt-waitlist-btn"><span class="konnekt-waitlist-btn-text">Join
+              Waitlist</span><span class="konnekt-waitlist-loader hidden"><span class="konnekt-leaf-circle"><span
+                  class="konnekt-leaf-dot"><i data-lucide="leaf" class="konnekt-leaf-icon"></i></span><span
+                  class="konnekt-leaf-dot"><i data-lucide="leaf" class="konnekt-leaf-icon"></i></span><span
+                  class="konnekt-leaf-dot"><i data-lucide="leaf" class="konnekt-leaf-icon"></i></span><span
+                  class="konnekt-leaf-dot"><i data-lucide="leaf" class="konnekt-leaf-icon"></i></span><span
+                  class="konnekt-leaf-dot"><i data-lucide="leaf"
+                    class="konnekt-leaf-icon"></i></span></span></span><span class="konnekt-waitlist-check hidden"><i
+                data-lucide="thumbs-up" class="konnekt-check-icon"></i></span></button>
           <div id="waitlistSuccess" class="konnekt-waitlist-success hidden">
             <div class="konnekt-waitlist-success-icon"><i data-lucide="bell-ring" class="konnekt-bell-icon"></i></div>
             <h3>You're on the list!</h3>
@@ -1432,9 +1469,7 @@
           <p class="konnekt-waitlist-footer">No spam. We'll only notify you once when it's ready.</p>
         </div>
       </div>
-
     </div>
-
 
 
     <div class="pageMoments">

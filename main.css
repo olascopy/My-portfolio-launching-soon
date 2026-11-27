@@ -1,13 +1,20 @@
-/* ===== KONNEKT - MAIN CSS - CLEAN - FULL - NO CUT ===== */
-/* New Chat CSS is SEPARATE - no nk-newchat-* here, no duplicate */
+/* ===== KONNEKT - MAIN CSS - CLEAN - FULL - NO CUT - NO DUPLICATES ===== */
+/* New Chat CSS SEPARATE - no nk-newchat-* here */
+/* Load: Main -> Extra -> Mobile -> New Chat */
+/* FIX: Reaction/Sticker raise input = MOBILE ONLY. Desktop stays as before. */
+/* FIX: No default scroll - all scroll = custom-scroll CSS */
+/* FIX: Contact profile - name INSIDE border, Thought beside text REMOVED, Share Mood only on top */
+/* FIX: Chat background profile - use accurate chat-list avatar, NOT blue for everything */
+/* FIX: Input limit popup + Read More when you send text */
+
 :root {
   --konnekt-blue: #0a84ff;
-  --konnekt-green: #25D366;
-  --konnekt-red: #ff3b30
+  --konnekt-red: #ff3b30;
 }
 
 * {
-  box-sizing: border-box
+  box-sizing: border-box;
+  text-shadow: none !important
 }
 
 #pageChats {
@@ -18,7 +25,79 @@
   background: var(--bg-app)
 }
 
-/* ===== KEYFRAMES - iPhone 17 ===== */
+/* ===== CUSTOM SCROLL - NO DEFAULT SCROLL ANYWHERE - USE THIS FOR ALL SCROLL ===== */
+.custom-scroll,
+.chat-items-list,
+.chat-messages,
+.contact-info-scroll,
+.group-info-scroll,
+.emoji-picker-grid,
+.sticker-grid,
+.sticker-select-grid,
+.add-to-groups-list,
+.konnekt-waitlist-sheet,
+.preview-content,
+.create-sticker-body,
+.nk-permission-list {
+  scrollbar-width: thin;
+  scrollbar-color: #2a2a2e transparent;
+  -webkit-overflow-scrolling: touch;
+}
+
+.custom-scroll::-webkit-scrollbar,
+.chat-items-list::-webkit-scrollbar,
+.chat-messages::-webkit-scrollbar,
+.contact-info-scroll::-webkit-scrollbar,
+.group-info-scroll::-webkit-scrollbar,
+.emoji-picker-grid::-webkit-scrollbar,
+.sticker-grid::-webkit-scrollbar,
+.add-to-groups-list::-webkit-scrollbar,
+.konnekt-waitlist-sheet::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.custom-scroll::-webkit-scrollbar-track,
+.chat-items-list::-webkit-scrollbar-track,
+.chat-messages::-webkit-scrollbar-track,
+.contact-info-scroll::-webkit-scrollbar-track,
+.group-info-scroll::-webkit-scrollbar-track,
+.emoji-picker-grid::-webkit-scrollbar-track,
+.sticker-grid::-webkit-scrollbar-track,
+.add-to-groups-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb,
+.chat-items-list::-webkit-scrollbar-thumb,
+.chat-messages::-webkit-scrollbar-thumb,
+.contact-info-scroll::-webkit-scrollbar-thumb,
+.group-info-scroll::-webkit-scrollbar-thumb,
+.emoji-picker-grid::-webkit-scrollbar-thumb,
+.sticker-grid::-webkit-scrollbar-thumb,
+.add-to-groups-list::-webkit-scrollbar-thumb {
+  background: #2a2a2e;
+  border-radius: 20px;
+  min-height: 40px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover,
+.chat-items-list::-webkit-scrollbar-thumb:hover,
+.chat-messages::-webkit-scrollbar-thumb:hover {
+  background: #0a84ff;
+}
+
+/* Hide default scroll where we want invisible but still custom-scroll */
+.chat-messages::-webkit-scrollbar {
+  width: 0px;
+  height: 0px
+}
+
+.chat-messages {
+  scrollbar-width: none
+}
+
+/* ===== KEYFRAMES ===== */
 @keyframes iphoneBounce {
 
   0%,
@@ -372,10 +451,6 @@
   }
 }
 
-* {
-  text-shadow: none !important
-}
-
 .nk-popup-box,
 .contact-save-top-btn,
 .nk-popup-btn,
@@ -384,7 +459,7 @@
   filter: none !important
 }
 
-/* ===== LEFT: Chat list ===== */
+/* ===== LEFT: Chat list - scrolls with custom-scroll ===== */
 .chat-load-list {
   position: fixed;
   width: 460px;
@@ -579,39 +654,11 @@
   margin-top: 15px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: stretch;
   flex: 1 1 0;
   min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
   padding-bottom: 20px
-}
-
-.chat-items-list::-webkit-scrollbar {
-  width: 4px
-}
-
-.chat-items-list::-webkit-scrollbar-track {
-  background: transparent;
-  margin: 10px 0
-}
-
-.chat-items-list::-webkit-scrollbar-thumb {
-  background: #2a2a2e;
-  border-radius: 20px;
-  min-height: 40px;
-  max-height: 80px
-}
-
-.chat-items-list::-webkit-scrollbar-thumb:hover {
-  background: #0a84ff
-}
-
-.chat-items-list {
-  scrollbar-width: thin;
-  scrollbar-color: #2a2a2e transparent
 }
 
 .chat-item {
@@ -645,6 +692,7 @@
   background: rgba(255, 255, 255, .08)
 }
 
+/* FIX: Chat list avatar = source of truth - initials + colour OR image */
 .chat-avatar {
   width: 48px;
   height: 48px;
@@ -754,8 +802,8 @@
 }
 
 .chat-unread {
-  background-color: rgb(137, 137, 231);
-  color: var(--bg-header);
+  background-color: #0a84ff;
+  color: #fff;
   font-size: 11px;
   font-weight: 700;
   min-width: 20px;
@@ -786,10 +834,7 @@
   flex-shrink: 0
 }
 
-.chat-item.blocked-item .chat-blocked-tag {
-  display: block
-}
-
+.chat-item.blocked-item .chat-blocked-tag,
 .chat-blocked-tag:not([hidden]) {
   display: block
 }
@@ -828,13 +873,18 @@
   display: none
 }
 
+/* Draft = gray, hide when input empty */
 .chat-last-message.is-draft {
-  color: #25D366;
+  color: #9a9a9a !important;
   font-style: italic
 }
 
 .chat-item.has-draft .chat-last-message {
-  color: #25D366
+  color: #9a9a9a !important
+}
+
+.chat-item:not(.has-draft) .chat-last-message.is-draft {
+  display: none !important
 }
 
 #msgInput.has-draft {
@@ -929,7 +979,7 @@
 }
 
 .konnekt-call-mini.accept {
-  background: #25D366
+  background: #0a84ff
 }
 
 .konnekt-call-mini.decline {
@@ -1146,13 +1196,14 @@
   height: 25px
 }
 
+/* FIX: Chat background profile - NOT blue for everything. Use chat-list avatar: image if has-image, else initials + that person's colour (from data / inline style). Default = #2a2a2a, JS sets --ava-bg from chat list */
 .profile-border {
   width: 50px;
   height: 50px;
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, .15);
   text-align: center;
-  background-color: #00ff88;
+  background-color: var(--ava-bg, #2a2a2a);
   flex-shrink: 0;
   position: relative;
   display: flex;
@@ -1166,7 +1217,8 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover
+  object-fit: cover;
+  z-index: 2
 }
 
 .profile-border:not(.has-image) img {
@@ -1177,7 +1229,7 @@
   margin-top: 0;
   font-size: 20px;
   font-weight: 700;
-  color: var(--text-main);
+  color: #fff;
   position: relative;
   z-index: 1
 }
@@ -1192,6 +1244,12 @@
   gap: 16px;
   align-items: center;
   margin-right: 20px
+}
+
+.chat-background.is-group .calls,
+.chat-background.is-group .phone-call-btn,
+.chat-background.is-group .chat-video-btn {
+  display: none !important
 }
 
 .chat-header-action-btn {
@@ -1271,7 +1329,7 @@
 
 .chat-header-status {
   font-size: 12px;
-  color: #00ff88;
+  color: #0a84ff;
   font-weight: 500
 }
 
@@ -1285,7 +1343,7 @@
 
 .chat-header-typing {
   font-size: 12px;
-  color: #00ff88;
+  color: #0a84ff;
   font-weight: 500
 }
 
@@ -1294,23 +1352,7 @@
 }
 
 .chat-online-dot {
-  position: absolute;
-  bottom: 2px;
-  right: 2px;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #00ff88;
-  border: 2px solid var(--bg-header);
-  z-index: 5
-}
-
-.chat-online-dot.offline {
-  background: #ff3b30
-}
-
-.chat-background.is-group .chat-online-dot {
-  display: none
+  display: none !important
 }
 
 .chat-background.is-group .profile-border {
@@ -1381,7 +1423,7 @@
 
 .mood-wave span {
   width: 2px;
-  background: #25D366;
+  background: #0a84ff;
   border-radius: 10px;
   animation: moodWave .8s infinite ease-in-out
 }
@@ -1510,14 +1552,7 @@
   transition: transform .22s cubic-bezier(.16, 1, .3, 1)
 }
 
-.chat-messages::-webkit-scrollbar {
-  display: none
-}
-
-.chat-messages {
-  scrollbar-width: none
-}
-
+/* ===== MESSAGES ===== */
 .msg-row {
   position: relative;
   display: flex;
@@ -1550,12 +1585,13 @@
   overflow: visible !important
 }
 
+/* Group avatar - also use chat-list colour, NOT blue */
 .group-msg-avatar,
 .group-msg-ava {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #2a2a2a;
+  background: var(--ava-bg, #2a2a2a);
   display: grid;
   place-items: center;
   color: #fff;
@@ -1572,13 +1608,19 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover
+  object-fit: cover;
+  z-index: 2
 }
 
 .group-msg-avatar span,
 .group-msg-ava span {
   position: relative;
   z-index: 1
+}
+
+.group-msg-avatar.has-image span,
+.group-msg-ava.has-image span {
+  display: none
 }
 
 .group-msg-name {
@@ -1606,7 +1648,6 @@
   display: grid
 }
 
-/* ===== MESSAGE BUBBLE TAIL - BACK - DO NOT REMOVE ===== */
 .receiver-bubble {
   background: rgba(42, 42, 46, .96);
   backdrop-filter: blur(14px) saturate(160%);
@@ -1678,7 +1719,6 @@
   pointer-events: none
 }
 
-/* No tail for these - image / video / sticker / voice / deleted / typing / call keep their own shape */
 .image-bubble::before,
 .image-bubble::after,
 .video-bubble::before,
@@ -2396,16 +2436,16 @@
 .sticker-wrap,
 .sticker-media-wrap {
   position: relative;
-  width: 125px;
-  height: 125px;
+  width: 110px;
+  height: 110px;
   display: grid;
   place-items: center
 }
 
 .sticker-bubble img,
 .sticker-bubble video {
-  width: 125px;
-  height: 125px;
+  width: 110px;
+  height: 110px;
   object-fit: contain;
   display: block
 }
@@ -2438,6 +2478,7 @@
   width: auto !important
 }
 
+/* FIX: Read More - when you SEND text, long text clamps, Read More works */
 .msg-text {
   display: block;
   word-break: break-word;
@@ -2453,7 +2494,8 @@
 
 .msg-text.long-text.expanded {
   display: block;
-  -webkit-line-clamp: unset
+  -webkit-line-clamp: unset;
+  overflow: visible
 }
 
 .read-more-btn {
@@ -2469,6 +2511,23 @@
 
 .read-more-btn.show {
   display: inline-block
+}
+
+.read-more-btn[data-state="less"]::after {
+  content: " Read Less"
+}
+
+/* About Read More - same rule */
+.preview-about-text.long-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden
+}
+
+.preview-about-text.long-text.expanded {
+  display: block;
+  -webkit-line-clamp: unset
 }
 
 .input-plus-btn {
@@ -2581,6 +2640,7 @@
   display: block
 }
 
+/* ===== TAKEOVERS ===== */
 .input-takeover {
   flex-shrink: 0;
   width: 100%;
@@ -2670,10 +2730,16 @@
   font-size: 12px !important
 }
 
-.group-gone-takeover .takeover-title {
+.group-gone-takeover .takeover-title,
+.group-no-access-takeover .takeover-title {
   color: #fff;
   font-weight: 700;
   font-size: 14px
+}
+
+.group-no-access-takeover .takeover-sub {
+  color: #888;
+  font-size: 12px
 }
 
 .scroll-down-btn {
@@ -2832,6 +2898,7 @@
   height: 18px
 }
 
+/* ===== HOLD / POPPED - blur only for hold, NOT for reaction panel ===== */
 .message-focus-overlay {
   position: absolute;
   top: 70px;
@@ -2946,6 +3013,7 @@
   color: #fff
 }
 
+/* ===== DESKTOP ONLY: Emoji + Sticker - stays as before, NO raise input ===== */
 .emoji-picker-panel {
   display: none;
   position: absolute;
@@ -3261,8 +3329,7 @@
   display: none !important
 }
 
-/* ===== TYPING - 1-1 vs GROUP - LIKE YOU SAY ===== */
-/* 1-1: no avatar, just bubble */
+/* ===== TYPING ===== */
 .typing-row {
   display: flex !important;
   opacity: 1 !important;
@@ -3286,7 +3353,6 @@
   display: none !important
 }
 
-/* Group: avatars left + bubble, only in group background */
 #groupTypingIndicator {
   display: none !important
 }
@@ -3303,6 +3369,7 @@
   gap: 8px !important
 }
 
+/* Group typing - ONE round: name+colour + image round - use chat-list colour, NOT blue */
 .group-typing-avatars {
   display: flex !important;
   align-items: center !important;
@@ -3310,10 +3377,10 @@
 }
 
 .gt-avatar {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  background: #111;
+  background: var(--ava-bg, #2a2a2a);
   color: #fff;
   display: flex;
   align-items: center;
@@ -3321,11 +3388,31 @@
   font-size: 11px;
   font-weight: 700;
   border: 2px solid #fff;
-  margin-left: -8px
+  margin-left: -8px;
+  overflow: hidden;
+  position: relative
 }
 
 .gt-avatar:first-child {
   margin-left: 0
+}
+
+.gt-avatar img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 2
+}
+
+.gt-avatar span {
+  position: relative;
+  z-index: 1
+}
+
+.gt-avatar.has-image span {
+  display: none
 }
 
 .typing-bubble {
@@ -3454,6 +3541,7 @@
   height: 20px
 }
 
+/* ===== DESKTOP ONLY: Sticker Panel - stays as before, NO raise input ===== */
 .sticker-border-panel {
   display: none;
   position: absolute;
@@ -3477,7 +3565,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 16px
+  padding: 10px 16px;
+  position: relative
 }
 
 .panel-drag {
@@ -3546,7 +3635,10 @@
   aspect-ratio: 1;
   object-fit: contain;
   cursor: pointer;
-  border-radius: 12px
+  border-radius: 12px;
+  max-width: 68px;
+  max-height: 68px;
+  margin: auto
 }
 
 .sticker-item {
@@ -3554,7 +3646,9 @@
   overflow: hidden;
   background: #000;
   border-radius: 12px;
-  aspect-ratio: 1
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center
 }
 
 .sticker-item.selected {
@@ -3562,6 +3656,43 @@
   background: rgba(10, 132, 255, .18)
 }
 
+.send-file-bg {
+  position: absolute;
+  inset: 0;
+  background: var(--bg-app);
+  z-index: 140;
+  display: none;
+  flex-direction: column
+}
+
+.send-file-bg.show {
+  display: flex
+}
+
+.send-file-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px;
+  text-align: center
+}
+
+.send-file-center i,
+.send-file-center svg {
+  width: 48px;
+  height: 48px;
+  color: #0a84ff
+}
+
+.send-file-center p {
+  color: #fff;
+  font-weight: 700
+}
+
+/* ===== CREATE STICKER - 3s ===== */
 .create-sticker-page {
   display: none;
   position: absolute;
@@ -3773,7 +3904,7 @@
 }
 
 .create-actions .primary {
-  background: #25d366;
+  background: #0a84ff;
   color: #fff
 }
 
@@ -3805,7 +3936,7 @@
 
 .trim-progress {
   height: 100%;
-  background: #25D366;
+  background: #0a84ff;
   width: 60%
 }
 
@@ -3816,7 +3947,7 @@
 
 .trim-inputs input {
   flex: 1;
-  accent-color: #25D366
+  accent-color: #0a84ff
 }
 
 #trimLabel {
@@ -3850,7 +3981,7 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #25D366;
+  background: #0a84ff;
   animation: typingBounce 1s infinite
 }
 
@@ -3883,7 +4014,7 @@
   width: 28px;
   height: 28px;
   border: 3px solid #2a2a2e;
-  border-top-color: #25D366;
+  border-top-color: #0a84ff;
   border-radius: 50%;
   animation: spin .8s linear infinite
 }
@@ -3904,13 +4035,16 @@
 .cut-progress {
   height: 100%;
   width: 40%;
-  background: #25D366
+  background: #0a84ff
 }
 
 .chat-sticker-select-mode {
   position: absolute;
   inset: 0;
-  background: var(--bg-main);
+  background: rgba(10, 132, 255, .12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(10, 132, 255, .35);
   z-index: 140;
   display: none;
   flex-direction: column
@@ -3982,7 +4116,7 @@
   flex: 1;
   height: 44px;
   border-radius: 22px;
-  background: #25d366;
+  background: #0a84ff;
   color: #fff;
   border: none;
   font-weight: 700;
@@ -4217,7 +4351,7 @@
 
 .voice-wave-big span {
   width: 4px;
-  background: #25D366;
+  background: #0a84ff;
   border-radius: 10px;
   height: 10px;
   animation: moodWave .8s infinite
@@ -4295,6 +4429,7 @@
   color: #ffcc00
 }
 
+/* ===== CONTACT / GROUP INFO ===== */
 .contact-info-bg,
 .edit-contact-bg,
 .add-to-groups-bg,
@@ -4412,6 +4547,10 @@
   align-items: center
 }
 
+/* FIX: Contact profile - 2 versions, name INSIDE border, Share Mood ONLY on top */
+/* Version 1: Text inside with colour - .contact-round-profile:not(.has-image) - initials FM / JD inside, background = person's colour from chat list */
+/* Version 2: Image inside - .contact-round-profile.has-image - img covers, initials hidden */
+/* Thought beside text REMOVED - no .contact-mood-pill-fixed beside, no extra thought text */
 .contact-round-profile {
   width: 120px !important;
   height: 120px !important;
@@ -4419,7 +4558,7 @@
   flex-shrink: 0;
   position: relative;
   border-radius: 50%;
-  background: #2a2a2a;
+  background: var(--ava-bg, #2a2a2a);
   overflow: visible;
   display: flex;
   align-items: center;
@@ -4433,7 +4572,16 @@
   object-fit: cover;
   border-radius: 50%;
   position: absolute;
-  inset: 0
+  inset: 0;
+  z-index: 2
+}
+
+.contact-round-profile:not(.has-image) img {
+  display: none !important
+}
+
+.contact-round-profile.has-image .contact-round-initials {
+  display: none !important
 }
 
 .contact-round-initials {
@@ -4441,28 +4589,18 @@
   font-weight: 700;
   color: #fff;
   position: relative;
-  z-index: 1
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  text-transform: uppercase
 }
 
-.contact-mood-pill {
-  position: absolute;
-  top: -30px;
-  left: -18px
-}
-
+.contact-mood-pill,
 .contact-mood-pill-fixed {
-  border: 1px solid #fff !important;
-  background: #fff !important;
-  border-radius: 999px !important;
-  color: #000 !important;
-  padding: 6px 12px !important;
-  font-size: 12px !important;
-  font-weight: 700 !important;
-  white-space: nowrap
-}
-
-.contact-mood-pill-fixed span {
-  color: #000 !important
+  display: none !important
 }
 
 .contact-pic-open {
@@ -4473,6 +4611,64 @@
   cursor: pointer;
   z-index: 5;
   border-radius: 50%
+}
+
+/* Share Mood - ONLY on top of profile, like Profile UI: top -30, left -18, 160x35, dots */
+.contact-round-profile .thought {
+  position: absolute;
+  background: #fff;
+  width: 160px;
+  height: 35px;
+  border-radius: 30px;
+  top: -30px;
+  left: -18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .12);
+  overflow: visible
+}
+
+.contact-round-profile .first-circle {
+  background: #fff;
+  width: 30px;
+  height: 16px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  position: absolute;
+  top: 5px;
+  left: 2px;
+  z-index: 9
+}
+
+.contact-round-profile .second-circle {
+  width: 10px;
+  height: 10px;
+  border-radius: 20px;
+  background: #fff;
+  position: absolute;
+  top: 18px;
+  left: 22px;
+  z-index: 9
+}
+
+.contact-round-profile .mood-share-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(128, 128, 128, .8);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+  margin: 0
+}
+
+.share-thought-border,
+#shareThoughtBox {
+  display: none !important
 }
 
 .preview-username-inside {
@@ -4490,7 +4686,7 @@
 }
 
 .contact-status {
-  color: #00ff88;
+  color: #0a84ff;
   font-size: 13px;
   font-weight: 600;
   margin: 4px 0 0 0
@@ -4498,11 +4694,6 @@
 
 .contact-status.offline {
   color: #ff3b30
-}
-
-.share-thought-border,
-#shareThoughtBox {
-  display: none !important
 }
 
 .contact-actions {
@@ -4582,18 +4773,6 @@
   white-space: pre-wrap
 }
 
-.preview-about-text.long-text {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden
-}
-
-.preview-about-text.long-text.expanded {
-  display: block;
-  -webkit-line-clamp: unset
-}
-
 .preview-spotify {
   width: 100%;
   max-width: 420px;
@@ -4611,6 +4790,16 @@
   border: 1px solid rgba(255, 255, 255, .10) !important
 }
 
+.preview-spotify[data-listen-state="last"] .music-bars span {
+  animation-play-state: paused;
+  height: 5px;
+  opacity: .4
+}
+
+.preview-spotify[hidden] {
+  display: none !important
+}
+
 .music-bars {
   display: flex;
   gap: 2px;
@@ -4621,7 +4810,7 @@
 
 .music-bars span {
   width: 3px;
-  background: #25D366;
+  background: #0a84ff;
   border-radius: 10px;
   animation: moodWave .8s infinite ease-in-out
 }
@@ -4640,6 +4829,12 @@
 
 .music-bars span:nth-child(4) {
   height: 16px
+}
+
+.music-bars.paused span {
+  animation-play-state: paused;
+  height: 5px;
+  opacity: .4
 }
 
 .preview-spotify-label {
@@ -4772,28 +4967,9 @@
   box-sizing: border-box
 }
 
-.edit-bg-options {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px
-}
-
+.edit-bg-options,
 .edit-bg-option {
-  padding: 10px 16px;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, .12);
-  background: #2a2a2a;
-  color: #fff;
-  cursor: pointer
-}
-
-.edit-bg-option.active {
-  background: #fff;
-  color: #000
-}
-
-.edit-bg-option:active {
-  animation: wiggleClick .3s ease
+  display: none !important
 }
 
 .add-to-groups-list {
@@ -4821,7 +4997,8 @@
 
 .add-group-row:has(input:checked) {
   border-color: #0a84ff;
-  background: rgba(10, 132, 255, .12)
+  background: rgba(10, 132, 255, .12);
+  box-shadow: 0 0 0 2px rgba(10, 132, 255, .25)
 }
 
 .add-group-row input {
@@ -4835,7 +5012,7 @@
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background: #2a2a2a;
+  background: var(--ava-bg, #2a2a2a);
   display: grid;
   place-items: center;
   color: #fff;
@@ -4851,7 +5028,8 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover
+  object-fit: cover;
+  z-index: 2
 }
 
 .add-group-ava .avatar-initials {
@@ -4936,7 +5114,7 @@
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background: #2a2a2a;
+  background: var(--ava-bg, #2a2a2a);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4954,7 +5132,8 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover
+  object-fit: cover;
+  z-index: 2
 }
 
 .group-info-avatar span {
@@ -5109,7 +5288,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #2a2a2a;
+  background: var(--ava-bg, #2a2a2a);
   display: grid;
   place-items: center;
   color: #fff;
@@ -5125,7 +5304,8 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover
+  object-fit: cover;
+  z-index: 2
 }
 
 .group-member-ava .avatar-initials {
@@ -5300,7 +5480,7 @@
 }
 
 #qrCopiedHint {
-  color: #25D366 !important;
+  color: #0a84ff !important;
   font-weight: 700
 }
 
@@ -5407,7 +5587,7 @@
   display: none;
   align-items: center;
   gap: 8px;
-  color: #25D366;
+  color: #0a84ff;
   font-size: 14px;
   font-weight: 600
 }
@@ -5416,6 +5596,7 @@
   display: flex
 }
 
+/* ===== POPUPS - Input limit popup fixed ===== */
 .nk-popup-overlay {
   position: fixed;
   inset: 0;
@@ -5512,6 +5693,27 @@
   color: #fff
 }
 
+/* Input limit popup - #tooLongPopup - same box, centred, no cut */
+#tooLongPopup {
+  position: fixed;
+  inset: 0;
+  z-index: 310;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, .55);
+  backdrop-filter: blur(6px)
+}
+
+#tooLongPopup.hidden {
+  display: none !important
+}
+
+#tooLongPopup .nk-popup-box {
+  max-width: 340px;
+  width: 100%
+}
+
 .nk-toggle {
   width: 48px;
   height: 28px;
@@ -5525,7 +5727,7 @@
 }
 
 .nk-toggle[data-on="true"] {
-  background: #25D366
+  background: #0a84ff
 }
 
 .nk-toggle-knob {
@@ -5579,6 +5781,7 @@
   margin: 4px 0 0 0
 }
 
+/* ===== CALL ===== */
 .konnekt-call-overlay {
   position: fixed;
   inset: 0;
@@ -5612,7 +5815,7 @@
 }
 
 .konnekt-call-status {
-  color: #25D366;
+  color: #0a84ff;
   font-size: 13px;
   margin: 2px 0 0 0
 }
@@ -5737,7 +5940,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #25D366
+  background: #0a84ff
 }
 
 .konnekt-pill-ava {
@@ -5831,6 +6034,7 @@
   transform: rotate(135deg)
 }
 
+/* ===== WAITLIST ===== */
 .konnekt-waitlist-overlay {
   position: fixed;
   inset: 0;
@@ -6041,13 +6245,13 @@
 .konnekt-leaf-icon {
   width: 10px;
   height: 10px;
-  color: #25D366
+  color: #0a84ff
 }
 
 .konnekt-check-icon {
   width: 18px;
   height: 18px;
-  color: #25D366
+  color: #0a84ff
 }
 
 .konnekt-waitlist-success {
@@ -6067,7 +6271,7 @@
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: rgba(37, 211, 102, .12);
+  background: rgba(10, 132, 255, .12);
   display: grid;
   place-items: center
 }
@@ -6075,7 +6279,7 @@
 .konnekt-bell-icon {
   width: 24px;
   height: 24px;
-  color: #25D366
+  color: #0a84ff
 }
 
 .konnekt-waitlist-success h3 {
@@ -6108,6 +6312,7 @@
   animation: wigglePopup .45s cubic-bezier(.16, 1, .3, 1) !important
 }
 
+/* ===== DESKTOP ===== */
 @media (min-width:769px) {
   .app-chats-mid {
     display: none !important
@@ -6128,17 +6333,15 @@
   }
 
   .emoji-picker-panel {
-    width: 360px
+    width: min(360px, 90%)
   }
 
   .sticker-border-panel {
-    left: 50%;
-    right: auto;
-    transform: translateX(-50%);
-    width: 420px;
-    max-width: 90%;
-    bottom: 80px;
-    border-radius: 20px
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-height: 55vh;
+    border-radius: 20px 20px 0 0
   }
 
   .chat-sticker-select-mode {
@@ -6147,6 +6350,7 @@
   }
 }
 
+/* ===== MOBILE - Main only, Mobile CSS wins after for raise-input ===== */
 @media (max-width:768px) {
   .chat-load-list {
     position: fixed;
@@ -6175,7 +6379,7 @@
   }
 
   .search-wrap {
-    padding: 0 12px 0 12px
+    padding: 0 12px
   }
 
   .chat-tabs {
@@ -6246,16 +6450,9 @@
     padding: 12px 14px 24px 14px
   }
 
+  /* Desktop emoji/sticker stays, Mobile CSS will override to raise-input + under-input */
   .emoji-picker-panel {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: auto;
-    transform: none;
-    width: 100%;
-    max-height: 55vh;
-    border-radius: 20px 20px 0 0
+    max-height: 420px
   }
 
   .emoji-picker-grid {
@@ -6263,10 +6460,11 @@
   }
 
   .sticker-border-panel {
-    left: 0;
-    right: 0;
-    bottom: 0;
     max-height: 55vh
+  }
+
+  .sticker-grid {
+    grid-template-columns: repeat(4, 1fr)
   }
 
   .create-canvas.tall-crop {
@@ -6280,5 +6478,17 @@
 
   .chat-empty-state {
     display: none !important
+  }
+
+  .contact-round-profile {
+    width: 110px !important;
+    height: 110px !important
+  }
+
+  .contact-round-profile .thought {
+    width: 150px;
+    height: 32px;
+    top: -28px;
+    left: -16px
   }
 }

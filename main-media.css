@@ -1,10 +1,10 @@
-/* ===== KONNEKT - MOBILE CSS - CLEAN - NO DUPLICATES WITH MAIN / EXTRA ===== */
-/* Only Mobile 0-768px. Main + Extra already have their own @media 768 blocks - this file does NOT re-declare them. */
-/* Load order: Main CSS -> Extra CSS -> Mobile CSS (Mobile wins on mobile) */
-/* iPhone Dynamic Island + Notch + PWA Standalone - Everything comes down small */
-/* FIX ADD: Sticker / Reaction panel under input - input goes up. Sidebar hidden in chat background. */
+/* ===== KONNEKT - MOBILE CSS - CLEAN - FULL - NO CUT - NO DUPLICATES ===== */
+/* ONLY Mobile 0-768px. Main + Extra + New Chat already have their own @media - this file does NOT re-declare them. */
+/* Load LAST: Main -> Extra -> New Chat -> Mobile (Mobile wins on mobile) */
+/* FIX: Reaction border function proper on Mobile. When you select image, e no go trigger hold / reaction / swipe. */
+/* FIX: Share Thought = Profile UI exactly: 120px, overflow visible, Thought top -30 left -18 160x35 + dots + ellipsis */
 
-@media (max-width: 768px) {
+@media (max-width:768px) {
 
   html,
   body {
@@ -29,62 +29,129 @@
     box-sizing: border-box !important;
   }
 
-  /* ===== PWA - Standalone - iPhone - Comes down small ===== */
-  @media (display-mode: standalone) {
+  /* ===== CUSTOM SCROLL - NO DEFAULT SCROLL ===== */
+  .chat-items-list,
+  .chat-messages,
+  .contact-info-scroll,
+  .group-info-scroll,
+  .emoji-picker-grid,
+  .sticker-grid,
+  .sticker-select-grid,
+  .add-to-groups-list,
+  .konnekt-waitlist-sheet,
+  .nk-plus-scroll-area,
+  .nk-newchat-list,
+  .nk-results,
+  .nk-down-section,
+  .nk-permission-list {
+    scrollbar-width: thin;
+    scrollbar-color: #2a2a2e transparent;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .chat-items-list::-webkit-scrollbar,
+  .contact-info-scroll::-webkit-scrollbar,
+  .group-info-scroll::-webkit-scrollbar,
+  .emoji-picker-grid::-webkit-scrollbar,
+  .sticker-grid::-webkit-scrollbar,
+  .add-to-groups-list::-webkit-scrollbar,
+  .nk-plus-scroll-area::-webkit-scrollbar,
+  .nk-newchat-list::-webkit-scrollbar,
+  .nk-results::-webkit-scrollbar {
+    width: 4px;
+    height: 4px
+  }
+
+  .chat-items-list::-webkit-scrollbar-track,
+  .contact-info-scroll::-webkit-scrollbar-track,
+  .group-info-scroll::-webkit-scrollbar-track,
+  .emoji-picker-grid::-webkit-scrollbar-track,
+  .sticker-grid::-webkit-scrollbar-track {
+    background: transparent
+  }
+
+  .chat-items-list::-webkit-scrollbar-thumb,
+  .contact-info-scroll::-webkit-scrollbar-thumb,
+  .group-info-scroll::-webkit-scrollbar-thumb,
+  .emoji-picker-grid::-webkit-scrollbar-thumb,
+  .sticker-grid::-webkit-scrollbar-thumb,
+  .add-to-groups-list::-webkit-scrollbar-thumb,
+  .nk-plus-scroll-area::-webkit-scrollbar-thumb,
+  .nk-newchat-list::-webkit-scrollbar-thumb,
+  .nk-results::-webkit-scrollbar-thumb {
+    background: #2a2a2e;
+    border-radius: 20px;
+    min-height: 40px
+  }
+
+  .chat-items-list::-webkit-scrollbar-thumb:hover,
+  .contact-info-scroll::-webkit-scrollbar-thumb:hover {
+    background: #0a84ff
+  }
+
+  .chat-messages::-webkit-scrollbar {
+    width: 0;
+    height: 0
+  }
+
+  .chat-messages {
+    scrollbar-width: none
+  }
+
+  /* ===== PWA Standalone ===== */
+  @media (display-mode:standalone) {
 
     html,
     body {
-      padding-top: env(safe-area-inset-top) !important;
+      padding-top: env(safe-area-inset-top) !important
     }
 
     .chat-load-list {
-      padding-top: calc(env(safe-area-inset-top) + 4px) !important;
+      padding-top: calc(env(safe-area-inset-top) + 4px) !important
     }
 
     .start-up {
       height: calc(52px + env(safe-area-inset-top) + 6px) !important;
-      padding-top: calc(env(safe-area-inset-top) + 6px) !important;
+      padding-top: calc(env(safe-area-inset-top) + 6px) !important
     }
 
     .profile-headerchatBackground {
       height: calc(70px + env(safe-area-inset-top) + 8px) !important;
-      padding-top: calc(env(safe-area-inset-top) + 8px) !important;
+      padding-top: calc(env(safe-area-inset-top) + 8px) !important
     }
 
     .chat-input-bar {
-      padding-bottom: calc(14px + env(safe-area-inset-bottom) + 6px) !important;
+      padding-bottom: calc(14px + env(safe-area-inset-bottom) + 6px) !important
     }
 
     .konnekt-waitlist-sheet {
-      padding-bottom: calc(24px + env(safe-area-inset-bottom)) !important;
+      padding-bottom: calc(24px + env(safe-area-inset-bottom)) !important
     }
   }
 
-  /* ===== iPhone Dynamic Island - Extra push down ===== */
-  @supports (padding: max(0px)) {
+  @supports (padding:max(0px)) {
     .start-up {
-      padding-top: max(env(safe-area-inset-top), 12px) !important;
+      padding-top: max(env(safe-area-inset-top), 12px) !important
     }
 
     .profile-headerchatBackground {
-      padding-top: max(env(safe-area-inset-top), 12px) !important;
+      padding-top: max(env(safe-area-inset-top), 12px) !important
     }
 
     .floating-date {
-      top: max(calc(78px + env(safe-area-inset-top)), 92px) !important;
+      top: max(calc(78px + env(safe-area-inset-top)), 92px) !important
     }
 
     .ios-notify {
-      top: max(calc(82px + env(safe-area-inset-top)), 96px) !important;
+      top: max(calc(82px + env(safe-area-inset-top)), 96px) !important
     }
 
     .mood-float {
-      top: max(calc(58px + env(safe-area-inset-top)), 72px) !important;
+      top: max(calc(58px + env(safe-area-inset-top)), 72px) !important
     }
   }
 
-  /* ===== FIX: Sidebar MUST NOT show in chat background - Mobile only ===== */
-  /* When chat is open, sidebar / bottom nav / pill nav are gone completely */
+  /* ===== Sidebar hidden in chat background ===== */
   .chat-background.mobile-show~.sidebar-section,
   .chat-background.mobile-show~.bottom-nav,
   .chat-background.mobile-show~.nav-pill,
@@ -96,14 +163,7 @@
   body:has(.chat-background.mobile-show) .pill-nav,
   body:has(.chat-right-wrap.open) .sidebar-section,
   body:has(.chat-right-wrap.open) .bottom-nav,
-  body:has(.chat-right-wrap.open) .nav-pill {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-  }
-
-  /* Fallback for browsers without :has - JS adds .chat-open to body, CSS below also hides */
+  body:has(.chat-right-wrap.open) .nav-pill,
   body.chat-open .sidebar-section,
   body.chat-open .bottom-nav,
   body.chat-open .nav-pill,
@@ -114,21 +174,19 @@
     pointer-events: none !important;
   }
 
-  /* Sidebar still shows on list, only hides in chat background */
   .chat-load-list:not(.mobile-hide)~.sidebar-section {
-    display: flex !important;
+    display: flex !important
   }
 
-  /* ===== SLIDE - List <-> Chat - WhatsApp style - Mobile only ===== */
+  /* ===== Slide List <-> Chat ===== */
   .chat-background {
     transform: translateX(100%);
-    transition: transform 0.38s cubic-bezier(0.32, 0.72, 0, 1);
+    transition: transform .38s cubic-bezier(.32, .72, 0, 1);
     pointer-events: none;
     touch-action: pan-x pan-y !important;
     overscroll-behavior: none !important;
     height: 100dvh !important;
     height: 100svh !important;
-    /* FIX: Chat background is flex column so input can go up when panel opens */
     display: flex !important;
     flex-direction: column !important;
     overflow: hidden !important;
@@ -137,11 +195,11 @@
   .chat-background.mobile-show,
   .chat-right-wrap.open .chat-background {
     transform: translateX(0) !important;
-    pointer-events: auto;
+    pointer-events: auto
   }
 
   .chat-load-list {
-    transition: transform 0.38s cubic-bezier(0.32, 0.72, 0, 1);
+    transition: transform .38s cubic-bezier(.32, .72, 0, 1);
     transform: translateX(0);
     touch-action: pan-x pan-y !important;
     overscroll-behavior: contain !important;
@@ -154,18 +212,18 @@
 
   .chat-load-list.mobile-hide {
     transform: translateX(-100%) !important;
-    pointer-events: none;
+    pointer-events: none
   }
 
-  /* ===== STICKY TOP BAR - Mobile only ===== */
+  /* ===== Sticky Top Bar ===== */
   .start-up {
     position: sticky !important;
     top: 0 !important;
     z-index: 50;
-    background-color: rgba(26, 26, 26, 0.7) !important;
+    background-color: rgba(26, 26, 26, .7) !important;
     backdrop-filter: blur(12px) !important;
     -webkit-backdrop-filter: blur(12px) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, .08);
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
@@ -179,14 +237,13 @@
   .app-name {
     margin: 0 !important;
     font-size: 22px !important;
-    line-height: 52px !important;
+    line-height: 52px !important
   }
 
   .start-chat-btn {
-    margin: 0 !important;
+    margin: 0 !important
   }
 
-  /* ===== CHATS CENTER ON SCROLL - Mobile only ===== */
   .app-chats-mid {
     display: block !important;
     position: absolute !important;
@@ -194,7 +251,7 @@
     top: 50% !important;
     transform: translateX(-50%) translateY(-10px) !important;
     opacity: 0 !important;
-    transition: all 0.3s ease !important;
+    transition: all .3s ease !important;
     font-size: 18px !important;
     font-weight: 600 !important;
     color: var(--text-main) !important;
@@ -205,45 +262,47 @@
 
   .chat-load-list.scrolled .app-chats-mid {
     opacity: 1 !important;
-    transform: translateX(-50%) translateY(-50%) !important;
+    transform: translateX(-50%) translateY(-50%) !important
   }
 
   .search-wrap,
   .chat-list,
   .chat-items-list {
     position: relative;
-    z-index: 1;
+    z-index: 1
   }
 
   .chat-load-list.scrolled .search-wrap,
   .chat-load-list.scrolled .chat-list {
     opacity: 0;
-    pointer-events: none;
+    pointer-events: none
   }
 
   .chat-items-list {
-    flex: none !important;
-    overflow: visible !important;
+    flex: 1 1 0 !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
     height: auto !important;
-    padding-bottom: 30px;
+    padding-bottom: 30px
   }
 
   .search-chat {
     width: 95%;
     margin-left: 10px;
     margin-top: 10px;
-    font-size: 16px !important;
+    font-size: 16px !important
   }
 
   .search-chat-icon {
-    top: 20px;
+    top: 20px
   }
 
   .new-chat-text {
-    display: none !important;
+    display: none !important
   }
 
-  /* ===== CHAT HEADER - Safe area only - Mobile ===== */
+  /* ===== Chat Header ===== */
   .profile-headerchatBackground {
     padding-top: env(safe-area-inset-top) !important;
     padding-bottom: 0 !important;
@@ -254,53 +313,73 @@
   }
 
   .sidebar-section-1 {
-    z-index: 5 !important;
+    z-index: 5 !important
   }
 
   .profile-extraBorder {
     gap: 15px;
     margin-top: 0 !important;
     margin-left: 15px;
-    align-items: center !important;
+    align-items: center !important
   }
 
   .sidebar-section.hide-nav {
     opacity: 0 !important;
     pointer-events: none !important;
     transform: translateX(-50%) translateY(120px) !important;
-    transition: all 0.35s ease !important;
+    transition: all .35s ease !important
   }
 
   .arrow-icon {
     width: 32px;
     height: 32px;
     margin-top: 10px;
-    margin-left: 10px;
+    margin-left: 10px
   }
 
-  /* ===== CHAT MESSAGES - Must shrink when panel opens ===== */
+  .profile-border {
+    background-color: var(--ava-bg, #2a2a2a) !important
+  }
+
+  .profile-border.has-image .profile-text {
+    display: none !important
+  }
+
+  .profile-border:not(.has-image) img {
+    display: none !important
+  }
+
+  .group-msg-avatar,
+  .group-msg-ava {
+    background: var(--ava-bg, #2a2a2a) !important
+  }
+
+  .gt-avatar {
+    background: var(--ava-bg, #2a2a2a) !important;
+    border: 2px solid #fff
+  }
+
+  /* ===== Chat Messages ===== */
   .chat-messages {
     flex: 1 1 auto !important;
     min-height: 0 !important;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch !important;
-    transition: padding-bottom 0.28s ease !important;
+    transition: padding-bottom .28s ease !important
   }
 
-  /* When sticker / emoji panel open, messages padding so last msg no hide under panel */
   .chat-background.sticker-open .chat-messages,
   .chat-background.emoji-open .chat-messages,
   .chat-background:has(.sticker-border-panel.show) .chat-messages,
   .chat-background:has(.emoji-picker-panel.show) .chat-messages {
-    padding-bottom: 16px !important;
+    padding-bottom: 16px !important
   }
 
-  /* ===== INPUT - No zoom on iOS - Mobile only ===== */
   #msgInput,
   input,
   textarea {
     font-size: 16px !important;
-    touch-action: manipulation !important;
+    touch-action: manipulation !important
   }
 
   .chat-input-bar {
@@ -311,22 +390,200 @@
     position: relative !important;
     z-index: 30 !important;
     background: var(--bg-app) !important;
-    /* FIX: Input moves up smoothly when panel opens */
-    transition: transform 0.28s ease, margin-bottom 0.28s ease !important;
+    transition: transform .28s ease, margin-bottom .28s ease !important;
     transform: translateY(0) !important;
+    order: 3 !important;
   }
 
   .chat-messages {
     padding-left: max(14px, env(safe-area-inset-left)) !important;
-    padding-right: max(14px, env(safe-area-inset-right)) !important;
+    padding-right: max(14px, env(safe-area-inset-right)) !important
   }
 
-  /* ===== FIX: STICKER / REACTION PANEL UNDER INPUT - INPUT GOES UP ===== */
-  /* Panel is NOT fixed to bottom of screen covering input. It sits above input bar area, input moves up on top of it. */
-  /* Structure: chat-background (flex column) -> header / messages / input-bar / sticker-panel */
-  /* We use order + margin so panel appears BELOW input visually, but input is lifted by panel height via transform on wrapper */
-  .sticker-border-panel,
+  .reply-preview {
+    order: 2 !important
+  }
+
+  /* ===== FIX: REACTION BORDER FUNCTION PROPER - MOBILE ONLY ===== */
+  /* Reaction = 3 layers, all must be clickable, no overlay go block am */
+  /* 1. Emoji React Bar (quick reactions) - on top of popped message */
+  .emoji-react-bar {
+    position: relative !important;
+    z-index: 70 !important;
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+    display: none;
+  }
+
+  .emoji-react-bar.show {
+    display: flex !important;
+    pointer-events: auto !important
+  }
+
+  .emoji-react-bar button {
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+    -webkit-tap-highlight-color: transparent !important;
+    cursor: pointer;
+  }
+
+  .emoji-react-bar button:active {
+    transform: scale(.86)
+  }
+
+  /* 2. Emoji Picker Panel - UNDER input, input goes up, NO blur, clickable */
   .emoji-picker-panel {
+    position: relative !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: auto !important;
+    top: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    flex-shrink: 0 !important;
+    order: 10 !important;
+    z-index: 70 !important;
+    border-radius: 20px 20px 0 0 !important;
+    background: #1c1c1e !important;
+    border-top: 1px solid rgba(255, 255, 255, .08) !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    transform: translateY(100%) !important;
+    max-height: 0 !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transition: transform .28s ease, max-height .28s ease, opacity .28s ease !important;
+    padding-bottom: env(safe-area-inset-bottom) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .emoji-picker-panel.show {
+    display: flex !important;
+    transform: translateY(0) !important;
+    max-height: 52vh !important;
+    min-height: 260px !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+
+  .emoji-picker-grid {
+    padding-bottom: 12px !important
+  }
+
+  .emoji-picker-grid button {
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+    cursor: pointer
+  }
+
+  .emoji-picker-grid button:active {
+    transform: scale(.88)
+  }
+
+  .emoji-picker-header button {
+    pointer-events: auto !important;
+    cursor: pointer
+  }
+
+  /* 3. Reaction Action Popup (Remove / Add) - must be clickable */
+  .reaction-action-popup {
+    position: absolute !important;
+    bottom: 40px !important;
+    right: 20px !important;
+    z-index: 75 !important;
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+  }
+
+  .reaction-action-popup.show {
+    display: flex !important;
+    pointer-events: auto !important
+  }
+
+  .reaction-action-popup button {
+    pointer-events: auto !important;
+    cursor: pointer
+  }
+
+  /* Message Action Pill - Reply / Copy / Forward / Delete etc - clickable */
+  .message-action-pill {
+    position: relative !important;
+    z-index: 70 !important;
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+  }
+
+  .message-action-pill button {
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+    cursor: pointer
+  }
+
+  /* Reaction badge on bubble - tap to open reaction popup */
+  .msg-reaction-badge {
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+    cursor: pointer;
+    z-index: 5 !important
+  }
+
+  .msg-reaction-badge:active {
+    transform: scale(.9)
+  }
+
+  /* Hold / Focus - overlay must NOT block reaction buttons */
+  .message-focus-overlay {
+    pointer-events: none !important
+  }
+
+  .message-focus-overlay.active {
+    pointer-events: auto !important;
+    background: rgba(0, 0, 0, .48) !important;
+    backdrop-filter: blur(16px) !important
+  }
+
+  /* When emoji / sticker panel open, focus overlay OFF, so reaction no block */
+  .chat-background.sticker-open .message-focus-overlay,
+  .chat-background.emoji-open .message-focus-overlay {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    backdrop-filter: none !important
+  }
+
+  .popped-message-container {
+    pointer-events: auto !important;
+    z-index: 60 !important;
+    touch-action: manipulation !important;
+  }
+
+  .popped-message-container.active {
+    display: flex !important;
+    pointer-events: auto !important
+  }
+
+  .popped-message-container.always-middle {
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    max-width: 92vw !important
+  }
+
+  .popped-message-container .bubble {
+    max-width: 92vw !important;
+    pointer-events: auto !important
+  }
+
+  .popped-clone {
+    max-height: 45vh;
+    overflow-y: auto;
+    pointer-events: auto !important
+  }
+
+  /* ===== FIX: STICKER PANEL UNDER INPUT - INPUT GOES UP - MOBILE ONLY ===== */
+  .sticker-border-panel {
     position: relative !important;
     left: 0 !important;
     right: 0 !important;
@@ -339,7 +596,7 @@
     z-index: 20 !important;
     border-radius: 20px 20px 0 0 !important;
     background: #1c1c1e !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-top: 1px solid rgba(255, 255, 255, .08) !important;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch !important;
     transform: translateY(100%) !important;
@@ -347,90 +604,184 @@
     opacity: 0 !important;
     visibility: hidden !important;
     pointer-events: none !important;
-    transition: transform 0.28s ease, max-height 0.28s ease, opacity 0.28s ease !important;
+    transition: transform .28s ease, max-height .28s ease, opacity .28s ease !important;
     padding-bottom: env(safe-area-inset-bottom) !important;
   }
 
   .sticker-border-panel.show,
-  .emoji-picker-panel.show,
-  .chat-background.sticker-open .sticker-border-panel,
-  .chat-background.emoji-open .emoji-picker-panel {
+  .chat-background.sticker-open .sticker-border-panel {
     transform: translateY(0) !important;
     max-height: 52vh !important;
     min-height: 260px !important;
     opacity: 1 !important;
     visibility: visible !important;
     pointer-events: auto !important;
+    display: flex !important;
   }
 
-  /* FIX: Input goes UP when panel opens - input bar is above panel, panel is below it */
-  /* We do it by giving chat-background a bottom padding trick: input stays, panel slides up under it */
-  /* Simpler + reliable: when panel shows, input bar gets margin-bottom = 0 but panel is AFTER input in DOM, so input stays on top, panel below */
-  /* To make input visually lift, we move the whole input + panel block up: chat-messages shrinks */
   .chat-background.sticker-open,
   .chat-background.emoji-open {
-    /* Messages shrink, input + panel stay at bottom, panel under input */
-    padding-bottom: 0 !important;
+    padding-bottom: 0 !important
   }
 
   .chat-background.sticker-open .chat-input-bar,
   .chat-background.emoji-open .chat-input-bar {
-    /* Input stays above panel - no transform needed if panel is after input in DOM */
-    /* If your HTML has panel BEFORE input, this lifts input above panel */
     position: relative !important;
     z-index: 30 !important;
-    box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 -1px 0 rgba(255, 255, 255, .08) !important;
   }
 
-  /* If panel is fixed in your HTML (old structure), force it to sit UNDER input, not over it */
   .sticker-border-panel[style*="position: fixed"],
   .emoji-picker-panel[style*="position: fixed"] {
     position: fixed !important;
     left: 0 !important;
     right: 0 !important;
-    /* Bottom = input height + safe area, so panel top is under input */
     bottom: calc(72px + env(safe-area-inset-bottom)) !important;
     top: auto !important;
   }
 
-  .sticker-grid,
-  .emoji-picker-grid {
-    padding-bottom: 12px !important;
+  .sticker-grid {
+    padding-bottom: 12px !important
+  }
+
+  .sticker-grid img,
+  .sticker-grid video {
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+    cursor: pointer
+  }
+
+  .sticker-item {
+    pointer-events: auto !important;
+    cursor: pointer
+  }
+
+  .sticker-panel-close {
+    pointer-events: auto !important;
+    cursor: pointer
   }
 
   .plus-pill-menu {
-    /* Plus pill also sits above input, not covering it */
     position: fixed !important;
     bottom: calc(88px + env(safe-area-inset-bottom)) !important;
     left: 10px !important;
-    z-index: 9999 !important;
+    z-index: 9999 !important
   }
 
-  /* ===== DRAFT - Mobile ===== */
+  /* ===== FIX: WHEN YOU SELECT IMAGE, E NO GO DO ANYHOW ===== */
+  /* Image / Video bubble itself = tap to open preview. Img / Video inside = NO hold, NO reaction, NO swipe, NO drag, NO callout */
+  .image-bubble,
+  .video-bubble {
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+    cursor: pointer;
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+  }
+
+  .image-bubble img,
+  .video-bubble video {
+    pointer-events: none !important;
+    touch-action: none !important;
+    -webkit-touch-callout: none !important;
+    -webkit-user-drag: none !important;
+    user-select: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+
+  .image-bubble .img-wrap,
+  .video-bubble .video-wrap {
+    pointer-events: none !important
+  }
+
+  .image-bubble .msg-meta,
+  .video-bubble .msg-meta {
+    pointer-events: none !important
+  }
+
+  /* Image preview overlay - must be clickable, close works */
+  .image-preview-overlay,
+  .video-full-overlay {
+    pointer-events: auto !important;
+    z-index: 145 !important
+  }
+
+  .image-preview-overlay.show,
+  .video-full-overlay.show {
+    display: flex !important;
+    pointer-events: auto !important
+  }
+
+  .preview-close,
+  .preview-send-btn,
+  .preview-cancel-beside-input {
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+    cursor: pointer
+  }
+
+  /* Sticker bubble - same rule: sticker img no trigger hold, bubble tap = preview / select */
+  .sticker-bubble {
+    pointer-events: auto !important;
+    touch-action: manipulation !important
+  }
+
+  .sticker-bubble img,
+  .sticker-bubble video {
+    pointer-events: none !important;
+    -webkit-touch-callout: none !important;
+    -webkit-user-drag: none !important
+  }
+
+  /* Normal text bubble - hold works, image bubble - hold NO work */
+  .msg-row .bubble {
+    pointer-events: auto !important
+  }
+
+  .msg-row:has(.image-bubble),
+  .msg-row:has(.video-bubble) {
+    touch-action: manipulation !important
+  }
+
+  /* Swipe reply must NOT trigger when you tap image */
+  .msg-row:has(.image-bubble) .swipe-reply-icon,
+  .msg-row:has(.video-bubble) .swipe-reply-icon {
+    display: none !important
+  }
+
+  /* ===== DRAFT - Gray ===== */
   .chat-last-message.is-draft {
     font-size: 12px !important;
+    color: #9a9a9a !important
+  }
+
+  .chat-last-message.is-draft::before {
+    content: 'Draft: ';
+    color: #9a9a9a
   }
 
   .chat-item.has-draft::after {
     right: 12px !important;
     top: 14px !important;
+    background: #9a9a9a !important
   }
 
-  /* ===== GROUP vs NORMAL - Mobile ===== */
+  /* ===== GROUP vs NORMAL ===== */
   .chat-background.is-group .profile-border {
-    border-radius: 14px !important;
+    border-radius: 14px !important
   }
 
   .chat-background:not(.is-group) .group-msg-ava {
-    display: none !important;
+    display: none !important
   }
 
-  /* ===== STICKER / VOICE LOADING - Mobile sizes - Responsive ===== */
+  /* ===== STICKER / VOICE / IMAGE sizes ===== */
   .sticker-media-wrap {
     width: 110px !important;
     height: 110px !important;
     max-width: 38vw !important;
-    max-height: 38vw !important;
+    max-height: 38vw !important
   }
 
   .sticker-bubble img,
@@ -439,84 +790,77 @@
     height: 110px !important;
     max-width: 38vw !important;
     max-height: 38vw !important;
-    object-fit: cover !important;
+    object-fit: cover !important
   }
 
   .voice-bubble {
     min-width: 200px !important;
     max-width: 250px !important;
-    width: auto !important;
+    width: auto !important
   }
 
   .image-bubble,
   .video-bubble {
     max-width: 260px !important;
-    width: auto !important;
+    width: auto !important
   }
 
   .image-bubble img,
   .video-bubble video {
     max-width: 100% !important;
-    height: auto !important;
+    height: auto !important
   }
 
   .msg-row .bubble {
-    max-width: 85% !important;
+    max-width: 85% !important
   }
 
-  /* ===== HOLD PILL + EMOJI + STICKER PANEL - Mobile ===== */
-  .popped-message-container.always-middle {
-    left: 50% !important;
-    top: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    max-width: 92vw !important;
+  .msg-text.long-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden
   }
 
-  .popped-message-container .bubble {
-    max-width: 92vw !important;
+  .msg-text.long-text.expanded {
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible
   }
 
-  .emoji-picker-panel {
-    max-height: 52vh !important;
-    padding-bottom: env(safe-area-inset-bottom) !important;
+  .read-more-btn.show {
+    display: inline-block
   }
 
-  .sticker-border-panel {
-    max-height: 52vh !important;
-    padding-bottom: env(safe-area-inset-bottom) !important;
-  }
-
-  /* ===== MOOD - Mobile - 28px fixed ===== */
+  /* ===== MOOD / DATE / SCROLL ===== */
   .mood-float {
-    top: calc(58px + env(safe-area-inset-top)) !important;
+    top: calc(58px + env(safe-area-inset-top)) !important
   }
 
   .mood-pill-wrapper {
     height: 28px !important;
-    min-height: 28px !important;
+    min-height: 28px !important
   }
 
-  /* ===== FLOATING DATE + SCROLL BTN - Mobile ===== */
   .floating-date {
-    top: calc(78px + env(safe-area-inset-top)) !important;
+    top: calc(78px + env(safe-area-inset-top)) !important
   }
 
   .scroll-down-btn {
     bottom: calc(80px + env(safe-area-inset-bottom)) !important;
-    right: 14px !important;
+    right: 14px !important
   }
 
-  /* When panel open, scroll btn goes above panel */
   .chat-background.sticker-open .scroll-down-btn,
   .chat-background.emoji-open .scroll-down-btn {
-    bottom: calc(340px + env(safe-area-inset-bottom)) !important;
+    bottom: calc(340px + env(safe-area-inset-bottom)) !important
   }
 
   .ios-notify {
-    top: calc(82px + env(safe-area-inset-top)) !important;
+    top: calc(82px + env(safe-area-inset-top)) !important
   }
 
-  /* ===== CONTACT / GROUP INFO - Mobile - PWA ===== */
+  /* ===== CONTACT / GROUP INFO ===== */
   .contact-info-bg,
   .group-info-bg,
   .group-qr-bg,
@@ -532,144 +876,326 @@
     right: 0 !important;
   }
 
-  /* ===== NEW CHAT / CALL / WAITLIST - Mobile full - PWA ===== */
+  /* FIX: Share Thought = Profile UI exactly - from your reference */
+  /* Round profile 120px, overflow visible, Thought top -30 left -18 160x35, dots + ellipsis, Edit bottom -10 right 20 */
+  .contact-round-profile {
+    width: 120px !important;
+    height: 120px !important;
+    margin: 40px 0 0 0 !important;
+    background: var(--ava-bg, #2a2a2a) !important;
+    border: 2px solid #fff !important;
+    overflow: visible !important;
+  }
+
+  .contact-round-profile img {
+    z-index: 2
+  }
+
+  .contact-round-profile:not(.has-image) img {
+    display: none !important
+  }
+
+  .contact-round-profile.has-image .contact-round-initials {
+    display: none !important
+  }
+
+  .contact-round-initials {
+    font-size: 32px
+  }
+
+  .contact-mood-pill,
+  .contact-mood-pill-fixed {
+    display: none !important
+  }
+
+  .contact-round-profile .thought {
+    position: absolute;
+    background: #fff;
+    width: 160px;
+    height: 35px;
+    border-radius: 30px;
+    top: -30px !important;
+    left: -18px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .12);
+    overflow: visible;
+  }
+
+  .contact-round-profile .first-circle {
+    background: #fff;
+    width: 30px;
+    height: 16px;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    position: absolute;
+    top: 5px;
+    left: 2px;
+    z-index: 9
+  }
+
+  .contact-round-profile .second-circle {
+    width: 10px;
+    height: 10px;
+    border-radius: 20px;
+    background: #fff;
+    position: absolute;
+    top: 18px;
+    left: 22px;
+    z-index: 9
+  }
+
+  .contact-round-profile .mood-share-text {
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    color: rgba(128, 128, 128, .8) !important;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 140px;
+    margin: 0;
+  }
+
+  /* Edit button under profile - like Profile UI */
+  .contact-round-profile .contact-edit-btn {
+    position: absolute;
+    bottom: -10px;
+    right: 20px;
+    background: #fff;
+    color: #000;
+    border: none;
+    border-radius: 999px;
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    z-index: 11;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .12);
+    cursor: pointer;
+  }
+
+  .preview-about-text.long-text {
+    -webkit-line-clamp: 2
+  }
+
+  .group-info-avatar {
+    background: var(--ava-bg, #2a2a2a) !important
+  }
+
+  .group-member-ava,
+  .add-group-ava {
+    background: var(--ava-bg, #2a2a2a) !important
+  }
+
+  #qrCopiedHint {
+    color: #0a84ff !important
+  }
+
+  /* ===== CREATE STICKER vs SEND FILE ===== */
+  .send-file-bg {
+    background: #0E0E0E !important
+  }
+
+  .create-sticker-page {
+    background: linear-gradient(180deg, #141414 0%, #101A26 55%, #0A0F16 100%) !important;
+    border-top: 1px solid rgba(10, 132, 255, .25) !important
+  }
+
+  .create-sticker-page .create-sticker-header {
+    background: #141414 !important
+  }
+
+  .chat-background.send-file-open .chat-messages,
+  .chat-background.send-file-open .chat-input-bar {
+    display: none !important
+  }
+
+  .chat-background.create-sticker-open .chat-messages,
+  .chat-background.create-sticker-open .chat-input-bar {
+    display: none !important
+  }
+
+  .sticker-select-grid {
+    max-height: 62vh;
+    overflow-y: auto
+  }
+
+  /* ===== NEW CHAT / CALL / WAITLIST ===== */
   .nk-newchat-sheet {
     max-height: calc(94dvh - env(safe-area-inset-bottom)) !important;
     padding-bottom: env(safe-area-inset-bottom) !important;
     width: 100% !important;
     left: 0 !important;
-    right: 0 !important;
+    right: 0 !important
+  }
+
+  .nk-permission-list {
+    overflow-y: auto !important;
+    touch-action: pan-y !important
+  }
+
+  .nk-newchat-sheet .nk-down-section,
+  .nk-newchat-sheet .nk-results {
+    touch-action: pan-y !important;
+    pointer-events: auto !important
+  }
+
+  .nk-toggle[data-on="true"] {
+    background: #0a84ff !important
+  }
+
+  .nk-recent-ava {
+    background: var(--ava-bg, #2a2a2a) !important
   }
 
   .konnekt-waitlist-sheet {
-    padding-bottom: calc(24px + env(safe-area-inset-bottom)) !important;
+    padding-bottom: calc(24px + env(safe-area-inset-bottom)) !important
   }
 
   .konnekt-call-bottom {
-    padding-bottom: calc(32px + env(safe-area-inset-bottom)) !important;
+    padding-bottom: calc(32px + env(safe-area-inset-bottom)) !important
   }
 
   .konnekt-call-overlay {
     padding-top: env(safe-area-inset-top) !important;
-    padding-bottom: env(safe-area-inset-bottom) !important;
+    padding-bottom: env(safe-area-inset-bottom) !important
   }
 
   .toast {
     bottom: calc(90px + env(safe-area-inset-bottom)) !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
-    max-width: 90vw !important;
+    max-width: 90vw !important
   }
 
   .voice-recording-overlay {
-    padding-bottom: calc(16px + env(safe-area-inset-bottom)) !important;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom)) !important
   }
 
   .delete-action-bar {
-    padding-bottom: calc(22px + env(safe-area-inset-bottom)) !important;
+    padding-bottom: calc(22px + env(safe-area-inset-bottom)) !important
+  }
+
+  #tooLongPopup {
+    position: fixed;
+    inset: 0;
+    z-index: 310;
+    display: grid;
+    place-items: center;
+    padding: 20px
+  }
+
+  #tooLongPopup.hidden {
+    display: none !important
+  }
+
+  #tooLongPopup .nk-popup-box {
+    max-width: 340px;
+    width: 100%
   }
 }
 
-/* ===== SMALL iPHONE - SE / 14 / 15 / 16 - Comes down small ===== */
-@media (max-width: 390px) {
+/* ===== SMALL iPHONE ===== */
+@media (max-width:390px) {
   .app-name {
-    font-size: 20px !important;
+    font-size: 20px !important
   }
 
   .chat-name {
-    font-size: 15px !important;
+    font-size: 15px !important
   }
 
   .chat-avatar {
     width: 40px !important;
     height: 40px !important;
-    font-size: 15px !important;
+    font-size: 15px !important
   }
 
   .msg-row .bubble {
     max-width: 82% !important;
-    font-size: 14px !important;
+    font-size: 14px !important
   }
 
   .sticker-media-wrap {
     width: 100px !important;
-    height: 100px !important;
+    height: 100px !important
   }
 
   .sticker-bubble img,
   .sticker-bubble video {
     width: 100px !important;
-    height: 100px !important;
+    height: 100px !important
   }
 
   .voice-bubble {
     min-width: 180px !important;
-    max-width: 230px !important;
+    max-width: 230px !important
   }
 
   .image-bubble,
   .video-bubble {
-    max-width: 230px !important;
+    max-width: 230px !important
   }
 
   .profile-border {
     width: 44px !important;
-    height: 44px !important;
+    height: 44px !important
   }
 
   .chat-header-name-wrap .chat-name {
-    font-size: 18px !important;
+    font-size: 18px !important
   }
 
   .emoji-picker-grid {
-    grid-template-columns: repeat(6, 1fr) !important;
+    grid-template-columns: repeat(6, 1fr) !important
   }
 
   .sticker-border-panel.show,
   .emoji-picker-panel.show {
     min-height: 230px !important;
-    max-height: 48vh !important;
+    max-height: 48vh !important
+  }
+
+  .contact-round-profile {
+    width: 110px !important;
+    height: 110px !important
+  }
+
+  .contact-round-profile .thought {
+    width: 150px !important;
+    height: 32px !important;
+    top: -28px !important;
+    left: -16px !important
   }
 }
 
-/* ===== iPhone LANDSCAPE - PWA - Not cut ===== */
-@media (max-width: 768px) and (orientation: landscape) {
+/* ===== iPhone LANDSCAPE ===== */
+@media (max-width:768px) and (orientation:landscape) {
   .start-up {
-    height: calc(44px + env(safe-area-inset-top)) !important;
+    height: calc(44px + env(safe-area-inset-top)) !important
   }
 
   .profile-headerchatBackground {
-    height: calc(60px + env(safe-area-inset-top)) !important;
+    height: calc(60px + env(safe-area-inset-top)) !important
   }
 
   .chat-messages {
-    padding-top: 8px !important;
+    padding-top: 8px !important
   }
 
   .konnekt-call-big-ava {
     width: 90px !important;
-    height: 90px !important;
+    height: 90px !important
   }
 
   .sticker-border-panel.show,
   .emoji-picker-panel.show {
     max-height: 42vh !important;
-    min-height: 180px !important;
+    min-height: 180px !important
   }
 }
 
-/* ===== DESKTOP - Sidebar hidden only when chat background is open on mobile is handled above ===== */
-/* Desktop: Sticker / Reaction panel also under input - input goes up */
-@media (min-width: 769px) {
-
-  .chat-background.sticker-open .chat-input-bar,
-  .chat-background.emoji-open .chat-input-bar {
-    position: relative !important;
-    z-index: 30 !important;
-  }
-
-  .sticker-border-panel.show,
-  .emoji-picker-panel.show {
-    max-height: 320px !important;
-  }
-}
+/* NOTE: No Desktop block in Mobile CSS. Desktop stays as in Main / Extra. Raise-input + Reaction fix is MOBILE ONLY. */

@@ -1,12 +1,10 @@
 /* ================================================================ */
-/* NK NEW CHAT - CSS V21 FINAL COMPLETE */
-/* Mobile gud, PWA gud, Safari gud, Desktop gud, No cut, No blue */
+/* NK NEW CHAT - CSS - CLEAN - FULL - NO CUT - NO DUPLICATES */
+/* Load AFTER main.css + extra.css. No nk-popup duplicate - scoped only. */
+/* FIX: Custom-scroll everywhere, Toggle blue not green, Recents = Add Member, Blocked blur */
 /* ================================================================ */
 
-/* ================================================================ */
-/* 1. HTML / BODY BASE */
-/* Desktop = normal, Mobile = dvh fix */
-/* ================================================================ */
+/* ===== BASE - Desktop normal, Mobile dvh fix ===== */
 html {
   height: 100%;
   background: #000
@@ -74,10 +72,56 @@ body.nk-lock-scroll {
   transform: translateY(100%) !important
 }
 
-/* ================================================================ */
-/* 2. POPUP - Small confirm modal */
-/* ================================================================ */
-.nk-popup-overlay {
+/* ===== CUSTOM SCROLL - NO DEFAULT SCROLL, NO HIDDEN SCROLLBAR ===== */
+.nk-plus-scroll-area,
+.nk-newchat-list,
+.nk-results,
+.nk-down-section,
+.nk-permission-list,
+.nk-form-wrap,
+.nk-profile-wrap {
+  scrollbar-width: thin;
+  scrollbar-color: #2a2a2e transparent;
+  -webkit-overflow-scrolling: touch;
+}
+
+.nk-plus-scroll-area::-webkit-scrollbar,
+.nk-newchat-list::-webkit-scrollbar,
+.nk-results::-webkit-scrollbar,
+.nk-down-section::-webkit-scrollbar,
+.nk-permission-list::-webkit-scrollbar,
+.nk-form-wrap::-webkit-scrollbar,
+.nk-profile-wrap::-webkit-scrollbar {
+  width: 4px;
+  height: 4px
+}
+
+.nk-plus-scroll-area::-webkit-scrollbar-track,
+.nk-newchat-list::-webkit-scrollbar-track,
+.nk-results::-webkit-scrollbar-track,
+.nk-down-section::-webkit-scrollbar-track,
+.nk-permission-list::-webkit-scrollbar-track {
+  background: transparent
+}
+
+.nk-plus-scroll-area::-webkit-scrollbar-thumb,
+.nk-newchat-list::-webkit-scrollbar-thumb,
+.nk-results::-webkit-scrollbar-thumb,
+.nk-down-section::-webkit-scrollbar-thumb,
+.nk-permission-list::-webkit-scrollbar-thumb {
+  background: #2a2a2e;
+  border-radius: 20px;
+  min-height: 40px
+}
+
+.nk-plus-scroll-area::-webkit-scrollbar-thumb:hover,
+.nk-newchat-list::-webkit-scrollbar-thumb:hover,
+.nk-results::-webkit-scrollbar-thumb:hover {
+  background: #0a84ff
+}
+
+/* ===== POPUP - Scoped to New Chat ONLY, no duplicate with Main ===== */
+.nk-newchat-overlay .nk-popup-overlay {
   position: fixed;
   inset: 0;
   width: 100vw;
@@ -96,24 +140,24 @@ body.nk-lock-scroll {
   transition: opacity .24s ease
 }
 
-.nk-popup-overlay.show {
+.nk-newchat-overlay .nk-popup-overlay.show {
   opacity: 1;
   pointer-events: auto
 }
 
-.nk-popup-overlay.hidden {
+.nk-newchat-overlay .nk-popup-overlay.hidden {
   display: none
 }
 
 @media (min-width:769px) {
-  .nk-popup-overlay {
+  .nk-newchat-overlay .nk-popup-overlay {
     left: 55px !important;
     width: 500px !important;
     right: auto !important
   }
 }
 
-.nk-popup-box {
+.nk-newchat-overlay .nk-popup-box {
   width: 100%;
   max-width: 310px;
   background: #1c1c1e;
@@ -128,11 +172,11 @@ body.nk-lock-scroll {
   transition: transform .34s cubic-bezier(.32, .72, 0, 1)
 }
 
-.nk-popup-overlay.show .nk-popup-box {
+.nk-newchat-overlay .nk-popup-overlay.show .nk-popup-box {
   transform: scale(1) translateY(0)
 }
 
-.nk-popup-icon-wrap {
+.nk-newchat-overlay .nk-popup-icon-wrap {
   width: 52px;
   height: 52px;
   border-radius: 999px;
@@ -142,27 +186,27 @@ body.nk-lock-scroll {
   margin-bottom: 12px
 }
 
-.nk-popup-icon {
+.nk-newchat-overlay .nk-popup-icon {
   width: 24px;
   height: 24px;
   color: #fff
 }
 
-.nk-popup-title {
+.nk-newchat-overlay .nk-popup-title {
   font-size: 16px;
   font-weight: 700;
   color: #fff;
   margin-bottom: 6px
 }
 
-.nk-popup-desc {
+.nk-newchat-overlay .nk-popup-desc {
   font-size: 14px;
   color: #8e8e93;
   line-height: 1.4;
   margin-bottom: 18px
 }
 
-.nk-popup-btn {
+.nk-newchat-overlay .nk-popup-btn {
   width: 100%;
   height: 44px;
   border-radius: 999px;
@@ -174,13 +218,11 @@ body.nk-lock-scroll {
   cursor: pointer
 }
 
-.nk-popup-btn:active {
+.nk-newchat-overlay .nk-popup-btn:active {
   transform: scale(.96)
 }
 
-/* ================================================================ */
-/* 3. DESKTOP OVERLAY - SIDE PANEL 500px, NOT FULL SCREEN */
-/* ================================================================ */
+/* ===== DESKTOP OVERLAY - Side panel 500px, NOT full screen ===== */
 @media (min-width:769px) {
   .nk-newchat-overlay {
     position: fixed;
@@ -226,10 +268,7 @@ body.nk-lock-scroll {
   }
 }
 
-/* ================================================================ */
-/* 4. MOBILE OVERLAY - FULL SCREEN, NO SCROLL OUTSIDE */
-/* Only plus-scroll-area scrolls, rest fixed */
-/* ================================================================ */
+/* ===== MOBILE OVERLAY - Full screen, only scroll areas scroll ===== */
 @media (max-width:768px) {
   .nk-newchat-overlay {
     position: fixed !important;
@@ -250,8 +289,7 @@ body.nk-lock-scroll {
     border-radius: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
-    overscroll-behavior: none !important;
-    touch-action: none !important
+    overscroll-behavior: contain !important
   }
 
   .nk-newchat-overlay.show {
@@ -287,9 +325,7 @@ body.nk-lock-scroll {
   }
 }
 
-/* ================================================================ */
-/* 5. PWA STANDALONE */
-/* ================================================================ */
+/* ===== PWA STANDALONE ===== */
 @media (max-width:768px) and (display-mode:standalone) {
   html {
     background: #0f0f0f !important
@@ -353,9 +389,7 @@ body.nk-lock-scroll {
   }
 }
 
-/* ================================================================ */
-/* 6. HEADER */
-/* ================================================================ */
+/* ===== HEADER ===== */
 .nk-newchat-header {
   height: 56px;
   min-height: 56px;
@@ -456,9 +490,7 @@ body.nk-lock-scroll {
   }
 }
 
-/* ================================================================ */
-/* 7. SEARCH - FIXED */
-/* ================================================================ */
+/* ===== SEARCH - FIXED ===== */
 .nk-search-wrap {
   padding: 10px 16px;
   flex-shrink: 0 !important;
@@ -503,41 +535,26 @@ body.nk-lock-scroll {
   overflow: hidden !important
 }
 
-/* ================================================================ */
-/* 8. SCROLL AREAS - ORIGINAL V21 */
-/* ================================================================ */
+/* ===== SCROLL AREAS - custom-scroll, NOT hidden ===== */
 .nk-plus-scroll-area,
 .nk-newchat-list {
   flex: 1 1 0 !important;
   min-height: 0 !important;
   overflow-y: auto !important;
   overflow-x: hidden !important;
-  -webkit-overflow-scrolling: touch !important;
   overscroll-behavior: contain !important;
   touch-action: pan-y !important;
   box-sizing: border-box !important;
   background: transparent !important
 }
 
-.nk-plus-scroll-area::-webkit-scrollbar,
-.nk-newchat-list::-webkit-scrollbar {
-  display: none;
-  width: 0
-}
-
-.nk-plus-scroll-area,
-.nk-newchat-list {
-  scrollbar-width: none;
-  -ms-overflow-style: none
-}
-
 .nk-permission-list {
   flex: 1 1 0 !important;
   min-height: 0 !important;
-  overflow: hidden !important;
-  overflow-y: hidden !important;
-  overscroll-behavior: none !important;
-  touch-action: none !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  overscroll-behavior: contain !important;
+  touch-action: pan-y !important;
   padding: 8px 0;
   box-sizing: border-box !important;
   background: transparent !important
@@ -545,10 +562,7 @@ body.nk-lock-scroll {
 
 @media (max-height:640px) {
   .nk-permission-list {
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-    overscroll-behavior: contain !important;
-    touch-action: pan-y !important
+    overflow-y: auto !important
   }
 }
 
@@ -556,10 +570,10 @@ body.nk-lock-scroll {
 .nk-profile-wrap {
   flex: 1 1 0 !important;
   min-height: 0 !important;
-  overflow: hidden !important;
-  overflow-y: hidden !important;
-  overscroll-behavior: none !important;
-  touch-action: none !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  overscroll-behavior: contain !important;
+  touch-action: pan-y !important;
   box-sizing: border-box !important;
   background: transparent !important
 }
@@ -577,9 +591,7 @@ body.nk-lock-scroll {
   flex-direction: column
 }
 
-/* ================================================================ */
-/* 9. INPUTS */
-/* ================================================================ */
+/* ===== INPUTS ===== */
 .nk-input-group {
   display: flex;
   flex-direction: column;
@@ -632,9 +644,7 @@ body.nk-lock-scroll {
   font-weight: 500
 }
 
-/* ================================================================ */
-/* 10. ROWS */
-/* ================================================================ */
+/* ===== ROWS - New ID / New Group ===== */
 .nk-newchat-row {
   width: 100%;
   display: flex;
@@ -760,9 +770,132 @@ body.nk-lock-scroll {
   display: none !important
 }
 
-/* ================================================================ */
-/* 11. PROFILE IMAGE */
-/* ================================================================ */
+/* ===== FIX: RECENTS - Like Add Member - Round + Name + Blocked blur ===== */
+.nk-recents-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 16px 16px 16px
+}
+
+.nk-recent-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: 12px;
+  background: #1a1a1a;
+  cursor: pointer;
+  text-align: left;
+  flex-shrink: 0
+}
+
+.nk-recent-row:active {
+  transform: scale(.98)
+}
+
+.nk-recent-ava {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--ava-bg, #2a2a2a);
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative
+}
+
+.nk-recent-ava img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 2
+}
+
+.nk-recent-ava span {
+  position: relative;
+  z-index: 1
+}
+
+.nk-recent-ava.has-image span {
+  display: none
+}
+
+.nk-recent-ava:not(.has-image) img {
+  display: none
+}
+
+.nk-recent-name {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis
+}
+
+.nk-recent-blocked {
+  display: none;
+  border: 1px solid rgba(255, 255, 255, .18);
+  background: rgba(255, 255, 255, .08);
+  color: #aaa;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 20px;
+  flex-shrink: 0
+}
+
+.nk-recent-row.blocked-row {
+  filter: blur(0)
+}
+
+.nk-recent-row.blocked-row .nk-recent-ava,
+.nk-recent-row.blocked-row .nk-recent-name {
+  filter: blur(1.5px);
+  opacity: .55
+}
+
+.nk-recent-row.blocked-row .nk-recent-blocked {
+  display: block;
+  filter: none;
+  opacity: 1
+}
+
+.nk-recent-row[data-blocked="true"] .nk-recent-blocked {
+  display: block
+}
+
+/* FIX: New Chat empty = only Konnekt encryption notice */
+.nk-encryption-only {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 320px;
+  margin: 16px auto;
+  background: rgba(31, 31, 31, .92);
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: 12px;
+  padding: 10px 12px
+}
+
+.nk-encryption-only p {
+  font-size: 11px;
+  line-height: 14px;
+  color: #9aa0a6;
+  margin: 0
+}
+
+/* ===== PROFILE IMAGE ===== */
 .nk-profile-image-wrap {
   display: flex;
   justify-content: center;
@@ -840,9 +973,7 @@ body.nk-lock-scroll {
   border: 1px solid rgba(255, 159, 10, .15)
 }
 
-/* ================================================================ */
-/* 12. KONNEKTING */
-/* ================================================================ */
+/* ===== KONNEKTING ===== */
 .nk-konnekting-wrap {
   display: flex;
   flex-direction: column;
@@ -945,9 +1076,7 @@ body.nk-lock-scroll {
   }
 }
 
-/* ================================================================ */
-/* 13. BOTTOM NEXT */
-/* ================================================================ */
+/* ===== BOTTOM NEXT ===== */
 .nk-bottom-next-wrap {
   flex-shrink: 0 !important;
   padding: 14px 20px 14px 20px;
@@ -1025,6 +1154,7 @@ body.nk-lock-scroll {
   line-height: 1.4
 }
 
+/* FIX: Toggle blue, NOT green */
 .nk-toggle {
   width: 48px;
   height: 28px;
@@ -1037,7 +1167,7 @@ body.nk-lock-scroll {
 }
 
 .nk-toggle[data-on="true"] {
-  background: #34c759
+  background: #0a84ff
 }
 
 .nk-toggle-knob {
@@ -1055,9 +1185,7 @@ body.nk-lock-scroll {
   transform: translateX(20px)
 }
 
-/* ================================================================ */
-/* 14. SAFARI FIX */
-/* ================================================================ */
+/* ===== SAFARI FIX ===== */
 @supports (-webkit-touch-callout:none) {
   @media (max-width:768px) {
 
@@ -1134,29 +1262,7 @@ body.nk-lock-scroll {
   }
 }
 
-.nk-newchat-list::-webkit-scrollbar,
-.nk-permission-list::-webkit-scrollbar,
-.nk-form-wrap::-webkit-scrollbar,
-.nk-profile-wrap::-webkit-scrollbar,
-.nk-plus-scroll-area::-webkit-scrollbar {
-  display: none;
-  width: 0
-}
-
-.nk-newchat-list,
-.nk-permission-list,
-.nk-form-wrap,
-.nk-profile-wrap,
-.nk-plus-scroll-area {
-  scrollbar-width: none;
-  -ms-overflow-style: none
-}
-
-/* ================================================================ */
-/* 15. FIX ADD ONLY - DO NOT TOUCH V21 ABOVE */
-/* Recent Chats + List Scroll Fix - Added, Not Changed */
-/* ================================================================ */
-/* FIX 1: Recent Chats container must be the scroller, not hidden */
+/* ===== FIX ADD ONLY - Recent / Results scroll with custom-scroll ===== */
 .nk-newchat-sheet .nk-down-section {
   flex: 1 1 0 !important;
   min-height: 0 !important;
@@ -1164,13 +1270,11 @@ body.nk-lock-scroll {
   flex-direction: column !important;
   overflow-y: auto !important;
   overflow-x: hidden !important;
-  -webkit-overflow-scrolling: touch !important;
   overscroll-behavior: contain !important;
   touch-action: pan-y !important;
-  padding-bottom: calc(16px + env(safe-area-inset-bottom)) !important;
+  padding-bottom: calc(16px + env(safe-area-inset-bottom)) !important
 }
 
-/* FIX 2: Results list inside Recent Chats must scroll + grow */
 .nk-newchat-sheet .nk-results {
   flex: 1 1 0 !important;
   min-height: 0 !important;
@@ -1178,31 +1282,16 @@ body.nk-lock-scroll {
   flex-direction: column !important;
   overflow-y: auto !important;
   overflow-x: hidden !important;
-  -webkit-overflow-scrolling: touch !important;
   overscroll-behavior: contain !important;
   touch-action: pan-y !important;
-  padding-bottom: 16px !important;
+  padding-bottom: 16px !important
 }
 
-.nk-newchat-sheet .nk-results::-webkit-scrollbar,
-.nk-newchat-sheet .nk-down-section::-webkit-scrollbar {
-  display: none;
-  width: 0
-}
-
-.nk-newchat-sheet .nk-results,
-.nk-newchat-sheet .nk-down-section {
-  scrollbar-width: none;
-  -ms-overflow-style: none
-}
-
-/* FIX 3: Rows must not shrink / must stay full width in scroll */
 .nk-newchat-sheet .nk-result-row,
 .nk-newchat-sheet .nk-newchat-row {
   flex-shrink: 0 !important
 }
 
-/* FIX 4: Mobile overlay must allow pan-y inside scroll areas, not block all touch */
 @media (max-width:768px) {
   .nk-newchat-overlay {
     overscroll-behavior: contain !important

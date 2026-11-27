@@ -1,7 +1,8 @@
-
 // ==========================
 // reaction.js - REACTION + STICKER + FFmpeg + VOICE + PLUS PILL + INPUT LIMIT - CLEAN - NO CUT
+// Load AFTER konnekt-main.js. Main JS owns Hold / Contact / Group. This file owns Reaction / Sticker / Voice / Plus.
 // FIX: Plus Pill MUST show even if HTML has no #plusPillMenu - JS creates it
+// FIX: Reaction border function proper, Image select NO trigger hold / reaction
 // ==========================
 (function(){
   const $ = (s,p=document)=>p.querySelector(s);
@@ -98,6 +99,8 @@
     toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),2000); refresh();
   }
   function cleanSrc(src){ return (src||'').split('#')[0]; }
+  // FIX: Media row = image / video bubble - NO hold, NO reaction, tap = preview only
+  function nkIsMediaRow(row){ return !!row?.querySelector('.image-bubble, .video-bubble'); }
   function loadingHtml(cls){
     return `<div class="media-loading-overlay ${cls}"><div class="media-loading-circle"><i data-lucide="download" class="media-download-icon"></i><i data-lucide="rotate-ccw" class="media-retry-icon"></i><svg class="media-progress-ring" viewBox="0 0 48 48"><circle class="media-progress-bg" cx="24" cy="24" r="20"></circle><circle class="media-progress-fill" cx="24" cy="24" r="20"></circle></svg><span class="media-loading-percent">0%</span></div></div>`;
   }
@@ -117,7 +120,7 @@
   }
   window.nkRunLoading = runLoading;
 
-  // ---------- PLUS PILL - FIX: Find by ANY name, CREATE if missing, MUST show ----------
+  // ---------- PLUS PILL - Find by ANY name, CREATE if missing, MUST show ----------
   function findPlusBtn(){
     return $('#inputPlusBtn') || $('[data-plus]') || $('.input-plus-btn') || $('.plus-btn') || $('#plusBtn') || $('[data-action="plus"]') || document.querySelector('.chat-input-bar button:first-child');
   }
@@ -131,7 +134,6 @@
     m.id = 'plusPillMenu';
     m.className = 'plus-pill-menu';
     m.innerHTML = `<button type="button" data-action="send-file" style="display:flex;align-items:center;gap:10px;width:100%;padding:12px 14px;background:#1c1c1e;color:#fff;border:0;border-radius:12px;cursor:pointer;text-align:left;"><span>📁</span><span>Send file</span></button><button type="button" data-action="create-sticker" style="display:flex;align-items:center;gap:10px;width:100%;padding:12px 14px;background:#1c1c1e;color:#fff;border:0;border-radius:12px;cursor:pointer;text-align:left;"><span>✨</span><span>Create sticker</span></button><button type="button" data-action="camera" style="display:flex;align-items:center;gap:10px;width:100%;padding:12px 14px;background:#1c1c1e;color:#fff;border:0;border-radius:12px;cursor:pointer;text-align:left;"><span>📷</span><span>Camera</span></button>`;
-    // Inline container style - will be overridden on open, but set base
     m.style.cssText = 'display:none;position:fixed;z-index:99999;background:#111;padding:10px;border-radius:16px;gap:8px;flex-direction:column;box-shadow:0 10px 40px rgba(0,0,0,0.5);width:200px;';
     document.body.appendChild(m);
     return m;
@@ -142,8 +144,7 @@
     const btn = findPlusBtn();
     if(!menu) return;
     if(menu.parentElement !== document.body) document.body.appendChild(menu);
-    menu.style.position = 'fixed';
-    menu.style.zIndex = '99999';
+    menu.style.position = 'fixed'; menu.style.zIndex = '99999';
     if(btn){
       const r = btn.getBoundingClientRect();
       const w = 210;
@@ -151,69 +152,38 @@
       const h = menu.offsetHeight || 190;
       let top = r.top - h - 12;
       if(top < 10) top = r.bottom + 12;
-      menu.style.top = top + 'px';
-      menu.style.bottom = 'auto';
-      menu.style.right = 'auto';
-      menu.style.width = w + 'px';
-    } else {
-      menu.style.left = '16px';
-      menu.style.bottom = '90px';
-      menu.style.top = 'auto';
-    }
+      menu.style.top = top + 'px'; menu.style.bottom = 'auto'; menu.style.right = 'auto'; menu.style.width = w + 'px';
+    } else { menu.style.left = '16px'; menu.style.bottom = '90px'; menu.style.top = 'auto'; }
   }
   function openPlusMenu(){
     const menu = getPlusMenu();
     if(!menu){ showToast('Plus menu not found'); return; }
     positionPlusMenu();
-    menu.classList.remove('closing');
-    menu.classList.add('show');
-    menu.hidden = false;
-    menu.style.display = 'flex';
-    menu.style.flexDirection = 'column';
-    menu.style.visibility = 'visible';
-    menu.style.opacity = '1';
-    menu.style.pointerEvents = 'auto';
-    menu.style.zIndex = '99999';
+    menu.classList.remove('closing'); menu.classList.add('show'); menu.hidden = false;
+    menu.style.display = 'flex'; menu.style.flexDirection = 'column'; menu.style.visibility = 'visible'; menu.style.opacity = '1'; menu.style.pointerEvents = 'auto'; menu.style.zIndex = '99999';
     isPlusOpen = true;
     stickerPanel?.classList.remove('show'); chatBackground.classList.remove('sticker-open');
-    refresh();
-    requestAnimationFrame(positionPlusMenu);
+    refresh(); requestAnimationFrame(positionPlusMenu);
   }
   function closePlusMenu(){
-    const menu = findPlusMenu();
-    if(!menu) return;
+    const menu = findPlusMenu(); if(!menu) return;
     isPlusOpen = false;
-    menu.classList.add('closing');
-    menu.classList.remove('show');
-    menu.style.display = 'none';
-    menu.style.visibility = 'hidden';
-    menu.style.opacity = '0';
-    menu.style.pointerEvents = 'none';
+    menu.classList.add('closing'); menu.classList.remove('show');
+    menu.style.display = 'none'; menu.style.visibility = 'hidden'; menu.style.opacity = '0'; menu.style.pointerEvents = 'none';
     setTimeout(()=>{ if(!isPlusOpen) menu.classList.remove('closing'); },260);
   }
-  window.nkOpenPlusMenu = openPlusMenu;
-  window.nkClosePlusMenu = closePlusMenu;
-  window.nkIsPlusOpen = ()=>isPlusOpen;
-  // FIX: Delegation - catches plus button even if ID differs or button re-rendered
+  window.nkOpenPlusMenu = openPlusMenu; window.nkClosePlusMenu = closePlusMenu; window.nkIsPlusOpen = ()=>isPlusOpen;
   document.addEventListener('click', (e)=>{
     const btn = e.target.closest('#inputPlusBtn, [data-plus], .input-plus-btn, .plus-btn, #plusBtn, [data-action="plus"]');
     if(!btn) return;
-    // Only if button is inside chat input bar / chat background - not other plus buttons
     if(!btn.closest('#chatBackground, .chat-input-bar, .chat-input, #chatInputBar')) {
-      // Still allow if it's the only plus button on page
       if(!btn.closest('.chat-input-bar') && document.querySelectorAll('#inputPlusBtn').length===0 && !e.target.closest('.chat-input-bar')) return;
     }
     e.preventDefault(); e.stopPropagation();
     if(isPlusOpen) closePlusMenu(); else openPlusMenu();
   }, true);
-  // FIX: Direct bind as backup - if delegation missed
   const plusBtnDirect = findPlusBtn();
-  if(plusBtnDirect && !plusBtnDirect.dataset.nkPlusBound){
-    plusBtnDirect.dataset.nkPlusBound = '1';
-    plusBtnDirect.style.pointerEvents = 'auto';
-    plusBtnDirect.style.cursor = 'pointer';
-  }
-  // FIX: Document close - outside only, capture, ignore plus button
+  if(plusBtnDirect && !plusBtnDirect.dataset.nkPlusBound){ plusBtnDirect.dataset.nkPlusBound = '1'; plusBtnDirect.style.pointerEvents = 'auto'; plusBtnDirect.style.cursor = 'pointer'; }
   document.addEventListener('click', (e)=>{
     if(!isPlusOpen) return;
     const menu = findPlusMenu(); if(!menu) return;
@@ -221,7 +191,6 @@
     if(e.target.closest('#inputPlusBtn, [data-plus], .input-plus-btn, .plus-btn, #plusBtn')) return;
     closePlusMenu();
   }, true);
-  // FIX: Plus menu buttons - bind by delegation so created menu also works
   document.addEventListener('click', (e)=>{
     const b = e.target.closest('#plusPillMenu [data-action], .plus-pill-menu [data-action], #plusMenu [data-action]');
     if(!b) return;
@@ -232,7 +201,6 @@
     if(act==='camera') cameraInput?.click();
     if(act==='create-sticker'){ createPage?.classList.add('show'); ensureFFmpegLoaded(); refresh(); }
   });
-  // Ensure menu exists on load, hidden
   (function(){ const m = getPlusMenu(); if(m){ m.style.display='none'; m.style.visibility='hidden'; m.style.opacity='0'; m.style.pointerEvents='none'; } })();
 
   // ---------- INPUT LIMIT 2000 ----------
@@ -285,12 +253,10 @@
       msgInput.addEventListener('change', ()=>checkInputLimit());
     }
   }
-  window.nkCheckInputLimit = checkInputLimit;
-  window.nkShowLimitPopup = showLimitPopup;
-  window.nkHideLimitPopup = hideLimitPopup;
+  window.nkCheckInputLimit = checkInputLimit; window.nkShowLimitPopup = showLimitPopup; window.nkHideLimitPopup = hideLimitPopup;
   bindLimitPopupOnce();
 
-  // ---------- READ MORE ----------
+  // ---------- READ MORE - When you send long text ----------
   document.addEventListener('click', (e)=>{
     const btn = e.target.closest('.read-more-btn, [data-read-more]');
     if(!btn) return;
@@ -305,9 +271,10 @@
     btn.textContent = exp ? 'Read Less' : 'Read More';
   });
 
-  // ---------- HOLD ----------
+  // ---------- HOLD - Media = NO hold ----------
   function enterFocusMode(row){
     if(!row || row.classList.contains('no-actions') || row.classList.contains('call-row') || row.classList.contains('deleted-row')) return;
+    if(nkIsMediaRow(row)) return; // FIX: Image / Video = NO hold
     currentRow = row; currentId = row.dataset.messageId;
     const mediaEl = row.querySelector('.sticker-bubble img,.sticker-bubble video,.image-bubble img,.video-bubble video');
     if(mediaEl && favText && favIcon){
@@ -374,16 +341,21 @@
     if(!vb.dataset.voiceBound) bindVoicePlay(vb);
   }, true);
 
-  // ---------- BIND ROW ----------
+  // ---------- BIND ROW - Reaction + Image guard ----------
   function bindReactionRow(row){
     if(!row || row.dataset.reactionBound) return; row.dataset.reactionBound='1';
     if(row.classList.contains('no-actions')) return;
     let sx=0, sy=0;
-    row.addEventListener('contextmenu', e=>{ e.preventDefault(); enterFocusMode(row); return false; });
-    row.addEventListener('touchstart', e=>{ if(chatBackground.classList.contains('focus-mode')) return; if(!e.touches[0]) return; sx=e.touches[0].clientX; sy=e.touches[0].clientY; pressTimer=setTimeout(()=>enterFocusMode(row),480); }, {passive:true});
+    row.addEventListener('contextmenu', e=>{ e.preventDefault(); if(nkIsMediaRow(row)) return; enterFocusMode(row); return false; });
+    row.addEventListener('touchstart', e=>{ if(chatBackground.classList.contains('focus-mode')) return; if(!e.touches[0]) return; if(nkIsMediaRow(row)) return; sx=e.touches[0].clientX; sy=e.touches[0].clientY; pressTimer=setTimeout(()=>enterFocusMode(row),480); }, {passive:true});
     row.addEventListener('touchmove', e=>{ if(!pressTimer) return; if(!e.touches[0]) return; if(Math.abs(e.touches[0].clientX-sx)>12 || Math.abs(e.touches[0].clientY-sy)>12){ clearTimeout(pressTimer); pressTimer=null; } }, {passive:true});
     row.addEventListener('touchend', ()=>{ clearTimeout(pressTimer); pressTimer=null; }, {passive:true});
     row.addEventListener('touchcancel', ()=>{ clearTimeout(pressTimer); pressTimer=null; }, {passive:true});
+    // FIX: Tap image = preview only, Main JS handles it, Reaction JS must NOT open hold here
+    row.addEventListener('click', e=>{
+      if(nkIsMediaRow(row)) return;
+      if(e.target.closest('.msg-reaction-badge')) return;
+    });
     const badge = row.querySelector('.msg-reaction-badge');
     if(badge && !badge.dataset.bound){ badge.dataset.bound='1'; badge.addEventListener('click', e=>{ e.stopPropagation(); window.nkCurrentReactionRow = row; const pop = $('#reactionActionPopup'); if(pop) pop.classList.add('show'); }); }
     const sv = row.querySelector('.sticker-bubble video');
@@ -405,7 +377,7 @@
   $$('.voice-bubble').forEach(bindVoicePlay);
   new MutationObserver(muts=>{ muts.forEach(m=>m.addedNodes.forEach(n=>{ if(n.nodeType===1 && n.classList?.contains('msg-row')) bindReactionRow(n); if(n.nodeType===1 && n.classList?.contains('voice-bubble')) bindVoicePlay(n); })); }).observe(chatMessages,{childList:true, subtree:true});
 
-  // ---------- ACTION PILL ----------
+  // ---------- ACTION PILL - Reaction border ----------
   if(actionPill && !actionPill.dataset.bound){
     actionPill.dataset.bound='1';
     actionPill.addEventListener('click', e=>{
@@ -441,7 +413,7 @@
   }
   if(emojiPlusBtn && !emojiPlusBtn.dataset.bound){
     emojiPlusBtn.dataset.bound='1';
-    emojiPlusBtn.addEventListener('click', (e)=>{ e.stopPropagation(); stickerPanel?.classList.remove('show'); chatBackground.classList.remove('sticker-open'); if(emojiPickerPanel){ emojiPickerPanel.classList.add('show'); emojiPickerPanel.style.display='flex'; emojiPickerPanel.style.visibility='visible'; emojiPickerPanel.style.opacity='1'; } });
+    emojiPlusBtn.addEventListener('click', (e)=>{ e.stopPropagation(); stickerPanel?.classList.remove('show'); chatBackground.classList.remove('sticker-open'); if(emojiPickerPanel){ emojiPickerPanel.classList.add('show'); emojiPickerPanel.style.display='flex'; emojiPickerPanel.style.visibility='visible'; emojiPickerPanel.style.opacity='1'; chatBackground.classList.add('emoji-open'); } });
   }
   if(emojiPickerGrid && !emojiPickerGrid.dataset.bound){
     emojiPickerGrid.dataset.bound='1';
@@ -450,9 +422,9 @@
       EMOJIS.forEach(em=>{
         const b=document.createElement('button'); b.textContent=em; b.type='button';
         b.addEventListener('click', ()=>{
-          const row = window.nkCurrentReactionRow || currentReactionRow || currentRow;
+          const row = window.nkCurrentReactionRow || currentRow;
           if(row){ const badge=row.querySelector('.msg-reaction-badge'); if(badge){ badge.textContent=em; badge.classList.add('show'); badge.dataset.reaction=em; } }
-          if(emojiPickerPanel){ emojiPickerPanel.classList.remove('show'); emojiPickerPanel.style.display='none'; }
+          if(emojiPickerPanel){ emojiPickerPanel.classList.remove('show'); emojiPickerPanel.style.display='none'; chatBackground.classList.remove('emoji-open'); }
           resetFocus();
         });
         emojiPickerGrid.appendChild(b);
@@ -460,7 +432,7 @@
     }
   }
   const emojiPickerClose = $('#emojiPickerClose');
-  if(emojiPickerClose && !emojiPickerClose.dataset.bound){ emojiPickerClose.dataset.bound='1'; emojiPickerClose.addEventListener('click', ()=>{ if(emojiPickerPanel){ emojiPickerPanel.classList.remove('show'); emojiPickerPanel.style.display='none'; } }); }
+  if(emojiPickerClose && !emojiPickerClose.dataset.bound){ emojiPickerClose.dataset.bound='1'; emojiPickerClose.addEventListener('click', ()=>{ if(emojiPickerPanel){ emojiPickerPanel.classList.remove('show'); emojiPickerPanel.style.display='none'; chatBackground.classList.remove('emoji-open'); } }); }
 
   // ---------- STICKER ----------
   function forcePlayStickerVideos(){ $$('.sticker-item video,.sticker-bubble video').forEach(v=>{ if(v.paused){ v.muted=true; v.playsInline=true; v.setAttribute('muted',''); v.setAttribute('playsinline',''); v.setAttribute('webkit-playsinline',''); v.play().catch(()=>{}); } }); }
@@ -516,7 +488,7 @@
   if(videoFullClose && !videoFullClose.dataset.bound){ videoFullClose.dataset.bound='1'; videoFullClose.addEventListener('click', e=>{ e.stopPropagation(); closeVideoFull(); }); }
   if(videoFullOverlay && !videoFullOverlay.dataset.bound){ videoFullOverlay.dataset.bound='1'; videoFullOverlay.addEventListener('click', e=>{ if(e.target===videoFullPlayer || e.target.closest('.video-full-caption') || e.target.closest('.preview-header')) return; closeVideoFull(); }); }
 
-  // ---------- PREVIEW ----------
+  // ---------- PREVIEW - Image select = preview only ----------
   function openPreview(src, type='image'){
     if(!imagePreview) return; previewType=type; previewObjectUrl=src;
     if(type==='video'){ if(previewImage) previewImage.style.display='none'; if(previewVideo){ previewVideo.src=cleanSrc(src); previewVideo.style.display='block'; } }
@@ -546,12 +518,12 @@
     });
   }
 
-  // ---------- STICKER PANEL ----------
+  // ---------- STICKER PANEL - Under input on mobile ----------
   if(stickerBtn && !stickerBtn.dataset.bound){
     stickerBtn.dataset.bound='1';
     stickerBtn.addEventListener('click', (e)=>{
       e.stopPropagation(); e.preventDefault();
-      emojiPickerPanel?.classList.remove('show'); if(emojiPickerPanel) emojiPickerPanel.style.display='none';
+      emojiPickerPanel?.classList.remove('show'); if(emojiPickerPanel) emojiPickerPanel.style.display='none'; chatBackground.classList.remove('emoji-open');
       if(emojiBar) emojiBar.classList.remove('show');
       const isShow = stickerPanel?.classList.contains('show');
       if(isShow){ stickerPanel.classList.remove('show'); chatBackground.classList.remove('sticker-open'); }
@@ -577,7 +549,7 @@
     chatStickerSelectMode.addEventListener('click', e=>{ if(e.target===chatStickerSelectMode) chatStickerSelectMode.classList.remove('show'); });
   }
 
-  // ---------- FFMPEG ----------
+  // ---------- FFMPEG - Real cut, NO fake ----------
   async function ensureFFmpegLoaded(){
     if(ffmpegLoaded) return ffmpegInstance; if(ffmpegLoading) return null; ffmpegLoading=true;
     try{
@@ -607,7 +579,7 @@
   }
   window.cutVideoWithFFmpeg = cutVideoWithFFmpeg;
 
-  // ---------- CREATE STICKER ----------
+  // ---------- CREATE STICKER - Different background from Send File (CSS) ----------
   function closeCreatePage(){
     createPage?.classList.remove('show');
     if(createImage){ createImage.src=''; createImage.style.display='none'; }
@@ -764,7 +736,7 @@
     else if(videoFullOverlay?.classList.contains('show')) closeVideoFull();
     else if(imagePreview?.classList.contains('show')) closePreview();
     else if(isPlusOpen) closePlusMenu();
-    else if(emojiPickerPanel?.classList.contains('show')){ emojiPickerPanel.classList.remove('show'); emojiPickerPanel.style.display='none'; }
+    else if(emojiPickerPanel?.classList.contains('show')){ emojiPickerPanel.classList.remove('show'); emojiPickerPanel.style.display='none'; chatBackground.classList.remove('emoji-open'); }
     else if(limitPopupOpen) hideLimitPopup();
     else resetFocus();
   });
@@ -774,6 +746,5 @@
   renderStickers(); renderChatStickersSelect();
   setTimeout(forcePlayStickerVideos,700);
   refresh();
-  // Debug: tell you in console if plus button found
   console.log('NK Reaction: plusBtn found =', !!findPlusBtn(), 'plusMenu found/created =', !!findPlusMenu());
 })();

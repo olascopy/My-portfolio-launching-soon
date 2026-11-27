@@ -1,10 +1,10 @@
 // ==========================
 // konnekt-main.js - MAIN + REACTION + CONTACT + GROUP - CLEAN - NO CUT
-// FIX: Contact / Group Info MUST open when you click chat background profile
-// CSS done. New Chat JS separate. Reaction JS separate.
+// Load: Main JS -> Reaction JS -> New Chat JS
+// FIX: Reaction function proper, Image select no trigger hold, Contact Info open on profile click, Avatar from chat list NOT blue
 // ==========================
-const $ = (s, p=document) => p.querySelector(s);
-const $$ = (s, p=document) => [...p.querySelectorAll(s)];
+const $ = (s,p=document)=>p.querySelector(s);
+const $$ = (s,p=document)=>[...p.querySelectorAll(s)];
 const chatLoadList = $('#chatLoadList');
 const chatRightWrap = $('#chatRightWrap');
 const chatBg = $('#chatBackground');
@@ -53,26 +53,19 @@ let hasSeenList = localStorage.getItem('konnekt_has_chats') === '1';
 let currentMemberRow = null;
 let currentMemberName = '';
 
-// ---------- HELPERS - Info Show / Hide FIX ----------
+// ---------- HELPERS ----------
 function refreshIcons(){ if(window.lucide) lucide.createIcons(); }
 function showToast(text){ if(!toastEl) return; const s = toastEl.querySelector('span'); if(s) s.textContent = text; toastEl.classList.add('show'); setTimeout(()=>toastEl.classList.remove('show'),2200); }
 function isMobile(){ return window.innerWidth <= 768; }
-// FIX: Show must clear hidden attr + .hidden class + inline display + bring to front
 function nkShow(el){
   if(!el) return;
-  el.hidden = false;
-  el.classList.remove('hidden');
-  el.style.display = '';
-  el.style.visibility = 'visible';
-  el.style.opacity = '1';
-  el.style.pointerEvents = 'auto';
-  el.style.zIndex = '100';
+  el.hidden = false; el.classList.remove('hidden');
+  el.style.display = ''; el.style.visibility = 'visible'; el.style.opacity = '1';
+  el.style.pointerEvents = 'auto'; el.style.zIndex = '100';
 }
 function nkHide(el){
   if(!el) return;
-  el.hidden = true;
-  el.classList.add('hidden');
-  el.style.display = 'none';
+  el.hidden = true; el.classList.add('hidden'); el.style.display = 'none';
 }
 function nkHideAllInfo(){
   $$('.contact-info-bg,.edit-contact-bg,.add-to-groups-bg,.group-info-bg,.group-qr-bg,.group-edit-bg,#contactInfoBg,#editContactBg,#addToGroupsBg,#groupInfoBg,#groupQrBg,#groupEditBg,#reportGroupBg,#fullPicBg').forEach(el=>{ el.hidden = true; el.classList.add('hidden'); });
@@ -86,8 +79,44 @@ function nkGetIsAdmin(){
   return true;
 }
 window.nkIsAdmin = nkGetIsAdmin;
+// FIX: Avatar from chat list - image OR initials + colour, NOT blue. Returns {hasImage, src, initials, bg}
+function nkAvatarFromItem(item){
+  if(!item) return {hasImage:false,src:'',initials:'JD',bg:'#2a2a2a'};
+  const av = item.querySelector('.chat-avatar');
+  const name = item.querySelector('.chat-name')?.textContent || item.dataset.name || 'User';
+  const parts = name.trim().split(/\s+/);
+  const initials = (parts.length===1 ? parts[0][0] : parts[0][0]+parts[parts.length-1][0]).toUpperCase().slice(0,2);
+  const img = av?.querySelector('img');
+  const hasImage = !!(av?.classList.contains('has-image') && img?.src);
+  let bg = av?.style.background || av?.dataset.bg || '#2a2a2a';
+  if(av && getComputedStyle(av).backgroundImage !== 'none' && !hasImage) bg = getComputedStyle(av).backgroundImage;
+  return {hasImage, src: img?.src || '', initials, bg, name};
+}
+function nkApplyAvatarTo(el, data){
+  if(!el) return;
+  el.style.setProperty('--ava-bg', data.bg);
+  el.style.background = data.bg;
+  el.classList.toggle('has-image', data.hasImage);
+  let img = el.querySelector('img');
+  if(data.hasImage){
+    if(!img){ img = document.createElement('img'); el.appendChild(img); }
+    img.src = data.src; img.style.display = 'block';
+  } else if(img){ img.style.display = 'none'; }
+  let sp = el.querySelector('.avatar-initials, .contact-round-initials, .profile-text');
+  if(sp) sp.textContent = data.initials;
+}
+// FIX: When you select image, e no go trigger hold / reaction / swipe - only preview
+function nkIsMediaRow(row){ return !!row?.querySelector('.image-bubble, .video-bubble'); }
+function nkOpenMediaPreview(row){
+  const img = row.querySelector('.image-bubble img, .img-wrap img');
+  const vid = row.querySelector('.video-bubble video, .video-wrap video');
+  const ov = $('#imagePreviewOverlay'); const vOv = $('#videoFullOverlay');
+  if(img && ov){ const pi = $('#previewImage'); if(pi) pi.src = img.src; ov.classList.add('show'); return; }
+  if(vid && vOv){ const pv = $('#videoFullPlayer'); if(pv) pv.src = vid.src; vOv.classList.add('show'); return; }
+  if(img && ov) ov.classList.add('show');
+}
 
-// ---------- DRAFT ----------
+// ---------- DRAFT - Gray ----------
 let drafts = {};
 try{ drafts = JSON.parse(localStorage.getItem('konnekt_drafts') || '{}') || {}; }catch(e){ drafts = {}; }
 function saveDrafts(){ try{ localStorage.setItem('konnekt_drafts', JSON.stringify(drafts)); }catch(e){} }
@@ -111,10 +140,10 @@ function restoreDraft(chatId){
 function clearDraft(chatId){ delete drafts[chatId]; saveDrafts(); updateDraftInList(chatId); }
 Object.keys(drafts).forEach(updateDraftInList);
 
-// ---------- 1. AVATAR ----------
+// ---------- 1. AVATAR - From chat list ----------
 $$('.chat-avatar').forEach(el=>{
   if(el.classList.contains('has-image')) return;
-  const name = (el.dataset.name || 'User').trim();
+  const name = (el.dataset.name || el.closest('.chat-item')?.querySelector('.chat-name')?.textContent || 'User').trim();
   const parts = name.split(/\s+/);
   let initials = parts.length===1 ? parts[0][0] : parts[0][0]+parts[parts.length-1][0];
   const span = el.querySelector('.avatar-initials') || document.createElement('span');
@@ -122,6 +151,7 @@ $$('.chat-avatar').forEach(el=>{
   if(!el.querySelector('.avatar-initials')) el.appendChild(span);
   let h=0; for(let i=0;i<name.length;i++) h+=name.charCodeAt(i);
   el.style.background = avatarGradients[h%avatarGradients.length];
+  el.style.setProperty('--ava-bg', avatarGradients[h%avatarGradients.length]);
 });
 $$('img').forEach(img=>{ if(img.src.includes('pravatar')||img.src.includes('konnekt.jfif')||img.src.includes('knnockt')) img.src = IMG; });
 
@@ -129,7 +159,7 @@ $$('img').forEach(img=>{ if(img.src.includes('pravatar')||img.src.includes('konn
 function applyTopBar(){ if(midChatsText) midChatsText.style.display = isMobile() ? 'flex' : 'none'; }
 window.addEventListener('resize', applyTopBar); applyTopBar();
 
-// ---------- 3. EMPTY STATE ----------
+// ---------- 3. EMPTY STATE - Only encryption notice when empty ----------
 function applyEmptyState(){
   const isFirst = !hasSeenList;
   if(chatEmptyMobile) chatEmptyMobile.classList.toggle('show', isFirst && isMobile());
@@ -157,7 +187,7 @@ searchInput?.addEventListener('input', applyFilters);
 tabs.forEach(btn=>btn.addEventListener('click', ()=>{ if(btn.dataset.tab==='random') return; tabs.forEach(b=>b.classList.remove('active')); btn.classList.add('active'); applyFilters(); }));
 applyFilters();
 
-// ---------- 5. OPEN / CLOSE CHAT ----------
+// ---------- 5. OPEN / CLOSE CHAT - Sync avatar + name ----------
 function openChat(item){
   if(!item) return;
   if(currentChat) saveCurrentDraft();
@@ -173,11 +203,17 @@ function openChat(item){
     if(isGroup){ statusEl.textContent = '12 members • 3 online'; statusEl.classList.add('group-status'); }
     else { statusEl.textContent = 'Online'; statusEl.classList.remove('group-status'); }
   }
+  // FIX: Sync header profile from chat list - NOT blue
+  const avData = nkAvatarFromItem(item);
   const profBorder = $('.profile-border', chatBg);
-  if(profBorder){ profBorder.classList.toggle('group-avatar', isGroup); }
+  if(profBorder){ profBorder.classList.toggle('group-avatar', isGroup); nkApplyAvatarTo(profBorder, avData); }
+  // Sync contact profile too - Name INSIDE border, Thought on top (CSS handles Thought)
+  const contactProf = $('#contactInfoBg .contact-round-profile, #contactRoundProfile');
+  if(contactProf) nkApplyAvatarTo(contactProf, avData);
   if(chatEmptyState) chatEmptyState.hidden = true;
   if(chatBg) chatBg.hidden = false;
   if(chatRightWrap) chatRightWrap.classList.add('open');
+  document.body.classList.add('chat-open');
   if(isMobile() && chatLoadList) chatLoadList.classList.add('mobile-hide');
   nkHideAllInfo();
   restoreDraft(currentChat);
@@ -189,6 +225,7 @@ function openChat(item){
 $$('.chat-item').forEach(item=>item.addEventListener('click', ()=>openChat(item)));
 function closeChat(){
   if(currentChat) saveCurrentDraft();
+  document.body.classList.remove('chat-open');
   if(isMobile()){ chatRightWrap?.classList.remove('open'); chatLoadList?.classList.remove('mobile-hide'); }
   else { if(chatBg) chatBg.hidden = true; if(chatEmptyState) chatEmptyState.hidden = false; }
   nkHideAllInfo();
@@ -204,7 +241,7 @@ iosNotify?.addEventListener('click', ()=>{
   iosNotify.classList.add('hide'); setTimeout(()=>iosNotify.classList.remove('hide'), 300);
 });
 
-// ---------- 7. MOOD PILL ----------
+// ---------- 7. MOOD PILL - Playing / Last vibe / Typed ----------
 const moodStates = [
   {state:'playing', hasCard:true, title:'Asiwaju', artist:'Ruger', sub:'Playing now • Spotify'},
   {state:'recent', hasCard:true, title:'Chilling', artist:'Last vibe', sub:'Played 2 hours ago'},
@@ -244,7 +281,7 @@ document.addEventListener('click', e=>{ if(moodFloat && !moodFloat.contains(e.ta
 startMoodCycle();
 window.moodPill = { showState: renderMood, states: moodStates };
 
-// ---------- 8. INPUT ----------
+// ---------- 8. INPUT - 2000 limit popup, Read More hook ----------
 function autoGrow(){
   if(!msgInput) return;
   msgInput.style.height='auto';
@@ -269,17 +306,21 @@ micBtn?.addEventListener('click', ()=>{
   addMessage(msgInput.value.trim(), 'sender'); window.resetInputBar();
 });
 
-// ---------- 9. ADD MESSAGE ----------
+// ---------- 9. ADD MESSAGE - Read More when long ----------
 function addMessage(text, owner, opts={}){
   if(!chatMessages) return;
   const id = 'msg'+Date.now();
   const row = document.createElement('div');
   row.className = `msg-row ${owner}`; row.dataset.messageId = id; row.dataset.owner = owner;
   const isGroup = chatBg?.classList.contains('is-group');
-  const groupAva = (isGroup && owner==='receiver') ? `<div class="group-msg-ava"><span>${opts.avatar||'A'}</span></div>` : '';
+  const avData = opts.avatarData || {initials: opts.avatar || 'A'};
+  const groupAva = (isGroup && owner==='receiver') ? `<div class="group-msg-ava" style="--ava-bg:${avData.bg||'#2a2a2a'};background:${avData.bg||'#2a2a2a'}"><span>${avData.initials||'A'}</span></div>` : '';
   const quote = opts.quote ? `<div class="quoted-bubble"><div class="quoted-thumb"></div><div class="quoted-info"><span class="quoted-name">${opts.quote.name||'You'}</span><span class="quoted-text">${opts.quote.text||''}</span></div></div>` : '';
-  row.innerHTML = `${groupAva}<div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble ${owner==='sender'?'sender-bubble':'receiver-bubble'}">${quote}<p class="msg-text"></p><span class="msg-meta right-meta"><span class="msg-time">${new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</span><i data-lucide="clock-3" class="tick-icon clock"></i></span><span class="msg-reaction-badge" data-reaction-for="${id}"></span></div>`;
-  row.querySelector('.msg-text').textContent = text;
+  const isLong = text.length > 180;
+  row.innerHTML = `${groupAva}<div class="select-circle"><i data-lucide="check"></i></div><div class="swipe-reply-icon"><i data-lucide="reply"></i></div><div class="bubble ${owner==='sender'?'sender-bubble':'receiver-bubble'}">${quote}<p class="msg-text ${isLong?'long-text':''}"></p>${isLong?'<button class="read-more-btn show" data-target="">Read More</button>':''}<span class="msg-meta right-meta"><span class="msg-time">${new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</span><i data-lucide="clock-3" class="tick-icon clock"></i></span><span class="msg-reaction-badge" data-reaction-for="${id}"></span></div>`;
+  const txtEl = row.querySelector('.msg-text');
+  txtEl.id = 'msgText-'+id; txtEl.textContent = text;
+  const rm = row.querySelector('.read-more-btn'); if(rm) rm.dataset.target = txtEl.id;
   chatMessages.appendChild(row);
   chatMessages.scrollTop = chatMessages.scrollHeight;
   bindRow(row); refreshIcons();
@@ -311,7 +352,7 @@ function initFloating(){
 initFloating();
 scrollBtn?.addEventListener('click', ()=>{ if(chatMessages) chatMessages.scrollTop = chatMessages.scrollHeight; });
 
-// ---------- 11. TYPING ----------
+// ---------- 11. TYPING - Group dark + 1 round, 1-1 no avatar ----------
 window.showTyping = ()=>{
   const isGroup = chatBg?.classList.contains('is-group');
   const one = $('#typingIndicator'); const grp = $('#groupTypingIndicator');
@@ -329,7 +370,7 @@ document.addEventListener('click', e=>{
   const exp = target.classList.toggle('expanded'); btn.textContent = exp?'Read Less':'Read More';
 });
 
-// ---------- 13. HOLD PILL ----------
+// ---------- 13. HOLD PILL - Media = NO hold, Text = hold ----------
 function positionPill(row){
   if(!poppedContainer || !row) return;
   const text = row.querySelector('p')?.innerText || '';
@@ -341,6 +382,7 @@ function positionPill(row){
   const favBtn = $('[data-action="favorite"]', poppedContainer); if(favBtn) favBtn.style.display = row.querySelector('.sticker-bubble') ? 'flex' : 'none';
 }
 function openHold(row){
+  if(nkIsMediaRow(row)) return; // FIX: Image / Video = NO hold
   currentHoldRow = row; positionPill(row);
   if(poppedClone && row.querySelector('.bubble')) poppedClone.innerHTML = row.querySelector('.bubble').outerHTML;
   if(emojiReactBar) emojiReactBar.classList.add('show');
@@ -356,14 +398,18 @@ document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeHold(); });
 function bindRow(row){
   row.addEventListener('click', e=>{
     if(e.target.closest('.msg-reaction-badge')) return;
+    // FIX: Tap image = only preview, no hold / reaction / select
+    if(nkIsMediaRow(row)){ nkOpenMediaPreview(row); return; }
     if(chatBg?.classList.contains('select-mode')){ toggleSelect(row); return; }
   });
   row.addEventListener('contextmenu', e=>{
     if(row.classList.contains('no-actions') || row.classList.contains('call-row') || row.classList.contains('deleted-row')) return;
+    if(nkIsMediaRow(row)) return; // FIX: Right-click image = NO hold
     e.preventDefault(); openHold(row);
   });
   row.addEventListener('touchstart', e=>{
     if(row.classList.contains('no-actions')) return;
+    if(nkIsMediaRow(row)) return; // FIX: Long-press image = NO hold
     isHolding=true; longPressTimer=setTimeout(()=>{ if(isHolding) openHold(row); },480);
   }, {passive:true});
   row.addEventListener('touchend', ()=>{ isHolding=false; clearTimeout(longPressTimer); }, {passive:true});
@@ -374,7 +420,7 @@ function bindRow(row){
 $$('.msg-row').forEach(bindRow);
 window.positionPillSmart = positionPill;
 
-// ---------- 14. REACTION - No prompt ----------
+// ---------- 14. REACTION - Function proper, No prompt ----------
 const EMOJIS = ['❤️','😂','😮','😢','🙏','🔥','👍','👎','😍','😡','🥺','👏','💯','😅','🤔','🎉','😭','🙌','😇','🤣','😘','😴','👀','💔','✨','🌹','👋','🤝','😎','🫡'];
 function buildEmojiGrid(){
   if(!emojiPickerGrid) return; emojiPickerGrid.innerHTML='';
@@ -397,10 +443,14 @@ function removeReaction(row){
   const badge = row.querySelector('.msg-reaction-badge'); if(!badge) return;
   badge.textContent=''; badge.classList.remove('show'); delete badge.dataset.reaction;
 }
+window.setReaction = setReaction; window.removeReaction = removeReaction;
 $$('.emoji-react-bar button[data-emoji]').forEach(b=>b.addEventListener('click', ()=>{ if(currentHoldRow) setReaction(currentHoldRow, b.dataset.emoji); closeHold(); }));
 $('#emojiPlusBtn')?.addEventListener('click', ()=>{ emojiPickerPanel?.classList.add('show'); });
 $('#emojiPickerClose')?.addEventListener('click', ()=>emojiPickerPanel?.classList.remove('show'));
-$('#emojiStickerBtn')?.addEventListener('click', ()=>emojiPickerPanel?.classList.toggle('show'));
+$('#emojiStickerBtn')?.addEventListener('click', ()=>{
+  emojiPickerPanel?.classList.toggle('show');
+  chatBg?.classList.toggle('emoji-open', emojiPickerPanel?.classList.contains('show'));
+});
 $$('[data-reaction-action]').forEach(b=>b.addEventListener('click', ()=>{
   const row = currentReactionRow || window.nkCurrentReactionRow; if(!row) return;
   if(b.dataset.reactionAction==='remove') removeReaction(row);
@@ -429,7 +479,7 @@ $$('#messageActionPill button').forEach(btn=>btn.addEventListener('click', ()=>{
 }));
 $('#replyPreviewClose')?.addEventListener('click', ()=>replyPreview?.classList.remove('show'));
 
-// ---------- 16. SELECT MODE ----------
+// ---------- 16. SELECT MODE - Scrolls with custom-scroll ----------
 function enterSelectMode(){
   chatBg?.classList.add('select-mode','select-mode-active');
   $$('.msg-row').forEach(r=>r.classList.add('select-mode'));
@@ -472,11 +522,11 @@ function openDeleteBar(rows){
   });
 }
 
-// ---------- 18. PLUS / STICKER / PREVIEW - Plus Menu owned by Reaction JS, Main only fallback ----------
+// ---------- 18. PLUS / STICKER / PREVIEW ----------
 $('#inputPlusBtn')?.addEventListener('click', e=>{ e.stopPropagation(); $('#plusPillMenu')?.classList.toggle('show'); });
 document.addEventListener('click', e=>{ if(!e.target.closest('#plusPillMenu') && !e.target.closest('#inputPlusBtn')) $('#plusPillMenu')?.classList.remove('show'); });
-$('#stickerPanelClose')?.addEventListener('click', ()=>$('#stickerBorderPanel')?.classList.remove('show'));
-$('#stickerAddBox')?.addEventListener('click', ()=>{ $('#stickerBorderPanel')?.classList.remove('show'); $('#chatStickerSelectMode')?.classList.add('active'); });
+$('#stickerPanelClose')?.addEventListener('click', ()=>{ $('#stickerBorderPanel')?.classList.remove('show'); chatBg?.classList.remove('sticker-open'); });
+$('#stickerAddBox')?.addEventListener('click', ()=>{ $('#stickerBorderPanel')?.classList.remove('show'); chatBg?.classList.remove('sticker-open'); $('#chatStickerSelectMode')?.classList.add('active'); });
 $('#stickerSelectClose')?.addEventListener('click', ()=>$('#chatStickerSelectMode')?.classList.remove('active'));
 $('#addStickerCancelX')?.addEventListener('click', ()=>$('#chatStickerSelectMode')?.classList.remove('active'));
 $('#addStickerConfirmBtn')?.addEventListener('click', ()=>{ showToast('Sticker added'); $('#chatStickerSelectMode')?.classList.remove('active'); });
@@ -485,7 +535,7 @@ $('#previewCancelText')?.addEventListener('click', ()=>$('#imagePreviewOverlay')
 $('#previewSendBtn')?.addEventListener('click', ()=>{ $('#imagePreviewOverlay')?.classList.remove('show'); showToast('Sent'); });
 $('#videoFullClose')?.addEventListener('click', ()=>$('#videoFullOverlay')?.classList.remove('show'));
 
-// ---------- 19. VOICE - Reaction JS owns recording, Main only fallback send ----------
+// ---------- 19. VOICE ----------
 let voiceStart=0, voiceTimerInt=null;
 $('#micSendBtn')?.addEventListener('mousedown', ()=>{ if(msgInput?.value.trim()) return; voiceStart=Date.now(); $('#voiceRecordingOverlay')?.classList.add('show'); let s=0; voiceTimerInt=setInterval(()=>{ s++; const t=$('#voiceTimer'); if(t) t.textContent=`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`; },1000); });
 document.addEventListener('mouseup', ()=>{
@@ -507,51 +557,36 @@ function addVoiceMessage(durSec){
   return row;
 }
 
-// ---------- 20. CONTACT / GROUP INFO - FIX: PROFILE CLICK MUST OPEN ----------
-// FIX 1: Open function - decides Group vs Contact, syncs name/avatar, brings to front
+// ---------- 20. CONTACT / GROUP INFO - Profile click MUST open ----------
 function openContactOrGroupInfo(){
   if(!chatBg || chatBg.hidden) return;
-  // Sync header name into info panels so it looks correct
   const headerName = $('#chatHeaderName')?.textContent || 'Joshua dayo';
   const cName = $('#contactInfoName'); if(cName) cName.textContent = headerName;
   const gName = $('#groupInfoName'); if(gName) gName.textContent = headerName;
-  if(nkIsGroup()){
-    nkHide($('#contactInfoBg'));
-    nkShow($('#groupInfoBg'));
-    applyGroupTabs();
-  } else {
-    nkHide($('#groupInfoBg'));
-    nkShow($('#contactInfoBg'));
-  }
+  // Sync avatar from active chat item
+  const activeItem = $('.chat-item.active'); if(activeItem){ const d = nkAvatarFromItem(activeItem); const cp = $('#contactInfoBg .contact-round-profile'); if(cp) nkApplyAvatarTo(cp, d); }
+  if(nkIsGroup()){ nkHide($('#contactInfoBg')); nkShow($('#groupInfoBg')); applyGroupTabs(); }
+  else { nkHide($('#groupInfoBg')); nkShow($('#contactInfoBg')); }
   refreshIcons();
 }
 window.openContactOrGroupInfo = openContactOrGroupInfo;
-// FIX 2: Direct button - if it exists
 $('#profileOpenBtn')?.addEventListener('click', (e)=>{ e.stopPropagation(); openContactOrGroupInfo(); });
-// FIX 3: Delegation - ANY header profile click opens info - this is the main fix
-// Covers: .profile-border, .chat-header-profile, .chat-header-avatar, #chatHeaderName, #chatHeaderStatus, .header-profile, .profile-text, .chat-header-left
 document.addEventListener('click', (e)=>{
-  // Do NOT trigger if click is on Back, Call, Video, Menu, Mood, Select pill
   if(e.target.closest('.arrow-icon, #headerCancelBtn, [data-call], [data-video], .call-btn, .video-btn, .header-actions, .mood-float, #moodFloat, .selected-pill, #selectedPill')) return;
-  // Do NOT trigger if click is inside info panels themselves
   if(e.target.closest('.contact-info-bg,.edit-contact-bg,.add-to-groups-bg,.group-info-bg,.group-qr-bg,.group-edit-bg')) return;
-  // Do NOT trigger if chat not open
   if(!chatBg || chatBg.hidden || !currentChat) return;
   const profileHit = e.target.closest('#profileOpenBtn, .profile-border, .chat-header-profile, .chat-header-avatar, #chatHeaderName, #chatHeaderStatus, .header-profile, .profile-text, .chat-header-left, .chat-header-info, .chat-profile, [data-open-profile], [data-open-info]');
   if(!profileHit) return;
-  // Make sure profileHit is inside chat background header, not chat list
   if(!profileHit.closest('#chatBackground')) return;
   e.preventDefault(); e.stopPropagation();
   openContactOrGroupInfo();
-}, true); // capture = true, so header click wins over other handlers
-// FIX 4: Close Info - every close button must work
+}, true);
 document.addEventListener('click', (e)=>{
   const closeBtn = e.target.closest('[data-close-info]');
   if(!closeBtn) return;
   const p = closeBtn.closest('.contact-info-bg,.edit-contact-bg,.add-to-groups-bg,.group-info-bg,.group-qr-bg,.group-edit-bg');
   if(p) nkHide(p);
 });
-// FIX 5: Contact Actions - Call / Video / Chat / Edit / Add Groups / Block / Delete / Clear
 document.addEventListener('click', (e)=>{
   const b = e.target.closest('[data-contact-action]');
   if(!b) return;
@@ -566,7 +601,6 @@ document.addEventListener('click', (e)=>{
   if(a==='delete'){ nkShowPopup('#deleteChatPopup'); return; }
   if(a==='clear'){ nkShowPopup('#clearChatsPopup'); return; }
 });
-// FIX 6: Edit Contact Save - both ID and data-action versions
 $('#contactEditBtn')?.addEventListener('click', ()=>{ nkHide($('#contactInfoBg')); nkShow($('#editContactBg')); });
 $('#editContactSave')?.addEventListener('click', ()=>{ nkHide($('#editContactBg')); nkShow($('#contactInfoBg')); showToast('Contact saved'); });
 $$('[data-open-add-groups]').forEach(b=>b.addEventListener('click', ()=>{ nkHide($('#contactInfoBg')); nkShow($('#addToGroupsBg')); applyAddGroupsAdmin(); }));
@@ -586,12 +620,9 @@ function applyGroupTabs(){
     if(t.dataset.groupTab==='settings'){ t.style.display = isAdmin ? '' : 'none'; }
     if(t.dataset.groupTab==='members'){ t.style.display = ''; }
   });
-  if(!isAdmin){
-    const memTab = $('.group-tab-mini[data-group-tab="members"]'); if(memTab) memTab.click();
-  }
+  if(!isAdmin){ const memTab = $('.group-tab-mini[data-group-tab="members"]'); if(memTab) memTab.click(); }
   $$('[data-admin-only="true"]').forEach(el=>{ el.classList.toggle('hide-for-non-admin', !isAdmin); });
 }
-// FIX 7: Group Actions - Chat / Share QR / Add Member / Exit / Delete / Report / Clear / Edit
 document.addEventListener('click', (e)=>{
   const b = e.target.closest('[data-group-action]');
   if(!b) return;
@@ -613,11 +644,10 @@ $$('.group-tab-mini').forEach(t=>t.addEventListener('click', ()=>{
   const tab=t.dataset.groupTab; const ms=$('#groupMembersSection'); if(ms) ms.hidden = tab!=='members'; const ss=$('#groupSettingsSection'); if(ss) ss.hidden = tab!=='settings';
 }));
 $('#groupSaveBtn')?.addEventListener('click', ()=>nkShowPopup('#settingsSavedPopup'));
-// FIX 8: Member Row -> Member Sheet, Role filter
 document.addEventListener('click', (e)=>{
   const mRow = e.target.closest('.group-member-row');
   if(!mRow) return;
-  if(e.target.closest('[data-member-action]')) return; // handled below
+  if(e.target.closest('[data-member-action]')) return;
   currentMemberRow = mRow;
   currentMemberName = mRow.querySelector('.group-member-name')?.textContent || 'Member';
   const nameEl = $('#memberSheetName'); if(nameEl) nameEl.textContent = currentMemberName;
@@ -635,7 +665,6 @@ document.addEventListener('click', (e)=>{
   if(a==='remove' || a==='remove-member'){ if(currentMemberRow){ currentMemberRow.remove(); addSystemMsg(currentMemberName+' was removed'); showToast('Member removed'); } return; }
   showToast('Done');
 });
-// FIX 9: QR Share, Report, Full Pic - every border
 $('#qrShareBtn')?.addEventListener('click', ()=>{ navigator.clipboard?.writeText('https://konnekt.app/group/design-team'); const h=$('#qrCopiedHint'); if(h) h.hidden=false; showToast('Copied'); });
 $$('.report-opt').forEach(b=>b.addEventListener('click', ()=>{ $$('.report-opt').forEach(x=>x.classList.remove('active')); b.classList.add('active'); }));
 $('#reportSubmitBtn')?.addEventListener('click', ()=>{
@@ -644,7 +673,6 @@ $('#reportSubmitBtn')?.addEventListener('click', ()=>{
   setTimeout(()=>{ const rg=$('#reportGroupBg'); if(rg) nkHide(rg); if(rs){ rs.hidden=true; rs.classList.add('hidden'); } },1200);
 });
 $$('[data-open-full-pic]').forEach(b=>b.addEventListener('click', ()=>{ const f=$('#fullPicBg'); if(f) nkShow(f); }));
-// FIX 10: Add Member button by ID (in case data-attr differs)
 document.addEventListener('click', (e)=>{
   if(e.target.closest('#addMemberBtn') || e.target.closest('[data-open-add-member]')){
     nkHide($('#groupInfoBg')); if(window.openAddMember) window.openAddMember(); else $('#nkNewGroupOverlay')?.classList.add('open');
@@ -713,7 +741,7 @@ let lastTouch=0; document.addEventListener('touchend', e=>{ const now=Date.now()
   chatBg.addEventListener('touchmove', e=>{ if(!edge) return; const t=e.touches[0]; const dx=t.clientX-sx, dy=t.clientY-sy; if(Math.abs(dy)>50){edge=false;return;} if(dx>90){edge=false; closeChat();} }, {passive:true});
 })();
 
-// ---------- 24. SCROLL BTN POSITION ----------
+// ---------- 24. SCROLL BTN ----------
 if(replyPreview && scrollBtn){
   new MutationObserver(()=>{
     if(replyPreview.classList.contains('show')) scrollBtn.style.bottom='138px'; else scrollBtn.style.bottom='80px';
@@ -739,20 +767,14 @@ function simulateMediaLoading(bubble, done){
 }
 window.simulateMediaLoading = simulateMediaLoading;
 
-// ---------- 26. GALLERY / CAMERA - Reaction JS owns preview, Main only fallback ----------
+// ---------- 26. GALLERY / CAMERA ----------
 $('#galleryInput')?.addEventListener('change', e=>{ const f=e.target.files[0]; if(!f) return; if(window.nkGalleryHandled) return; const ov=$('#imagePreviewOverlay'); if(ov) ov.classList.add('show'); const img=$('#previewImage'); const vid=$('#previewVideo'); if(img && f.type.startsWith('image')){ img.src=URL.createObjectURL(f); img.style.display='block'; if(vid) vid.style.display='none'; } if(vid && f.type.startsWith('video')){ vid.src=URL.createObjectURL(f); vid.style.display='block'; if(img) img.style.display='none'; } });
 $('#cameraInput')?.addEventListener('change', e=>{ $('#galleryInput')?.dispatchEvent(new Event('change')); });
 
-// ---------- 27. FIX ADD - Info Borders Must Be Clickable ----------
+// ---------- 27. Info Borders Must Be Clickable ----------
 (function(){
-  // Make info panels clickable - if CSS pointer-events none, fix it
-  $$('.contact-info-bg,.edit-contact-bg,.add-to-groups-bg,.group-info-bg,.group-qr-bg,.group-edit-bg,#contactInfoBg,#editContactBg,#addToGroupsBg,#groupInfoBg,#groupQrBg,#groupEditBg').forEach(el=>{
-    el.style.pointerEvents = 'auto';
-  });
-  // Make header profile clickable - if CSS pointer-events none, fix it
-  $$('#profileOpenBtn, .profile-border, .chat-header-profile, .chat-header-avatar, #chatHeaderName, #chatHeaderStatus').forEach(el=>{
-    el.style.pointerEvents = 'auto'; el.style.cursor = 'pointer';
-  });
+  $$('.contact-info-bg,.edit-contact-bg,.add-to-groups-bg,.group-info-bg,.group-qr-bg,.group-edit-bg,#contactInfoBg,#editContactBg,#addToGroupsBg,#groupInfoBg,#groupQrBg,#groupEditBg').forEach(el=>{ el.style.pointerEvents = 'auto'; });
+  $$('#profileOpenBtn, .profile-border, .chat-header-profile, .chat-header-avatar, #chatHeaderName, #chatHeaderStatus').forEach(el=>{ el.style.pointerEvents = 'auto'; el.style.cursor = 'pointer'; });
 })();
 
 refreshIcons(); initFloating(); applyFilters();

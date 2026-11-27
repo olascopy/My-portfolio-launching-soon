@@ -1,8 +1,8 @@
 // ================================================================
-// NK NEW CHAT JS V10 - CLEAN - NO CUT - NO DUPLICATE
-// No wiggle, No liquid click, No duplicate Toggle / Mic / Gallery
-// Main JS owns: openChat, closeChat, toggles, mic send, gallery
-// Reaction JS owns: sticker, voice, preview, FFmpeg
+// NK NEW CHAT JS - CLEAN - NO CUT - NO DUPLICATE
+// No wiggle, No liquid click, No duplicate Toggle / Mic / Gallery / Sticker / Voice / Hold
+// Main JS owns: openChat, closeChat, toggles, mic send, gallery, hold, reaction
+// Reaction JS owns: sticker, voice, preview, FFmpeg, plus pill, input limit
 // This file ONLY owns: New Chat / New ID / Profile ID / New Group / Permissions / Recent Chats Scroll
 // ================================================================
 (function(){
@@ -69,7 +69,7 @@
   const newChatClose = document.getElementById('nkNewChatClose');
   const newChatBackDesktop = document.getElementById('nkNewChatBackDesktop');
 
-  // Popup
+  // Popup - Scoped to New Chat, Main popup is separate
   const popupOverlay = document.getElementById('nkPopupOverlay');
   const popupTitle = document.getElementById('nkPopupTitle');
   const popupDesc = document.getElementById('nkPopupDesc');
@@ -102,6 +102,18 @@
   }
   function isMobile(){ return window.innerWidth <= 768; }
   function refreshIcons(){ if(window.lucide) lucide.createIcons(); }
+  // FIX: Avatar from real chat-item - image OR initials + colour, NOT blue
+  function nkAvatarFromItem(item){
+    if(!item) return {hasImage:false,src:'',initials:'U',bg:'#2a2a2a'};
+    const av = item.querySelector('.chat-avatar');
+    const name = item.querySelector('.chat-name')?.textContent || 'User';
+    const parts = name.trim().split(/\s+/);
+    const initials = (parts.length===1 ? parts[0][0] : parts[0][0]+parts[parts.length-1][0]).toUpperCase().slice(0,2);
+    const img = av?.querySelector('img');
+    const hasImage = !!(av?.classList.contains('has-image') && img?.src);
+    const bg = av?.style.background || getGradient(name);
+    return {hasImage, src: img?.src || '', initials, bg, name};
+  }
 
   // ---------- BACKEND READY ----------
   function searchUsers(query){
@@ -124,7 +136,7 @@
   window.nkSearchUsers = searchUsers;
   window.nkGetUserByUsername = getUserByUsername;
 
-  // ---------- LOCK BODY + HIDE PILL ONLY MOBILE - FIX: Check any open ----------
+  // ---------- LOCK BODY + HIDE PILL ONLY MOBILE ----------
   function anyNewChatOpen(){
     return !!document.querySelector('.nk-newchat-overlay.show, .nk-newchat-overlay.open');
   }
@@ -164,27 +176,17 @@
   // ---------- OPEN FAKE CHAT - Use Main JS openChat if available ----------
   function openChatForElement(el){
     if(!el) return;
-    // If Main JS openChat exists and el is a real .chat-item, use it
-    if(window.openChat && el.classList.contains('chat-item')){
-      window.openChat(el);
-      return;
-    }
-    // Fake chat fallback - create minimal bg via Main JS if possible, else fallback to old bg logic
+    if(window.openChat && el.classList.contains('chat-item')){ window.openChat(el); return; }
     const fakeId = el.dataset.userId || el.dataset.groupId || el.dataset.fakeId;
     if(fakeId) openFakeChatBg(fakeId);
   }
   function openFakeChatBg(id){
     const chat = fakeChats.find(c=>c.id===id);
     if(!chat) return;
-    // Try to find real chat-item for this fake chat and use Main JS
     const realItem = chatContainer?.querySelector(`.chat-item[data-user-id="${id}"], .chat-item[data-group-id="${id}"]`);
     if(realItem && window.openChat){ window.openChat(realItem); return; }
-    // Fallback only if Main JS not loaded
     if(chatBg && !window.openChat){
-      if(isMobile()){
-        chatLoadList?.classList.add('mobile-hide');
-        chatBg?.classList.add('mobile-show');
-      }
+      if(isMobile()){ chatLoadList?.classList.add('mobile-hide'); chatBg?.classList.add('mobile-show'); }
       chatBg?.classList.add('active-chat');
       const headerName = chatBg.querySelector('.chat-name');
       if(headerName) headerName.textContent = chat.name;
@@ -193,7 +195,7 @@
     refreshIcons();
   }
   function renderFakeMessages(id){
-    if(!chatMessages || window.openChat) return; // Main JS owns messages if loaded
+    if(!chatMessages || window.openChat) return;
     const msgs = fakeMessagesMap[id] || [];
     const enc = chatMessages.querySelector('.encryption-notice');
     const dateSep = chatMessages.querySelector('.date-sep');
@@ -216,16 +218,16 @@
     const div = document.createElement('div');
     div.className = 'chat-item nk-fake' + (chatObj.isGroup ? ' group' : '');
     div.dataset.chat = chatObj.id;
-    if(chatObj.isGroup) div.dataset.type = 'group'; else div.dataset.type = 'chat';
+    div.dataset.type = chatObj.isGroup ? 'group' : 'chat';
     div.dataset.userId = chatObj.id;
-    div.innerHTML = `<div class="chat-avatar" style="background:${chatObj.gradient||getGradient(chatObj.name)}">${initials}</div><div class="chat-info"><div class="chat-top-row"><p class="chat-name">${chatObj.name}</p><span class="chat-date">now</span></div><div class="chat-bottom-row"><p class="chat-last-message">${subText||''}</p></div></div>`;
-    // FIX: Use Main JS openChat via click delegation - Main JS binds .chat-item on load, new items need direct bind
+    // FIX: Avatar - use gradient, initials, NOT blue. If image later, Main JS will sync it.
+    div.innerHTML = `<div class="chat-avatar" style="background:${chatObj.gradient||getGradient(chatObj.name)};--ava-bg:${chatObj.gradient||getGradient(chatObj.name)}"><span class="avatar-initials">${initials}</span></div><div class="chat-info"><div class="chat-top-row"><p class="chat-name">${chatObj.name}</p><span class="chat-date">now</span></div><div class="chat-bottom-row"><p class="chat-last-message">${subText||''}</p></div></div>`;
     div.addEventListener('click', ()=>{ if(window.openChat) window.openChat(div); else openFakeChatBg(chatObj.id); });
     chatContainer?.prepend(div);
     return div;
   }
 
-  // ---------- RENDER CHATTED LIST + MAIN SEARCH @USERNAME ----------
+  // ---------- RENDER CHATTED LIST + MAIN SEARCH @USERNAME - Like Add Member ----------
   function renderChattedList(filter=''){
     if(!chattedPeopleList || !mainSearchResults) return;
     const f = (filter||'').trim();
@@ -239,8 +241,9 @@
       } else {
         let html = '';
         results.forEach(u=>{
-          const badge = u.requiresId ? `<span style="font-size:11px;color:#ff9f0a;margin-left:6px;">• Requires ID</span>` : `<span style="font-size:11px;color:#34c759;margin-left:6px;">• Direct</span>`;
-          html += `<button class="nk-newchat-row nk-person-row" data-global-username="${u.username}"><div class="nk-row-icon nk-person-avatar" style="background:${u.gradient}">${u.avatar}</div><div class="nk-row-info"><p class="nk-row-title">${u.name} ${badge}</p><p class="nk-row-sub">@${u.username}</p></div><i data-lucide="chevron-right" class="nk-chevron"></i></button>`;
+          // FIX: Direct = blue, NOT green. Requires ID = orange.
+          const badge = u.requiresId ? `<span style="font-size:11px;color:#ff9f0a;margin-left:6px;">• Requires ID</span>` : `<span style="font-size:11px;color:#0a84ff;margin-left:6px;">• Direct</span>`;
+          html += `<button class="nk-newchat-row nk-person-row" data-global-username="${u.username}"><div class="nk-row-icon nk-person-avatar" style="background:${u.gradient};--ava-bg:${u.gradient}"><span>${u.avatar}</span></div><div class="nk-row-info"><p class="nk-row-title">${u.name} ${badge}</p><p class="nk-row-sub">@${u.username}</p></div><i data-lucide="chevron-right" class="nk-chevron"></i></button>`;
         });
         mainSearchResults.innerHTML = html;
         mainSearchResults.querySelectorAll('[data-global-username]').forEach(btn=>{
@@ -249,6 +252,7 @@
         });
       }
       refreshIcons();
+      fixNewChatScroll();
       return;
     }
 
@@ -257,28 +261,29 @@
     const existingItems = document.querySelectorAll('#chatContainer .chat-item');
     let html = '';
     const lower = f.toLowerCase();
+    // FIX: Recent Chats - Like Add Member: Round avatar (image OR initials + colour), Name, Last msg, Blocked = blur + tag
     existingItems.forEach(item=>{
       const name = item.querySelector('.chat-name')?.textContent?.trim() || 'User';
       const blocked = item.classList.contains('blocked-item');
       if(!lower || name.toLowerCase().includes(lower)){
-        const avatar = item.querySelector('.chat-avatar')?.textContent || name[0];
+        const av = nkAvatarFromItem(item);
         const last = item.querySelector('.chat-last-message')?.textContent || '';
-        html += `<button class="nk-result-row" data-chat-name="${name}"><div class="nk-result-ava" style="background:${getGradient(name)}"><span>${avatar.slice(0,2).toUpperCase()}</span></div><div class="nk-result-info"><p class="nk-result-name">${name}</p><p class="nk-result-sub">${blocked?'Blocked':last}</p></div>${blocked?'<span class="nk-blocked-tag">Blocked</span>':''}</button>`;
+        const isDraft = item.querySelector('.chat-last-message')?.classList.contains('is-draft');
+        const avHtml = av.hasImage ? `<div class="nk-recent-ava has-image" style="--ava-bg:${av.bg};background:${av.bg}"><img src="${av.src}"><span>${av.initials}</span></div>` : `<div class="nk-recent-ava" style="--ava-bg:${av.bg};background:${av.bg}"><span>${av.initials}</span></div>`;
+        html += `<button class="nk-recent-row ${blocked?'blocked-row':''}" data-chat-name="${name}" data-blocked="${blocked?'true':'false'}">${avHtml}<div class="nk-recent-info"><p class="nk-recent-name">${name}</p><p class="nk-recent-sub">${blocked?'Blocked':(isDraft?last:last)}</p></div><span class="nk-recent-blocked">Blocked</span></button>`;
       }
     });
     fakeChats.filter(c=> !lower || c.name.toLowerCase().includes(lower)).forEach(c=>{
-      html += `<button class="nk-newchat-row nk-person-row" data-fake-id="${c.id}"><div class="nk-row-icon nk-person-avatar" style="background:${getGradient(c.name)}">${c.name[0]}</div><div class="nk-row-info"><p class="nk-row-title">${c.name}</p></div></button>`;
+      html += `<button class="nk-recent-row" data-fake-id="${c.id}"><div class="nk-recent-ava" style="--ava-bg:${c.gradient||getGradient(c.name)};background:${c.gradient||getGradient(c.name)}"><span>${c.name[0].toUpperCase()}</span></div><div class="nk-recent-info"><p class="nk-recent-name">${c.name}</p></div></button>`;
     });
     if(!html){
-      chattedPeopleList.innerHTML = f ? `<div class="nk-empty">No results for "${f}"</div>` : `<div class="nk-empty">You haven't chatted with anyone yet<br>Start with New ID or search @username</div>`;
+      // FIX: New Chat empty = only Konnekt encryption notice, no fake rows
+      chattedPeopleList.innerHTML = f ? `<div class="nk-empty">No results for "${f}"</div>` : `<div class="nk-encryption-only"><p>Messages are end-to-end encrypted. No one outside of this chat, not even Konnekt, can read or listen to them.</p></div>`;
     } else {
       chattedPeopleList.innerHTML = html;
-      // FIX: Bind Recent Chats rows - Blocked shows Unblock popup, else open chat
       chattedPeopleList.querySelectorAll('[data-chat-name]').forEach(btn=>{
         btn.addEventListener('click', ()=>{
           const name = btn.dataset.chatName;
-          const item = document.querySelector(`#chatContainer .chat-item .chat-name`);
-          // Find exact item by name
           let found = null;
           document.querySelectorAll('#chatContainer .chat-item').forEach(it=>{ if((it.querySelector('.chat-name')?.textContent||'').trim()===name) found=it; });
           if(!found) return;
@@ -348,7 +353,6 @@
     unlockBody();
   }
   function closeNewChat(){
-    // FIX: Instant close, no wiggle delay, no 180ms timeout blocking click
     newChatOverlay?.classList.remove('show');
     unlockBody();
   }
@@ -387,7 +391,7 @@
     refreshIcons();
     setTimeout(()=>{
       const name = `${fn} ${ln}`.trim();
-      const chatObj = { id, name, fake:true };
+      const chatObj = { id, name, fake:true, gradient: getGradient(name) };
       fakeChats.unshift(chatObj);
       fakeMessagesMap[id] = [{ text:`Fake chat with ${name} - ID ${id} started`, sender:'other' }];
       createFakeChatElement(chatObj, `ID: ${id} - Fake test chat`);
@@ -484,7 +488,7 @@
     const lower = (filter||'').toLowerCase();
     fakeChats.filter(c=> c.name.toLowerCase().includes(lower) || (c.id||'').includes(lower) || (c.username||'').toLowerCase().includes(lower)).forEach(c=>{
       const selected = selectedMembers.includes(c.id);
-      html+=`<button class="nk-newchat-row" data-pick-id="${c.id}" style="${selected?'opacity:0.5;background:rgba(10,132,255,0.12)':''};pointer-events:auto;"><div class="nk-row-icon nk-person-avatar" style="background:${getGradient(c.name)}">${(c.name||'U')[0]}</div><div class="nk-row-info"><p class="nk-row-title">${c.name}</p><p class="nk-row-sub">${c.id}</p></div><i data-lucide="${selected?'check-circle-2':'circle'}" style="width:20px;height:20px;color:${selected?'#0a84ff':'#3a3a3c'}"></i></button>`;
+      html+=`<button class="nk-newchat-row" data-pick-id="${c.id}" style="${selected?'opacity:0.5;background:rgba(10,132,255,0.12)':''};pointer-events:auto;"><div class="nk-row-icon nk-person-avatar" style="background:${getGradient(c.name)};--ava-bg:${getGradient(c.name)}"><span>${(c.name||'U')[0]}</span></div><div class="nk-row-info"><p class="nk-row-title">${c.name}</p><p class="nk-row-sub">${c.id}</p></div><i data-lucide="${selected?'check-circle-2':'circle'}" style="width:20px;height:20px;color:${selected?'#0a84ff':'#3a3a3c'}"></i></button>`;
     });
     const real = document.querySelectorAll('#chatContainer .chat-item');
     real.forEach(item=>{
@@ -492,7 +496,9 @@
       if(name.toLowerCase().includes(lower)){
         const selId = 'real_'+name;
         const selected = selectedMembers.includes(selId);
-        html+=`<button class="nk-newchat-row" data-pick-real="${name}" style="pointer-events:auto;${selected?'opacity:0.5;background:rgba(10,132,255,0.12)':''}"><div class="nk-row-icon nk-person-avatar" style="background:${getGradient(name)}">${name[0]}</div><div class="nk-row-info"><p class="nk-row-title">${name}</p></div><i data-lucide="${selected?'check-circle-2':'circle'}" style="width:20px;height:20px;color:${selected?'#0a84ff':'#3a3a3c'}"></i></button>`;
+        const av = nkAvatarFromItem(item);
+        const avHtml = av.hasImage ? `<div class="nk-row-icon nk-person-avatar has-image" style="background:${av.bg};--ava-bg:${av.bg}"><img src="${av.src}" style="width:100%;height:100%;object-fit:cover;border-radius:999px;"><span style="display:none">${av.initials}</span></div>` : `<div class="nk-row-icon nk-person-avatar" style="background:${av.bg};--ava-bg:${av.bg}"><span>${av.initials}</span></div>`;
+        html+=`<button class="nk-newchat-row" data-pick-real="${name}" style="pointer-events:auto;${selected?'opacity:0.5;background:rgba(10,132,255,0.12)':''}">${avHtml}<div class="nk-row-info"><p class="nk-row-title">${name}</p></div><i data-lucide="${selected?'check-circle-2':'circle'}" style="width:20px;height:20px;color:${selected?'#0a84ff':'#3a3a3c'}"></i></button>`;
       }
     });
     if(!html) groupPeopleResults.innerHTML=`<div class="nk-empty">No results for "${filter}"<br>You haven't chatted with anyone yet</div>`;
@@ -570,7 +576,7 @@
       if(!gName){ showPopup('Group name', 'Please enter group name'); return; }
       if(selectedMembers.length===0){ showPopup('No members', 'Select at least 1 member'); return; }
       const gid = 'g'+Date.now();
-      const chatObj = { id:gid, name:gName, fake:true, isGroup:true };
+      const chatObj = { id:gid, name:gName, fake:true, isGroup:true, gradient: getGradient(gName) };
       fakeChats.unshift(chatObj);
       fakeMessagesMap[gid]=[{ text:`Group ${gName} created with ${selectedMembers.length} members`, sender:'other' }];
       createFakeChatElement(chatObj, `Group with ${selectedMembers.length} members`);
@@ -586,7 +592,7 @@
     });
   }
 
-  // ---------- FIX: Recent Chats + List Scroll - Allow scroll inside, block outside ----------
+  // ---------- FIX: Recent Chats + List Scroll ----------
   function fixNewChatScroll(){
     document.querySelectorAll('.nk-down-section, .nk-results, .nk-plus-scroll-area, .nk-newchat-list, #nkChattedPeopleList, #nkMainSearchResults, #nkGroupPeopleResults').forEach(function(el){
       el.style.overflowY = 'auto';
@@ -599,13 +605,11 @@
     if(ov.dataset.nkScrollBound) return; ov.dataset.nkScrollBound='1';
     ov.addEventListener('touchmove', (e)=>{
       if(!isMobile()) return;
-      // If inside scroll area, allow scroll - DO NOT preventDefault
       const scrollArea = e.target.closest('.nk-plus-scroll-area, .nk-form-wrap, .nk-profile-wrap, .nk-newchat-list, .nk-permission-list, .nk-down-section, .nk-results, #nkChattedPeopleList, #nkMainSearchResults, #nkGroupPeopleResults');
       if(scrollArea) return;
       e.preventDefault();
     }, { passive:false });
   });
-  // Fix scroll after render / open
   new MutationObserver(fixNewChatScroll).observe(document.body, {childList:true, subtree:true});
   fixNewChatScroll();
 
@@ -615,5 +619,5 @@
     }
   });
 
-  console.log('NK NEW CHAT JS V10 loaded - No wiggle, No duplicate, Scroll fixed');
+  console.log('NK NEW CHAT JS loaded - No wiggle, No duplicate, Scroll fixed');
 })();
